@@ -1,0 +1,41 @@
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.bcf
+*.run.xml
+*-blx.bib
+dokumentacja/*.pdf
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Env / secrets (na później)
+.env
+.env.*
+!.env.example
+**/credentials*
+**/secrets*
+
+# Python / Node (na później)
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/

@@ -1,0 +1,52 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\lstset{basicstyle=\ttfamily\footnotesize, breaklines=true, frame=single,
+	keywordstyle=\color{blue}, commentstyle=\color{gray}, stringstyle=\color{teal},
+	columns=fullflexible, keepspaces=true, showstringspaces=false}
+
+% polskie znaki w listingach
+\lstset{literate={ą}{{\k{a}}}1 {ć}{{\'c}}1 {ę}{{\k{e}}}1 {ł}{{\l{}}}1
+	{ń}{{\'n}}1 {ó}{{\'o}}1 {ś}{{\'s}}1 {ź}{{\'z}}1 {ż}{{\.z}}1
+	{Ą}{{\k{A}}}1 {Ć}{{\'C}}1 {Ę}{{\k{E}}}1 {Ł}{{\L{}}}1
+	{Ń}{{\'N}}1 {Ó}{{\'O}}1 {Ś}{{\'S}}1 {Ź}{{\'Z}}1 {Ż}{{\.Z}}1}
+
+% Rysunek z katalogu figury/
+\newcommand{\figura}[2]{%
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.9\textwidth,height=0.4\textheight,keepaspectratio]{figury/#1}
+		\caption{#2}
+	\end{figure}}
+
+\title{Internetowe bazy danych\\[4pt]
+	\large Dokumentacja projektu}
+\author{Karol Gąsior, 280913\\%
+	% TODO: dopisz członków grupy
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\input{rozdzialy/01-analiza}
+\input{rozdzialy/02-projekt}
+\input{rozdzialy/03-implementacja}
+\input{rozdzialy/04-wdrozenie}
+\input{rozdzialy/05-zaliczenie}
+
+\end{document}
