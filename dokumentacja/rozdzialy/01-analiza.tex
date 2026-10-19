@@ -2,7 +2,102 @@
 \label{sec:analiza}
 
 \subsection{Grupa projektowa i podział obowiązków}
-% TODO: skład grupy, role
+
+Projekt realizuje trzyosobowa grupa studentów kierunku Informatyka techniczna na Wydziale Informatyki i~Telekomunikacji Politechniki Wrocławskiej. Prowadzącym przedmiot jest dr~inż. Roman Ptak. Skład grupy zestawiono w~tabeli~\ref{tab:grupa}. Podział obowiązków zawiera tabela~\ref{tab:obowiazki}. Na początku są obowiązki trwające przez cały projekt, dalej bloki etapów. Przy każdym obowiązku wskazano jedną osobę odpowiedzialną.
+
+\begin{table}[H]
+	\centering
+	\caption{Skład grupy projektowej}
+	\label{tab:grupa}
+	\begin{tabular}{@{}ll@{}}
+		\toprule
+		Imię i~nazwisko & Numer indeksu \\
+		\midrule
+		Karol Gąsior & 280913 \\
+		Mikołaj Winiecki & 280952 \\
+		Mateusz Złośnik & 281201 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\begin{longtable}{@{}p{0.72\textwidth}l@{}}
+	\caption{Podział obowiązków w~grupie projektowej}
+	\label{tab:obowiazki}\\
+	\toprule
+	Obowiązek & Odpowiedzialny \\
+	\midrule
+	\endfirsthead
+	\caption[]{Podział obowiązków w~grupie projektowej (cd.)}\\
+	\toprule
+	Obowiązek & Odpowiedzialny \\
+	\midrule
+	\endhead
+	\bottomrule
+	\endfoot
+	\multicolumn{2}{@{}l}{\textbf{Obowiązki ogólne}} \\
+	\midrule
+	Prowadzenie repozytorium i~opis zmian & Karol Gąsior \\
+	Kompilacja dokumentacji i~kontrola składu PDF & Mikołaj Winiecki \\
+	Pilnowanie terminów oraz kontaktu z~prowadzącym & Mateusz Złośnik \\
+	Czytanie rozdziałów przed oddaniem etapu & Karol Gąsior \\
+	Przegląd kodu przed uznaniem funkcji za gotową & Mikołaj Winiecki \\
+	Jedna konwencja nazw w~modelach, widokach i~w~tekście & Mateusz Złośnik \\
+	Kopie pliku bazy oraz danych testowych & Karol Gąsior \\
+	Wpis ustaleń grupy do dokumentacji & Mikołaj Winiecki \\
+	Pilnowanie zakresu MVP: jeden sklep, bez płatności i~bez aplikacji mobilnej & Mateusz Złośnik \\
+	\midrule
+	\multicolumn{2}{@{}l}{\textbf{Etap 1. Analiza}} \\
+	\midrule
+	Opis słowny sklepu: asortyment, dostawy, sprzedaż i~stany & Karol Gąsior \\
+	Problemy prowadzenia sklepu bez systemu & Mateusz Złośnik \\
+	Interesariusze i~otoczenie podsystemu & Mikołaj Winiecki \\
+	Analiza SWOT & Karol Gąsior \\
+	Czynniki krytyczne sukcesu & Mateusz Złośnik \\
+	Cel systemu i~granice zakresu MVP & Mikołaj Winiecki \\
+	Wykonalność techniczna i~szacunek pracochłonności & Karol Gąsior \\
+	Zgodność harmonogramu z~terminami laboratorium & Mikołaj Winiecki \\
+	\midrule
+	\multicolumn{2}{@{}l}{\textbf{Etap 2. Projekt}} \\
+	\midrule
+	Wymagania funkcjonalne MVP & Mikołaj Winiecki \\
+	Wymagania niefunkcjonalne & Mateusz Złośnik \\
+	Architektura trójwarstwowa: przeglądarka, Django, SQLite & Karol Gąsior \\
+	Diagram przypadków użycia & Mateusz Złośnik \\
+	Diagram klas albo komponentów & Mikołaj Winiecki \\
+	Diagram związków encji (ERD) & Karol Gąsior \\
+	Klucze, związki i~uzasadnienie postaci normalnej & Mikołaj Winiecki \\
+	Słownik danych: atrybuty, typy i~ograniczenia & Mateusz Złośnik \\
+	\midrule
+	\multicolumn{2}{@{}l}{\textbf{Etap 3. Implementacja}} \\
+	\midrule
+	Szkielet projektu Django i~aplikacji sklepu & Mateusz Złośnik \\
+	Model produktu i~stanu magazynowego & Karol Gąsior \\
+	Model dostawy i~pozycji dostawy & Mikołaj Winiecki \\
+	Model sprzedaży i~pozycji sprzedaży & Karol Gąsior \\
+	Migracje schematu do SQLite & Mikołaj Winiecki \\
+	Widoki i~formularze produktów & Mateusz Złośnik \\
+	Widoki i~formularze dostaw oraz sprzedaży, ze zmianą stanu & Karol Gąsior \\
+	Konfiguracja panelu administratora & Mikołaj Winiecki \\
+	Test przejścia CRUD i~opis wyników & Mateusz Złośnik \\
+	\midrule
+	\multicolumn{2}{@{}l}{\textbf{Etap 4. Wdrożenie}} \\
+	\midrule
+	Plik zależności i~środowisko wirtualne & Mateusz Złośnik \\
+	Instrukcja uruchomienia na komputerze lokalnym & Karol Gąsior \\
+	Dane początkowe asortymentu i~stanów & Mikołaj Winiecki \\
+	Konta do pracy codziennej i~do pokazu & Mateusz Złośnik \\
+	Kopia zapasowa bazy SQLite i~jej odtworzenie & Karol Gąsior \\
+	Checklista odbioru po wdrożeniu & Mikołaj Winiecki \\
+	\midrule
+	\multicolumn{2}{@{}l}{\textbf{Etap 5. Prezentacja i~zaliczenie}} \\
+	\midrule
+	Scenariusz prezentacji i~podział wypowiedzi & Mateusz Złośnik \\
+	Dane pokazowe w~działającym sklepie & Karol Gąsior \\
+	Demonstracja funkcji MVP & Mikołaj Winiecki \\
+	Konspekt albo slajdy & Mateusz Złośnik \\
+	Próba generalna i~pomiar czasu & Karol Gąsior \\
+	Wnioski w~dokumentacji i~oddanie PDF & Mikołaj Winiecki \\
+\end{longtable}
 
 \subsection{Opis słowny i analiza SWOT}
 % TODO: cele, problemy, CSF albo SWOT + otoczenie podsystemu
@@ -11,4 +106,22 @@
 % TODO: cel systemu, zakres, wykonalność techniczna, szacunek kosztu
 
 \subsection{Plan projektu i harmonogram}
-% TODO: plan ogólny + harmonogram etapów
+
+Zajęcia laboratoryjne odbywają się w~sali L2.3, Centrum Studiów Zaawansowanych Technik Informacyjnych i~Komunikacyjnych, Technopolis [C-16], w~godzinach 11:15--13:30. Etapy 3 i~4 (implementacja oraz wdrożenie) przypadają na jeden termin laboratorium. Ostatnie zajęcia są przeznaczone na prezentację i~zaliczenie.
+
+\begin{table}[H]
+	\centering
+	\caption{Harmonogram etapów projektu}
+	\label{tab:harmonogram}
+	\begin{tabular}{@{}lll@{}}
+		\toprule
+		Data & Etap & Rezultat \\
+		\midrule
+		05.10.2026 & 0 & Szkielet (miniony) \\
+		19.10.2026 & 1 & Analiza (start) \\
+		17.11.2026 & 2 & Faza projektowa \\
+		30.11.2026 & 3+4 & Implementacja i wdrożenie \\
+		14.12.2026 & 5 & Prezentacja i zaliczenie \\
+		\bottomrule
+	\end{tabular}
+\end{table}

@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[polish]{babel}
@@ -7,11 +7,23 @@
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{longtable}
 \usepackage{float}
 \usepackage{enumitem}
 \usepackage{listings}
 \usepackage{xcolor}
-\usepackage[hidelinks]{hyperref}
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftbeforesecskip}{6pt}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue,
+	urlcolor=blue,
+	pdftitle={Internetowe bazy danych — dokumentacja techniczna aplikacji webowej lokalnego sklepu warzywnego},
+	pdfauthor={Karol Gąsior, Mikołaj Winiecki, Mateusz Złośnik}
+}
 
 \lstset{basicstyle=\ttfamily\footnotesize, breaklines=true, frame=single,
 	keywordstyle=\color{blue}, commentstyle=\color{gray}, stringstyle=\color{teal},
@@ -31,17 +43,15 @@
 		\caption{#2}
 	\end{figure}}
 
-\title{Internetowe bazy danych\\[4pt]
-	\large Dokumentacja projektu}
-\author{Karol Gąsior, 280913\\%
-	% TODO: dopisz członków grupy
-}
-\date{\today}
-
 \begin{document}
-\maketitle
+\hypersetup{pageanchor=false}
+\input{strona_tytulowa}
+\hypersetup{pageanchor=true}
+
+\pagenumbering{Roman}
 \tableofcontents
-\newpage
+\clearpage
+\pagenumbering{arabic}
 
 \input{rozdzialy/01-analiza}
 \input{rozdzialy/02-projekt}
