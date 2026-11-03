@@ -12,7 +12,7 @@ Krótki prompt wystarczy. Agent bierze stąd jeden obowiązek, wpisuje go do wsk
 
 Jeden prompt = jeden obowiązek. Bez commita, dopóki nie padnie osobna prośba.
 
-**Następny:** `następny` → **1.2** Problemy prowadzenia sklepu bez systemu. Punkty 1.3–1.7 są już wpisane.
+**Następny:** `następny` → **1.2** Problemy prowadzenia sklepu bez systemu. Punkty 1.3–1.8 są już wpisane; 1.9 i 1.10 czekają na przydział osoby.
 
 ## Ustalenia (nie pytaj od nowa)
 
@@ -38,6 +38,8 @@ Status: ⬜ do zrobienia, ✅ wpisane.
 | 1.6 | Cel systemu i granice zakresu MVP | Mikołaj Winiecki | `\subsection{Cel systemu i zakres}` | ✅ |
 | 1.7 | Wykonalność techniczna i szacunek pracochłonności | Karol Gąsior | `\subsection{Wykonalność}` | ✅ |
 | 1.8 | Zgodność harmonogramu z terminami laboratorium | Mikołaj Winiecki | `\subsection{Plan projektu i harmonogram}` | ✅ |
+| 1.9 | Koszt wytworzenia: praca zespołu, sprzęt, licencje, hosting (wytyczne 4d) | do ustalenia | `\subsection{Wykonalność}` — nowy akapit i tabela kosztu | ⬜ |
+| 1.10 | Plan projektu na poziomie ogólnym: kolejność prac i zależności etapów (wytyczne 4c) | do ustalenia | `\subsection{Plan projektu i harmonogram}` — tekst przed tabelą | ⬜ |
 
 ### Etap 2 — `dokumentacja/rozdzialy/02-projekt.tex`
 
@@ -51,8 +53,11 @@ Status: ⬜ do zrobienia, ✅ wpisane.
 | 2.6 | Diagram związków encji (ERD) | Karol Gąsior | `\subsection{Modelowanie}` — ERD | ⬜ |
 | 2.7 | Klucze, związki i uzasadnienie postaci normalnej | Mikołaj Winiecki | `\subsection{Projekt bazy danych}` | ⬜ |
 | 2.8 | Słownik danych: atrybuty, typy i ograniczenia | Mateusz Złośnik | `\subsection{Projekt bazy danych}` — słownik | ⬜ |
+| 2.9 | Diagram aktywności albo sekwencji: sprzedaż ze zmianą stanu (wytyczne 5: struktura funkcjonalna) | do ustalenia | `\subsection{Modelowanie}` — zachowanie | ⬜ |
 
-Diagramy 2.4–2.6: jeśli nie ma pliku w `dokumentacja/figury/`, opisz rysunek słownie i zostaw `% TODO: rysunek`. Nie wymyślaj grafiki.
+W 2.3 opisz też szablony Django jako warstwę prezentacji (wytyczne 9) i uzasadnij SQLite zamiast zalecanego MySQL (wytyczne 7–8).
+
+Diagramy 2.4–2.6 i 2.9: jeśli nie ma pliku w `dokumentacja/figury/`, opisz rysunek słownie i zostaw `% TODO: rysunek`. Nie wymyślaj grafiki.
 
 ### Etap 3 — `dokumentacja/rozdzialy/03-implementacja.tex` (+ kod, gdy dojdzie kolej)
 
@@ -81,7 +86,7 @@ Kod Django powstaje razem z obowiązkiem, który go opisuje. `\subsection{Stack 
 | 4.5 | Kopia zapasowa bazy SQLite i jej odtworzenie | Karol Gąsior | nowa podsekcja kopii | ⬜ |
 | 4.6 | Checklista odbioru po wdrożeniu | Mikołaj Winiecki | nowa podsekcja odbioru | ⬜ |
 
-### Etap 5 — `dokumentacja/rozdzialy/05-zaliczenie.tex`
+### Etap 5 — `dokumentacja/rozdzialy/05-ocena_efektow.tex`
 
 | ID | Obowiązek | Kto | Miejsce | Status |
 |----|-----------|-----|---------|--------|
@@ -94,9 +99,49 @@ Kod Django powstaje razem z obowiązkiem, który go opisuje. `\subsection{Stack 
 
 Obowiązki ogólne z tabeli (repozytorium, skład PDF, terminy, przegląd kodu) nie są osobnymi podrozdziałami. Nie wstawiaj ich do TeXa.
 
+Nowe obowiązki 1.9, 1.10 i 2.9 trzeba też dopisać do tabeli `tab:obowiazki` w `01-analiza.tex`, gdy grupa przydzieli osoby.
+
+## Plan całego sprawozdania wg wytycznych v4
+
+Skill: `.cursor/skills/sprawozdanie-ibd/SKILL.md` (tabela wytyczne → rozdział, reguły treści, kontrola przed oddaniem).
+
+| Termin | Etap | Rozdział | Do zrobienia | Zależy od |
+|--------|------|----------|--------------|-----------|
+| 19.10 (zaległe) | 1. Analiza | `01-analiza.tex` | 1.2, 1.9, 1.10 | — |
+| 17.11 | 2. Projekt | `02-projekt.tex` | 2.1–2.2 wymagania → 2.3 architektura → 2.6 ERD → 2.7–2.8 baza → 2.4, 2.5, 2.9 diagramy | wymagania przed diagramami; ERD przed słownikiem |
+| 30.11 | 3. Implementacja i walidacja | `03-implementacja.tex` + kod | 3.1 szkielet → 3.2–3.5 modele i migracje → 3.6–3.8 widoki, szablony, admin → 3.9 testy | modele zgodne z ERD z 2.6 |
+| 30.11 | 4. Wdrożenie | `04-wdrozenie.tex` | 4.1 środowisko → 4.2 instrukcja → 4.3–4.4 dane i konta → 4.5 kopia → 4.6 odbiór | działająca ścieżka z 3.7 |
+| 14.12 | 5. Prezentacja | `05-ocena_efektow.tex` | 5.1–5.5 pokaz, 5.6 wnioski i PDF | wdrożenie z 4.6 |
+
+Kolejność w etapie 2 nie jest kolejnością tabeli: najpierw wymagania i ERD, bo od nich zależą diagramy, słownik i modele Django z etapu 3.
+
+### Część Karola Gąsiora
+
+| ID | Co | Jak zrealizować | Czeka na |
+|----|----|-----------------|----------|
+| 2.3 | Architektura | Rysunek trzech warstw (przeglądarka + szablony, widoki i formularze, ORM + SQLite), tabela warstwa → katalog Django, akapit o szablonach jako odpowiedniku Smarty, uzasadnienie SQLite i ścieżka do MySQL | — |
+| 2.6 | ERD | Encje Produkt, StanMagazynowy (albo pole stanu w Produkcie — decyzja), Dostawca, Dostawa, PozycjaDostawy, Sprzedaż, PozycjaSprzedaży; liczności związków; plik w `figury/` | decyzja o stanie |
+| 3.2 | Model produktu i stanu | Modele zgodne z ERD, ograniczenie stanu ≥ 0, krótki listing | 2.6, 3.1 |
+| 3.4 | Model sprzedaży | Sprzedaż i pozycja z ceną z chwili sprzedaży | 3.2 |
+| 3.7 | Widoki dostaw i sprzedaży | Formularz z pozycjami, zmiana stanu w jednej transakcji (`transaction.atomic`), odmowa sprzedaży ponad stan | 3.3, 3.4 |
+| 4.2 | Instrukcja uruchomienia | Kroki od klonowania do `runserver`, sprawdzone na czystym środowisku | 4.1 |
+| 4.5 | Kopia bazy | Kopia pliku `db.sqlite3` albo `dumpdata`/`loaddata`, sprawdzone odtworzenie | 4.3 |
+| 5.2 | Dane pokazowe | Fixture z kilkoma produktami, dostawą i sprzedażą | 4.3 |
+| 5.5 | Próba generalna | Przejście scenariusza 5.1, czas tylko zmierzony | 5.1, 5.3 |
+
+### Otwarte pytania
+
+1. Foldery z przykładami (IO, bazy danych) nie są w repozytorium — trzeba je dodać i wypchnąć, wtedy skill dostanie sekcję wzorców.
+2. Koszt wytworzenia (1.9): liczymy godziny × stawkę (jakie wartości?) czy tylko koszty zerowe licencji i sprzętu plus godziny?
+3. SQLite zostaje z uzasadnieniem czy przechodzimy na zalecany MySQL?
+4. Stan magazynowy: osobna encja czy pole w produkcie?
+5. Kto bierze 1.9, 1.10 i 2.9?
+6. Narzędzie do diagramów: draw.io, PlantUML czy TikZ?
+
 ## Dziennik
 
 - **2026-10-19** — szkielet projektu i dokumentacji LaTeX.
 - **2026-10-19** — skład grupy, uczelnia, wydział, kierunek, prowadzący, podział obowiązków.
 - **2026-10-19** — kolejka obowiązków do krótkich promptów. Wpisano 1.1 (opis słowny sklepu). 1.8 było już w harmonogramie.
 - **2026-10-19** — wpisano 1.3–1.7. Został 1.2. Szacunek pracochłonności jest względny, bez godzin.
+- **2026-11-03** — skill `sprawozdanie-ibd` zgodny z wytycznymi v4. Dodano 1.9 (koszt), 1.10 (plan ogólny), 2.9 (diagram zachowania), plan całości i otwarte pytania.
