@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Praca nad sprawozdaniem
 
-Na starcie przeczytaj `PLAN.md` (kolejka) i `cursor.md` (domena, stack, styl, zakaz commitów).
+Na starcie przeczytaj `PLAN.md` (kolejka) i `cursor.md` (domena, stack, styl, zakaz commitów). Przy pisaniu treści stosuj `.cursor/skills/sprawozdanie-ibd/SKILL.md` — wytyczne `materialy/IDB_wytyczne_v4.pdf` są nadrzędne.
 
 ## Krótkie prompty
 
