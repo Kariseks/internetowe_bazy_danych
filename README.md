@@ -6,8 +6,7 @@ Dokumentacja i (później) aplikacja na przedmiot **Internetowe bazy danych**.
 
 ```
 ├── dokumentacja/          ← LaTeX (główna praca na razie)
-│   ├── main.tex
-│   ├── rozdzialy/         ← etapy wg wytycznych
+│   ├── sprawozdanie.tex   ← cały raport w jednym pliku
 │   └── figury/
 ├── materialy/             ← PDF-y prowadzącego (wytyczne)
 ├── PLAN.md                ← postępy i następne kroki
@@ -18,12 +17,12 @@ Dokumentacja i (później) aplikacja na przedmiot **Internetowe bazy danych**.
 
 ```bash
 cd dokumentacja
-latexmk -pdf -interaction=nonstopmode main.tex
-# wynik: main.pdf
+latexmk -pdf -interaction=nonstopmode sprawozdanie.tex
+# wynik: sprawozdanie.pdf
 latexmk -c   # sprzątanie plików pomocniczych
 ```
 
-Rysunki wrzucaj do `dokumentacja/figury/` i wstawiaj przez `\figura{plik.png}{podpis}`.
+Rysunki wrzucaj do `dokumentacja/figury/` i wstawiaj przez `\includegraphics`.
 
 ## Etapy (z wytycznych)
 

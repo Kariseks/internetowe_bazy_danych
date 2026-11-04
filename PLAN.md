@@ -1,5 +1,7 @@
 # PLAN — kolejka obowiązków do TeXa
 
+> **Nieaktualne od 03.11.2026.** Kolejka powstała przed decyzjami Q1 (rezerwacje klientów w MVP) i Q2 (etap 1 pisany od nowa), więc statusy ✅ etapu 1 i linijka „Następny” nie obowiązują. Aktualny plan i kolejność pracy: `docs/plan-sprawozdania.md` (§7 — kolejność omawiania etapu 1), instrukcje: `CLAUDE.md`. Przebudowa tej kolejki czeka na decyzję Q12.
+
 Krótki prompt wystarczy. Agent bierze stąd jeden obowiązek, wpisuje go do wskazanego miejsca i oznacza status.
 
 ## Jak pisać
@@ -19,14 +21,14 @@ Jeden prompt = jeden obowiązek. Bez commita, dopóki nie padnie osobna prośba.
 - Domena: jeden lokalny sklep warzywny. MVP: asortyment, stany, dostawy, sprzedaż. Bez wielu sklepów, płatności online, lojalności i aplikacji mobilnej.
 - Stack: Django + SQLite. Płatność poza systemem.
 - Grupa: Karol Gąsior 280913, Mikołaj Winiecki 280952, Mateusz Złośnik 281201. Prowadzący: dr inż. Roman Ptak.
-- Terminy: 19.10 analiza, 17.11 projekt, 30.11 implementacja i wdrożenie, 14.12 prezentacja. Szczegóły w `01-analiza.tex`.
+- Terminy: 19.10 analiza, 17.11 projekt, 30.11 implementacja i wdrożenie, 14.12 prezentacja. Szczegóły w `dokumentacja/sprawozdanie.tex` (§ Harmonogram).
 - Styl TeXa: polski, forma bezosobowa, twarde spacje po `a i o u w z`, bez wymyślonych cen i pomiarów.
 
 ## Kolejka
 
 Status: ⬜ do zrobienia, ✅ wpisane.
 
-### Etap 1 — `dokumentacja/rozdzialy/01-analiza.tex`
+### Etap 1 — `dokumentacja/sprawozdanie.tex` (sekcja 1)
 
 | ID | Obowiązek | Kto | Miejsce | Status |
 |----|-----------|-----|---------|--------|
@@ -39,7 +41,7 @@ Status: ⬜ do zrobienia, ✅ wpisane.
 | 1.7 | Wykonalność techniczna i szacunek pracochłonności | Karol Gąsior | `\subsection{Wykonalność}` | ✅ |
 | 1.8 | Zgodność harmonogramu z terminami laboratorium | Mikołaj Winiecki | `\subsection{Plan projektu i harmonogram}` | ✅ |
 
-### Etap 2 — `dokumentacja/rozdzialy/02-projekt.tex`
+### Etap 2 — `dokumentacja/sprawozdanie.tex` (sekcja 2)
 
 | ID | Obowiązek | Kto | Miejsce | Status |
 |----|-----------|-----|---------|--------|
@@ -54,7 +56,7 @@ Status: ⬜ do zrobienia, ✅ wpisane.
 
 Diagramy 2.4–2.6: jeśli nie ma pliku w `dokumentacja/figury/`, opisz rysunek słownie i zostaw `% TODO: rysunek`. Nie wymyślaj grafiki.
 
-### Etap 3 — `dokumentacja/rozdzialy/03-implementacja.tex` (+ kod, gdy dojdzie kolej)
+### Etap 3 — `dokumentacja/sprawozdanie.tex` (sekcja 3) (+ kod, gdy dojdzie kolej)
 
 | ID | Obowiązek | Kto | Miejsce | Status |
 |----|-----------|-----|---------|--------|
@@ -70,7 +72,7 @@ Diagramy 2.4–2.6: jeśli nie ma pliku w `dokumentacja/figury/`, opisz rysunek 
 
 Kod Django powstaje razem z obowiązkiem, który go opisuje. `\subsection{Stack technologiczny}` uzupełnij przy 3.1 (Django, SQLite). Bez wyników testu zostaw `% TODO` w 3.9.
 
-### Etap 4 — `dokumentacja/rozdzialy/04-wdrozenie.tex`
+### Etap 4 — `dokumentacja/sprawozdanie.tex` (sekcja 4)
 
 | ID | Obowiązek | Kto | Miejsce | Status |
 |----|-----------|-----|---------|--------|
@@ -81,7 +83,7 @@ Kod Django powstaje razem z obowiązkiem, który go opisuje. `\subsection{Stack 
 | 4.5 | Kopia zapasowa bazy SQLite i jej odtworzenie | Karol Gąsior | nowa podsekcja kopii | ⬜ |
 | 4.6 | Checklista odbioru po wdrożeniu | Mikołaj Winiecki | nowa podsekcja odbioru | ⬜ |
 
-### Etap 5 — `dokumentacja/rozdzialy/05-zaliczenie.tex`
+### Etap 5 — `dokumentacja/sprawozdanie.tex` (sekcja 5)
 
 | ID | Obowiązek | Kto | Miejsce | Status |
 |----|-----------|-----|---------|--------|

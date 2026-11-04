@@ -1,0 +1,679 @@
+% !TeX program = pdflatex
+% !TeX encoding = UTF-8
+% !BIB program = bibtex
+% Sprawozdanie z projektu IBD — lokalny warzywniak (Django + SQLite)
+% Jednolity plik: bez \input rozdziałów. Struktura wg IDB_wytyczne_v4 + formatka PWr.
+
+\documentclass[12pt,a4paper,oneside]{article}
+
+% --- kodowanie i język ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{indentfirst}
+\frenchspacing
+
+% --- geometria i typografia ---
+\usepackage[a4paper,margin=2.5cm,headheight=15pt]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% --- matematyka (lekko, na diagramy/formuły) ---
+\usepackage{amsmath,amssymb}
+
+% --- tabele i rysunki ---
+\usepackage{booktabs}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\graphicspath{{figury/}{../materialy/formatki_pwr/szablon_pracy_dyplomowej_w_latex/images/}}
+
+% Tytuł ze starej strony tytułowej
+\newcommand{\tytulpl}{Dokumentacja techniczna:\\[0.35em]
+	aplikacja webowa lokalnego sklepu warzywnego}
+
+% Rysunek z katalogu figury/ (przeniesione z dawnego main.tex)
+\newcommand{\figura}[2]{%
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.9\textwidth,height=0.4\textheight,keepaspectratio]{figury/#1}
+		\caption{#2}
+	\end{figure}}
+
+% --- listingi kodu ---
+\usepackage{xcolor}
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Listing}
+\lstset{
+	basicstyle=\ttfamily\footnotesize,
+	breaklines=true,
+	frame=single,
+	columns=fullflexible,
+	keepspaces=true,
+	showstringspaces=false,
+	keywordstyle=\color{blue!70!black},
+	commentstyle=\color{gray},
+	stringstyle=\color{teal!60!black},
+	literate=
+		{ą}{{\k{a}}}1 {ć}{{\'c}}1 {ę}{{\k{e}}}1 {ł}{{\l{}}}1
+		{ń}{{\'n}}1 {ó}{{\'o}}1 {ś}{{\'s}}1 {ź}{{\'z}}1 {ż}{{\.z}}1
+		{Ą}{{\k{A}}}1 {Ć}{{\'C}}1 {Ę}{{\k{E}}}1 {Ł}{{\L{}}}1
+		{Ń}{{\'N}}1 {Ó}{{\'O}}1 {Ś}{{\'S}}1 {Ź}{{\'Z}}1 {Ż}{{\.Z}}1
+}
+
+% --- listy ---
+\usepackage{enumitem}
+
+% --- nagłówki / stopki ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Politechnika Wrocławska}
+\fancyhead[R]{\small Wydział Informatyki i~Telekomunikacji}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.2pt}
+\fancypagestyle{plain}{%
+	\fancyhf{}%
+	\fancyfoot[C]{\thepage}%
+	\renewcommand{\headrulewidth}{0pt}%
+	\renewcommand{\footrulewidth}{0.2pt}%
+}
+
+% --- spis treści ---
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftbeforesecskip}{6pt}
+\setlength{\cftsecnumwidth}{1.8em}
+\setlength{\cftsubsecnumwidth}{2.8em}
+\setlength{\cftsubsubsecnumwidth}{3.6em}
+
+% --- hiperłącza (na końcu preambuły) ---
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue!60!black,
+	citecolor=blue!60!black,
+	urlcolor=blue!60!black,
+	pdftitle={Internetowe bazy danych — dokumentacja techniczna aplikacji webowej lokalnego sklepu warzywnego},
+	pdfauthor={Karol Gąsior, Mikołaj Winiecki, Mateusz Złośnik}
+}
+
+% =====================================================================
+\begin{document}
+
+% ---------------------------------------------------------------------
+% Strona tytułowa (układ formatki PWr: pd_mgr_pl / pd_inz_pl — bez logo)
+% ---------------------------------------------------------------------
+\hypersetup{pageanchor=false}
+\thispagestyle{empty}
+\begin{titlepage}
+	\centering
+	{\Large\bfseries Politechnika Wrocławska\par}
+	\vspace{0.55em}
+	\rule{\textwidth}{1.05pt}\par
+	\vspace{0.7em}
+	{\large\bfseries Wydział Informatyki i~Telekomunikacji\par}
+	\vspace{0.45em}
+	\rule{\textwidth}{0.55pt}\par
+
+	\vspace{1.35cm}
+	\begin{flushleft}
+		\begin{tabular}{@{}p{3.1cm}l@{}}
+			Kierunek:  & Informatyka techniczna \\[0.45em]
+			Przedmiot: & Internetowe bazy danych \\
+		\end{tabular}
+	\end{flushleft}
+
+	\vspace{1.9cm}
+	{\LARGE INTERNETOWE\par}
+	\vspace{0.15em}
+	{\LARGE BAZY DANYCH\par}
+
+	\vspace{1.7cm}
+	{\Large\bfseries \tytulpl\par}
+
+	\vspace{1.45cm}
+	Karol Gąsior, 280913\par
+	\vspace{0.2em}
+	Mikołaj Winiecki, 280952\par
+	\vspace{0.2em}
+	Mateusz Złośnik, 281201\par
+
+	\vspace{1.45cm}
+	Prowadzący\par
+	\vspace{0.25em}
+	\textbf{dr~inż. Roman Ptak}\par
+
+	\vfill
+	\begin{flushleft}
+		Słowa kluczowe: warzywniak, magazyn, sprzedaż, dostawa, baza danych
+	\end{flushleft}
+	\vspace{0.55cm}
+	\rule{\textwidth}{0.7pt}\par
+	\vspace{0.55em}
+	WROCŁAW (2026)\par
+	\vspace*{0.2cm}
+\end{titlepage}
+\hypersetup{pageanchor=true}
+
+% ---------------------------------------------------------------------
+\pagenumbering{Roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+% =====================================================================
+\section*{Specyfikacja projektu}
+\addcontentsline{toc}{section}{Specyfikacja projektu}
+\label{sec:specyfikacja}
+% TODO: wypełnić na końcu prac, gdy znane są wersje (Q10) i baza (Q3). Wzór: Sklep hydrauliczny,
+% „Specyfikacja projektu” (s. 7--8 PDF): cel w 2--3 zdaniach, wykorzystane technologie i narzędzia,
+% główne funkcjonalności aplikacji, uwagi dodatkowe. Bez nowych faktów — tylko streszczenie rozdz. 1--2 i 7.
+
+
+\clearpage
+% =====================================================================
+\section{Opis słowny świata rzeczywistego}
+\label{ch:swiat}
+% Wytyczne v4 pkt 4b (opis słowny, problemy, otoczenie); notatka 19.10 §1 i uwaga 2. Wzór: Sklep hydrauliczny rozdz. 1
+% (działalność, role i ich czynności, dane osób, stany zamówienia, atrybuty produktu) oraz ROW „Parametry skalowalne”.
+% Porządek: jak jest dziś -> problemy (dlaczego system) -> co system wprowadza i zmienia -> otoczenie -> parametry.
+
+\subsection{Obecny sposób działania sklepu}
+\label{sec:opis}
+
+Projekt dotyczy systemu wspomagającego prowadzenie warzywniaka na osiedlu mieszkaniowym we Wrocławiu. Sklep prowadzi Jan Nowak jako osoba fizyczna prowadząca działalność gospodarczą, a~jego klientami są głównie mieszkańcy kilku sąsiednich bloków. Sklep jest czynny codziennie w~godzinach 6:00--18:00. W~tym punkcie opisano, jak sklep działa obecnie, bez systemu informatycznego. Zmiany, które wprowadza system, opisano w~p.~\ref{sec:system}.
+
+Asortyment obejmuje podstawowe warzywa i~owoce z~upraw krajowych, takie jak ziemniaki, marchew, cebula, kapusta, buraki, jabłka i~gruszki. Oferta nie zmienia się w~ciągu roku. Wszystkie produkty sprzedaje się na wagę, a~cenę podaje się za kilogram; sklep nie prowadzi sprzedaży na sztuki. Ceny są wypisane ręcznie na tabliczkach przy skrzynkach, a~po zmianie ceny sprzedawca poprawia tabliczkę. Sklep nie ma strony internetowej ani innego kanału informacji dla klientów, więc asortyment, ceny i~dostępność towaru można poznać tylko na miejscu.
+
+W~sklepie pracuje właściciel i~dwóch sprzedawców, na zmianach 6:00--12:00 i~12:00--18:00. Właściciel jest jedyną osobą, która składa zamówienia i~zna stan towaru. Podczas jego nieobecności, np. w~czasie choroby lub urlopu, zamówienie składa sprzedawca z~popołudniowej zmiany, który nie wie, ile towaru zwykle się zamawia.
+
+Towar dostarcza jeden stały dostawca, codziennie o~4:00, przed otwarciem sklepu. Dostawca ma klucz do zaplecza i~zostawia tam towar bez udziału personelu. Osoba otwierająca sklep, zwykle właściciel, a~pod jego nieobecność sprzedawca z~porannej zmiany, przychodzi około 5:30 i~wykłada towar na półki, nie porównując go z~zamówieniem. Zamówienie na kolejny dzień właściciel składa telefonicznie po zamknięciu sklepu i~go nie zapisuje. W~ciągu dnia sklep nie otrzymuje innych dostaw, więc ilość towaru dostępnego w~danym dniu wynika z~zamówienia złożonego dzień wcześniej oraz z~towaru, który nie został sprzedany poprzedniego dnia.
+
+Sprzedaż odbywa się wyłącznie przy ladzie: sprzedawca waży i~pakuje towar, a~klient płaci na miejscu. Najwięcej klientów przychodzi rano, w~godzinach 6:00--9:00, oraz po 16:00. Sklep nie zapisuje, ile poszczególnych produktów sprzedano. Klient nie może wcześniej zamówić towaru, dlatego o~zakupie większej ilości, np. 15~kg ziemniaków, sklep dowiaduje się dopiero wtedy, gdy klient przychodzi do sklepu. Takie zakupy zdarzają się nieregularnie. Aby nie odmawiać tym klientom, właściciel zamawia towar z~dużym zapasem, a~niesprzedana nadwyżka traci świeżość. Skutki tego sposobu pracy omówiono w~p.~\ref{sec:problemy}.
+
+\subsection{Problemy prowadzenia sklepu bez systemu}
+\label{sec:problemy}
+
+Opisany w~p.~\ref{sec:opis} sposób pracy sklepu prowadzi do ośmiu problemów, oznaczonych dalej P1--P8. Przy każdym podano jego skutek dla sklepu oraz mechanizm systemu, który go rozwiązuje; zasady działania tych mechanizmów opisano w~p.~\ref{sec:system}. Wielkości liczbowe są szacunkami zespołu zgodnymi z~tab.~\ref{tab:parametry}.
+
+\begin{enumerate}[label=\textbf{P\arabic*.},ref=P\arabic*,leftmargin=1.2cm]
+	\item \label{prob:rezerwacja}
+	\textbf{Brak możliwości zarezerwowania towaru.} Klient, który chce kupić większą ilość, np. 15~kg ziemniaków na zapas, musi przyjść do sklepu i~liczyć na to, że towaru wystarczy. Jeśli towaru zabraknie, klient wychodzi bez zakupu i~może zrobić go w~innym sklepie, a~sklep traci sprzedaż i~zaufanie stałego klienta. Problem rozwiązują rezerwacje składane przez stronę internetową na jeden z~siedmiu kolejnych dni, do 20~kg na rezerwację (p.~\ref{sec:system}).
+
+	\item \label{prob:zamawianie}
+	\textbf{Zamawianie towaru na wyczucie.} Właściciel składa zamówienie na następny dzień o~18:00, nie wiedząc, ilu klientów zrobi duże zakupy. Ilości dobiera z~doświadczenia, więc w~jednych dniach towaru zostaje za dużo, a~w~innych popularne produkty kończą się po południu, po kilku dużych zakupach rano. Po wprowadzeniu systemu zamówienie obejmuje plan dostawy, w~którym rezerwacje na następny dzień są już znane, ponieważ ich przyjmowanie kończy się o~18:00, w~chwili składania zamówienia.
+
+	\item \label{prob:straty}
+	\textbf{Nadwyżka i~psucie się towaru.} Aby obsłużyć nieprzewidziane duże zakupy, właściciel zamawia dziennie około 700~kg towaru, czyli około 200~kg więcej niż typowa sprzedaż przy ladzie (500~kg). W~dniach bez dużych zakupów nadwyżka zostaje w~sklepie, a~resztki z~poprzedniego dnia sprzedają się gorzej niż świeży towar. Szacuje się, że około 40~kg towaru dziennie traci świeżość i~trafia do wyrzucenia, co daje około 14,6~t rocznie. Gdy duże zakupy przechodzą do rezerwacji, nadwyżka nie jest potrzebna: w~tab.~\ref{tab:parametry} typowa dostawa wynosi 650~kg, z~czego 500~kg przypada na sprzedaż przy ladzie, a~120~kg na rezerwacje znane przed złożeniem zamówienia.
+
+	\item \label{prob:ewidencja}
+	\textbf{Brak ewidencji stanu i~sprzedaży.} Stan towaru właściciel ocenia na oko, a~sklep nie zapisuje, ile poszczególnych produktów sprzedano danego dnia. Bez takich danych nie można ustalić standardowych dziennych ilości produktów ani zmierzyć strat, więc właściciel nie wie, czy zmiana zamówień zmniejszyła nadwyżkę. Ceny istnieją tylko na tabliczkach, więc nie wiadomo, od kiedy obowiązuje dana cena, a~na koniec dnia brakuje danych do inwentaryzacji i~do porównania utargu z~ilością sprzedanego towaru. System rejestruje dostawy i~sprzedaż każdego produktu wraz z~ceną, co daje bieżący stan, historię sprzedaży do ustalania planu dostawy oraz ilość towaru, który nie został sprzedany.
+
+	\item \label{prob:informacja}
+	\textbf{Brak informacji dla klienta przed wizytą w~sklepie.} Asortyment, ceny i~dostępność towaru klient poznaje dopiero w~sklepie. Zdarza się, że przychodzi po konkretny produkt, a~tego już nie ma albo cena jest inna, niż się spodziewał. Wizyta kończy się wtedy bez zakupu, a~klient następnym razem może wybrać inny sklep. Problem rozwiązuje publiczny katalog, w~którym klient-obserwator bez logowania sprawdza ceny i~ilości dostępne do rezerwacji, a~następnie może zarezerwować towar (p.~\ref{sec:system}).
+
+	\item \label{prob:kolejki}
+	\textbf{Kolejki w~godzinach szczytu.} W~godzinach 6:00--9:00 i~16:00--18:00 przychodzi około połowy z~200 klientów dziennie, czyli około 20 klientów na godzinę, których obsługuje jeden sprzedawca. Zważenie i~zapakowanie 15--20~kg kilku produktów dla jednego klienta trwa około 5~minut, a~w~tym czasie kolejka rośnie. Klienci robiący drobne zakupy czekają dłużej, a~część z~nich rezygnuje. Po wprowadzeniu systemu duże zakupy przechodzą do rezerwacji, które sprzedawca kompletuje i~waży poza godzinami szczytu, więc odbiór sprowadza się do wydania paczki i~przyjęcia zapłaty.
+
+	\item \label{prob:dostawa}
+	\textbf{Brak kontroli dostaw.} Dostawca zostawia towar na zapleczu o~4:00, a~nikt nie porównuje dostawy z~zamówieniem, które istnieje tylko jako rozmowa telefoniczna. Braki lub inne produkty niż zamówione wychodzą na jaw dopiero w~ciągu dnia, gdy towaru zaczyna brakować. Bez zapisu zamówienia i~przyjęcia sklep nie ma podstaw do reklamacji u~jedynego dostawcy, od którego zależy całe zaopatrzenie. System przechowuje plan dostawy jako zapis zamówienia, a~osoba otwierająca sklep wprowadza ilości faktycznie dostarczone, które system porównuje z~planem.
+
+	\item \label{prob:wiedza}
+	\textbf{Wiedza o~sklepie tylko w~głowie właściciela.} Tylko właściciel wie, ile czego zwykle się zamawia i~ile towaru zostało. Gdy go nie ma, zamówienie składa sprzedawca, który dobiera ilości na wyczucie, co powiększa nadwyżki lub braki opisane w~\ref{prob:zamawianie} i~\ref{prob:straty}. Sklep zależy od obecności jednej osoby, a~właściciel nie może swobodnie korzystać z~urlopu. System udostępnia personelowi plan dostawy ze standardowymi ilościami produktów, bieżący stan i~historię sprzedaży, więc sprzedawca może przygotować zamówienie na tych samych danych co właściciel.
+\end{enumerate}
+
+Problemy P1--P3 i~P6 wynikają z~braku informacji o~dużych zakupach przed złożeniem zamówienia, dlatego główną funkcją systemu są rezerwacje powiązane z~planem dostawy. Problemy P4, P7 i~P8 wymagają ewidencji dostaw, sprzedaży i~stanu, bez której nie da się też ocenić, czy system zmniejszył straty. Problem P5 rozwiązuje publiczny katalog.
+
+\subsection{Proponowany system}
+\label{sec:system}
+
+W~odpowiedzi na problemy z~p.~\ref{sec:problemy} proponowany system wprowadza do pracy sklepu dwie zmiany: rezerwacje powiązane z~planem dostawy oraz ewidencję dostaw, sprzedaży i~stanu. Pozostałe zasady pracy, takie jak godziny otwarcia, jedna dostawa dziennie i~sprzedaż przy ladzie, nie zmieniają się.
+
+System umożliwia klientom rezerwację towaru przez stronę internetową sklepu i~osobisty odbiór w~wybranym dniu. Dzięki rezerwacjom właściciel zna część popytu przed złożeniem zamówienia u~dostawcy i~nie musi utrzymywać zapasu na nieprzewidziane duże zakupy. System nie obejmuje dowozu do domu, a~za zarezerwowany towar klient płaci przy odbiorze, tak jak przy zwykłym zakupie.
+
+Rezerwację składa się na jeden z~siedmiu kolejnych dni, począwszy od dnia następnego; najczęściej klienci rezerwują towar na następny dzień. Rezerwacja obejmuje wyłącznie towar, który znajdzie się w~sklepie w~dniu odbioru. Ponieważ towar przychodzi raz dziennie, ilość dostępną do rezerwacji wyznacza plan dostawy, czyli ilość każdego produktu, którą właściciel zamierza zamówić na dany dzień. Domyślnie plan dostawy równa się standardowej dziennej ilości produktu, a~właściciel może go zwiększyć, gdy rezerwacje zbliżają się do planu, lub zmniejszyć, ale nie poniżej ilości już zarezerwowanej. Do rezerwacji na dany dzień pozostaje ilość z~planu dostawy pomniejszona o~ilość zarezerwowaną wcześniej na ten dzień. Jeśli plan dostawy ziemniaków na sobotę wynosi 100~kg, a~klienci zarezerwowali już 90~kg, kolejny klient może zarezerwować najwyżej 10~kg ziemniaków. Towar pozostały z~poprzedniego dnia trafia wyłącznie do sprzedaży przy ladzie, więc klient z~rezerwacją odbiera towar ze świeżej dostawy.
+
+Przyjmowanie rezerwacji na dany dzień kończy się o~18:00 dnia poprzedniego. O~tej godzinie właściciel składa zamówienie u~dostawcy w~ilościach z~planu dostawy, więc zamówienie obejmuje cały towar zarezerwowany na następny dzień. Do tej samej godziny klient może bezpłatnie anulować rezerwację. Klient może mieć jedną rezerwację na dany dzień, a~łączna masa jej pozycji nie może przekroczyć 20~kg, co odpowiada jednej skrzynce.
+
+Zarezerwowany towar klient odbiera w~dniu, na który złożył rezerwację, najpóźniej do zamknięcia sklepu o~18:00. Sprzedawca kompletuje, waży i~pakuje rezerwacje na dany dzień poza godzinami największego ruchu, a~przy odbiorze pobiera zapłatę za odważoną masę według ceny obowiązującej w~dniu odbioru. Rezerwacja, której klient nie odebrał do 18:00, staje się nieodebrana, a~jej towar następnego dnia trafia do sprzedaży przy ladzie. Za nieodebranie rezerwacji klient ponosi opłatę w~wysokości 10\% wartości rezerwacji, którą właściciel nazywa zadatkiem; przy rezerwacji o~wartości 80~zł opłata wynosi 8~zł. Wartość rezerwacji liczy się z~zarezerwowanych ilości i~cen z~dnia odbioru.
+
+Opłaty za nieodebranie nie pobiera się z~góry. Przy rejestracji klient podaje kartę płatniczą w~formularzu operatora płatności, a~system przechowuje tylko identyfikator karty nadany przez operatora, bez numeru karty. Po nieodebraniu rezerwacji system nalicza opłatę i~dopisuje ją do zaległości klienta. Właściciel raz w~miesiącu obciąża karty klientów kwotą zaległości za pośrednictwem operatora płatności, poza systemem, i~odnotowuje w~systemie wynik obciążenia. Zaległość można też zapłacić w~sklepie, a~wpłatę odnotowuje sprzedawca. Gdy suma zaległości klienta przekracza 100~zł, system nie przyjmuje od niego nowych rezerwacji, choć rezerwacje złożone wcześniej pozostają ważne. Blokada ustaje samoczynnie, gdy po wpłacie albo skutecznym obciążeniu karty zaległość spadnie do 100~zł lub mniej.
+
+Oprócz rezerwacji system prowadzi ewidencję sklepu. Publiczny katalog pokazuje asortyment, aktualne ceny i~ilości dostępne do rezerwacji. Osoba otwierająca sklep wprowadza do systemu ilości faktycznie dostarczone, a~system porównuje je z~planem dostawy na dany dzień. Sprzedaż przy ladzie rejestruje się z~podziałem na produkty, dzięki czemu system zna bieżący stan towaru. Plan dostawy, stan i~historia sprzedaży są dostępne dla całego personelu, więc zamówienie może przygotować także sprzedawca.
+
+W~systemie wyróżnia się pięć ról:
+\begin{description}[style=nextline,leftmargin=1.2cm]
+	\item[Klient-obserwator] Osoba bez konta. Przegląda asortyment, ceny za kilogram i~ilości dostępne do rezerwacji na najbliższe siedem dni. Aby zarezerwować towar, zakłada konto: podaje imię, nazwisko, adres e-mail i~numer telefonu oraz rejestruje kartę płatniczą.
+	\item[Klient] Osoba z~kontem. W~panelu klienta składa rezerwacje, przegląda je i~anuluje, a~także sprawdza swoją zaległość i~to, czy może składać nowe rezerwacje. Panel klienta jest oddzielony od panelu personelu.
+	\item[Sprzedawca] Obsługuje ladę: rejestruje sprzedaż, wydaje rezerwacje i~odnotowuje wpłaty zaległości. Gdy otwiera sklep, rejestruje przyjęcie dostawy, a~pod nieobecność właściciela składa zamówienie u~dostawcy na podstawie planu dostawy. Korzysta z~panelu administratora.
+	\item[Właściciel] Prowadzi asortyment i~ceny, ustala plan dostawy, składa zamówienie u~dostawcy, rejestruje przyjęcie dostawy, zakłada konta sprzedawców i~rozlicza zaległości klientów. Może też wykonywać wszystkie czynności sprzedawcy. Korzysta z~panelu administratora.
+	\item[Dostawca] Nie ma konta w~systemie. Otrzymuje zamówienie przygotowane na podstawie planu dostawy, a~przywieziony przez niego towar personel rejestruje w~systemie jako dostawę.
+\end{description}
+
+Każdy produkt w~systemie ma nazwę, w~razie potrzeby z~odmianą, np. dwie odmiany ziemniaków, cenę za kilogram oraz standardową dzienną ilość, od której zaczyna się plan dostawy. Ceny zmienia właściciel, a~system zapisuje datę, od której nowa cena obowiązuje, oraz cenę przy każdej sprzedaży. Bieżący stan produktu w~kilogramach system wyznacza z~zarejestrowanych dostaw i~sprzedaży.
+
+Rezerwacja należy do jednego klienta i~dotyczy jednego dnia odbioru. Składa się z~pozycji, z~których każda wskazuje produkt i~zarezerwowaną ilość w~kilogramach. Po złożeniu rezerwacja jest złożona i~do 18:00 dnia poprzedniego klient może ją anulować, co zwalnia jej ilości w~planie dostawy. Gdy sprzedawca skompletuje i~zważy towar, rezerwacja staje się przygotowana do odbioru, a~przy każdej pozycji zapisuje się odważoną masę. Po wydaniu towaru i~zapłacie rezerwacja jest odebrana, a~jeśli klient nie odbierze jej do 18:00 w~dniu odbioru, staje się nieodebrana i~system nalicza opłatę za nieodebranie. Stany anulowana, odebrana i~nieodebrana są końcowe.
+
+\subsection{Interesariusze i~otoczenie podsystemu}
+\label{sec:otoczenie}
+% Decyzje 04.11.2026: dostawca bez konta (dostawy wprowadza personel); operator płatności kartą, kasa fiskalna
+% i terminal płatniczy należą do otoczenia systemu, bez integracji.
+
+Interesariuszami systemu są osoby, które z~niego korzystają lub od których zależy jego działanie. Użytkownikami są właściciel, sprzedawcy, klienci i~klienci-obserwatorzy. Dostawca, operator płatności, kasa fiskalna i~terminal płatniczy należą do otoczenia systemu: wymieniają się ze sklepem towarem, pieniędzmi lub danymi, ale nie korzystają z~systemu bezpośrednio. Tab.~\ref{tab:otoczenie} przedstawia, co każdy z~nich przekazuje do systemu i~co z~niego otrzymuje.
+
+\begin{table}[H]
+	\centering
+	\caption{Interesariusze i~otoczenie systemu}
+	\label{tab:otoczenie}
+	\small
+	\begin{tabularx}{\textwidth}{@{}L{3.3cm}L{2.9cm}>{\raggedright\arraybackslash}X@{}}
+		\toprule
+		Interesariusz & Dostęp do systemu & Wymiana z~systemem \\
+		\midrule
+		Właściciel (Jan Nowak) & panel administratora & Wprowadza asortyment, ceny, plan dostawy i~konta sprzedawców, odnotowuje wynik obciążenia kart. Otrzymuje stan towaru, historię sprzedaży, rezerwacje i~zaległości klientów. \\
+		Sprzedawcy & panel administratora & Rejestrują przyjęcie dostawy, sprzedaż przy ladzie, wydanie rezerwacji i~wpłaty zaległości. Otrzymują listę rezerwacji na dany dzień, stan i~plan dostawy. \\
+		Klient & panel klienta & Podaje dane przy rejestracji, składa i~anuluje rezerwacje. Otrzymuje stan swoich rezerwacji, zaległość i~informację o~blokadzie. \\
+		Klient-obserwator & katalog bez logowania & Otrzymuje asortyment, ceny i~ilości dostępne do rezerwacji. \\
+		Dostawca & brak & Otrzymuje telefonicznie zamówienie przygotowane na podstawie planu dostawy. Przywieziony towar wprowadza do systemu personel. \\
+		Operator płatności & brak (formularz operatora) & Przy rejestracji przekazuje identyfikator karty klienta. Obciążenie karty opłatą za nieodebranie zleca właściciel poza systemem. \\
+		Kasa fiskalna & brak & Brak wymiany danych. Sprzedawca rejestruje sprzedaż osobno w~kasie i~w~systemie. \\
+		Terminal płatniczy & brak & Brak wymiany danych. Obsługuje zapłatę kartą za towar przy ladzie. \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+Poza systemem pozostaje zapłata za towar. Klient płaci przy ladzie gotówką albo kartą w~terminalu, a~sprzedaż ewidencjonuje kasa fiskalna, która nie jest połączona z~systemem. System zapisuje sprzedane produkty, ilości i~ceny, ale nie zapisuje zapłaty za towar. Jedyną należnością rozliczaną przez system jest opłata za nieodebranie rezerwacji: system ją nalicza i~dopisuje do zaległości klienta, a~pobiera się ją z~karty przez operatora płatności albo w~sklepie (p.~\ref{sec:system}). Dostawca nie ma konta, więc zamówienie i~przyjęcie dostawy obsługuje wyłącznie personel.
+
+
+\subsection{Parametry skalowalne}
+\label{sec:parametry}
+
+Parametry w~tab.~\ref{tab:parametry} oszacowano dla typowego warzywniaka osiedlowego obsługującego mieszkańców kilku bloków. Wartości początkowe dotyczą pierwszych miesięcy działania systemu, a~docelowe stanu po roku, gdy rezerwacje staną się powszechne wśród stałych klientów. Oferta obejmuje początkowo 32 produkty, m.in. ziemniaki (dwie odmiany), marchew, pietruszkę korzeń, seler, buraki, cebulę białą i~czerwoną, czosnek, pora, kapustę białą i~czerwoną, ogórki, pomidory, paprykę, jabłka w~czterech odmianach i~gruszki.
+
+\begin{table}[H]
+	\centering
+	\caption{Parametry skalowalne systemu}
+	\label{tab:parametry}
+	\begin{tabular}{@{}L{8.2cm}rr@{}}
+		\toprule
+		Parametr & Początkowo & Docelowo \\
+		\midrule
+		Liczba produktów w~ofercie & 32 & 40 \\
+		Klienci obsługiwani przy ladzie dziennie & 200 & 220 \\
+		Średnia masa zakupu przy ladzie & 2,5~kg & 2,5~kg \\
+		Konta klientów & 150 & 400 \\
+		Rezerwacje dziennie: średnio / najwięcej & 15 / 40 & 30 / 45 \\
+		Masa rezerwacji: średnio / limit & 8 / 20~kg & 8 / 20~kg \\
+		Średnia liczba pozycji w~rezerwacji & 3 & 3 \\
+		Towar zarezerwowany dziennie: średnio / najwięcej & 120 / 800~kg & 240 / 900~kg \\
+		Dzienna dostawa: typowo / najwięcej & 650 / 1500~kg & 850 / 1500~kg \\
+		Konta personelu (właściciel i~sprzedawcy) & 3 & 4 \\
+		Jednocześnie pracujący użytkownicy w~szczycie: personel / klienci & 2 / 10 & 2 / 20 \\
+		Rezerwacje w~ciągu roku & 5\,500 & 11\,000 \\
+		Transakcje sprzedaży przy ladzie w~ciągu roku & 73\,000 & 80\,300 \\
+		Pozycje dostaw w~ciągu roku & 11\,700 & 14\,600 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+Parametry są ze sobą spójne. W~typowym dniu sprzedaż przy ladzie wynosi około 500~kg (200 klientów po 2,5~kg), a~rezerwacje 120~kg, co mieści się w~dostawie 650~kg. W~dniu z~największą liczbą rezerwacji 40 rezerwacji po 20~kg daje 800~kg, a~razem ze sprzedażą przy ladzie 1300~kg, czyli mniej niż największa dostawa 1500~kg, ograniczona ładownością samochodu dostawcy. Docelowo w~takim dniu 45~rezerwacji po 20~kg i~sprzedaż przy ladzie około 550~kg dają 1450~kg. Wartości roczne wynikają z~wartości dziennych pomnożonych przez 365 dni pracy sklepu. Przy średnio trzech pozycjach na transakcję i~rezerwację baza przyrasta początkowo o~około 330~tys. wierszy rocznie.
+
+\clearpage
+% =====================================================================
+\section{Cel projektu oraz wymagania systemu}
+\label{ch:cel}
+% Wytyczne v4 pkt 4d (cel, zakres) i pkt 5 (struktura funkcjonalna); notatka 19.10 §1, uwagi 2--3.
+% Wzór: Sklep hydrauliczny rozdz. 2 (2.1 cel z „Uwagą”, 2.2.1--2.2.8 WF, 2.3 WN, 2.4 wersje).
+
+\subsection{Cel projektu}
+\label{sec:cel}
+% Wytyczne v4 pkt 4d. Cel z odwołaniami do P1--P8. Wzór: Sklep hydrauliczny 2.1.
+
+
+\subsection{Zakres projektu}
+\label{sec:zakres}
+% Wytyczne v4 pkt 4d; notatka 19.10 §1 (rezerwacje ilości, odbiór osobisty, bez dowozu i płatności online).
+% W zakresie / poza zakresem + „Uwaga:” z tym, czego system nie robi (wzór: SH 2.1).
+
+
+\subsection{Wymagania funkcjonalne}
+\label{sec:wf}
+
+\subsubsection{Konta użytkowników}
+
+
+\subsubsection{Identyfikacja i~uwierzytelnianie użytkowników}
+
+
+\subsubsection{Funkcje dostępne dla sprzedawcy}
+
+
+\subsubsection{Funkcje dostępne dla właściciela}
+
+
+\subsubsection{Funkcje dostępne dla klienta}
+
+
+\subsubsection{Funkcje dostępne dla zalogowanego użytkownika}
+
+
+\subsubsection{Funkcje dostępne dla klienta-obserwatora}
+% Odpowiednik „niezalogowanego użytkownika” w Sklepie hydraulicznym 2.2.7.
+
+
+\subsubsection{Funkcje wymagane do obsługi procesu rezerwacji}
+
+
+\subsection{Wymagania niefunkcjonalne}
+\label{sec:wn}
+% Komputer w sklepie, bez hostingu (notatka §1); współbieżne zapisy SQLite (uwaga 1, Q3); osobny panel klienta (uwaga 3).
+
+
+\subsection{Funkcjonalności implementowane i~testowane na zaliczenie}
+\label{sec:wersje}
+% Wersje minimalna, standardowa, rozszerzona (Q8). Wzór: Sklep hydrauliczny 2.4.
+
+\subsubsection{Wersja minimalna}
+
+
+\subsubsection{Wersja standardowa}
+
+
+\subsubsection{Wersja rozszerzona}
+
+
+
+\clearpage
+% =====================================================================
+\section{Uzasadnienie potrzeby realizacji i~organizacja projektu}
+\label{ch:uzasadnienie}
+% Elementy wytycznych v4 spoza wzoru SH: pkt 4b (SWOT, CSF), 4d (wykonalność, koszt), 4c (plan), 4a (grupa), 4e (harmonogram);
+% notatka 19.10 uwagi 1, 4, 5, 6 i „Ustalenia”. Po celu i wymaganiach, bo ocena, koszt i plan dotyczą tego zakresu.
+
+\subsection{Analiza SWOT}
+% Poprawki prowadzącego (notatka uwaga 5).
+
+
+\subsection{Czynniki krytyczne sukcesu (CSF)}
+
+
+\subsection{Techniczna wykonalność systemu}
+\label{sec:wykonalnosc}
+
+\subsubsection{Wybór technologii, wersje i~licencje}
+% Wytyczne v4 pkt 7--8 (zalecane Python + MySQL, inne dopuszczalne); notatka uwaga 6 (konkretne wersje, licencje open source).
+
+
+\subsubsection{Współbieżne zapisy w~bazie SQLite}
+% Notatka uwaga 1: ostrzeżenie prowadzącego, propozycja kolejkowania zapisów. Q3 (04.11.2026): SQLite zostaje —
+% obciążenie z tab:parametry (2 os. personelu + do 20 klientów naraz, do 45 rezerwacji i ok. 220 sprzedaży dziennie);
+% zapisy szeregowane przez blokadę bazy (kolejkowanie), WAL, transakcje IMMEDIATE, timeout; sprawdzenie puli i zapis
+% rezerwacji w jednej transakcji (także tuż przed 18:00); MySQL/MariaDB jako ścieżka rozwoju (zmiana DATABASES).
+
+
+\subsection{Koszt wytworzenia systemu (kosztorys)}
+\label{sec:koszt}
+% Narzędzia 0 zł (licencje open source, notatka uwaga 6); praca i sprzęt — Q9.
+
+
+\subsection{Plan projektu}
+
+
+\subsection{Grupa projektowa i~podział obowiązków}
+\label{sec:grupa}
+% Wytyczne v4 pkt 2 (grupy ok. 3-osobowe) i 4a.
+
+\subsubsection{Skład grupy}
+
+
+\subsubsection{Podział obowiązków w~etapach projektu}
+% Notatka uwaga 4: analiza — jeden student w roli właściciela, dwóch analityków (wywiad);
+% projektowanie wspólnie (burza mózgów); podział backend / frontend / baza dopiero przy implementacji.
+
+
+\subsection{Harmonogram}
+
+
+
+\clearpage
+% =====================================================================
+\section{Techniki modelowania}
+\label{ch:techniki}
+% Wytyczne v4 pkt 5: dobór technik (UML zalecany, ERD/OZ + definicje obiektów, DHF/DNF, DFE) i opis struktury
+% funkcjonalnej oraz informacyjnej. Decyzja Q4. Krótko: która technika, w którym rozdziale.
+
+\subsection{Dobór technik modelowania i~diagramów}
+
+
+\subsection{Struktura funkcjonalna i~informacyjna systemu}
+
+
+
+\clearpage
+% =====================================================================
+\section{Diagramy przypadków użycia}
+\label{ch:diagramy-pu}
+% Wytyczne v4 pkt 5 (UML). Wzór: Sklep hydrauliczny rozdz. 3; «include» i «extend» obowiązkowe (IO zad. 5).
+
+\subsection{Identyfikacja aktorów}
+
+
+\subsection{Diagramy przypadków użycia dla poszczególnych modułów}
+
+
+
+\clearpage
+% =====================================================================
+\section{Opis przypadków użycia}
+\label{ch:opis-pu}
+% Scenariusze z makietami. Wzór: Sklep hydrauliczny rozdz. 4 (= DEMO1): aktor, zdarzenie inicjujące, warunki początkowe,
+% przebieg podstawowy i alternatywny, warunki końcowe, rysunek ekranu. Jeśli diagramy PU zmieniono po etapie 2,
+% na początku rozdziału opisać poprawki, a poprzednie wersje dać na końcu (SH 4.1 i 4.6).
+
+\subsection{Przypadki użycia dla klienta-obserwatora}
+
+
+\subsection{Przypadki użycia dla klienta}
+
+
+\subsection{Przypadki użycia dla sprzedawcy}
+
+
+\subsection{Przypadki użycia dla właściciela}
+
+
+\subsection{Diagramy czynności wybranych przypadków użycia}
+% Dla 1--2 najbardziej złożonych PU (instrukcje IO). Do decyzji Q4 — usunąć, jeśli Karol nie wybierze.
+
+
+
+\clearpage
+% =====================================================================
+\section{Model bazy danych}
+\label{ch:model-bd}
+% Wytyczne v4 pkt 5 (struktura informacyjna, ERD); notatka uwaga 6 (code-first: „model bazy danych”, nie „projekt”).
+% Wzór: Sklep hydrauliczny rozdz. 5 (tabela postaci normalnych, kolejne wersje modelu z oceną NF, 5.7 graf stanów),
+% Model Bazy danych.pdf (pojęciowy -> konceptualny -> logiczny, 1NF--3NF).
+
+\subsection{Podejście code-first}
+% Notatka uwaga 6: model bazy danych powstaje z klas ORM Django (reverse engineering), a nie jako klasyczny projekt bazy.
+
+
+\subsection{Identyfikacja encji i~związków}
+
+
+\subsection{Model konceptualny (ERD)}
+
+
+\subsection{Model logiczny i~normalizacja}
+
+
+\subsection{Diagram klas modeli ORM}
+
+
+\subsection{Słownik danych (definicje obiektów)}
+
+
+\subsection{Graf stanów rezerwacji}
+% Wzór: Sklep hydrauliczny 5.7 (rysunek + numerowana lista stanów i przejść).
+
+
+
+\clearpage
+% =====================================================================
+\section{Opis implementacji}
+\label{ch:implementacja}
+% Etap 3 wytycznych; pkt 7--8 (technologie), pkt 9 (architektura trójwarstwowa, szablony); notatka uwaga 3 (osobne panele).
+% Wzór: Sklep hydrauliczny rozdz. 6 (technologie, struktura systemu z warstwami, moduły, model danych, bezpieczeństwo).
+
+\subsection{Technologie}
+% Wersje z requirements.txt i licencje (notatka uwaga 6).
+
+
+\subsection{Środowisko programistyczne i~repozytorium kodu}
+% Notatka „Ustalenia”: konfiguracja środowiska i prosta działająca wersja równolegle z dokumentacją. Link do repozytorium (RE 5.3).
+
+
+\subsection{Architektura trójwarstwowa}
+\label{sec:architektura}
+% Wytyczne v4 pkt 9. Warstwy: dane (modele ORM + baza), logika (widoki), prezentacja (szablony). Wzór: SH 6.1.2 „Struktura systemu”.
+
+
+\subsection{Oddzielenie kodu od HTML -- szablony Django}
+% Wytyczne v4 pkt 9 (oddzielenie kodu od statycznego HTML przez szablony).
+
+
+\subsection{Moduły funkcjonalne}
+
+
+\subsection{Panel klienta i~panel administratora}
+% Django Admin tylko dla personelu, osobny interfejs klienta (notatka uwaga 3).
+
+
+\subsection{Model fizyczny bazy danych}
+% SQL z manage.py sqlmigrate (wzór DDL: Restauracja 5.2); lista modeli jak SH 6.1.4 „Model danych”.
+
+
+\subsection{Bezpieczeństwo}
+
+
+
+\clearpage
+% =====================================================================
+\section{Główne moduły i~klasy}
+\label{ch:moduly}
+% Wzór: Sklep hydrauliczny rozdz. 7 (pakiety i klasy z jednym zdaniem opisu).
+
+\subsection{Aplikacje Django i~modele}
+
+
+\subsection{Widoki i~szablony panelu klienta}
+
+
+\subsection{Konfiguracja panelu administratora}
+
+
+\subsection{Pozostałe pliki}
+
+
+
+\clearpage
+% =====================================================================
+\section{Opis wybranego fragmentu kodu źródłowego}
+\label{ch:kod}
+% Wzór: Sklep hydrauliczny rozdz. 8 (operacje transakcyjne na zamówieniu).
+
+
+\clearpage
+% =====================================================================
+\section{Walidacja i~testy}
+\label{ch:testy}
+% Etap 3 wytycznych (walidacja); w SH tylko pakiet testów (7.1.10), więc wzór formy: instrukcje IO
+% (testy jednostkowe, akceptacyjne), Restauracja 5.4--5.5.
+
+\subsection{Testy jednostkowe}
+
+
+\subsection{Testy akceptacyjne przypadków użycia}
+
+
+\subsection{Zmienione i~niezrealizowane koncepcje, napotkane problemy}
+
+
+
+\clearpage
+% =====================================================================
+\section{Wdrożenie aplikacji i~podręcznik dla użytkownika}
+\label{ch:wdrozenie}
+% Etap 4 wytycznych; notatka uwaga 6 (instrukcja instalacji na komputerze w sklepie).
+% Wzór: Sklep hydrauliczny rozdz. 9 (9.1 uruchomienie aplikacji krok po kroku, 9.2 przewodnik po rolach ze zrzutami).
+
+\subsection{Uruchomienie aplikacji}
+
+\subsubsection{Środowisko uruchomieniowe w~sklepie}
+
+
+\subsubsection{Instrukcja instalacji na komputerze w~sklepie}
+
+
+\subsubsection{Dane początkowe i~konta}
+
+
+\subsubsection{Kopia zapasowa i~odtwarzanie}
+
+
+\subsubsection{Dostęp do aplikacji}
+
+
+\subsection{Przewodnik po rolach użytkowników}
+
+\subsubsection{Klient-obserwator}
+
+
+\subsubsection{Klient}
+
+
+\subsubsection{Sprzedawca}
+
+
+\subsubsection{Właściciel}
+
+
+\subsection{Checklista odbioru}
+
+
+
+\clearpage
+% =====================================================================
+\section{Prezentacja i~zaliczenie projektu}
+\label{ch:prezentacja}
+% Wytyczne v4 pkt 6 (prezentacja na forum grupy lub przed prowadzącym, wraz z dokumentacją) i etap 5.
+
+\subsection{Plan prezentacji}
+% Kolejność demonstracji i podział wypowiedzi; slajdy poza raportem.
+
+
+\subsection{Materiały przekazywane do zaliczenia}
+% Dokumentacja (ten raport), aplikacja na komputerze w sklepie, repozytorium kodu.
+
+
+\clearpage
+% =====================================================================
+\section{Wnioski}
+\label{ch:wnioski}
+% Wzór: Sklep hydrauliczny rozdz. 10 (konkretne, numerowane).
+
+
+% Literatura i spis rysunków (jak w Sklepie hydraulicznym) — decyzja Q14.
+
+\end{document}

@@ -1,23 +1,10 @@
 ---
-description: Kolejka obowiązków sprawozdania IBD — przy każdym otwarciu agenta w tym folderze
+description: Praca nad sprawozdaniem IBD — instrukcje są w CLAUDE.md
 alwaysApply: true
 ---
 
 # Praca nad sprawozdaniem
 
-Na starcie przeczytaj `PLAN.md` (kolejka) i `cursor.md` (domena, stack, styl, zakaz commitów).
+Instrukcje agenta przeniesiono do `CLAUDE.md` (główny plik) i `.claude/skills/` (styl tekstu, źródła i wymagane elementy). Plan i indeks źródeł: `docs/plan-sprawozdania.md`, `docs/indeks-zrodel.md`. Na starcie przeczytaj `CLAUDE.md` i stosuj go bez zmian.
 
-## Krótkie prompty
-
-- `następny` — zrób pierwszy obowiązek ze statusem ⬜ w `PLAN.md`.
-- `1.2` (albo inny numer z planu) — zrób tylko ten obowiązek.
-- `status` — napisz, który obowiązek jest następny. Nic nie edytuj.
-
-Jeden prompt = jeden obowiązek. Nie pisz kolejnego rozdziału przy okazji.
-
-## Po zrobieniu obowiązku
-
-1. Tekst po polsku, forma bezosobowa, twarde spacje po jednoliterowych spójnikach (`w~`, `i~`, `z~`).
-2. Pisz we wskazane miejsce w `dokumentacja/`. Nie wymyślaj cen, pomiarów ani wyników testów.
-3. W `PLAN.md` ustaw status ✅, zaktualizuj linijkę **Następny** i dopisz jedną linijkę dziennika.
-4. Nie rób `git commit` ani `git push`.
+Kolejka `PLAN.md` z promptami `następny` / `1.2` jest nieaktualna (decyzje Q1 i Q2 w `CLAUDE.md`). Nie rób `git commit` ani `git push`.
