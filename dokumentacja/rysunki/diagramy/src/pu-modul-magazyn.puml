@@ -1,0 +1,35 @@
+@startuml pu-modul-magazyn
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 200
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 11
+skinparam packageStyle rectangle
+skinparam nodesep 18
+skinparam ranksep 35
+left to right direction
+
+actor "Sprzedawca" as Sprzedawca
+actor "Właściciel" as Wlasciciel
+
+rectangle "Moduł Magazyn i sprzedaż" {
+  usecase "PU14\nZarejestruj przyjęcie dostawy" as PU14
+  usecase "PU15\nZarejestruj sprzedaż" as PU15
+  usecase "PU16\nZarejestruj ubytek" as PU16
+  usecase "PU17\nPrzeglądaj stan i plan dostawy" as PU17
+  usecase "PU18\nPrzygotuj zestawienie zamówienia" as PU18
+  usecase "PU24\nZarządzaj produktami" as PU24
+  usecase "PU25\nZmień cenę produktu" as PU25
+  usecase "PU29\nWyświetl zestawienia" as PU29
+}
+
+Wlasciciel --|> Sprzedawca
+Sprzedawca -- PU14
+Sprzedawca -- PU15
+Sprzedawca -- PU16
+Sprzedawca -- PU17
+Sprzedawca -- PU18
+Wlasciciel -- PU24
+Wlasciciel -- PU25
+Wlasciciel -- PU29
+@enduml

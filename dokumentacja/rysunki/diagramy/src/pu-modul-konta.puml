@@ -1,0 +1,49 @@
+@startuml pu-modul-konta
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 200
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 11
+skinparam packageStyle rectangle
+skinparam nodesep 18
+skinparam ranksep 35
+left to right direction
+
+actor "Klient-obserwator" as Obserwator
+actor "//Użytkownik zalogowany//" as Zalogowany
+actor "Klient" as Klient
+actor "Właściciel" as Wlasciciel
+actor "Operator płatności" as Operator <<system zewnętrzny>>
+actor "Serwer poczty e-mail" as Poczta <<system zewnętrzny>>
+
+usecase "PU1\nPrzeglądaj katalog" as PU1
+
+rectangle "Moduł Konta użytkowników" {
+  usecase "PU3\nZaloguj się" as PU3
+  usecase "PU4\nZresetuj hasło" as PU4
+  usecase "PU2\nZałóż konto klienta" as PU2
+  usecase "PU5\nWyloguj się" as PU5
+  usecase "PU6\nZmień hasło" as PU6
+  usecase "PU7\nWyświetl dane konta" as PU7
+  usecase "PU13\nZarejestruj kartę płatniczą" as PU13
+  usecase "PU27\nZarządzaj kontami" as PU27
+}
+
+Obserwator -- PU1
+Obserwator -- PU3
+Zalogowany -- PU5
+Zalogowany -- PU6
+Zalogowany -- PU7
+Zalogowany <|-- Klient
+Klient -- PU13
+Wlasciciel -- PU27
+
+PU1 <.. PU2 : <<extend>>
+PU3 <.. PU4 : <<extend>>
+PU7 <. PU13 : <<extend>>
+
+PU4 -- Poczta
+PU2 -- Poczta
+PU2 -- Operator
+PU13 -- Operator
+@enduml

@@ -1,0 +1,58 @@
+@startuml czynnosci-pu21-wydanie-rezerwacji
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 200
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 11
+
+|Sprzedawca|
+start
+:Wyszukuje klienta
+po nazwisku, e-mailu lub telefonie (PU22);
+|System|
+:Wyświetla rezerwację klienta
+na bieżący dzień;
+if (Klient ma zaległość?) then (tak)
+  :Wyświetla kwotę zaległości (A2);
+  |Sprzedawca|
+  if (Klient wpłaca zaległość
+  przed wydaniem?) then (tak)
+    :Odnotowuje wpłatę (PU23);
+  else (nie)
+  endif
+else (nie)
+endif
+|System|
+if (Rezerwacja przygotowana
+do odbioru?) then (tak)
+  |Sprzedawca|
+  :Wybiera polecenie „Wydaj”;
+else (nie)
+  |Sprzedawca|
+  :Waży towar przy kliencie
+  i wpisuje odważone masy (A1);
+endif
+|System|
+:Wyświetla pozycje z odważonymi masami,
+cenami z dnia odbioru i kwotą do zapłaty;
+|Sprzedawca|
+if (Klient zapłacił
+poza systemem?) then (nie)
+  :Nie potwierdza wydania,
+  rezerwacja bez zmian (A3);
+  stop
+else (tak)
+  :Potwierdza wydanie;
+endif
+|System|
+:W jednej transakcji rejestruje sprzedaż (PU15),
+zmniejsza stany produktów
+i zmienia stan rezerwacji na odebrana;
+|Sprzedawca|
+if (Klient wpłaca zaległość
+po wydaniu?) then (tak)
+  :Odnotowuje wpłatę (PU23);
+else (nie)
+endif
+stop
+@enduml

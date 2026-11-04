@@ -1,0 +1,54 @@
+@startuml czynnosci-pu08-zlozenie-rezerwacji
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 200
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 11
+
+|Klient|
+start
+:Wybiera polecenie „Zarezerwuj”
+przy dniu w katalogu;
+|System|
+:Sprawdza, czy klient może złożyć
+rezerwację na wybrany dzień;
+if (Klient może złożyć rezerwację
+na ten dzień?) then (nie)
+  :Wyświetla przyczynę: brak karty
+  lub zaległość ponad 100 zł (A1),
+  inna niezakończona rezerwacja (A2),
+  minęła 18:00 dnia poprzedniego (A4);
+  stop
+else (tak)
+endif
+:Wyświetla produkty z ceną
+i ilością dostępną;
+repeat
+  |Klient|
+  :Wpisuje ilości produktów w kg;
+  |System|
+  :Pokazuje łączną masę
+  i orientacyjną wartość;
+  repeat
+    |Klient|
+    :Zatwierdza rezerwację;
+    |System|
+    :W jednej transakcji blokuje wiersze
+    planu dostawy i sprawdza warunki;
+  repeat while (Przekroczono czas oczekiwania\nna blokadę?) is (tak: wycofanie, A5) not (nie)
+  if (Minęła 18:00 dnia
+  poprzedzającego odbiór?) then (tak)
+    :Wyświetla komunikat
+    o zakończeniu przyjmowania (A4);
+    stop
+  else (nie)
+  endif
+repeat while (Masa ponad 20 kg albo ilość\nponad dostępną?) is (tak: wycofanie, A3) not (nie)
+:Zapisuje rezerwację
+w stanie złożona;
+:Wysyła klientowi wiadomość e-mail
+z dniem odbioru i listą pozycji;
+:Wyświetla rezerwację
+na liście rezerwacji klienta;
+stop
+@enduml

@@ -1,0 +1,29 @@
+@startuml pu-modul-rozliczenia
+' Render: plantuml -tpng -charset UTF-8 -o .. src/pu-modul-rozliczenia.puml
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 200
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 11
+skinparam packageStyle rectangle
+skinparam nodesep 18
+skinparam ranksep 35
+left to right direction
+
+actor "Klient" as Klient
+actor "Właściciel" as Wlasciciel
+actor "Sprzedawca" as Sprzedawca
+
+rectangle "Moduł Rozliczenia" {
+  usecase "PU12\nSprawdź zaległość" as PU12
+  usecase "PU22\nWyszukaj klienta" as PU22
+  usecase "PU23\nOdnotuj wpłatę zaległości" as PU23
+  usecase "PU28\nOdnotuj wynik obciążenia karty" as PU28
+}
+
+Klient -- PU12
+Wlasciciel --|> Sprzedawca
+Wlasciciel -- PU28
+Sprzedawca -- PU22
+PU22 <.. PU23 : <<extend>>
+@enduml

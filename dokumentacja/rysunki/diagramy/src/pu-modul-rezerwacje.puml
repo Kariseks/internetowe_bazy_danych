@@ -1,0 +1,64 @@
+@startuml pu-modul-rezerwacje
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 200
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 11
+skinparam packageStyle rectangle
+skinparam nodesep 18
+skinparam ranksep 35
+left to right direction
+
+actor "Klient-obserwator" as Obserwator
+actor "Klient" as Klient
+actor "Czas" as Czas
+actor "Właściciel" as Wlasciciel
+actor "Sprzedawca" as Sprzedawca
+actor "Serwer poczty e-mail" as Poczta <<system zewnętrzny>>
+
+rectangle "Moduł Rezerwacje" {
+  usecase "PU1\nPrzeglądaj katalog" as PU1
+  usecase "PU11\nPrzeglądaj swoje rezerwacje" as PU11
+  usecase "PU9\nZmień rezerwację" as PU9
+  usecase "PU10\nAnuluj rezerwację" as PU10
+  usecase "PU8\nZłóż rezerwację" as PU8
+  usecase "PU30\nOznacz nieodebrane rezerwacje" as PU30
+  usecase "PU31\nWyślij przypomnienie o odbiorze" as PU31
+  usecase "PU26\nUstal plan dostawy" as PU26
+  usecase "PU19\nPrzeglądaj rezerwacje na dzień" as PU19
+  usecase "PU20\nPrzygotuj rezerwację do odbioru" as PU20
+  usecase "PU21\nWydaj rezerwację" as PU21
+}
+
+usecase "PU15\nZarejestruj sprzedaż" as PU15
+usecase "PU22\nWyszukaj klienta" as PU22
+
+Obserwator -- PU1
+Klient -- PU1
+Klient -- PU11
+Klient -- PU8
+Czas -- PU30
+Czas -- PU31
+Wlasciciel -- PU26
+Wlasciciel --|> Sprzedawca
+Sprzedawca -- PU19
+Sprzedawca -- PU21
+PU9 -[hidden] PU10
+PU30 -[hidden] PU31
+PU31 -[hidden] PU19
+PU19 -[hidden] PU20
+PU20 -[hidden] PU21
+PU15 -[hidden] PU22
+
+PU11 <.. PU9 : <<extend>>
+PU11 <.. PU10 : <<extend>>
+PU19 <.[norank]. PU20 : <<extend>>
+PU21 ..> PU15 : <<include>>
+PU21 ..> PU22 : <<include>>
+
+PU9 -- Poczta
+PU10 -- Poczta
+PU8 -- Poczta
+PU30 -- Poczta
+PU31 -- Poczta
+@enduml

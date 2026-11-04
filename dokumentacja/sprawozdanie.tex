@@ -50,11 +50,13 @@
 
 % Rysunek z pliku albo, gdy pliku jeszcze nie ma, ramka TODO z oczekiwaną ścieżką (względem dokumentacja/).
 % #1 etykieta, #2 podpis, #3 ścieżka pliku, #4 zawartość rysunku. Schemat nazw plików: CLAUDE.md.
+% Maksymalna wysokość rysunku; duże diagramy nadpisują ją lokalnie: {\renewcommand{\rysunekwysokosc}{…}\diagramvp{…}}.
+\newcommand{\rysunekwysokosc}{0.4\textheight}
 \newcommand{\rysunekplik}[4]{%
 	\begin{figure}[H]
 		\centering
 		\IfFileExists{#3}{%
-			\includegraphics[width=0.9\textwidth,height=0.4\textheight,keepaspectratio]{#3}}{%
+			\includegraphics[width=0.9\textwidth,height=\rysunekwysokosc,keepaspectratio]{#3}}{%
 			\fbox{\parbox[c][3.4cm][c]{0.85\textwidth}{\centering\small TODO: brak pliku\\\footnotesize\texttt{dokumentacja/#3}\\[0.4em]\footnotesize\raggedright #4}}}
 		\caption{#2}
 		\label{#1}
@@ -463,7 +465,7 @@ Każdy zalogowany użytkownik, niezależnie od roli, ma dostęp do następujący
 Użytkownik niezalogowany, czyli klient-obserwator, ma dostęp do następujących funkcji:
 
 \begin{enumerate}[resume*=wf]
-	\item \label{wf:katalog} Przegląd katalogu: produkty w~ofercie, ceny za kilogram oraz ilości dostępne do rezerwacji na każdy z~siedmiu kolejnych dni. Dzień, dla którego przyjmowanie rezerwacji już się zakończyło, oznacza się jako niedostępny.
+	\item \label{wf:katalog} Przegląd katalogu: produkty w~ofercie, ceny za kilogram oraz ilości dostępne do rezerwacji na każdy z~siedmiu kolejnych dni. Dzień, dla którego przyjmowanie rezerwacji już się zakończyło, oznacza się jako niedostępny. Katalog jest dostępny także po zalogowaniu, dla klienta.
 	\item \label{wf:zalozenie-konta} Założenie konta klienta (\ref{wf:rejestracja}).
 	\item \label{wf:zalogowanie} Zalogowanie się.
 \end{enumerate}
@@ -821,7 +823,7 @@ Aktorami systemu są role z~p.~\ref{sec:system} oraz systemy zewnętrzne, które
 		\midrule
 		Klient-obserwator & Użytkownik niezalogowany. Przegląda katalog, zakłada konto klienta, loguje się i~resetuje hasło. W~tej roli występuje każdy użytkownik przed zalogowaniem, także członek personelu. \\
 		Użytkownik zalogowany & Aktor abstrakcyjny, uogólnienie klienta i~sprzedawcy. Wylogowuje się, zmienia hasło i~przegląda dane swojego konta. \\
-		Klient & Użytkownik z~kontem klienta. Składa, zmienia, anuluje i~przegląda swoje rezerwacje, sprawdza zaległość i~rejestruje kartę płatniczą. Korzysta z~panelu klienta. \\
+		Klient & Użytkownik z~kontem klienta. Przegląda katalog, składa, zmienia, anuluje i~przegląda swoje rezerwacje, sprawdza zaległość i~rejestruje kartę płatniczą. Korzysta z~panelu klienta. \\
 		Sprzedawca & Członek personelu obsługujący ladę: rejestruje dostawy, sprzedaż i~ubytki, przygotowuje i~wydaje rezerwacje, odnotowuje wpłaty zaległości. Korzysta z~panelu administratora. \\
 		Właściciel & Specjalizacja sprzedawcy: ma wszystkie jego przypadki użycia, a~ponadto prowadzi produkty i~ceny, ustala plan dostawy, zarządza kontami i~rozlicza obciążenia kart. \\
 		Czas & Zegar systemowy. O~ustalonych godzinach uruchamia przypadki użycia bez udziału użytkownika: oznaczenie rezerwacji nieodebranych o~18:00 i~wysyłkę przypomnień o~6:00. \\
@@ -912,7 +914,7 @@ Diagramy przypadków użycia dla modułów przedstawiono na rys.~\ref{rys:pu-kon
 
 \diagramvp{rys:pu-konta}{Diagram przypadków użycia dla modułu Konta użytkowników}{pu-modul-konta}{\ref{pu:konto}--\ref{pu:dane}, \ref{pu:karta} i~\ref{pu:konta}; aktorzy: Klient-obserwator, Użytkownik zalogowany, Klient, Właściciel, Operator płatności, Serwer poczty e-mail}
 
-\diagramvp{rys:pu-rezerwacje}{Diagram przypadków użycia dla modułu Rezerwacje}{pu-modul-rezerwacje}{\ref{pu:katalog}, \ref{pu:zlozenie}--\ref{pu:moje}, \ref{pu:lista}--\ref{pu:wydanie}, \ref{pu:plan}, \ref{pu:nieodebrane}, \ref{pu:przypomnienie}; aktorzy: Klient-obserwator, Klient, Sprzedawca, Właściciel, Czas, Serwer poczty e-mail}
+{\renewcommand{\rysunekwysokosc}{0.5\textheight}\diagramvp{rys:pu-rezerwacje}{Diagram przypadków użycia dla modułu Rezerwacje}{pu-modul-rezerwacje}{\ref{pu:katalog}, \ref{pu:zlozenie}--\ref{pu:moje}, \ref{pu:lista}--\ref{pu:wydanie}, \ref{pu:plan}, \ref{pu:nieodebrane}, \ref{pu:przypomnienie}; aktorzy: Klient-obserwator, Klient, Sprzedawca, Właściciel, Czas, Serwer poczty e-mail}}
 
 \diagramvp{rys:pu-magazyn}{Diagram przypadków użycia dla modułu Magazyn i~sprzedaż}{pu-modul-magazyn}{\ref{pu:dostawa}--\ref{pu:zamowienie}, \ref{pu:produkty}, \ref{pu:cena}, \ref{pu:zestawienia}; aktorzy: Sprzedawca, Właściciel}
 
@@ -1301,9 +1303,9 @@ Przypadki użycia sprzedawcy realizuje również właściciel (tab.~\ref{tab:akt
 
 Diagramy czynności przedstawiono dla dwóch przypadków użycia o~największej liczbie warunków i~rozgałęzień: złożenia rezerwacji (rys.~\ref{rys:czynnosci-zlozenie}) i~wydania rezerwacji (rys.~\ref{rys:czynnosci-wydanie}).
 
-\diagramvp{rys:czynnosci-zlozenie}{Diagram czynności przypadku użycia \ref{pu:zlozenie} ,,Złóż rezerwację''}{czynnosci-pu08-zlozenie-rezerwacji}{przebieg z~p.~\ref{sec:pu-zlozenie}: decyzje po krokach 1 i~6 (A1--A5), tory: Klient, System}
+{\renewcommand{\rysunekwysokosc}{0.85\textheight}\diagramvp{rys:czynnosci-zlozenie}{Diagram czynności przypadku użycia \ref{pu:zlozenie} ,,Złóż rezerwację''}{czynnosci-pu08-zlozenie-rezerwacji}{przebieg z~p.~\ref{sec:pu-zlozenie}: decyzje po krokach 1 i~6 (A1--A5), tory: Klient, System}}
 
-\diagramvp{rys:czynnosci-wydanie}{Diagram czynności przypadku użycia \ref{pu:wydanie} ,,Wydaj rezerwację''}{czynnosci-pu21-wydanie-rezerwacji}{przebieg z~p.~\ref{sec:pu-wydanie}: wyszukanie klienta, decyzja ,,przygotowana?'' (A1), zaległość (A2), zapłata (A3); tory: Sprzedawca, System}
+{\renewcommand{\rysunekwysokosc}{0.75\textheight}\diagramvp{rys:czynnosci-wydanie}{Diagram czynności przypadku użycia \ref{pu:wydanie} ,,Wydaj rezerwację''}{czynnosci-pu21-wydanie-rezerwacji}{przebieg z~p.~\ref{sec:pu-wydanie}: wyszukanie klienta, decyzja ,,przygotowana?'' (A1), zaległość (A2), zapłata (A3); tory: Sprzedawca, System}}
 
 
 \clearpage

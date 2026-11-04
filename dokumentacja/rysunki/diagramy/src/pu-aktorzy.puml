@@ -1,0 +1,25 @@
+@startuml pu-aktorzy
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 200
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 11
+left to right direction
+
+actor "Klient-obserwator" as Obserwator
+actor "//Użytkownik zalogowany//" as Zalogowany
+actor "Klient" as Klient
+actor "Sprzedawca" as Sprzedawca
+actor "Właściciel" as Wlasciciel
+actor "Czas" as Czas
+actor "Operator płatności" as Operator <<system zewnętrzny>>
+actor "Serwer poczty e-mail" as Poczta <<system zewnętrzny>>
+
+Zalogowany <|-- Klient
+Zalogowany <|-- Sprzedawca
+Sprzedawca <|-- Wlasciciel
+
+Obserwator -[hidden]- Czas
+Czas -[hidden]- Operator
+Operator -[hidden]- Poczta
+@enduml
