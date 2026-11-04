@@ -1,0 +1,49 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<div class="konta">
+	<div>
+		<h2>Personel</h2>
+		<div class="arkusz"><table class="tabela">
+			<thead><tr><th>Osoba</th><th>Login</th><th>Rola</th><th>Konto</th><th><span class="ukryte">Polecenia</span></th></tr></thead>
+			<tbody>
+				{% for k in personel %}
+				<tr>
+					<td>{{ k.get_full_name }}<small>{{ k.email }}</small></td>
+					<td>{{ k.username }}</td>
+					<td>{% if k.rola == 'wlasciciel' %}właściciel{% else %}sprzedawca{% endif %}</td>
+					<td>{% if k.is_active %}aktywne{% else %}nieaktywne{% endif %}</td>
+					<td class="polecenia">
+						{% if k.rola == 'sprzedawca' %}
+						<form method="post">{% csrf_token %}<input type="hidden" name="konto" value="{{ k.id }}"><input type="hidden" name="aktywne" value="{% if k.is_active %}0{% else %}1{% endif %}"><button class="przycisk" type="submit">{% if k.is_active %}Dezaktywuj{% else %}Aktywuj{% endif %}</button></form>
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table></div>
+		<h2>Klienci</h2>
+		<div class="arkusz"><table class="tabela">
+			<thead><tr><th>Osoba</th><th>E-mail</th><th>Konto</th><th><span class="ukryte">Polecenia</span></th></tr></thead>
+			<tbody>
+				{% for k in klienci %}
+				<tr>
+					<td>{{ k.get_full_name }}</td>
+					<td>{{ k.email }}</td>
+					<td>{% if k.is_active %}aktywne{% else %}nieaktywne{% endif %}</td>
+					<td class="polecenia">{% if k.is_active %}<form method="post">{% csrf_token %}<input type="hidden" name="konto" value="{{ k.id }}"><input type="hidden" name="aktywne" value="0"><button class="przycisk" type="submit">Dezaktywuj</button></form>{% endif %}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table></div>
+	</div>
+	<form method="post" class="arkusz formularz">
+		<h2>Nowy sprzedawca</h2>
+		{% csrf_token %}
+		{{ form.non_field_errors }}
+		{% for pole in form %}
+		<div class="pole">{{ pole.label_tag }}{{ pole }}{{ pole.errors }}</div>
+		{% endfor %}
+		<button class="przycisk glowny" type="submit">Załóż konto</button>
+	</form>
+</div>
+{% endblock %}

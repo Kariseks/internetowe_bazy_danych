@@ -1,0 +1,21 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<div class="naglowek-listy"><a class="przycisk glowny" href="{% url 'admin:produkt_nowy' %}">Dodaj produkt</a></div>
+<div class="arkusz">
+	<table class="tabela">
+		<thead><tr><th>Produkt</th><th class="liczba">Cena za kg</th><th class="liczba">Standardowa ilość [kg]</th><th>Oferta</th></tr></thead>
+		<tbody>
+			{% for p in produkty %}
+			<tr>
+				<td><a href="{% url 'admin:produkt_edycja' p.id %}">{{ p }}</a></td>
+				<td class="liczba">{{ p.cena_za_kg|floatformat:2 }} zł</td>
+				<td class="liczba">{{ p.standardowa_ilosc_kg|floatformat:"-2" }}</td>
+				<td>{% if p.w_ofercie %}w ofercie{% else %}<span class="stan stan-anulowana">wycofany</span>{% endif %}</td>
+			</tr>
+			{% empty %}
+			<tr><td colspan="4" class="pusto">Brak produktów. Dodaj pierwszy.</td></tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

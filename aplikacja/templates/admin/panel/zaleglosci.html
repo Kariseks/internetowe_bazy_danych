@@ -1,0 +1,30 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<p class="opis">Karty obciąża się raz w miesiącu u operatora płatności. Tutaj zapisz wynik. Powyżej 100 zł zaległości klient nie może składać nowych rezerwacji.</p>
+<div class="arkusz">
+	<table class="tabela">
+		<thead><tr><th>Klient</th><th class="liczba">Zaległość</th><th>Nowe rezerwacje</th><th>Wynik obciążenia karty</th></tr></thead>
+		<tbody>
+			{% for k in klienci %}
+			<tr>
+				<td><a href="{% url 'admin:karta_klienta' k.uzytkownik_id %}">{{ k.uzytkownik.get_full_name }}</a><small>{{ k.telefon }}</small></td>
+				<td class="liczba">{{ k.zaleglosc|floatformat:2 }} zł</td>
+				<td>{% if k.zablokowany %}<span class="stan stan-nieodebrana">zablokowane</span>{% else %}dozwolone{% endif %}</td>
+				<td>
+					<form method="post" class="w-wierszu">
+						{% csrf_token %}
+						<input type="hidden" name="klient" value="{{ k.uzytkownik_id }}">
+						<label class="ukryte" for="kwota-{{ k.uzytkownik_id }}">Kwota [zł]</label>
+						<input id="kwota-{{ k.uzytkownik_id }}" type="text" inputmode="decimal" name="kwota" value="{{ k.zaleglosc|floatformat:2 }}">
+						<button class="przycisk" type="submit" name="wynik" value="skuteczne">Pobrano</button>
+						<button class="przycisk" type="submit" name="wynik" value="nieudane">Nie pobrano</button>
+					</form>
+				</td>
+			</tr>
+			{% empty %}
+			<tr><td colspan="4" class="pusto">Żaden klient nie ma zaległości.</td></tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

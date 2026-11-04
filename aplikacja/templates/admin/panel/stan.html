@@ -1,0 +1,17 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<div class="arkusz">
+	<table class="tabela">
+		<thead><tr><th>Produkt</th><th class="liczba">Cena za kg</th><th class="liczba">Stan [kg]</th></tr></thead>
+		<tbody>
+			{% for w in wiersze %}
+			<tr{% if not w.stan_kg %} class="za-malo"{% endif %}>
+				<td>{{ w.produkt }}</td>
+				<td class="liczba">{{ w.cena_za_kg|floatformat:2 }} zł</td>
+				<td class="liczba">{{ w.stan_kg|floatformat:2 }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

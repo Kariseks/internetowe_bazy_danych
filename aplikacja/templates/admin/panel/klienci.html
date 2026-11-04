@@ -1,0 +1,27 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<form class="szukaj szukaj-szeroki" method="get">
+	<label for="q">Nazwisko, e-mail lub telefon</label>
+	<input id="q" type="search" name="q" value="{{ fraza }}" autofocus>
+	<button class="przycisk glowny" type="submit">Szukaj</button>
+</form>
+{% if fraza %}
+<div class="arkusz">
+	<table class="tabela">
+		<thead><tr><th>Klient</th><th>Telefon</th><th>E-mail</th><th class="liczba">Zaległość</th></tr></thead>
+		<tbody>
+			{% for k in wyniki %}
+			<tr>
+				<td><a href="{% url 'admin:karta_klienta' k.uzytkownik_id %}">{{ k.uzytkownik.get_full_name }}</a></td>
+				<td>{{ k.telefon }}</td>
+				<td>{{ k.uzytkownik.email }}</td>
+				<td class="liczba">{{ k.zaleglosc|floatformat:2 }} zł</td>
+			</tr>
+			{% empty %}
+			<tr><td colspan="4" class="pusto">Nikt nie pasuje do „{{ fraza }}”. Sprawdź pisownię albo szukaj po telefonie.</td></tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endif %}
+{% endblock %}

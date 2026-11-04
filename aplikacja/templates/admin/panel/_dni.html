@@ -1,0 +1,10 @@
+<div class="dni">
+	<a class="przycisk" href="?dzien={{ dzien_wczesniej|date:'Y-m-d' }}" aria-label="Poprzedni dzień">‹</a>
+	<strong>{{ dzien|date:"l, j E" }}</strong>
+	<a class="przycisk" href="?dzien={{ dzien_pozniej|date:'Y-m-d' }}" aria-label="Następny dzień">›</a>
+	<form method="get">
+		<label class="ukryte" for="wybor-dnia">Wybierz dzień</label>
+		<input id="wybor-dnia" type="date" name="dzien" value="{{ dzien|date:'Y-m-d' }}">
+		<button class="przycisk" type="submit">Pokaż</button>
+	</form>
+</div>

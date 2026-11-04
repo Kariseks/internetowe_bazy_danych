@@ -1,0 +1,23 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<p class="opis">{{ rezerwacja.klient.uzytkownik.get_full_name }}, odbiór {{ rezerwacja.dzien_odbioru|date:"l, j E"|lower }}. Jeśli towaru nie wystarczyło, wpisz masę, którą udało się skompletować, także 0.</p>
+<form method="post" class="arkusz arkusz-waski">
+	{% csrf_token %}
+	<table class="tabela">
+		<thead><tr><th>Produkt</th><th class="liczba">Zarezerwowano [kg]</th><th class="liczba">Odważono [kg]</th></tr></thead>
+		<tbody>
+			{% for p in rezerwacja.pozycje %}
+			<tr>
+				<td><label for="{{ p.pole.id_for_label }}">{{ p.produkt }}</label></td>
+				<td class="liczba">{{ p.ilosc_kg|floatformat:1 }}</td>
+				<td class="liczba">{{ p.pole }}{{ p.pole.errors }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<div class="stopka-formularza">
+		<a class="przycisk" href="{% url 'admin:rezerwacje' %}">Wróć</a>
+		<button class="przycisk glowny" type="submit">{% if do_wydania %}Przejdź do wydania{% else %}Przygotowana{% endif %}</button>
+	</div>
+</form>
+{% endblock %}

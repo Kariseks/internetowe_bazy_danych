@@ -1,0 +1,53 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<div class="pulpit">
+	<ol class="dzien">
+		<li{% if dostawa %} class="zrobione"{% endif %}>
+			<div>
+				<h2>Przyjmij dostawę</h2>
+				<p>{% if dostawa %}Dostawa zapisana.{% else %}Towar z 4:00 czeka na zapisanie.{% endif %}</p>
+			</div>
+			<a class="przycisk" href="{% url 'admin:dostawa' %}">{% if dostawa %}Zobacz{% else %}Przyjmij{% endif %}</a>
+		</li>
+		<li{% if not do_przygotowania %} class="zrobione"{% endif %}>
+			<div>
+				<h2>Przygotuj rezerwacje</h2>
+				<p>Do zważenia i spakowania: {{ do_przygotowania }}.</p>
+			</div>
+			<a class="przycisk" href="{% url 'admin:rezerwacje' %}">Otwórz listę</a>
+		</li>
+		<li{% if not do_odbioru %} class="zrobione"{% endif %}>
+			<div>
+				<h2>Wydawaj do 18:00</h2>
+				<p>Czeka na odbiór: {{ do_odbioru }}. Nieodebrane rezerwacje system rozliczy o 18:00.</p>
+			</div>
+			<a class="przycisk" href="{% url 'admin:klienci' %}">Znajdź klienta</a>
+		</li>
+		<li>
+			<div>
+				<h2>Zamów towar na jutro</h2>
+				<p>O 18:00 kończą się zapisy na jutro i można dzwonić do dostawcy.</p>
+			</div>
+			<a class="przycisk" href="{% url 'admin:zamowienie' %}">Zestawienie</a>
+		</li>
+	</ol>
+	<aside class="pulpit-bok">
+		<a class="przycisk glowny duzy" href="{% url 'admin:sprzedaz' %}">Nowa sprzedaż</a>
+		<form class="szukaj" method="get" action="{% url 'admin:klienci' %}">
+			<label for="szukaj-klienta">Znajdź klienta</label>
+			<input id="szukaj-klienta" type="search" name="q" placeholder="Nazwisko, e-mail lub telefon">
+		</form>
+		<h2>Odbiory dziś</h2>
+		<ul class="odbiory">
+			{% for r in lista %}
+			<li>
+				<a href="{% url 'admin:karta_klienta' r.klient.uzytkownik_id %}">{{ r.klient.uzytkownik.get_full_name }}</a>
+				{% include "admin/panel/_stan.html" with stan=r.stan %}
+			</li>
+			{% empty %}
+			<li>Brak rezerwacji na dziś.</li>
+			{% endfor %}
+		</ul>
+	</aside>
+</div>
+{% endblock %}

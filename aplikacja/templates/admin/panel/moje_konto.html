@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+{% block nav-breadcrumbs %}{% endblock %}
+{% block content %}
+<dl class="dane">
+	<div><dt>Login</dt><dd>{{ user.get_username }}</dd></div>
+	<div><dt>Imię i nazwisko</dt><dd>{{ user.get_full_name|default:"nie podano" }}</dd></div>
+	<div><dt>E-mail</dt><dd>{{ user.email|default:"nie podano" }}</dd></div>
+	<div><dt>Rola</dt><dd>{{ rola }}</dd></div>
+</dl>
+<a class="przycisk" href="{% url 'admin:password_change' %}">Zmień hasło</a>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<form method="get" class="okres">
+	<label>Od <input type="date" name="od" value="{{ od|date:'Y-m-d' }}"></label>
+	<label>Do <input type="date" name="do" value="{{ do|date:'Y-m-d' }}"></label>
+	<button class="przycisk" type="submit">Pokaż</button>
+</form>
+<div class="waga waga-mala">
+	<span>Rezerwacje nieodebrane: {{ dane.nieodebrane.liczba }}</span>
+	<output>{{ dane.nieodebrane.wartosc|floatformat:2 }} zł</output>
+</div>
+<div class="dwie-kolumny">
+	<section>
+		<h2>Sprzedaż według produktów</h2>
+		<div class="arkusz"><table class="tabela">
+			<thead><tr><th>Produkt</th><th class="liczba">Masa [kg]</th><th class="liczba">Wartość</th></tr></thead>
+			<tbody>{% for w in dane.sprzedaz %}<tr><td>{{ w.produkt }}</td><td class="liczba">{{ w.masa_kg|floatformat:2 }}</td><td class="liczba">{{ w.wartosc|floatformat:2 }} zł</td></tr>{% empty %}<tr><td colspan="3" class="pusto">Brak sprzedaży w tym okresie.</td></tr>{% endfor %}</tbody>
+		</table></div>
+	</section>
+	<section>
+		<h2>Ubytki według produktów</h2>
+		<div class="arkusz"><table class="tabela">
+			<thead><tr><th>Produkt</th><th class="liczba">Masa [kg]</th></tr></thead>
+			<tbody>{% for w in dane.ubytki %}<tr><td>{{ w.produkt }}</td><td class="liczba">{{ w.masa_kg|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="2" class="pusto">Brak ubytków w tym okresie.</td></tr>{% endfor %}</tbody>
+		</table></div>
+		<h2>Różnice między planem a dostawą</h2>
+		<div class="arkusz"><table class="tabela">
+			<thead><tr><th>Produkt</th><th class="liczba">Plan [kg]</th><th class="liczba">Dostarczono [kg]</th><th class="liczba">Różnica [kg]</th></tr></thead>
+			<tbody>{% for w in dane.roznice %}<tr><td>{{ w.produkt }}</td><td class="liczba">{{ w.plan_kg|floatformat:2 }}</td><td class="liczba">{{ w.dostarczono_kg|floatformat:2 }}</td><td class="liczba">{{ w.roznica_kg|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="4" class="pusto">Dostawy zgodne z planem.</td></tr>{% endfor %}</tbody>
+		</table></div>
+	</section>
+</div>
+{% endblock %}

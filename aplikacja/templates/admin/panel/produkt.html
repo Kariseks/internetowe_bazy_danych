@@ -1,0 +1,27 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<div class="dwie-kolumny">
+	<form method="post" class="arkusz formularz">
+		<h2>Dane produktu</h2>
+		{% csrf_token %}
+		{% include "admin/panel/_pola_formularza.html" %}
+		<div class="w-wierszu">
+			<a class="przycisk" href="{% url 'admin:produkty' %}">Wróć</a>
+			<button class="przycisk glowny" type="submit">Zapisz produkt</button>
+		</div>
+	</form>
+	<section>
+		<form method="post" class="arkusz formularz">
+			<h2>Nowa cena</h2>
+			{% csrf_token %}
+			{% include "admin/panel/_pola_formularza.html" with form=form_ceny %}
+			<button class="przycisk glowny" type="submit" name="zapisz_cene">Zapisz cenę</button>
+		</form>
+		<h2>Historia cen</h2>
+		<div class="arkusz"><table class="tabela">
+			<thead><tr><th>Obowiązuje od</th><th class="liczba">Cena za kg</th></tr></thead>
+			<tbody>{% for c in produkt.ceny %}<tr><td>{{ c.obowiazuje_od|date:"j E Y" }}</td><td class="liczba">{{ c.cena_za_kg|floatformat:2 }} zł</td></tr>{% endfor %}</tbody>
+		</table></div>
+	</section>
+</div>
+{% endblock %}

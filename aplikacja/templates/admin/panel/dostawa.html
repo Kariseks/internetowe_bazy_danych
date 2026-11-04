@@ -1,0 +1,48 @@
+{% extends "admin/panel/base.html" %}
+{% load static %}
+{% block extrahead %}{{ block.super }}<script src="{% static 'panel/dostawa.js' %}" defer></script>{% endblock %}
+{% block content %}
+{% include "admin/panel/_dni.html" %}
+{% if przyjeta %}
+<p class="opis">Zapisano {{ przyjeta.zarejestrowano|date:"j E, H:i" }}. Przy wyróżnionych produktach przyjechało mniej, niż zarezerwowali klienci, więc trzeba ich uprzedzić.</p>
+<div class="arkusz">
+	<table class="tabela">
+		<thead><tr><th>Produkt</th><th class="liczba">Plan [kg]</th><th class="liczba">Zarezerwowano [kg]</th><th class="liczba">Dostarczono [kg]</th><th class="liczba">Różnica [kg]</th></tr></thead>
+		<tbody>
+			{% for p in przyjeta.pozycje %}
+			<tr{% if p.za_malo %} class="za-malo"{% endif %}>
+				<td>{{ p.produkt }}</td>
+				<td class="liczba">{{ p.plan_kg|floatformat:2 }}</td>
+				<td class="liczba">{{ p.zarezerwowano_kg|floatformat:2 }}</td>
+				<td class="liczba">{{ p.dostarczono_kg|floatformat:2 }}</td>
+				<td class="liczba">{{ p.roznica_kg|floatformat:2 }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% elif form %}
+<form method="post" class="arkusz">
+	{% csrf_token %}
+	<table class="tabela" id="tabela-dostawy">
+		<thead><tr><th>Produkt</th><th class="liczba">Plan [kg]</th><th class="liczba">Zarezerwowano [kg]</th><th class="liczba">Dostarczono [kg]</th><th class="liczba">Różnica [kg]</th></tr></thead>
+		<tbody>
+			{% for w in wiersze %}
+			<tr data-plan="{{ w.plan_kg|stringformat:'s' }}" data-rezerwacje="{{ w.zarezerwowano_kg|stringformat:'s' }}">
+				<td><label for="{{ w.pole.id_for_label }}">{{ w.produkt }}</label></td>
+				<td class="liczba">{{ w.plan_kg|floatformat:2 }}</td>
+				<td class="liczba">{{ w.zarezerwowano_kg|floatformat:2 }}</td>
+				<td class="liczba">{{ w.pole }}{{ w.pole.errors }}</td>
+				<td class="liczba roznica"></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<div class="stopka-formularza">
+		<button class="przycisk glowny" type="submit">Zapisz dostawę</button>
+	</div>
+</form>
+{% else %}
+<p class="pusto">Tego dnia nie zapisano dostawy.</p>
+{% endif %}
+{% endblock %}

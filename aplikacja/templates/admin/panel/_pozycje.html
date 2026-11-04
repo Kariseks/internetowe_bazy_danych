@@ -1,0 +1,1 @@
+<ul class="pozycje">{% for p in pozycje %}<li>{{ p.produkt }} <span>{{ p.ilosc_kg|floatformat:"-1" }} kg</span></li>{% endfor %}</ul>

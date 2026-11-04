@@ -598,9 +598,9 @@ System jest wykonalny technicznie w~przyjętym czasie, ponieważ opiera się na 
 \subsubsection{Wybór technologii, wersje i~licencje}
 \label{sec:technologie}
 % Wytyczne v4 pkt 5, 7--8; notatka uwaga 6 (konkretne wersje, licencje open source). Wersje zatwierdzone przez Karola (Q10).
-% Licencje sprawdzone 04.11.2026: PyPI (Django BSD-3-Clause, mysqlclient GPL-2.0-or-later, gunicorn MIT, certbot Apache-2.0),
+% Licencje sprawdzone 04.11.2026: PyPI (Django BSD-3-Clause, mysqlclient GPL-2.0-or-later, python-dotenv BSD-3-Clause, gunicorn MIT, certbot Apache-2.0),
 % docs.python.org (PSF License Version 2), pliki LICENSE/COPYING w repozytoriach MySQL 8.4 (GPLv2), Git (GPLv2), nginx (BSD-2-Clause),
-% latex-project.org (LPPL).
+% latex-project.org (LPPL); pliki licencji czcionek w aplikacja/static/panel/fonts (SIL OFL 1.1).
 
 Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~dane przechowuje w~bazie MySQL Community Server 8.4 LTS z~silnikiem InnoDB. Wytyczne zalecają Python i~MySQL (pkt~7). Na konsultacji 19.10.2026 zespół przedstawił bazę SQLite, a~prowadzący ostrzegł, że SQLite źle obsługuje jednoczesne zapisy wielu użytkowników; dlatego wybrano MySQL. Wersje oznaczone jako LTS mają długi okres wsparcia, który obejmuje cały czas realizacji i~pierwsze lata pracy sklepu. Django łączy się z~bazą przez sterownik \texttt{mysqlclient}. Wszystkie narzędzia mają bezpłatne licencje (tab.~\ref{tab:technologie}), więc ich koszt wynosi 0~zł (p.~\ref{sec:koszt}).
 
@@ -617,10 +617,12 @@ Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~da
 		Django & 5.2 LTS & BSD-3-Clause & framework: widoki, szablony, ORM, panel administratora, konta \\
 		MySQL Community Server & 8.4 LTS & GPLv2 & baza danych (InnoDB, \texttt{utf8mb4}) \\
 		\texttt{mysqlclient} & zgodna z~Django 5.2 & GPL-2.0 lub nowsza & sterownik bazy dla Django \\
+		\texttt{python-dotenv} & 1.2.4 & BSD-3-Clause & wczytywanie ustawień i~haseł z~pliku \texttt{.env} spoza repozytorium \\
 		Ubuntu Server & 24.04 LTS & bezpłatny, licencje open source & system operacyjny komputera w~sklepie \\
 		Gunicorn & zgodna z~Python 3.12 & MIT & serwer aplikacji WSGI uruchamiający Django \\
 		Nginx & z~repozytorium Ubuntu 24.04 & BSD-2-Clause & serwer HTTPS, pliki statyczne, ograniczenie panelu administratora do sieci lokalnej \\
 		Certbot & z~repozytorium Ubuntu 24.04 & Apache-2.0 & certyfikat Let's Encrypt i~jego odnawianie \\
+		Bricolage Grotesque, Hanken Grotesk & Fontsource 5 & SIL OFL 1.1 & czcionki panelu administratora, dołączone do aplikacji \\
 		Visual Paradigm & Community Edition & bezpłatna do użytku niekomercyjnego & diagramy UML i~ERD \\
 		Git & aktualna & GPLv2 & repozytorium kodu i~dokumentacji \\
 		LaTeX & TeX Live & LPPL & skład dokumentacji \\

@@ -1,0 +1,32 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+{% with r=wydanie.rezerwacja %}
+<p class="opis">
+	<a href="{% url 'admin:karta_klienta' r.klient.uzytkownik_id %}">{{ r.klient.uzytkownik.get_full_name }}</a>, {{ r.klient.telefon }}.
+	{% if r.klient.zaleglosc %}Zaległość {{ r.klient.zaleglosc|floatformat:2 }} zł; wpłatę odnotujesz na karcie klienta.{% else %}Bez zaległości.{% endif %}
+</p>
+<div class="wydanie">
+	<div class="arkusz">
+		<table class="tabela">
+			<thead><tr><th>Produkt</th><th class="liczba">Odważono [kg]</th><th class="liczba">Cena za kg</th><th class="liczba">Wartość</th></tr></thead>
+			<tbody>
+				{% for p in wydanie.pozycje %}
+				<tr>
+					<td>{{ p.produkt }}<small>zarezerwowano {{ p.ilosc_kg|floatformat:1 }} kg</small></td>
+					<td class="liczba">{{ p.masa_kg|floatformat:2 }}</td>
+					<td class="liczba">{{ p.cena_za_kg|floatformat:2 }} zł</td>
+					<td class="liczba">{{ p.wartosc|floatformat:2 }} zł</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<form method="post" class="wydanie-zaplata">
+		{% csrf_token %}
+		<div class="waga"><span>Do zapłaty</span><output>{{ wydanie.do_zaplaty|floatformat:2 }} zł</output></div>
+		<button class="przycisk glowny duzy" type="submit">Wydaj</button>
+		<a class="przycisk duzy" href="{% url 'admin:rezerwacje' %}">Wróć bez wydania</a>
+	</form>
+</div>
+{% endwith %}
+{% endblock %}

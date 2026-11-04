@@ -1,0 +1,22 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+{% include "admin/panel/_dni.html" %}
+<div class="arkusz">
+	<table class="tabela">
+		<thead><tr><th>Godzina</th><th>Pozycje</th><th>Sprzedawca</th><th>Rodzaj</th><th class="liczba">Wartość</th></tr></thead>
+		<tbody>
+			{% for s in sprzedaze %}
+			<tr>
+				<td>{{ s.data_czas|date:"H:i" }}</td>
+				<td><ul class="pozycje">{% for p in s.pozycje %}<li>{{ p.produkt }} <span>{{ p.masa_kg|floatformat:2 }} kg po {{ p.cena_za_kg|floatformat:2 }} zł</span></li>{% endfor %}</ul></td>
+				<td>{{ s.sprzedawca.get_full_name }}</td>
+				<td>{% if s.rezerwacja_id %}Wydanie rezerwacji{% else %}Przy ladzie{% endif %}</td>
+				<td class="liczba">{{ s.suma|floatformat:2 }} zł</td>
+			</tr>
+			{% empty %}
+			<tr><td colspan="5" class="pusto">Tego dnia nie zapisano sprzedaży.</td></tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

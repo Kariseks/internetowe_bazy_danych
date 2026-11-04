@@ -1,0 +1,26 @@
+{% with t=request.resolver_match.url_name %}
+<nav class="menu" aria-label="Menu panelu">
+	<a href="{% url 'admin:index' %}"{% if t == 'index' %} aria-current="page"{% endif %}>Pulpit</a>
+
+	<h2>Przy ladzie</h2>
+	<a href="{% url 'admin:sprzedaz' %}"{% if t == 'sprzedaz' %} aria-current="page"{% endif %}>Nowa sprzedaż</a>
+	<a href="{% url 'admin:rezerwacje' %}"{% if t == 'rezerwacje' or t == 'przygotuj' or t == 'wydaj' %} aria-current="page"{% endif %}>Rezerwacje</a>
+	<a href="{% url 'admin:klienci' %}"{% if t == 'klienci' or t == 'karta_klienta' %} aria-current="page"{% endif %}>Klienci</a>
+
+	<h2>Towar</h2>
+	<a href="{% url 'admin:dostawa' %}"{% if t == 'dostawa' %} aria-current="page"{% endif %}>Przyjęcie dostawy</a>
+	<a href="{% url 'admin:ubytek' %}"{% if t == 'ubytek' %} aria-current="page"{% endif %}>Ubytek towaru</a>
+	<a href="{% url 'admin:stan' %}"{% if t == 'stan' %} aria-current="page"{% endif %}>Stan produktów</a>
+	<a href="{% url 'admin:plan' %}"{% if t == 'plan' %} aria-current="page"{% endif %}>Plan dostawy</a>
+	<a href="{% url 'admin:zamowienie' %}"{% if t == 'zamowienie' %} aria-current="page"{% endif %}>Zamówienie u dostawcy</a>
+	<a href="{% url 'admin:historia' %}"{% if t == 'historia' %} aria-current="page"{% endif %}>Historia sprzedaży</a>
+
+	{% if jest_wlascicielem %}
+	<h2>Właściciel</h2>
+	<a href="{% url 'admin:produkty' %}"{% if t == 'produkty' or t == 'produkt_nowy' or t == 'produkt_edycja' %} aria-current="page"{% endif %}>Produkty i ceny</a>
+	<a href="{% url 'admin:zaleglosci' %}"{% if t == 'zaleglosci' %} aria-current="page"{% endif %}>Zaległości klientów</a>
+	<a href="{% url 'admin:konta' %}"{% if t == 'konta' %} aria-current="page"{% endif %}>Konta</a>
+	<a href="{% url 'admin:zestawienia' %}"{% if t == 'zestawienia' %} aria-current="page"{% endif %}>Zestawienia</a>
+	{% endif %}
+</nav>
+{% endwith %}

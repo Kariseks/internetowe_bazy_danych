@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Warzywniak{% endblock %}
+{% block dark-mode-vars %}{% endblock %}
+{% block responsive %}{{ block.super }}<link rel="stylesheet" href="{% static 'panel/panel.css' %}">{% endblock %}
+
+{% block header %}
+<header id="header" class="bok">
+	<a class="marka" href="{% url 'admin:index' %}">Warzywniak</a>
+	{% if has_permission %}
+		{% include "admin/panel/_nawigacja.html" %}
+		<div class="bok-konto">
+			<a href="{% url 'admin:moje_konto' %}">{% firstof user.get_full_name user.get_username %}</a>
+			<form method="post" action="{% url 'admin:logout' %}">{% csrf_token %}<button type="submit">Wyloguj</button></form>
+		</div>
+	{% endif %}
+</header>
+{% endblock %}

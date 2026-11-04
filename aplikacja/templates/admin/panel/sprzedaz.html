@@ -1,0 +1,41 @@
+{% extends "admin/panel/base.html" %}
+{% load static %}
+{% block extrahead %}{{ block.super }}<script src="{% static 'panel/sprzedaz.js' %}" defer></script>{% endblock %}
+{% block content %}
+<form id="form-sprzedaz" class="kasa" method="post">
+	{% csrf_token %}
+	{{ formset.management_form }}
+	<section aria-label="Produkty">
+		<label class="ukryte" for="filtr">Szukaj produktu</label>
+		<input id="filtr" class="filtr" type="search" placeholder="Wpisz nazwę i naciśnij Enter" autocomplete="off" autofocus>
+		<div class="skrzynki">
+			{% for w in wiersze %}
+			<button type="button" class="skrzynka"
+				data-id="{{ w.produkt.id }}" data-nazwa="{{ w.produkt }}" data-cena="{{ w.cena_za_kg|stringformat:'s' }}"
+				{% if not w.stan_kg %}disabled{% endif %}>
+				<span class="skrzynka-nazwa">{{ w.produkt.nazwa }}</span>
+				<span class="skrzynka-odmiana">{{ w.produkt.odmiana }}</span>
+				<span class="skrzynka-cena">{{ w.cena_za_kg|floatformat:2 }} zł</span>
+				<span class="skrzynka-stan">{% if w.stan_kg %}{{ w.stan_kg|floatformat:"-2" }} kg na stanie{% else %}brak na stanie{% endif %}</span>
+			</button>
+			{% endfor %}
+		</div>
+	</section>
+	<section class="paragon" aria-label="Pozycje sprzedaży">
+		{{ formset.non_form_errors }}
+		<table class="tabela">
+			<thead><tr><th>Produkt</th><th class="liczba">Masa [kg]</th><th class="liczba">Wartość</th><th><span class="ukryte">Usuń</span></th></tr></thead>
+			<tbody id="pozycje">
+				{% for f in formset %}{% include "admin/panel/_pozycja_sprzedazy.html" %}{% endfor %}
+			</tbody>
+		</table>
+		<p id="pusto" class="pusto">Wybierz produkt z listy.</p>
+		<div class="waga">
+			<span>Do zapłaty</span>
+			<output id="suma">0,00 zł</output>
+		</div>
+		<button id="zatwierdz" class="przycisk glowny duzy" type="submit">Zatwierdź sprzedaż</button>
+	</section>
+	<template id="wzor-pozycji">{% include "admin/panel/_pozycja_sprzedazy.html" with f=formset.empty_form %}</template>
+</form>
+{% endblock %}

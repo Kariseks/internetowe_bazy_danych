@@ -1,0 +1,38 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<p class="opis">{% if mozna_zmieniac %}Plan zapisuje się dla całej tabeli. Nie może być mniejszy od ilości już zarezerwowanej.{% else %}Plan zmienia właściciel.{% endif %} Po 18:00 dzień następny jest zamknięty, bo zamówienie poszło do dostawcy.</p>
+<form method="post" class="arkusz arkusz-przewijany">
+	{% csrf_token %}
+	<table class="tabela plan">
+		<thead>
+			<tr>
+				<th>Produkt</th>
+				{% for d in dane.dni %}
+				<th class="liczba{% if d.zamkniety %} zamkniety{% endif %}">{{ d.dzien|date:"D, j.m" }}{% if d.zamkniety %}<small>zamknięty</small>{% endif %}</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for w in dane.wiersze %}
+			<tr>
+				<th scope="row">{{ w.produkt }}</th>
+				{% for k in w.komorki %}
+				<td class="liczba{% if k.zamkniety %} zamkniety{% endif %}">
+					{% if mozna_zmieniac and not k.zamkniety %}
+						<label class="ukryte" for="{{ k.pole.id_for_label }}">{{ w.produkt }}, {{ k.dzien|date:"j.m" }}</label>
+						{{ k.pole }}{{ k.pole.errors }}
+					{% else %}
+						<strong>{{ k.plan_kg|floatformat:"-2" }}</strong>
+					{% endif %}
+					<small>rez. {{ k.zarezerwowano_kg|floatformat:"-2" }}, wolne {{ k.dostepne_kg|floatformat:"-2" }}</small>
+				</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% if mozna_zmieniac %}
+	<div class="stopka-formularza"><button class="przycisk glowny" type="submit">Zapisz plan</button></div>
+	{% endif %}
+</form>
+{% endblock %}

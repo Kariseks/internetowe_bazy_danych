@@ -1,0 +1,11 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<form method="post" class="arkusz formularz">
+	{% csrf_token %}
+	{% include "admin/panel/_pola_formularza.html" %}
+	<div class="w-wierszu">
+		<a class="przycisk" href="{% url 'admin:produkty' %}">Wróć</a>
+		<button class="przycisk glowny" type="submit">Dodaj produkt</button>
+	</div>
+</form>
+{% endblock %}

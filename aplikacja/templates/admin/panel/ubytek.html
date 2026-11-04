@@ -1,0 +1,11 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<p class="opis">Towar, który stracił świeżość i trafił do wyrzucenia. Ubytek obniża stan produktu.</p>
+<form method="post" class="arkusz formularz">
+	{% csrf_token %}
+	{% for pole in form %}
+	<div class="pole">{{ pole.label_tag }}{{ pole }}{{ pole.errors }}</div>
+	{% endfor %}
+	<button class="przycisk glowny" type="submit">Zapisz ubytek</button>
+</form>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+{% include "admin/panel/_dni.html" %}
+<div class="arkusz">
+	<table class="tabela">
+		<thead><tr><th>Klient</th><th>Pozycje</th><th class="liczba">Razem [kg]</th><th>Stan</th><th><span class="ukryte">Polecenia</span></th></tr></thead>
+		<tbody>
+			{% for r in rezerwacje %}
+			<tr>
+				<td>
+					<a href="{% url 'admin:karta_klienta' r.klient.uzytkownik_id %}">{{ r.klient.uzytkownik.get_full_name }}</a>
+					<small>{{ r.klient.telefon }}</small>
+				</td>
+				<td>{% include "admin/panel/_pozycje.html" with pozycje=r.pozycje %}</td>
+				<td class="liczba">{{ r.laczna_masa|floatformat:"-1" }}</td>
+				<td>{% include "admin/panel/_stan.html" with stan=r.stan %}</td>
+				<td class="polecenia">
+					{% if dzien == dzis %}
+						{% if r.stan == 'zlozona' %}<a class="przycisk" href="{% url 'admin:przygotuj' r.id %}">Przygotuj</a>{% endif %}
+						{% if r.stan == 'zlozona' or r.stan == 'przygotowana' %}<a class="przycisk glowny" href="{% url 'admin:wydaj' r.id %}">Wydaj</a>{% endif %}
+					{% endif %}
+				</td>
+			</tr>
+			{% empty %}
+			<tr><td colspan="5" class="pusto">Brak rezerwacji na ten dzień.</td></tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

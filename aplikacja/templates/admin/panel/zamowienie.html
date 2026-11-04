@@ -1,0 +1,15 @@
+{% extends "admin/panel/base.html" %}
+{% block content %}
+<p class="opis">Lista do przekazania dostawcy na {{ jutro|date:"l, j E"|lower }}. Po 18:00 obejmuje wszystkie rezerwacje na ten dzień.</p>
+<div class="arkusz arkusz-waski">
+	<table class="tabela tabela-duza">
+		<thead><tr><th>Produkt</th><th class="liczba">Ilość [kg]</th></tr></thead>
+		<tbody>
+			{% for w in wiersze %}
+			<tr><td>{{ w.produkt }}</td><td class="liczba">{{ w.plan_kg|floatformat:"-2" }}</td></tr>
+			{% endfor %}
+		</tbody>
+		<tfoot><tr><th>Razem</th><td class="liczba">{{ razem|floatformat:"-2" }}</td></tr></tfoot>
+	</table>
+</div>
+{% endblock %}

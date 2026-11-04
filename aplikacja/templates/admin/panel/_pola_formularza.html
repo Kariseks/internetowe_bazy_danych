@@ -1,0 +1,8 @@
+{{ form.non_field_errors }}
+{% for pole in form %}
+<div class="pole{% if pole.name == 'w_ofercie' %} pole-wyboru{% endif %}">
+	{% if pole.name == 'w_ofercie' %}<label for="{{ pole.id_for_label }}">{{ pole }} {{ pole.label }}</label>{% else %}{{ pole.label_tag }}{{ pole }}{% endif %}
+	{% if pole.help_text %}<small>{{ pole.help_text }}</small>{% endif %}
+	{{ pole.errors }}
+</div>
+{% endfor %}
