@@ -401,7 +401,7 @@ Wymagania funkcjonalne ponumerowano WF1, WF2 itd. w~całym podrozdziale; numery 
 \begin{enumerate}[resume*=wf]
 	\item \label{wf:login} Każde konto ma unikalny login i~unikalny adres e-mail. Login sprzedawcy nadaje właściciel przy zakładaniu konta, a~loginem klienta jest jego adres e-mail.
 	\item \label{wf:logowanie} Logowanie odbywa się loginem i~hasłem. Hasło ma co najmniej 8~znaków, nie może składać się wyłącznie z~cyfr, być podobne do danych użytkownika ani należeć do listy często używanych haseł.
-	\item \label{wf:panel-admina} Panel administratora jest dostępny wyłącznie dla kont sprzedawców i~właściciela. Klient po zalogowaniu ma dostęp tylko do panelu klienta.
+	\item \label{wf:panel-admina} Panel administratora jest dostępny wyłącznie dla kont sprzedawców i~właściciela. Klient po zalogowaniu ma dostęp tylko do panelu klienta. Klient loguje się w~panelu klienta, a~sprzedawca i~właściciel w~panelu administratora. Każdy z~tych formularzy odrzuca konta drugiej grupy. Ponieważ panel administratora jest dostępny tylko z~sieci lokalnej (\ref{wn:wdrozenie}), hasła personelu nie da się sprawdzić z~internetu.
 	\item \label{wf:reset-hasla} Reset zapomnianego hasła: użytkownik podaje adres e-mail konta, a~system wysyła na ten adres jednorazowy link do ustawienia nowego hasła, ważny przez 3~dni.
 	\item \label{wf:dezaktywowane} Konto dezaktywowane nie może się zalogować.
 \end{enumerate}
@@ -977,24 +977,24 @@ Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każ
 	\item \textbf{Przypadek użycia:} \ref{pu:logowanie}.
 	\item \textbf{Aktor:} klient-obserwator.
 	\item \textbf{Wymagania:} \ref{wf:login}, \ref{wf:logowanie}, \ref{wf:panel-admina}, \ref{wf:dezaktywowane}, \ref{wf:zalogowanie}.
-	\item \textbf{Zdarzenie inicjujące:} wybranie polecenia ,,Zaloguj się''.
+	\item \textbf{Zdarzenie inicjujące:} wybranie polecenia ,,Zaloguj się'' w~panelu klienta albo otwarcie panelu administratora.
 	\item \textbf{Warunki początkowe:} użytkownik nie jest zalogowany.
 	\item \textbf{Przebieg podstawowy:}
 	\begin{enumerate}
 		\item System wyświetla formularz logowania z~polami login i~hasło.
 		\item Użytkownik wpisuje login i~hasło i~zatwierdza formularz.
-		\item System sprawdza, czy istnieje aktywne konto o~podanym loginie i~czy hasło jest poprawne.
-		\item System loguje użytkownika i~wyświetla panel odpowiedni dla jego roli: klientowi panel klienta, a~sprzedawcy i~właścicielowi panel administratora.
+		\item System sprawdza, czy istnieje aktywne konto o~podanym loginie, czy hasło jest poprawne i~czy formularz należy do panelu roli tego konta.
+		\item System loguje użytkownika i~wyświetla panel, w~którym się zalogował.
 	\end{enumerate}
 	\item \textbf{Przebiegi alternatywne:}
 	\begin{enumerate}[label=A\arabic*.]
-		\item W~kroku 3 login lub hasło są błędne albo konto jest dezaktywowane. System wyświetla komunikat o~niepowodzeniu, bez wskazania, które dane są błędne, i~wraca do kroku 1.
+		\item W~kroku 3 login lub hasło są błędne, konto jest dezaktywowane albo formularz należy do panelu innej roli. System wyświetla komunikat o~niepowodzeniu, bez wskazania przyczyny, i~wraca do kroku 1.
 		\item W~kroku 1 użytkownik wybiera polecenie ,,Nie pamiętam hasła''. Dalej realizuje się \ref{pu:reset} ,,Zresetuj hasło''.
 	\end{enumerate}
 	\item \textbf{Warunki końcowe:} użytkownik jest zalogowany i~widzi panel swojej roli.
 \end{itemize}
 
-\ekran{rys:ekran-pu03-logowanie}{Ekran logowania}{pu03-logowanie}{Zawartość ekranu: pola login i~hasło, przycisk ,,Zaloguj się, odnośniki ,,Nie pamiętam hasła i~,,Załóż konto, miejsce na komunikat o~niepowodzeniu. Opis: p.~\ref{sec:pu-logowanie}, kroki 1--2 i~A1--A2.}
+\ekran{rys:ekran-pu03-logowanie}{Ekran logowania do panelu klienta}{pu03-logowanie}{Zawartość ekranu: pola login i~hasło, przycisk ,,Zaloguj się, odnośniki ,,Nie pamiętam hasła i~,,Załóż konto, miejsce na komunikat o~niepowodzeniu. Opis: p.~\ref{sec:pu-logowanie}, kroki 1--2 i~A1--A2.}
 
 \subsubsection{PU ,,Zresetuj hasło''}
 \label{sec:pu-reset}

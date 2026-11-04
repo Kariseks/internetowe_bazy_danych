@@ -50,7 +50,7 @@ def produkty_z_cenami():
     wiersze = [_produkt(w) for w in _PRODUKTY]
     for p in wiersze:
         p.cena_za_kg = cena(p.id)
-    wycofany = Produkt(id=10, nazwa='Szparagi', odmiana='', standardowa_ilosc_kg=D('10'), w_ofercie=False, cena_za_kg=D('24.00'))
+    wycofany = Produkt(id=10, nazwa='Szparagi', odmiana='', standardowa_ilosc_kg=D(10), w_ofercie=False, cena_za_kg=D('24.00'))
     return wiersze + [wycofany]
 
 
@@ -198,8 +198,8 @@ def dostawa(dzien):
     for w in plan_na_dzien(dzien):
         dostarczono = w.plan_kg - (5 if w.produkt.id == 9 else 0)
         if w.produkt.id == 4:
-            w.zarezerwowano_kg = D('14')
-            dostarczono = D('12')
+            w.zarezerwowano_kg = D(14)
+            dostarczono = D(12)
         pozycje.append(Atrapa(
             produkt=w.produkt,
             plan_kg=w.plan_kg,

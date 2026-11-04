@@ -51,7 +51,7 @@ class PanelRezerwacjiTests(TestCase):
             '/admin/rezerwacje/101/przygotuj/?dalej=wydaj',
             {'p1': '9,95', 'p2': '0'},
         )
-        self.assertEqual(zapis.call_args.args[1], [(1, Decimal('9.95')), (2, Decimal('0'))])
+        self.assertEqual(zapis.call_args.args[1], [(1, Decimal('9.95')), (2, Decimal(0))])
         self.assertEqual(odpowiedz.status_code, 302)
         self.assertEqual(odpowiedz.url, '/admin/rezerwacje/101/wydaj/')
 
@@ -82,5 +82,5 @@ class PanelRezerwacjiTests(TestCase):
         )
         zapis.assert_called_once()
         self.assertEqual(zapis.call_args.args[0], 1)
-        self.assertEqual(zapis.call_args.args[2], Decimal('5'))
+        self.assertEqual(zapis.call_args.args[2], Decimal(5))
         self.assertContains(odpowiedz, 'Zarezerwowano 40 kg')

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Reset hasła – Warzywniak{% endblock %}
+{% block content %}
+<div class="karta">
+	<h1>Reset hasła</h1>
+	<p>Podaj adres e-mail konta. Wyślemy na niego link do ustawienia nowego hasła, ważny przez 3 dni.</p>
+	<form method="post">
+		{% csrf_token %}
+		{% include "konta/_pola.html" %}
+		<button class="przycisk" type="submit">Wyślij link</button>
+	</form>
+	<p class="odnosniki"><a href="{% url 'logowanie' %}">Wróć do logowania</a><a href="{% url 'admin:login' %}">Logowanie personelu</a></p>
+</div>
+{% endblock %}

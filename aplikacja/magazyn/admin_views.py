@@ -8,7 +8,14 @@ from django.utils import timezone
 from config.panel import dzien_z_zapytania, nawigacja_dni, strona
 
 from . import services
-from .forms import CenaForm, IlosciForm, NowyProduktForm, ProduktForm, SprzedazFormSet, UbytekForm
+from .forms import (
+    CenaForm,
+    IlosciForm,
+    NowyProduktForm,
+    ProduktForm,
+    SprzedazFormSet,
+    UbytekForm,
+)
 
 
 def sprzedaz(request):

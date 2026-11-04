@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Hasło zmienione – Warzywniak{% endblock %}
+{% block content %}
+<div class="karta">
+	<h1>Hasło zmienione</h1>
+	<p>Możesz zalogować się nowym hasłem.</p>
+	<a class="przycisk" href="{% url 'logowanie' %}">Przejdź do logowania</a>
+	<p class="odnosniki"><a href="{% url 'admin:login' %}">Logowanie personelu</a></p>
+</div>
+{% endblock %}

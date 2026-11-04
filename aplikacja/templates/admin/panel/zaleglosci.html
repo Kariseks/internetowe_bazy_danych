@@ -16,6 +16,8 @@
 						<input type="hidden" name="klient" value="{{ k.uzytkownik_id }}">
 						<label class="ukryte" for="kwota-{{ k.uzytkownik_id }}">Kwota [zł]</label>
 						<input id="kwota-{{ k.uzytkownik_id }}" type="text" inputmode="decimal" name="kwota" value="{{ k.zaleglosc|floatformat:2 }}">
+						{# Enter w polu kwoty nic nie wysyła: wynik trzeba wybrać przyciskiem. #}
+						<button type="submit" disabled hidden></button>
 						<button class="przycisk" type="submit" name="wynik" value="skuteczne">Pobrano</button>
 						<button class="przycisk" type="submit" name="wynik" value="nieudane">Nie pobrano</button>
 					</form>

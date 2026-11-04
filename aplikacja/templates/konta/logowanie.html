@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Logowanie – Warzywniak{% endblock %}
+{% block content %}
+<div class="karta">
+	<h1>Logowanie</h1>
+	<form method="post">
+		{% csrf_token %}
+		{% include "konta/_pola.html" %}
+		<input type="hidden" name="next" value="{{ next }}">
+		<button class="przycisk" type="submit">Zaloguj się</button>
+	</form>
+	<p class="odnosniki"><a href="{% url 'haslo_reset' %}">Nie pamiętam hasła</a><a href="{% url 'rejestracja' %}">Załóż konto</a></p>
+</div>
+{% endblock %}

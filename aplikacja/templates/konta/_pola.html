@@ -1,0 +1,9 @@
+{{ form.non_field_errors }}
+{% for pole in form %}
+<div class="pole">
+	<label for="{{ pole.id_for_label }}">{{ pole.label }}</label>
+	{{ pole }}
+	{{ pole.errors }}
+	{% if pole.help_text %}<div class="podpowiedz">{{ pole.help_text|safe }}</div>{% endif %}
+</div>
+{% endfor %}

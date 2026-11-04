@@ -1,0 +1,51 @@
+@font-face { font-family: "Bricolage Grotesque"; src: url("../panel/fonts/bricolage-latin.woff2") format("woff2"); font-weight: 200 800; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2212; }
+@font-face { font-family: "Bricolage Grotesque"; src: url("../panel/fonts/bricolage-latin-ext.woff2") format("woff2"); font-weight: 200 800; font-display: swap; unicode-range: U+0100-02BA, U+1E00-1E9F; }
+@font-face { font-family: "Hanken Grotesk"; src: url("../panel/fonts/hanken-latin.woff2") format("woff2"); font-weight: 200 800; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2212; }
+@font-face { font-family: "Hanken Grotesk"; src: url("../panel/fonts/hanken-latin-ext.woff2") format("woff2"); font-weight: 200 800; font-display: swap; unicode-range: U+0100-02BA, U+1E00-1E9F; }
+
+:root {
+	--jarmuz: #143528;
+	--lisc: #1e6a46;
+	--lisc-ciemny: #17553a;
+	--kapusta: #edf1e6;
+	--tusz: #1a2a21;
+	--cichy: #56665b;
+	--linia: #d3dcc9;
+	--ramka: #b6c3ab;
+	--burak: #8c1d4f;
+	--burak-tlo: #f9e8ef;
+	--limonka: #d8f26b;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--kapusta); color: var(--tusz); font: 1rem/1.5 "Hanken Grotesk", system-ui, sans-serif; }
+h1, .marka { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700; }
+a { color: var(--lisc); }
+a:hover { color: var(--jarmuz); }
+
+.naglowek { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.5rem; padding: 0.85rem clamp(1rem, 4vw, 2.25rem); background: var(--jarmuz); color: #fff; }
+.naglowek a, .naglowek button { color: #fff; }
+.marka { font-size: 1.4rem; text-decoration: none; }
+.naglowek nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; }
+.naglowek form { margin: 0; }
+.naglowek button { padding: 0; border: 0; background: none; font: inherit; text-decoration: underline; cursor: pointer; }
+
+main { max-width: 60rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
+.karta { max-width: 26rem; margin: 0 auto; padding: 1.75rem; border: 1px solid var(--linia); border-radius: 8px; background: #fff; }
+.karta h1 { margin: 0 0 1rem; font-size: 1.75rem; line-height: 1.2; }
+.karta p { margin: 0 0 1rem; }
+
+.pole { margin-bottom: 1rem; }
+.pole label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+.pole input { width: 100%; padding: 0.55rem 0.7rem; border: 1px solid var(--ramka); border-radius: 6px; background: #fff; color: inherit; font: inherit; }
+.pole input:focus { outline: 3px solid var(--limonka); border-color: var(--lisc); }
+.podpowiedz { margin-top: 0.4rem; color: var(--cichy); font-size: 0.85rem; }
+.podpowiedz ul { margin: 0; padding-left: 1.1rem; }
+
+.przycisk { display: block; width: 100%; padding: 0.65rem 1rem; border: 0; border-radius: 6px; background: var(--lisc); color: #fff; font: 600 1rem "Hanken Grotesk", system-ui, sans-serif; text-align: center; text-decoration: none; cursor: pointer; }
+.przycisk:hover { background: var(--lisc-ciemny); color: #fff; }
+.odnosniki { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; margin: 1rem 0 0 !important; font-size: 0.95rem; }
+
+.errorlist { margin: 0.35rem 0 0; padding: 0; color: var(--burak); font-size: 0.9rem; list-style: none; }
+.errorlist.nonfield { margin: 0 0 1rem; padding: 0.6rem 0.8rem; border-radius: 6px; background: var(--burak-tlo); }
+.komunikat { max-width: 26rem; margin: 0 auto 1rem; padding: 0.7rem 0.9rem; border-radius: 6px; background: #dff0d8; }

@@ -34,6 +34,12 @@ class PanelRozliczenTests(TestCase):
     def test_zaleglosci_tylko_dla_wlasciciela(self):
         self.assertEqual(self.client.get('/admin/zaleglosci/').status_code, 403)
 
+    def test_enter_nie_wybiera_wyniku_obciazenia(self):
+        self.client.force_login(konto('wlasciciel', 'wlasciciel'))
+        strona = self.client.get('/admin/zaleglosci/').content.decode()
+        formularz = strona[strona.index('<form method="post" class="w-wierszu">'):]
+        self.assertLess(formularz.index('type="submit" disabled'), formularz.index('value="skuteczne"'))
+
     @patch('rozliczenia.services.odnotuj_obciazenie')
     def test_wynik_obciazenia(self, zapis):
         self.client.force_login(konto('wlasciciel', 'wlasciciel'))

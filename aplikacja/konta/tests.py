@@ -1,7 +1,10 @@
 from unittest.mock import patch
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.test import TestCase
+from django.urls import reverse
 
 from magazyn.tests import konto
 
@@ -87,3 +90,127 @@ class KontaTests(TestCase):
     def test_dezaktywacja(self, zapis):
         self.client.post('/admin/konta/', {'konto': '2', 'aktywne': '0'})
         zapis.assert_called_once_with(2, False)
+
+
+HASLO = 'Stare-Haslo-71'
+ADRES = 'anna@example.com'
+
+
+def nowy_klient():
+    return get_user_model().objects.create_user(ADRES, ADRES, HASLO)
+
+
+class LogowanieTests(TestCase):
+    def setUp(self):
+        self.klient = nowy_klient()
+        sprzedawca = konto('sprzedawca', 'sprzedawca')
+        sprzedawca.set_password(HASLO)
+        sprzedawca.save()
+
+    def zaloguj(self, login=ADRES, haslo=HASLO, strona='logowanie', **dane):
+        return self.client.post(reverse(strona), {'username': login, 'password': haslo, **dane})
+
+    def test_klient_trafia_do_katalogu(self):
+        self.assertRedirects(self.zaloguj(), reverse('katalog'))
+
+    def test_personel_nie_zaloguje_sie_w_panelu_klienta(self):
+        poprawne = self.zaloguj('sprzedawca')
+        bledne = self.zaloguj('sprzedawca', 'zle')
+        self.assertContains(poprawne, 'Niepoprawny login lub hasło.')
+        self.assertEqual(poprawne.context['form'].errors, bledne.context['form'].errors)
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_personel_loguje_sie_w_panelu_administratora(self):
+        odpowiedz = self.zaloguj('sprzedawca', strona='admin:login', next=reverse('admin:index'))
+        self.assertRedirects(odpowiedz, reverse('admin:index'))
+
+    def test_klient_nie_zaloguje_sie_w_panelu_administratora(self):
+        self.assertEqual(self.zaloguj(strona='admin:login').status_code, 200)
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_next_ma_pierwszenstwo(self):
+        self.assertRedirects(self.zaloguj(next=reverse('rejestracja')), reverse('rejestracja'))
+
+    def test_zalogowany_nie_widzi_formularza(self):
+        self.client.force_login(self.klient)
+        self.assertRedirects(self.client.get(reverse('logowanie')), reverse('katalog'))
+
+    def test_bledne_haslo_i_nieaktywne_konto_daja_ten_sam_komunikat(self):
+        bledne = self.zaloguj(haslo='zle')
+        self.klient.is_active = False
+        self.klient.save()
+        nieaktywne = self.zaloguj()
+        for odpowiedz in (bledne, nieaktywne):
+            self.assertContains(odpowiedz, 'Niepoprawny login lub hasło.')
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_klient_nie_wejdzie_do_panelu_administratora(self):
+        self.zaloguj()
+        self.assertEqual(self.client.get(reverse('admin:index')).status_code, 302)
+
+    def test_wylogowanie(self):
+        self.client.force_login(self.klient)
+        self.assertRedirects(self.client.post(reverse('wyloguj')), reverse('katalog'))
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_odnosniki_z_formularza_dzialaja(self):
+        for nazwa in ('haslo_reset', 'rejestracja'):
+            self.assertEqual(self.client.get(reverse(nazwa)).status_code, 200)
+
+
+class ResetHaslaTests(TestCase):
+    NOWE = 'Nowe-Haslo-82'
+
+    def setUp(self):
+        self.klient = nowy_klient()
+
+    def popros(self, adres=ADRES):
+        return self.client.post(reverse('haslo_reset'), {'email': adres}, follow=True)
+
+    def link(self):
+        return next(s for s in mail.outbox[-1].body.split() if s.startswith('http'))
+
+    def formularz(self):
+        odpowiedz = self.client.get(self.link(), follow=True)
+        self.assertTrue(odpowiedz.context['validlink'])
+        return odpowiedz.redirect_chain[-1][0]
+
+    def test_logowanie_do_panelu_administratora_ma_odnosnik(self):
+        self.assertContains(self.client.get(reverse('admin:login')), f'href="{reverse("haslo_reset")}"')
+
+    def test_link_wazny_3_dni(self):
+        self.assertEqual(settings.PASSWORD_RESET_TIMEOUT, 3 * 24 * 60 * 60)
+
+    def test_caly_przebieg(self):
+        self.assertContains(self.popros(), 'wysłaliśmy')
+        self.assertEqual(mail.outbox[0].subject, 'Warzywniak: reset hasła')
+        adres = self.formularz()
+        odpowiedz = self.client.post(adres, {'new_password1': self.NOWE, 'new_password2': self.NOWE})
+        self.assertRedirects(odpowiedz, reverse('haslo_zmienione'))
+        self.assertContains(self.client.get(reverse('haslo_zmienione')), reverse('admin:login'))
+        self.assertNotIn('_auth_user_id', self.client.session)
+        self.klient.refresh_from_db()
+        self.assertTrue(self.klient.check_password(self.NOWE))
+
+    def test_link_dziala_raz(self):
+        self.popros()
+        self.client.post(self.formularz(), {'new_password1': self.NOWE, 'new_password2': self.NOWE})
+        ponownie = self.client.get(self.link(), follow=True)
+        self.assertContains(ponownie, 'Ten link wygasł albo został już użyty.')
+
+    def test_nieznany_adres_i_nieaktywne_konto_bez_wiadomosci(self):
+        self.klient.is_active = False
+        self.klient.save()
+        for adres in ('nikt@example.com', ADRES):
+            self.assertContains(self.popros(adres), 'wysłaliśmy')
+        self.assertEqual(mail.outbox, [])
+
+    def test_haslo_musi_spelniac_reguly(self):
+        self.popros()
+        adres = self.formularz()
+        for pierwsze, drugie in (('12345678', '12345678'), (self.NOWE, 'Inne-Haslo-93')):
+            odpowiedz = self.client.post(adres, {'new_password1': pierwsze, 'new_password2': drugie})
+            self.assertEqual(odpowiedz.status_code, 200)
+            self.assertTrue(odpowiedz.context['form'].errors)
+        self.klient.refresh_from_db()
+        self.assertTrue(self.klient.check_password(HASLO))
