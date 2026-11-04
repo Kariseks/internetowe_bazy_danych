@@ -174,39 +174,39 @@ Numeracja wg szkieletu z 04.11.2026 (układ „Sklepu hydraulicznego” + osobne
 
 | Podpunkt | dawniej | Fakty | Wzór formy | Status |
 |---|---|---|---|---|
-| 3.1 Analiza SWOT | 1.5 | H01 § SWOT + N19 uwaga 5 (poprawki) | W4 pkt 4b | ◐ — akceptacja nowej wersji |
-| 3.2 CSF | 1.6 | H01 § CSF (do uzupełnienia o rezerwacje) | W4 pkt 4b | ◐ |
-| 3.3 Techniczna wykonalność systemu (3.3.1 wybór technologii, wersje i licencje; 3.3.2 współbieżne zapisy w MySQL (InnoDB)) | 1.8 | N19 §1 (Django, komputer w sklepie; SQLite z konsultacji zastąpiony MySQL) + uwagi 1, 6; H01 § Wykonalność; A1 środowisko dev | — | ◐ — wersje zatwierdzone (Q10: Python 3.12, Django 5.2 LTS, MySQL 8.4 LTS); licencje do weryfikacji |
-| 3.4 Koszt wytworzenia systemu (kosztorys) | 1.7 | N19 uwaga 6 (0 zł narzędzia, licencje) | — | ◐ — praca (godziny, stawka), sprzęt ⛔ |
-| 3.5 Plan projektu | 1.9 | PLAN.md kolejka; N19 „Ustalenia” (1 miesiąc na projekt, równoległa konfiguracja) | — | OK |
-| 3.6 Grupa i podział obowiązków (3.6.1 skład grupy; 3.6.2 podział w etapach — N19 uwaga 4) | 1.1 | PLAN.md „Ustalenia”, kolejka; H01 § Grupa (tabele); N19 uwaga 4 (role w wywiadzie, wspólne projektowanie) | — | ◐ — kto grał właściciela w wywiadzie ⛔ |
-| 3.7 Harmonogram | 1.10 | PLAN.md „Terminy”; H01 § Harmonogram (z 05.10) | — | OK |
+| 3.1 Analiza SWOT | 1.5 | H01 § SWOT + N19 uwaga 5 (poprawki) | W4 pkt 4b | napisane 04.11.2026 (`tab:swot`); do akceptacji (CLAUDE.md pkt 62) |
+| 3.2 CSF | 1.6 | H01 § CSF (do uzupełnienia o rezerwacje) | W4 pkt 4b | napisane 04.11.2026 (`tab:csf`); do akceptacji (pkt 63) |
+| 3.3 Techniczna wykonalność systemu (3.3.1 wybór technologii, wersje i licencje; 3.3.2 współbieżne zapisy w MySQL (InnoDB)) | 1.8 | N19 §1 (Django, komputer w sklepie; SQLite z konsultacji zastąpiony MySQL) + uwagi 1, 6; H01 § Wykonalność; A1 środowisko dev | — | napisane 04.11.2026; licencje sprawdzone (pkt 64); sprzęt, Ubuntu, Nginx + Gunicorn, Let's Encrypt, cron — propozycja do akceptacji (Q6, pkt 71); VP CE, Crow's Foot (Q5) |
+| 3.4 Koszt wytworzenia systemu (kosztorys) | 1.7 | N19 uwaga 6 (0 zł narzędzia, licencje) | — | napisane 04.11.2026; kwoty zatwierdzone przez Karola (Q9) |
+| 3.5 Plan projektu | 1.9 | PLAN.md kolejka; N19 „Ustalenia” (1 miesiąc na projekt, równoległa konfiguracja) | — | napisane 04.11.2026 (pkt 67) |
+| 3.6 Grupa i podział obowiązków (3.6.1 skład grupy; 3.6.2 podział w etapach — N19 uwaga 4) | 1.1 | PLAN.md „Ustalenia”, kolejka; H01 § Grupa (tabele); N19 uwaga 4 (role w wywiadzie, wspólne projektowanie) | — | napisane 04.11.2026; podział przebudowany (prowadzi/wspiera), rola właściciela zatwierdzona (pkt 68–69) |
+| 3.7 Harmonogram | 1.10 | PLAN.md „Terminy”; H01 § Harmonogram (z 05.10) | — | napisane 04.11.2026 (`tab:harmonogram`); daty pośrednie do akceptacji (pkt 70) |
 
 ### Rozdz. 4. Diagramy przypadków użycia (etap 2)
 
 | Podpunkt | dawniej | Fakty | Wzór formy | Status |
 |---|---|---|---|---|
-| 4.1 Identyfikacja aktorów | 2.4 | N19 uwaga 2 (właściciel, sprzedawca, dostawca, klient, klient-obserwator); decyzja 04.11.2026: dostawca bez konta, więc nie jest aktorem systemu | ROW Diagramy PU s. 1; SH 3.1 s. 15; SZ 3.1 s. 11 | OK |
-| 4.2 Diagramy PU per moduł | 2.4 | N19 (funkcje) | ROW s. 2–6; SH 3.2 s. 17–19; RE 2.2–2.5 s. 4–6; IO zad. 5 s. 3 | ◐ — lista PU do akceptacji |
+| 4.1 Identyfikacja aktorów | 2.4 | N19 uwaga 2 (właściciel, sprzedawca, dostawca, klient, klient-obserwator); decyzja 04.11.2026: dostawca bez konta, więc nie jest aktorem systemu | ROW Diagramy PU s. 1; SH 3.1 s. 15; SZ 3.1 s. 11 | napisane 04.11.2026 (`tab:aktorzy`, miejsce na diagram VP); do akceptacji (CLAUDE.md pkt 72) |
+| 4.2 Diagramy PU per moduł | 2.4 | N19 (funkcje) | ROW s. 2–6; SH 3.2 s. 17–19; RE 2.2–2.5 s. 4–6; IO zad. 5 s. 3 | napisane 04.11.2026: PU1–PU31 (`tab:pu`) zatwierdzone (pkt 73); związki do akceptacji (pkt 74); 4 miejsca na diagramy VP |
 
 ### Rozdz. 5. Opis przypadków użycia (etap 2)
 
 | Podpunkt | dawniej | Fakty | Wzór formy | Status |
 |---|---|---|---|---|
-| 5.1–5.4 Scenariusze PU + makiety (per rola) | 2.4 | brak gotowych | SH 4.2–4.5 s. 24–50 (= DEMO1); SZ 3.3 s. 15–40; DEMO2; DEMO3; RE 3 s. 7–19; BIB s. 4–11; IO zad. 6 s. 4; IO prezentacja zad. 1 | ⛔ przebiegi do akceptacji |
-| 5.5 Diagramy czynności wybranych PU (+ ewentualnie stany GUI) | 2.5 | brak | IO realizacja PU s. 1–3; BIB s. 11–13; IO prezentacja zad. 2 | ⛔ (Q4) |
+| 5.1–5.5 Scenariusze PU + makiety (per rola) | 2.4 | brak gotowych | SH 4.2–4.5 s. 24–50 (= DEMO1); SZ 3.3 s. 15–40; DEMO2; DEMO3; RE 3 s. 7–19; BIB s. 4–11; IO zad. 6 s. 4; IO prezentacja zad. 1 | napisane 04.11.2026 (12 PU, w tym PU13 karta; układ SH); szczegóły zatwierdzone (pkt 75); 14 miejsc na ekrany wg schematu nazw (pkt 79) |
+| 5.6 Diagramy czynności wybranych PU (+ ewentualnie stany GUI) | 2.5 | brak | IO realizacja PU s. 1–3; BIB s. 11–13; IO prezentacja zad. 2 | ◐ — 2 miejsca na diagramy VP (PU8, PU20), Q4 rozstrzygnięte |
 
 ### Rozdz. 6. Model bazy danych (etap 2)
 
 | Podpunkt | dawniej | Fakty | Wzór formy | Status |
 |---|---|---|---|---|
-| 6.1 Podejście code-first | — | N19 uwaga 6 (model z klas ORM, reverse engineering) | — | OK (forma) |
-| 6.2 Identyfikacja encji i związków | 2.6 | H01 (produkt, dostawa, pozycje, sprzedaż, stan); N19 (rezerwacja, konta); Q7 (plan dostawy) | Model BD (ROW) s. 1–2; RE 4.1–4.2 s. 19–20; SZ 4.1 s. 41 | ◐ |
-| 6.3 Model konceptualny (ERD) | 2.6 | jw. | Etapy realizacji (notacja Chena); Model BD s. 2–3; SZ 4.2 s. 42 | ◐ — notacja/narzędzie (Q5) |
-| 6.4 Model logiczny i normalizacja | 2.6 | N19 uwaga 6 (code-first, z ORM) | Model BD s. 3–5; SZ 4.3–4.4 s. 43; RE s. 20; SH 5 tab. NF s. 53–54 | ◐ |
-| 6.5 Diagram klas ORM | 2.6 | N19 uwaga 6 + „Ustalenia” | IO 3-warstwowa zad. 2; BIB s. 14–19 | ◐ — z kodu |
-| 6.6 Słownik danych (definicje obiektów, W4 5b) | 2.6 | — | RE 4.3 tabela atrybutów s. 21 | ⛔ (z modeli) |
-| 6.7 Graf stanów rezerwacji | 2.5 | N19 (rezerwacja → odbiór osobisty); Q7 (złożona → odebrana / anulowana / nieodebrana) | SH 5.7 s. 65–67; IO prezentacja zad. 2 | ◐ — reguły przejść do akceptacji |
+| 6.1 Podejście code-first | — | N19 uwaga 6 (model z klas ORM, reverse engineering) | — | napisane 04.11.2026 (`sec:code-first`); Q11 — propozycja (CLAUDE.md pkt 80) |
+| 6.2 Identyfikacja encji i związków | 2.6 | H01 (produkt, dostawa, pozycje, sprzedaż, stan); N19 (rezerwacja, konta); Q7 (plan dostawy) | Model BD (ROW) s. 1–2; RE 4.1–4.2 s. 19–20; SZ 4.1 s. 41 | napisane 04.11.2026 (`tab:encje`, `tab:zwiazki`); do akceptacji (pkt 82, 84) |
+| 6.3 Model konceptualny (ERD) | 2.6 | jw. | Etapy realizacji (notacja Chena); Model BD s. 2–3; SZ 4.2 s. 42 | napisane 04.11.2026; Crow's Foot (Q5); diagram VP ⛔ (`rysunki/diagramy/erd-konceptualny.png`) |
+| 6.4 Model logiczny i normalizacja | 2.6 | N19 uwaga 6 (code-first, z ORM) | Model BD s. 3–5; SZ 4.3–4.4 s. 43; RE s. 20; SH 5 tab. NF s. 53–54 | napisane 04.11.2026: normalizacja 3NF, stan i zaległość liczone (Q11, pkt 81); diagram VP ⛔ (`erd-logiczny.png`); DDL `baza/schema.sql` — tylko parser, nieuruchomiony na MySQL (pkt 86) |
+| 6.5 Diagram klas ORM | 2.6 | N19 uwaga 6 + „Ustalenia” | IO 3-warstwowa zad. 2; BIB s. 14–19 | ◐ — tekst i miejsce na diagram (`klasy-modele-orm.png`); po implementacji odtworzyć z kodu |
+| 6.6 Słownik danych (definicje obiektów, W4 5b) | 2.6 | — | RE 4.3 tabela atrybutów s. 21 | napisane 04.11.2026 (`tab:slownik`, 15 tabel, 74 atrybuty; zgodny z `baza/schema.sql`); do akceptacji (pkt 83) |
+| 6.7 Graf stanów rezerwacji | 2.5 | N19 (rezerwacja → odbiór osobisty); Q7 (złożona → odebrana / anulowana / nieodebrana) | SH 5.7 s. 65–67; IO prezentacja zad. 2 | napisane 04.11.2026 (lista stanów i przejść z PU); diagram VP ⛔ (`stany-rezerwacja.png`); do akceptacji (pkt 85) |
 
 ### Rozdz. 7–10. Implementacja i walidacja (etap 3)
 

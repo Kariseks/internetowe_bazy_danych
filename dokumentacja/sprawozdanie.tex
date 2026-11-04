@@ -48,6 +48,27 @@
 		\caption{#2}
 	\end{figure}}
 
+% Rysunek z pliku albo, gdy pliku jeszcze nie ma, ramka TODO z oczekiwaną ścieżką (względem dokumentacja/).
+% #1 etykieta, #2 podpis, #3 ścieżka pliku, #4 zawartość rysunku. Schemat nazw plików: CLAUDE.md.
+\newcommand{\rysunekplik}[4]{%
+	\begin{figure}[H]
+		\centering
+		\IfFileExists{#3}{%
+			\includegraphics[width=0.9\textwidth,height=0.4\textheight,keepaspectratio]{#3}}{%
+			\fbox{\parbox[c][3.4cm][c]{0.85\textwidth}{\centering\small TODO: brak pliku\\\footnotesize\texttt{dokumentacja/#3}\\[0.4em]\footnotesize\raggedright #4}}}
+		\caption{#2}
+		\label{#1}
+	\end{figure}}
+% Diagram z Visual Paradigm: rysunki/diagramy/<nazwa>.png.
+\newcommand{\diagramvp}[4]{\rysunekplik{#1}{#2}{rysunki/diagramy/#3.png}{#4}}
+% Ekran aplikacji (makieta albo zrzut): rysunki/ekrany/<nazwa>.png.
+\newcommand{\ekran}[4]{\rysunekplik{#1}{#2}{rysunki/ekrany/#3.png}{#4}}
+
+% Numeracja przypadków użycia w tab:pu: \pu{etykieta} wypisuje PUn i ustawia etykietę.
+\newcounter{pu}
+\renewcommand{\thepu}{PU\arabic{pu}}
+\newcommand{\pu}[1]{\refstepcounter{pu}\thepu\label{#1}}
+
 % --- listingi kodu ---
 \usepackage{xcolor}
 \usepackage{listings}
@@ -365,20 +386,20 @@ Wymagania funkcjonalne ponumerowano WF1, WF2 itd. w~całym podrozdziale; numery 
 
 \begin{enumerate}[label=WF\arabic*.,ref=WF\arabic*,series=wf,leftmargin=1.6cm]
 	\item \label{wf:uzytkownicy} Użytkownikami systemu są personel sklepu (właściciel i~sprzedawcy) oraz klienci. Katalog jest dostępny także bez logowania, dla klienta-obserwatora.
-	\item W~systemie przewidziano trzy role użytkowników zalogowanych: klient, sprzedawca i~właściciel. Każde konto ma dokładnie jedną rolę.
-	\item Konto właściciela zakłada się przy instalacji systemu. W~systemie musi istnieć co najmniej jedno aktywne konto właściciela.
-	\item Konta sprzedawców zakłada, dezaktywuje i~ponownie aktywuje właściciel. Konta personelu nie usuwa się, aby zachować powiązanie z~zarejestrowanymi dostawami i~sprzedażą. Konto sprzedawcy zawiera tylko dane potrzebne systemowi: login, imię, nazwisko, adres e-mail, hasło w~postaci skrótu, rolę i~informację, czy konto jest aktywne. System nie przechowuje innych danych personelu, np. numeru PESEL, adresu ani telefonu.
+	\item \label{wf:role} W~systemie przewidziano trzy role użytkowników zalogowanych: klient, sprzedawca i~właściciel. Każde konto ma dokładnie jedną rolę.
+	\item \label{wf:konto-wlasciciela} Konto właściciela zakłada się przy instalacji systemu. W~systemie musi istnieć co najmniej jedno aktywne konto właściciela.
+	\item \label{wf:konta-sprzedawcow} Konta sprzedawców zakłada, dezaktywuje i~ponownie aktywuje właściciel. Konta personelu nie usuwa się, aby zachować powiązanie z~zarejestrowanymi dostawami i~sprzedażą. Konto sprzedawcy zawiera tylko dane potrzebne systemowi: login, imię, nazwisko, adres e-mail, hasło w~postaci skrótu, rolę i~informację, czy konto jest aktywne. System nie przechowuje innych danych personelu, np. numeru PESEL, adresu ani telefonu.
 	\item \label{wf:rejestracja} Konto klienta zakłada sam klient-obserwator. Podaje imię, nazwisko, adres e-mail i~numer telefonu, ustala hasło oraz rejestruje kartę płatniczą w~formularzu operatora płatności. Konto bez zarejestrowanej karty nie może składać rezerwacji.
-	\item System przechowuje z~danych karty wyłącznie identyfikator nadany przez operatora płatności. Numer karty nie trafia do systemu.
-	\item Właściciel może dezaktywować konto klienta. Dezaktywacja nie usuwa rezerwacji ani zaległości klienta.
+	\item \label{wf:karta} System przechowuje z~danych karty wyłącznie identyfikator nadany przez operatora płatności. Numer karty nie trafia do systemu.
+	\item \label{wf:dezaktywacja-klienta} Właściciel może dezaktywować konto klienta. Dezaktywacja nie usuwa rezerwacji ani zaległości klienta.
 \end{enumerate}
 
 \subsubsection{Identyfikacja i~uwierzytelnianie użytkowników}
 
 \begin{enumerate}[resume*=wf]
-	\item Każde konto ma unikalny login i~unikalny adres e-mail. Login sprzedawcy nadaje właściciel przy zakładaniu konta, a~loginem klienta jest jego adres e-mail.
-	\item Logowanie odbywa się loginem i~hasłem. Hasło ma co najmniej 8~znaków, nie może składać się wyłącznie z~cyfr, być podobne do danych użytkownika ani należeć do listy często używanych haseł.
-	\item Panel administratora jest dostępny wyłącznie dla kont sprzedawców i~właściciela. Klient po zalogowaniu ma dostęp tylko do panelu klienta.
+	\item \label{wf:login} Każde konto ma unikalny login i~unikalny adres e-mail. Login sprzedawcy nadaje właściciel przy zakładaniu konta, a~loginem klienta jest jego adres e-mail.
+	\item \label{wf:logowanie} Logowanie odbywa się loginem i~hasłem. Hasło ma co najmniej 8~znaków, nie może składać się wyłącznie z~cyfr, być podobne do danych użytkownika ani należeć do listy często używanych haseł.
+	\item \label{wf:panel-admina} Panel administratora jest dostępny wyłącznie dla kont sprzedawców i~właściciela. Klient po zalogowaniu ma dostęp tylko do panelu klienta.
 	\item \label{wf:reset-hasla} Reset zapomnianego hasła: użytkownik podaje adres e-mail konta, a~system wysyła na ten adres jednorazowy link do ustawienia nowego hasła, ważny przez 3~dni.
 	\item \label{wf:dezaktywowane} Konto dezaktywowane nie może się zalogować.
 \end{enumerate}
@@ -389,14 +410,14 @@ Zalogowany użytkownik z~rolą sprzedawcy ma dostęp do następujących funkcji:
 
 \begin{enumerate}[resume*=wf]
 	\item \label{wf:sprzedaz} Rejestracja sprzedaży przy ladzie: produkty i~masy w~kilogramach. Cenę pozycji system pobiera z~ceny obowiązującej w~chwili sprzedaży. Sprzedaż nie może obniżyć stanu produktu poniżej zera.
-	\item Rejestracja przyjęcia dostawy na dany dzień: ilości faktycznie dostarczonych produktów. System pokazuje różnice względem planu dostawy na ten dzień.
-	\item Rejestracja ubytku towaru, który stracił świeżość i~został wyrzucony, z~podaniem produktu i~masy. Ubytek obniża stan produktu.
-	\item Przegląd bieżącego stanu produktów, planu dostawy na najbliższe siedem dni i~historii sprzedaży.
+	\item \label{wf:dostawa} Rejestracja przyjęcia dostawy na dany dzień: ilości faktycznie dostarczonych produktów. System pokazuje różnice względem planu dostawy na ten dzień.
+	\item \label{wf:ubytek} Rejestracja ubytku towaru, który stracił świeżość i~został wyrzucony, z~podaniem produktu i~masy. Ubytek obniża stan produktu.
+	\item \label{wf:stan} Przegląd bieżącego stanu produktów, planu dostawy na najbliższe siedem dni i~historii sprzedaży.
 	\item \label{wf:zestawienie-zamowienia} Przygotowanie zestawienia zamówienia na następny dzień: lista produktów i~ilości z~planu dostawy, przekazywana dostawcy telefonicznie.
 	\item \label{wf:lista-rezerwacji} Przegląd rezerwacji na wybrany dzień wraz z~pozycjami i~stanem każdej rezerwacji.
 	\item \label{wf:przygotowanie} Oznaczenie rezerwacji jako przygotowanej do odbioru, z~wpisaniem odważonej masy każdej pozycji.
 	\item \label{wf:wydanie} Wydanie rezerwacji klientowi. System wylicza kwotę do zapłaty z~odważonych mas i~cen obowiązujących w~dniu odbioru, rejestruje wydanie jako sprzedaż i~oznacza rezerwację jako odebraną.
-	\item \label{wf:wyszukanie}Wyszukanie klienta po nazwisku, adresie e-mail lub numerze telefonu oraz podgląd jego rezerwacji i~zaległości.
+	\item \label{wf:wyszukanie} Wyszukanie klienta po nazwisku, adresie e-mail lub numerze telefonu oraz podgląd jego rezerwacji i~zaległości.
 	\item \label{wf:wplata} Odnotowanie wpłaty zaległości dokonanej przez klienta w~sklepie.
 \end{enumerate}
 
@@ -406,7 +427,7 @@ Zalogowany użytkownik z~rolą właściciela ma dostęp do wszystkich funkcji sp
 
 \begin{enumerate}[resume*=wf]
 	\item \label{wf:produkty} Dodawanie i~edycja produktów: nazwa, odmiana, cena za kilogram i~standardowa dzienna ilość. Produkt, którego sklep przestaje sprzedawać, wycofuje się z~oferty bez usuwania go z~historii.
-	\item Zmiana ceny produktu. System zapisuje datę, od której nowa cena obowiązuje, i~przechowuje ceny wcześniejsze.
+	\item \label{wf:cena} Zmiana ceny produktu. System zapisuje datę, od której nowa cena obowiązuje, i~przechowuje ceny wcześniejsze.
 	\item \label{wf:plan-dostawy} Ustalanie planu dostawy dla każdego produktu na każdy z~najbliższych siedmiu dni. Domyślnie plan równa się standardowej dziennej ilości produktu. Właściciel może go zwiększyć albo zmniejszyć, ale nie poniżej ilości już zarezerwowanej na ten dzień.
 	\item \label{wf:konta-personelu} Zakładanie, dezaktywacja i~ponowna aktywacja kont sprzedawców oraz dezaktywacja kont klientów.
 	\item \label{wf:obciazenie} Przegląd klientów z~zaległością i~odnotowanie wyniku comiesięcznego obciążenia karty: obciążenie skuteczne zmniejsza zaległość o~pobraną kwotę, a~nieudane jej nie zmienia.
@@ -423,6 +444,7 @@ Zalogowany użytkownik z~rolą klienta ma dostęp do następujących funkcji:
 	\item \label{wf:rez-anulowanie} Anulowanie rezerwacji do 18:00 w~dniu poprzedzającym dzień odbioru, bez opłaty.
 	\item \label{wf:rez-przeglad} Przegląd własnych rezerwacji, bieżących i~zakończonych, wraz z~ich stanem.
 	\item \label{wf:zaleglosc} Podgląd naliczonych opłat za nieodebranie, sumy zaległości i~informacji, czy konto może składać nowe rezerwacje.
+	\item \label{wf:karta-ponowna} Rejestracja karty płatniczej po założeniu konta. Klient, którego konto nie ma zarejestrowanej karty, np. po nieudanej rejestracji przy zakładaniu konta, rejestruje ją w~danych konta w~formularzu operatora płatności. W~ten sam sposób klient zastępuje zarejestrowaną kartę nową, a~system zapisuje nowy identyfikator w~miejsce poprzedniego.
 \end{enumerate}
 
 \subsubsection{Funkcje dostępne dla zalogowanego użytkownika}
@@ -431,7 +453,7 @@ Każdy zalogowany użytkownik, niezależnie od roli, ma dostęp do następujący
 
 \begin{enumerate}[resume*=wf]
 	\item \label{wf:wylogowanie} Wylogowanie.
-	\item Zmiana własnego hasła po podaniu hasła dotychczasowego.
+	\item \label{wf:zmiana-hasla} Zmiana własnego hasła po podaniu hasła dotychczasowego.
 	\item \label{wf:dane-konta} Podgląd własnych danych konta. Klient może zmienić swój numer telefonu.
 \end{enumerate}
 
@@ -442,7 +464,7 @@ Użytkownik niezalogowany, czyli klient-obserwator, ma dostęp do następującyc
 
 \begin{enumerate}[resume*=wf]
 	\item \label{wf:katalog} Przegląd katalogu: produkty w~ofercie, ceny za kilogram oraz ilości dostępne do rezerwacji na każdy z~siedmiu kolejnych dni. Dzień, dla którego przyjmowanie rezerwacji już się zakończyło, oznacza się jako niedostępny.
-	\item Założenie konta klienta (\ref{wf:rejestracja}).
+	\item \label{wf:zalozenie-konta} Założenie konta klienta (\ref{wf:rejestracja}).
 	\item \label{wf:zalogowanie} Zalogowanie się.
 \end{enumerate}
 
@@ -470,8 +492,8 @@ Wymagania niefunkcjonalne ponumerowano WN1, WN2 itd. Wartości liczbowe odnoszą
 \begin{enumerate}[label=WN\arabic*.,ref=WN\arabic*,leftmargin=1.6cm]
 	\item Aplikacja webowa z~graficznym interfejsem w~języku polskim. Panel klienta jest oddzielony od panelu administratora (Django Admin), z~którego korzysta wyłącznie personel.
 	\item Baza danych MySQL Community Server w~wersji 8.4 LTS z~silnikiem InnoDB i~kodowaniem \texttt{utf8mb4}. Aplikacja w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, połączona z~bazą przez sterownik \texttt{mysqlclient}. Wszystkie narzędzia mają bezpłatne licencje open source, także do użytku komercyjnego. Uzasadnienie wyboru i~licencje podano w~p.~\ref{sec:wykonalnosc}.
-	\item System w~możliwie największym stopniu korzysta z~wbudowanych mechanizmów Django: uwierzytelniania z~grupami użytkowników jako rolami (\texttt{django.\allowbreak contrib.\allowbreak auth}), panelu administratora (\texttt{django.\allowbreak contrib.\allowbreak admin}), formularzy z~walidacją, ORM z~migracjami, sesji, ochrony CSRF, widoków resetu hasła i~wysyłki poczty. Dane klienta spoza modelu użytkownika Django, czyli telefon, identyfikator karty i~zaległość, przechowuje się w~osobnym modelu powiązanym z~kontem.
-	\item Aplikacja Django działa jako serwer na jednym komputerze w~sklepie, bez zewnętrznego hostingu, a~klienci i~personel łączą się z~nim przez przeglądarkę. Katalog i~panel klienta są dostępne z~internetu przez połączenie szyfrowane (HTTPS), a~panel administratora tylko z~sieci lokalnej sklepu.
+	\item \label{wn:django} System w~możliwie największym stopniu korzysta z~wbudowanych mechanizmów Django: uwierzytelniania z~grupami użytkowników jako rolami (\texttt{django.\allowbreak contrib.\allowbreak auth}), panelu administratora (\texttt{django.\allowbreak contrib.\allowbreak admin}), formularzy z~walidacją, ORM z~migracjami, sesji, ochrony CSRF, widoków resetu hasła i~wysyłki poczty. Dane klienta spoza modelu użytkownika Django, czyli telefon, identyfikator karty i~zaległość, przechowuje się w~osobnym modelu powiązanym z~kontem.
+	\item \label{wn:wdrozenie} Aplikacja Django działa jako serwer na jednym komputerze w~sklepie, bez zewnętrznego hostingu, a~klienci i~personel łączą się z~nim przez przeglądarkę. Katalog i~panel klienta są dostępne z~internetu przez połączenie szyfrowane (HTTPS), a~panel administratora tylko z~sieci lokalnej sklepu.
 	\item Ponieważ rezerwacje przyjmuje się także wieczorem i~w~nocy, komputer z~systemem pracuje całą dobę.
 	\item \label{wn:wspolbieznosc} System obsługuje jednocześnie co najmniej 2~osoby personelu i~20~klientów bez utraty ani podwojenia zapisów. Operacje zmieniające pulę rezerwacji lub stan towaru wykonuje się w~transakcjach z~blokadą zmienianych wierszy.
 	\item Przy obciążeniu z~\ref{wn:wspolbieznosc} wyświetlenie katalogu i~zapisanie rezerwacji trwa nie dłużej niż 2~s.
@@ -479,7 +501,7 @@ Wymagania niefunkcjonalne ponumerowano WN1, WN2 itd. Wartości liczbowe odnoszą
 	\item Masy przechowuje się jako liczby dziesiętne z~dokładnością do 0,01~kg, a~kwoty z~dokładnością do 1~gr. Terminy, w~tym godzinę 18:00, liczy się według czasu lokalnego (strefa Europe/Warsaw).
 	\item Wiadomości e-mail system wysyła przez serwer SMTP skrzynki pocztowej sklepu. W~środowisku programistycznym i~podczas testów wiadomości wypisuje się na konsolę zamiast je wysyłać.
 	\item Hasła przechowuje się wyłącznie w~postaci skrótów, mechanizmem Django. Formularze są chronione przed atakami CSRF. Dane osobowe klientów widzi tylko personel i~sam klient.
-	\item Kopię zapasową bazy wykonuje się codziennie po zamknięciu sklepu i~przechowuje poza komputerem z~systemem. Odtworzenie bazy z~kopii trwa nie dłużej niż 1~h.
+	\item \label{wn:kopia} Kopię zapasową bazy wykonuje się codziennie po zamknięciu sklepu i~przechowuje poza komputerem z~systemem. Odtworzenie bazy z~kopii trwa nie dłużej niż 1~h.
 	\item \label{wn:przegladarki} Panel administratora działa w~przeglądarkach Chrome, Firefox i~Edge w~wersjach aktualnych w~dniu wdrożenia, na ekranie o~szerokości co najmniej 1280~px. Panel klienta działa w~tych samych przeglądarkach na komputerze, a~w~wersji rozszerzonej także na ekranach telefonów od 360~px szerokości.
 \end{enumerate}
 
@@ -491,7 +513,7 @@ Wymagania z~p.~\ref{sec:wf} podzielono na trzy wersje. Każda kolejna obejmuje f
 
 \subsubsection{Wersja minimalna}
 
-Wersja minimalna obejmuje konta i~uwierzytelnianie wszystkich ról (\ref{wf:uzytkownicy}--\ref{wf:dezaktywowane}, \ref{wf:konta-personelu}, \ref{wf:wylogowanie}--\ref{wf:dane-konta}), w~tym reset hasła przez e-mail (\ref{wf:reset-hasla}), panel administratora dla personelu i~osobny panel klienta. Właściciel prowadzi asortyment, ceny i~plan dostawy (\ref{wf:produkty}--\ref{wf:plan-dostawy}). Klient-obserwator przegląda katalog z~ilościami dostępnymi do rezerwacji i~zakłada konto (\ref{wf:katalog}--\ref{wf:zalogowanie}). Klient składa, przegląda i~anuluje rezerwacje (\ref{wf:rez-zlozenie}, \ref{wf:rez-anulowanie}, \ref{wf:rez-przeglad}) z~zachowaniem wszystkich warunków \ref{wf:proc-zlozenie} i~zamknięcia o~18:00 (\ref{wf:proc-zamkniecie}). Sprzedawca przegląda rezerwacje na dany dzień i~je wydaje (\ref{wf:lista-rezerwacji}, \ref{wf:wydanie}), a~rezerwacje niewydane do 18:00 system oznacza jako nieodebrane z~naliczeniem opłaty (\ref{wf:proc-nieodebrana}). Rejestrację karty w~tej wersji symuluje się: formularz zastępujący formularz operatora zwraca testowy identyfikator karty.
+Wersja minimalna obejmuje konta i~uwierzytelnianie wszystkich ról (\ref{wf:uzytkownicy}--\ref{wf:dezaktywowane}, \ref{wf:konta-personelu}, \ref{wf:wylogowanie}--\ref{wf:dane-konta}), w~tym reset hasła przez e-mail (\ref{wf:reset-hasla}), panel administratora dla personelu i~osobny panel klienta. Właściciel prowadzi asortyment, ceny i~plan dostawy (\ref{wf:produkty}--\ref{wf:plan-dostawy}). Klient-obserwator przegląda katalog z~ilościami dostępnymi do rezerwacji i~zakłada konto (\ref{wf:katalog}--\ref{wf:zalogowanie}). Klient składa, przegląda i~anuluje rezerwacje (\ref{wf:rez-zlozenie}, \ref{wf:rez-anulowanie}, \ref{wf:rez-przeglad}) z~zachowaniem wszystkich warunków \ref{wf:proc-zlozenie} i~zamknięcia o~18:00 (\ref{wf:proc-zamkniecie}). Sprzedawca przegląda rezerwacje na dany dzień i~je wydaje (\ref{wf:lista-rezerwacji}, \ref{wf:wydanie}), a~rezerwacje niewydane do 18:00 system oznacza jako nieodebrane z~naliczeniem opłaty (\ref{wf:proc-nieodebrana}). Klient może zarejestrować kartę także po założeniu konta (\ref{wf:karta-ponowna}). Rejestrację karty w~tej wersji symuluje się: formularz zastępujący formularz operatora zwraca testowy identyfikator karty.
 
 \subsubsection{Wersja standardowa}
 
@@ -510,62 +532,268 @@ Wersja rozszerzona dodaje zestawienia dla właściciela za wybrany okres (\ref{w
 % notatka 19.10 uwagi 1, 4, 5, 6 i „Ustalenia”. Po celu i wymaganiach, bo ocena, koszt i plan dotyczą tego zakresu.
 
 \subsection{Analiza SWOT}
-% Poprawki prowadzącego (notatka uwaga 5).
+\label{sec:swot}
+% Poprawki prowadzącego (notatka uwaga 5): krótki czas wdrożenia = słaba strona; błędy techniczne = zagrożenie;
+% bez „brak kodu na etapie analizy”.
 
+Analizę SWOT przeprowadzono dla projektu realizowanego przez grupę w~ramach kursu, a~nie dla samego sklepu. Mocne i~słabe strony dotyczą zespołu i~przyjętego rozwiązania, a~szanse i~zagrożenia czynników zewnętrznych. Zgodnie z~uwagami prowadzącego z~konsultacji 19.10.2026 krótki czas na wdrożenie zaliczono do słabych stron, a~nieprzewidziane błędy techniczne do zagrożeń (tab.~\ref{tab:swot}).
+
+\begin{table}[H]
+	\centering
+	\caption{Analiza SWOT projektu}
+	\label{tab:swot}
+	\small
+	\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+		\toprule
+		\textbf{Mocne strony} & \textbf{Słabe strony} \\
+		\midrule
+		Wąski zakres: jeden sklep, jeden dostawca, sprzedaż na wagę, bez dowozu i~płatności online za towar. & Krótki czas na implementację i~wdrożenie: 13~dni między oddaniem projektu (17.11) a~terminem wdrożenia (30.11). \\
+		Wbudowane mechanizmy Django (konta, panel administratora, formularze, migracje, reset hasła) ograniczają ilość własnego kodu. & Brak doświadczenia zespołu z~uruchamianiem aplikacji na komputerze klienta, z~serwerem MySQL i~z~połączeniem HTTPS. \\
+		Reguły rezerwacji i~rozliczeń ustalono na etapie analizy i~zapisano jako numerowane wymagania (p.~\ref{sec:wf}). & Zmiana bazy z~SQLite na MySQL po konsultacji wymaga instalacji i~konfiguracji serwera bazy danych. \\
+		Grupa zna narzędzie Visual Paradigm z~kursu Inżynieria oprogramowania, a~wszystkie narzędzia są bezpłatne. & Dokumentację i~kod przygotowuje się równolegle przez te same trzy osoby. \\
+		\midrule
+		\textbf{Szanse} & \textbf{Zagrożenia} \\
+		\midrule
+		Rezerwacje znane przed zamówieniem u~dostawcy pozwalają zmniejszyć nadwyżkę towaru (\ref{prob:straty}). & Nieprzewidziane błędy techniczne w~trakcie kodowania. \\
+		Katalog z~ilościami dostępnymi do rezerwacji przyciąga klientów, którzy dziś nie znają oferty przed wizytą (\ref{prob:informacja}). & Awaria lub wyłączenie komputera w~sklepie przerywa przyjmowanie rezerwacji. \\
+		Historia sprzedaży i~ubytków daje właścicielowi dane do ustalania standardowych ilości produktów. & Klienci mogą nie korzystać z~rezerwacji albo ich nie odbierać, mimo opłaty za nieodebranie. \\
+		System można później rozszerzyć o~dowóz, płatności online lub kolejne punkty sprzedaży. & Zmiana wymagań w~trakcie realizacji, np. po kolejnej konsultacji, i~rozrost zakresu. \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+Z~tab.~\ref{tab:swot} wynika, że główne ryzyko projektu leży w~czasie między oddaniem projektu a~wdrożeniem. Dlatego prosta działająca wersja aplikacji powstaje równolegle z~fazą projektową, zgodnie z~ustaleniami z~konsultacji, a~wersja minimalna (p.~\ref{sec:wersje}) obejmuje tylko funkcje potrzebne do rezerwacji.
 
 \subsection{Czynniki krytyczne sukcesu (CSF)}
+\label{sec:csf}
 
+Czynniki krytyczne sukcesu to warunki, bez których system nie spełni celu z~p.~\ref{sec:cel}. Każdy z~nich można sprawdzić na działającej aplikacji, a~sposób sprawdzenia podano w~tab.~\ref{tab:csf}.
+
+\begin{table}[H]
+	\centering
+	\caption{Czynniki krytyczne sukcesu}
+	\label{tab:csf}
+	\small
+	\begin{tabularx}{\textwidth}{@{}L{4.6cm}>{\raggedright\arraybackslash}XL{4.2cm}@{}}
+		\toprule
+		Czynnik & Sposób sprawdzenia & Skutek niespełnienia \\
+		\midrule
+		Ilość zarezerwowana nie przekracza planu dostawy & Test dwóch jednoczesnych rezerwacji ostatniej dostępnej ilości: przyjęta zostaje tylko jedna & Klient z~rezerwacją nie dostaje towaru \\
+		Stan towaru zgadza się z~ewidencją i~nie schodzi poniżej zera & Stan produktu równa się sumie dostaw pomniejszonej o~sprzedaż i~ubytki; próba sprzedaży ponad stan jest odrzucana & Właściciel zamawia na podstawie błędnych danych \\
+		Terminy liczone według czasu lokalnego & Po 18:00 rezerwacje na następny dzień są zamknięte, a~niewydane rezerwacje z~danego dnia oznaczone jako nieodebrane & Błędnie naliczone opłaty, spory z~klientami \\
+		Rejestracja sprzedaży nie wydłuża obsługi przy ladzie & Zarejestrowanie zakupu trzech produktów trwa nie dłużej niż 30~s & Sprzedawcy przestają rejestrować sprzedaż, ewidencja traci sens \\
+		Wersja minimalna działa na komputerze w~sklepie w~terminie & Instalacja według instrukcji z~rozdz.~\ref{ch:wdrozenie} do 30.11.2026 & Brak systemu do odbioru i~prezentacji \\
+		Dane nie giną po awarii & Kopia zapasowa z~poprzedniego dnia odtworzona na innym komputerze & Utrata rezerwacji i~zaległości klientów \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
 
 \subsection{Techniczna wykonalność systemu}
 \label{sec:wykonalnosc}
 
+System jest wykonalny technicznie w~przyjętym czasie, ponieważ opiera się na gotowych, bezpłatnych narzędziach, a~jego obciążenie (tab.~\ref{tab:parametry}) jest niewielkie: kilkaset zapisów dziennie i~co najwyżej 22~jednocześnie pracujących użytkowników. Wybrane technologie opisano w~p.~\ref{sec:technologie}, a~sposób obsługi jednoczesnych zapisów w~p.~\ref{sec:wspolbieznosc}.
+
 \subsubsection{Wybór technologii, wersje i~licencje}
-% Wytyczne v4 pkt 7--8 (zalecane Python + MySQL, inne dopuszczalne); notatka uwaga 6 (konkretne wersje, licencje open source).
-% Wytyczne v4 pkt 5 (techniki modelowania): decyzja Karola 04.11.2026 — UML + ERD w Visual Paradigm (Q4, Q5).
+\label{sec:technologie}
+% Wytyczne v4 pkt 5, 7--8; notatka uwaga 6 (konkretne wersje, licencje open source). Wersje zatwierdzone przez Karola (Q10).
+% Licencje sprawdzone 04.11.2026: PyPI (Django BSD-3-Clause, mysqlclient GPL-2.0-or-later, gunicorn MIT, certbot Apache-2.0),
+% docs.python.org (PSF License Version 2), pliki LICENSE/COPYING w repozytoriach MySQL 8.4 (GPLv2), Git (GPLv2), nginx (BSD-2-Clause),
+% latex-project.org (LPPL).
 
-Z~technik modelowania wymienionych w~wytycznych wybrano UML i~diagram związków encji (ERD). Diagramy UML przypadków użycia, czynności i~klas oraz ERD wykonuje się w~narzędziu Visual Paradigm, z~którego grupa korzystała na kursie Inżynieria oprogramowania, w~wydaniu Community Edition, bezpłatnym do użytku niekomercyjnego.
-% TODO: numer wersji Visual Paradigm i potwierdzenie wydania/licencji (Karol).
-Diagramy hierarchii i~następstwa funkcji (DHF, DNF) oraz definicje funkcji elementarnych (DFE) pominięto, ponieważ strukturę funkcjonalną systemu opisują przypadki użycia (rozdz.~\ref{ch:diagramy-pu} i~\ref{ch:opis-pu}), a~strukturę informacyjną model bazy danych (rozdz.~\ref{ch:model-bd}).
-% Wersje zatwierdzone przez Karola 04.11.2026 (Q10): Python 3.12, Django 5.2 LTS, MySQL Community Server 8.4 LTS (WN2).
-% Wbudowane mechanizmy Django (auth z grupami, admin, formularze, ORM, sesje, reset hasła, poczta) — WN3; e-mail przez SMTP.
-% Q3 (04.11.2026, Karol): MySQL Community Server; sterownik mysqlclient; licencje
-% (MySQL Community: GPLv2, mysqlclient: GPL-2.0) zweryfikować w dokumentacji przed wpisaniem. Zmiana względem notatki §1
-% (zespół wybrał wtedy SQLite) — napisać wprost, że zmieniono po uwadze 1 i zgodnie z pkt 7. SQLite tylko do lokalnych testów
-% programistów, jeśli w ogóle.
+Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~dane przechowuje w~bazie MySQL Community Server 8.4 LTS z~silnikiem InnoDB. Wytyczne zalecają Python i~MySQL (pkt~7). Na konsultacji 19.10.2026 zespół przedstawił bazę SQLite, a~prowadzący ostrzegł, że SQLite źle obsługuje jednoczesne zapisy wielu użytkowników; dlatego wybrano MySQL. Wersje oznaczone jako LTS mają długi okres wsparcia, który obejmuje cały czas realizacji i~pierwsze lata pracy sklepu. Django łączy się z~bazą przez sterownik \texttt{mysqlclient}. Wszystkie narzędzia mają bezpłatne licencje (tab.~\ref{tab:technologie}), więc ich koszt wynosi 0~zł (p.~\ref{sec:koszt}).
 
+\begin{table}[H]
+	\centering
+	\caption{Technologie i~narzędzia}
+	\label{tab:technologie}
+	\small
+	\begin{tabularx}{\textwidth}{@{}L{4.4cm}L{2.6cm}L{2.8cm}>{\raggedright\arraybackslash}X@{}}
+		\toprule
+		Technologia & Wersja & Licencja & Zastosowanie \\
+		\midrule
+		Python & 3.12 & PSF License & język aplikacji \\
+		Django & 5.2 LTS & BSD-3-Clause & framework: widoki, szablony, ORM, panel administratora, konta \\
+		MySQL Community Server & 8.4 LTS & GPLv2 & baza danych (InnoDB, \texttt{utf8mb4}) \\
+		\texttt{mysqlclient} & zgodna z~Django 5.2 & GPL-2.0 lub nowsza & sterownik bazy dla Django \\
+		Ubuntu Server & 24.04 LTS & bezpłatny, licencje open source & system operacyjny komputera w~sklepie \\
+		Gunicorn & zgodna z~Python 3.12 & MIT & serwer aplikacji WSGI uruchamiający Django \\
+		Nginx & z~repozytorium Ubuntu 24.04 & BSD-2-Clause & serwer HTTPS, pliki statyczne, ograniczenie panelu administratora do sieci lokalnej \\
+		Certbot & z~repozytorium Ubuntu 24.04 & Apache-2.0 & certyfikat Let's Encrypt i~jego odnawianie \\
+		Visual Paradigm & Community Edition & bezpłatna do użytku niekomercyjnego & diagramy UML i~ERD \\
+		Git & aktualna & GPLv2 & repozytorium kodu i~dokumentacji \\
+		LaTeX & TeX Live & LPPL & skład dokumentacji \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+% Q6: sprzęt, system i serwery zaproponowane przez agenta 04.11.2026 na prośbę Karola — do akceptacji (CLAUDE.md).
+
+System działa na komputerze typu mini PC wymienionym w~kosztorysie (tab.~\ref{tab:koszt}), z~energooszczędnym czterordzeniowym procesorem, np. Intel N100, 16~GB pamięci RAM i~dyskiem SSD 512~GB. Komputer pracuje pod kontrolą systemu Ubuntu Server 24.04 LTS, który jest bezpłatny i~ma wsparcie do 2029~r. Przy obciążeniu z~tab.~\ref{tab:parametry} taki komputer ma duży zapas mocy, a~pobiera około 15~W.
+
+Żądania z~przeglądarek przyjmuje serwer Nginx. Obsługuje on połączenie HTTPS, udostępnia pliki statyczne i~przekazuje pozostałe żądania do serwera aplikacji Gunicorn, który uruchamia Django przez interfejs WSGI. Certyfikat HTTPS dla domeny sklepu wystawia bezpłatnie urząd Let's Encrypt, a~program Certbot odnawia go samoczynnie przed wygaśnięciem. Router sklepu przekierowuje na komputer porty 80 i~443, a~jeśli dostawca internetu przydziela zmienny adres IP, adres domeny aktualizuje się przez dynamiczny DNS. Żądania do panelu administratora Nginx przepuszcza tylko z~adresów sieci lokalnej sklepu (\ref{wn:wdrozenie}). MySQL, Gunicorn i~Nginx działają jako usługi systemu uruchamiane przy starcie komputera. Zadania o~ustalonych godzinach uruchamia systemowy harmonogram \texttt{cron}: o~18:00 polecenie Django oznaczające rezerwacje nieodebrane (\ref{pu:nieodebrane}), o~6:00 wysyłkę przypomnień (\ref{pu:przypomnienie}) i~po zamknięciu sklepu kopię bazy programem \texttt{mysqldump} na dysk zewnętrzny (\ref{wn:kopia}).
+
+Z~technik modelowania wymienionych w~wytycznych wybrano UML i~diagram związków encji (ERD). Diagramy UML przypadków użycia, czynności, klas i~stanów oraz ERD wykonuje się w~Visual Paradigm Community Edition, z~którego grupa korzystała na kursie Inżynieria oprogramowania. ERD rysuje się w~notacji Crow's Foot (,,kurza stopka''), w~której liczność związku oznacza się zakończeniem linii, tak jak w~modelach bazy danych przykładowego raportu ,,Sklep hydrauliczny''. Diagramy hierarchii i~następstwa funkcji (DHF, DNF) oraz definicje funkcji elementarnych (DFE) pominięto, ponieważ strukturę funkcjonalną systemu opisują przypadki użycia (rozdz.~\ref{ch:diagramy-pu} i~\ref{ch:opis-pu}), a~strukturę informacyjną model bazy danych (rozdz.~\ref{ch:model-bd}).
 
 \subsubsection{Współbieżne zapisy w~bazie MySQL (InnoDB)}
-% Notatka uwaga 1: prowadzący ostrzegł przed SQLite przy jednoczesnych zapisach; Q3 (04.11.2026, Karol): MySQL.
-% Treść: silnik InnoDB z blokadami na poziomie wierszy — zapisy różnych klientów i sprzedawców nie blokują całej bazy;
-% obciążenie z tab:parametry (2 os. personelu + do 20 klientów naraz, do 45 rezerwacji i ok. 220 sprzedaży dziennie).
-% Rezerwacja: w jednej transakcji (transaction.atomic) blokada wiersza planu dostawy produktu na dany dzień
-% (select_for_update, SELECT ... FOR UPDATE), sprawdzenie ilości dostępnej do rezerwacji, zapis pozycji — dwie rezerwacje
-% tuż przed 18:00 nie przekroczą planu dostawy; druga czeka na zwolnienie blokady. Tak samo sprzedaż i dostawa (stan >= 0).
-% Krótkie transakcje; przy przekroczeniu czasu oczekiwania na blokadę lub zakleszczeniu — komunikat i ponowienie.
+\label{sec:wspolbieznosc}
+% Notatka uwaga 1; Q3 (04.11.2026, Karol): MySQL.
 
+Jednocześnie z~systemu korzystają najwyżej 2~osoby personelu i~20~klientów (tab.~\ref{tab:parametry}). Silnik InnoDB blokuje przy zapisie pojedyncze wiersze, a~nie całą bazę, więc sprzedaż zapisywana przy ladzie nie czeka na rezerwację składaną w~tym czasie przez klienta. Odczyty, np. przegląd katalogu, nie czekają na zapisy, ponieważ InnoDB udostępnia im spójny obraz danych z~chwili rozpoczęcia zapytania.
+
+Konflikt może wystąpić wtedy, gdy dwóch klientów rezerwuje ten sam produkt na ten sam dzień, zwłaszcza tuż przed 18:00. Złożenie rezerwacji wykonuje się w~jednej transakcji (\texttt{transaction.atomic}): system blokuje wiersze planu dostawy wybranych produktów na dany dzień (\texttt{select\_for\_update}, w~SQL \texttt{SELECT ... FOR UPDATE}), sprawdza ilość dostępną do rezerwacji i~zapisuje pozycje. Druga transakcja czeka na zwolnienie blokady i~sprawdza dostępność już po zapisie pierwszej, więc suma rezerwacji nie przekracza planu dostawy. Tak samo przy sprzedaży i~ubytku blokuje się wiersz produktu, aby jego stan nie zszedł poniżej zera.
+
+Transakcje są krótkie: obejmują kilka odczytów i~zapisów, bez oczekiwania na użytkownika. Jeśli transakcja przekroczy czas oczekiwania na blokadę albo baza wykryje zakleszczenie, system wycofuje ją i~prosi użytkownika o~ponowienie operacji. Przy obciążeniu z~tab.~\ref{tab:parametry} takie sytuacje są rzadkie.
 
 \subsection{Koszt wytworzenia systemu (kosztorys)}
 \label{sec:koszt}
-% Narzędzia 0 zł (licencje open source, notatka uwaga 6); praca i sprzęt — Q9.
+% Q9: stawka, godziny i sprzęt zaproponowane przez agenta 04.11.2026, zatwierdzone przez Karola.
 
+Koszt obejmuje pracę zespołu, sprzęt potrzebny w~sklepie i~koszty utrzymania (tab.~\ref{tab:koszt}). Pracę wyceniono stawką 40~zł za godzinę, przyjętą jako typowa stawka studenta zatrudnionego jako programista bez doświadczenia zawodowego. Liczbę godzin oszacowano dla trzech osób w~pięciu etapach projektu. Narzędzia nie generują kosztu, ponieważ mają bezpłatne licencje (tab.~\ref{tab:technologie}). System działa na komputerze w~sklepie, więc nie ma opłat za hosting.
+
+\begin{table}[H]
+	\centering
+	\caption{Kosztorys wytworzenia i~utrzymania systemu}
+	\label{tab:koszt}
+	\small
+	\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}XL{3.0cm}r@{}}
+		\toprule
+		Pozycja & Ilość & Kwota \\
+		\midrule
+		\multicolumn{3}{@{}l}{\textit{Praca zespołu (40~zł/h)}} \\
+		Przygotowanie i~analiza (etap 1) & 30~h & 1\,200~zł \\
+		Faza projektowa (etap 2) & 45~h & 1\,800~zł \\
+		Implementacja i~walidacja (etap 3) & 90~h & 3\,600~zł \\
+		Wdrożenie aplikacji (etap 4) & 15~h & 600~zł \\
+		Dokumentacja końcowa i~prezentacja (etap 5) & 30~h & 1\,200~zł \\
+		\textbf{Razem praca} & 210~h & \textbf{8\,400~zł} \\
+		\midrule
+		\multicolumn{3}{@{}l}{\textit{Wdrożenie (jednorazowo)}} \\
+		Komputer typu mini PC pracujący całą dobę & 1~szt. & 2\,000~zł \\
+		Zasilacz awaryjny (UPS) & 1~szt. & 400~zł \\
+		Dysk zewnętrzny na kopie zapasowe & 1~szt. & 250~zł \\
+		Narzędzia i~licencje & -- & 0~zł \\
+		\textbf{Razem wdrożenie} & & \textbf{2\,650~zł} \\
+		\midrule
+		\multicolumn{3}{@{}l}{\textit{Utrzymanie (rocznie)}} \\
+		Domena internetowa & 1~rok & 60~zł \\
+		Certyfikat HTTPS (Let's Encrypt) & 1~rok & 0~zł \\
+		Energia elektryczna komputera (ok. 15~W, 24~h na dobę) & ok. 130~kWh & 130~zł \\
+		Hosting & -- & 0~zł \\
+		\textbf{Razem utrzymanie} & & \textbf{190~zł/rok} \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+Koszt wytworzenia systemu wynosi 8\,400~zł, a~z~wyposażeniem sklepu 11\,050~zł. Najwięcej kosztuje implementacja, która zajmuje 43\% godzin. Jeśli w~sklepie jest komputer, który może pracować całą dobę, koszt wdrożenia zmniejsza się o~2\,000~zł. Prowizji operatora płatności od obciążeń kart nie wliczono, ponieważ ponosi ją sklep przy rozliczaniu opłat za nieodebranie, a~nie przy wytwarzaniu systemu.
 
 \subsection{Plan projektu}
+\label{sec:plan}
 
+Projekt realizuje się w~pięciu etapach wytycznych. Każdy etap kończy się rezultatem, który grupa przedstawia prowadzącemu na zajęciach, a~terminy podano w~p.~\ref{sec:harmonogram}.
+
+\begin{enumerate}[leftmargin=1.2cm]
+	\item Przygotowanie i~uzasadnienie potrzeby realizacji, analiza problemu: opis świata rzeczywistego i~problemów sklepu (rozdz.~\ref{ch:swiat}), cel i~zakres (p.~\ref{sec:cel}, \ref{sec:zakres}), SWOT, CSF, wykonalność, kosztorys, plan, podział obowiązków i~harmonogram (rozdz.~\ref{ch:uzasadnienie}).
+	\item Faza projektowa: wymagania funkcjonalne i~niefunkcjonalne z~podziałem na wersje (p.~\ref{sec:wf}--\ref{sec:wersje}), diagramy i~opisy przypadków użycia (rozdz.~\ref{ch:diagramy-pu} i~\ref{ch:opis-pu}), model bazy danych z~diagramem klas modeli ORM (rozdz.~\ref{ch:model-bd}). Równolegle konfiguruje się środowisko i~przygotowuje prostą działającą wersję aplikacji.
+	\item Implementacja i~walidacja: aplikacja w~wersji minimalnej, a~następnie standardowej, testy jednostkowe i~akceptacyjne przypadków użycia (rozdz.~\ref{ch:implementacja}--\ref{ch:testy}).
+	\item Wdrożenie aplikacji: instalacja na komputerze w~sklepie, dane początkowe, kopia zapasowa, podręcznik użytkownika i~odbiór (rozdz.~\ref{ch:wdrozenie}).
+	\item Prezentacja i~zaliczenie: pokaz działającego systemu wraz z~dokumentacją i~wnioski (rozdz.~\ref{ch:prezentacja} i~\ref{ch:wnioski}).
+\end{enumerate}
 
 \subsection{Grupa projektowa i~podział obowiązków}
 \label{sec:grupa}
-% Wytyczne v4 pkt 2 (grupy ok. 3-osobowe) i 4a.
+% Wytyczne v4 pkt 2 (grupy ok. 3-osobowe) i 4a. Podział zaproponowany przez agenta 04.11.2026 — do akceptacji Karola.
 
 \subsubsection{Skład grupy}
 
+Projekt realizuje trzyosobowa grupa studentów kierunku Informatyka techniczna na Wydziale Informatyki i~Telekomunikacji Politechniki Wrocławskiej (tab.~\ref{tab:sklad}). Każda osoba ma główny obszar odpowiedzialności w~implementacji, a~fazę analizy i~projektu grupa prowadzi wspólnie.
+
+\begin{table}[H]
+	\centering
+	\caption{Skład grupy projektowej}
+	\label{tab:sklad}
+	\small
+	\begin{tabularx}{\textwidth}{@{}L{4.0cm}L{2.0cm}>{\raggedright\arraybackslash}X@{}}
+		\toprule
+		Osoba & Nr indeksu & Główny obszar odpowiedzialności \\
+		\midrule
+		Karol Gąsior & 280913 & koordynacja projektu, dokumentacja, model bazy danych, serwer w~sklepie \\
+		Mikołaj Winiecki & 280952 & wymagania, logika rezerwacji, ewidencji i~rozliczeń, testy jednostkowe, kopia zapasowa \\
+		Mateusz Złośnik & 281201 & przypadki użycia, panel klienta, panel administratora, testy akceptacyjne, podręcznik użytkownika \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
 
 \subsubsection{Podział obowiązków w~etapach projektu}
 % Notatka uwaga 4: analiza — jeden student w roli właściciela, dwóch analityków (wywiad);
 % projektowanie wspólnie (burza mózgów); podział backend / frontend / baza dopiero przy implementacji.
+% Podział zaproponowany przez agenta i przebudowany 04.11.2026 na prośbę Karola (osoba prowadząca + wspierająca);
+% rola właściciela w wywiadzie: Mateusz Złośnik (zatwierdzone przez Karola).
 
+Podział obowiązków zmienia się między etapami zgodnie z~zaleceniami prowadzącego z~konsultacji 19.10.2026. Na etapie analizy jedna osoba występuje w~roli właściciela sklepu, a~dwie pozostałe przeprowadzają z~nią wywiad jako analitycy. Fazę projektową grupa prowadzi wspólnie, a~każda osoba odpowiada za przygotowanie do oddania jednej części dokumentacji. Ścisły podział na bazę danych, logikę aplikacji i~interfejs obowiązuje dopiero przy implementacji. Każde zadanie ma osobę prowadzącą, która odpowiada za jego wykonanie w~terminie, i~osobę wspierającą, która pomaga w~pracy i~sprawdza wynik (tab.~\ref{tab:obowiazki}). Zadania rozdzielono tak, aby każda osoba prowadziła i~wspierała podobną ich liczbę.
+
+\begin{longtable}{@{}L{2.5cm}L{5.4cm}L{3.3cm}L{3.5cm}@{}}
+	\caption{Podział obowiązków w~etapach projektu}
+	\label{tab:obowiazki}\\
+	\toprule
+	Etap & Zadanie & Prowadzi & Wspiera \\
+	\midrule
+	\endfirsthead
+	\toprule
+	Etap & Zadanie & Prowadzi & Wspiera \\
+	\midrule
+	\endhead
+	\bottomrule
+	\endfoot
+	1. Analiza & wywiad: rola właściciela sklepu & Mateusz Złośnik & -- \\
+	 & wywiad: analitycy, opis świata rzeczywistego i~problemy & Karol Gąsior & Mikołaj Winiecki \\
+	 & SWOT i~CSF & Mikołaj Winiecki & Mateusz Złośnik \\
+	 & wykonalność techniczna i~kosztorys & Karol Gąsior & Mikołaj Winiecki \\
+	 & plan, podział obowiązków i~harmonogram & Mateusz Złośnik & Karol Gąsior \\
+	2. Projekt & wymagania funkcjonalne i~niefunkcjonalne, wersje & Mikołaj Winiecki & Mateusz Złośnik \\
+	 & aktorzy, diagramy i~opisy przypadków użycia, diagramy czynności & Mateusz Złośnik & Mikołaj Winiecki \\
+	 & model bazy danych, diagram klas modeli ORM, graf stanów & Karol Gąsior & Mateusz Złośnik \\
+	 & środowisko i~prosta działająca wersja aplikacji & Karol Gąsior & Mateusz Złośnik \\
+	3. Implementacja & modele, migracje i~baza MySQL & Karol Gąsior & Mikołaj Winiecki \\
+	 & rezerwacje, plan dostawy i~rozliczenia & Mikołaj Winiecki & Karol Gąsior \\
+	 & ewidencja dostaw, sprzedaży i~ubytków & Mikołaj Winiecki & Mateusz Złośnik \\
+	 & panel klienta: widoki, szablony, formularze & Mateusz Złośnik & Mikołaj Winiecki \\
+	 & panel administratora, powiadomienia e-mail & Mateusz Złośnik & Karol Gąsior \\
+	 & testy jednostkowe & Mikołaj Winiecki & Karol Gąsior \\
+	 & testy akceptacyjne przypadków użycia & Mateusz Złośnik & Mikołaj Winiecki \\
+	 & opis implementacji i~testów w~dokumentacji & Karol Gąsior & Mikołaj Winiecki, Mateusz Złośnik \\
+	4. Wdrożenie & serwer w~sklepie: system, Nginx, Gunicorn, HTTPS, zadania cron & Karol Gąsior & Mikołaj Winiecki \\
+	 & kopia zapasowa i~próba odtworzenia & Mikołaj Winiecki & Karol Gąsior \\
+	 & dane początkowe i~konta & Mikołaj Winiecki & Mateusz Złośnik \\
+	 & podręcznik użytkownika, checklista odbioru & Mateusz Złośnik & Karol Gąsior \\
+	5. Prezentacja & pokaz systemu & wszyscy & -- \\
+	 & wnioski & Mikołaj Winiecki & Mateusz Złośnik \\
+	 & ostateczna wersja dokumentacji & Karol Gąsior & Mateusz Złośnik \\
+\end{longtable}
 
 \subsection{Harmonogram}
+\label{sec:harmonogram}
 
+Terminy oddania etapów wyznaczają zajęcia projektowe (tab.~\ref{tab:harmonogram}). Daty pośrednie wynikają z~planu budowy aplikacji. Harmonogram zgadza się z~ustaleniem z~konsultacji 19.10.2026, według którego fazę projektową należało zamknąć w~ciągu miesiąca: termin 17.11.2026 wypada po 29~dniach.
+
+\begin{table}[H]
+	\centering
+	\caption{Harmonogram projektu}
+	\label{tab:harmonogram}
+	\small
+	\begin{tabularx}{\textwidth}{@{}L{2.6cm}L{4.4cm}>{\raggedright\arraybackslash}X@{}}
+		\toprule
+		Termin & Etap & Rezultat \\
+		\midrule
+		19.10.2026 & 1. Przygotowanie i~analiza & opis sklepu, wstępny SWOT i~podział zadań przedstawione na konsultacji \\
+		10.11.2026 & 2. Faza projektowa (punkt pośredni) & środowisko, modele i~migracje, prosta działająca wersja \\
+		17.11.2026 & 2. Faza projektowa & wymagania, przypadki użycia, model bazy danych, poprawiony SWOT i~kosztorys \\
+		24.11.2026 & 3. Implementacja (punkt pośredni) & wersja minimalna: rezerwacje w~panelu klienta \\
+		30.11.2026 & 3. Implementacja i~walidacja, 4. Wdrożenie & wersja standardowa, testy, instalacja na komputerze w~sklepie \\
+		14.12.2026 & 5. Prezentacja i~zaliczenie & pokaz systemu, ostateczna dokumentacja \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+Implementację, walidację i~wdrożenie oddaje się w~jednym terminie 30.11.2026, 13~dni po fazie projektowej. Ten krótki odstęp wskazano w~analizie SWOT jako słabą stronę (tab.~\ref{tab:swot}).
 
 
 \clearpage
@@ -577,10 +805,118 @@ Diagramy hierarchii i~następstwa funkcji (DHF, DNF) oraz definicje funkcji elem
 Diagramy przypadków użycia i~ich opisy w~rozdz.~\ref{ch:opis-pu} przedstawiają strukturę funkcjonalną systemu, wymaganą przez wytyczne obok struktury informacyjnej. Każdy przypadek użycia odpowiada jednemu lub kilku wymaganiom funkcjonalnym z~p.~\ref{sec:wf}.
 
 \subsection{Identyfikacja aktorów}
+\label{sec:aktorzy}
+% Wzór: Sklep hydrauliczny 3.1 (gość, użytkownik, pracownik, kierownik) i rys. 3.1 (aktorzy z uogólnieniem).
 
+Aktorami systemu są role z~p.~\ref{sec:system} oraz systemy zewnętrzne, które biorą udział w~przypadkach użycia (tab.~\ref{tab:aktorzy}). Dostawca nie jest aktorem, ponieważ nie ma konta w~systemie, a~zamówienie przekazuje mu telefonicznie personel sklepu.
+
+\begin{table}[H]
+	\centering
+	\caption{Aktorzy systemu}
+	\label{tab:aktorzy}
+	\small
+	\begin{tabularx}{\textwidth}{@{}L{3.6cm}>{\raggedright\arraybackslash}X@{}}
+		\toprule
+		Aktor & Opis \\
+		\midrule
+		Klient-obserwator & Użytkownik niezalogowany. Przegląda katalog, zakłada konto klienta, loguje się i~resetuje hasło. W~tej roli występuje każdy użytkownik przed zalogowaniem, także członek personelu. \\
+		Użytkownik zalogowany & Aktor abstrakcyjny, uogólnienie klienta i~sprzedawcy. Wylogowuje się, zmienia hasło i~przegląda dane swojego konta. \\
+		Klient & Użytkownik z~kontem klienta. Składa, zmienia, anuluje i~przegląda swoje rezerwacje, sprawdza zaległość i~rejestruje kartę płatniczą. Korzysta z~panelu klienta. \\
+		Sprzedawca & Członek personelu obsługujący ladę: rejestruje dostawy, sprzedaż i~ubytki, przygotowuje i~wydaje rezerwacje, odnotowuje wpłaty zaległości. Korzysta z~panelu administratora. \\
+		Właściciel & Specjalizacja sprzedawcy: ma wszystkie jego przypadki użycia, a~ponadto prowadzi produkty i~ceny, ustala plan dostawy, zarządza kontami i~rozlicza obciążenia kart. \\
+		Czas & Zegar systemowy. O~ustalonych godzinach uruchamia przypadki użycia bez udziału użytkownika: oznaczenie rezerwacji nieodebranych o~18:00 i~wysyłkę przypomnień o~6:00. \\
+		Operator płatności & System zewnętrzny. Rejestruje kartę płatniczą klienta i~zwraca jej identyfikator (\ref{wf:karta}, \ref{wf:karta-ponowna}). \\
+		Serwer poczty e-mail & System zewnętrzny. Doręcza klientom wiadomości wysyłane przez system (\ref{wf:powiadomienia}, \ref{wf:reset-hasla}). \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+\diagramvp{rys:aktorzy}{Aktorzy systemu}{pu-aktorzy}{diagram aktorów z~uogólnieniami: Użytkownik zalogowany $\leftarrow$ Klient, Sprzedawca; Sprzedawca $\leftarrow$ Właściciel; osobno Klient-obserwator, Czas, Operator płatności, Serwer poczty e-mail}
 
 \subsection{Diagramy przypadków użycia dla poszczególnych modułów}
+\label{sec:diagramy-pu}
 
+Dla czytelności przypadki użycia podzielono na cztery moduły: Konta użytkowników, Rezerwacje, Magazyn i~sprzedaż oraz Rozliczenia. Tab.~\ref{tab:pu} zestawia przypadki użycia według aktora głównego, z~modułem i~wymaganiami funkcjonalnymi, które realizują. Przypadki użycia ponumerowano PU1, PU2 itd.; numery te przywołują opisy w~rozdz.~\ref{ch:opis-pu} i~testy akceptacyjne.
+
+\begin{longtable}{@{}L{1.1cm}L{5.0cm}L{3.2cm}>{\raggedright\arraybackslash}p{5.4cm}@{}}
+	\caption{Przypadki użycia według aktorów}
+	\label{tab:pu}\\
+	\toprule
+	Nr & Przypadek użycia & Moduł & Wymagania \\
+	\midrule
+	\endfirsthead
+	\toprule
+	Nr & Przypadek użycia & Moduł & Wymagania \\
+	\midrule
+	\endhead
+	\bottomrule
+	\endfoot
+	\multicolumn{4}{@{}l}{\textit{Klient-obserwator}} \\
+	\pu{pu:katalog} & Przeglądaj katalog & Rezerwacje & \ref{wf:katalog} \\
+	\pu{pu:konto} & Załóż konto klienta & Konta użytkowników & \ref{wf:rejestracja}, \ref{wf:karta}, \ref{wf:login}, \ref{wf:zalozenie-konta}, \ref{wf:powiadomienia} \\
+	\pu{pu:logowanie} & Zaloguj się & Konta użytkowników & \ref{wf:login}, \ref{wf:logowanie}, \ref{wf:panel-admina}, \ref{wf:dezaktywowane}, \ref{wf:zalogowanie} \\
+	\pu{pu:reset} & Zresetuj hasło & Konta użytkowników & \ref{wf:reset-hasla} \\
+	\midrule
+	\multicolumn{4}{@{}l}{\textit{Użytkownik zalogowany}} \\
+	\pu{pu:wylogowanie} & Wyloguj się & Konta użytkowników & \ref{wf:wylogowanie} \\
+	\pu{pu:haslo} & Zmień hasło & Konta użytkowników & \ref{wf:zmiana-hasla} \\
+	\pu{pu:dane} & Wyświetl dane konta & Konta użytkowników & \ref{wf:dane-konta} \\
+	\midrule
+	\multicolumn{4}{@{}l}{\textit{Klient}} \\
+	\pu{pu:zlozenie} & Złóż rezerwację & Rezerwacje & \ref{wf:rez-zlozenie}, \ref{wf:proc-zlozenie}, \ref{wf:proc-zamkniecie}, \ref{wf:powiadomienia} \\
+	\pu{pu:zmiana} & Zmień rezerwację & Rezerwacje & \ref{wf:rez-zmiana}, \ref{wf:proc-zamkniecie}, \ref{wf:powiadomienia} \\
+	\pu{pu:anulowanie} & Anuluj rezerwację & Rezerwacje & \ref{wf:rez-anulowanie}, \ref{wf:proc-zamkniecie}, \ref{wf:powiadomienia} \\
+	\pu{pu:moje} & Przeglądaj swoje rezerwacje & Rezerwacje & \ref{wf:rez-przeglad} \\
+	\pu{pu:zaleglosc} & Sprawdź zaległość & Rozliczenia & \ref{wf:zaleglosc} \\
+	\pu{pu:karta} & Zarejestruj kartę płatniczą & Konta użytkowników & \ref{wf:karta-ponowna}, \ref{wf:karta} \\
+	\midrule
+	\multicolumn{4}{@{}l}{\textit{Sprzedawca (także właściciel)}} \\
+	\pu{pu:dostawa} & Zarejestruj przyjęcie dostawy & Magazyn i~sprzedaż & \ref{wf:dostawa} \\
+	\pu{pu:sprzedaz} & Zarejestruj sprzedaż & Magazyn i~sprzedaż & \ref{wf:sprzedaz} \\
+	\pu{pu:ubytek} & Zarejestruj ubytek & Magazyn i~sprzedaż & \ref{wf:ubytek} \\
+	\pu{pu:stan} & Przeglądaj stan i~plan dostawy & Magazyn i~sprzedaż & \ref{wf:stan} \\
+	\pu{pu:zamowienie} & Przygotuj zestawienie zamówienia & Magazyn i~sprzedaż & \ref{wf:zestawienie-zamowienia} \\
+	\pu{pu:lista} & Przeglądaj rezerwacje na dzień & Rezerwacje & \ref{wf:lista-rezerwacji} \\
+	\pu{pu:przygotowanie} & Przygotuj rezerwację do odbioru & Rezerwacje & \ref{wf:przygotowanie}, \ref{wf:proc-przygotowanie} \\
+	\pu{pu:wydanie} & Wydaj rezerwację & Rezerwacje & \ref{wf:wydanie}, \ref{wf:proc-wydanie} \\
+	\pu{pu:wyszukanie} & Wyszukaj klienta & Rozliczenia & \ref{wf:wyszukanie} \\
+	\pu{pu:wplata} & Odnotuj wpłatę zaległości & Rozliczenia & \ref{wf:wplata}, \ref{wf:proc-blokada} \\
+	\midrule
+	\multicolumn{4}{@{}l}{\textit{Właściciel}} \\
+	\pu{pu:produkty} & Zarządzaj produktami & Magazyn i~sprzedaż & \ref{wf:produkty} \\
+	\pu{pu:cena} & Zmień cenę produktu & Magazyn i~sprzedaż & \ref{wf:cena} \\
+	\pu{pu:plan} & Ustal plan dostawy & Rezerwacje & \ref{wf:plan-dostawy} \\
+	\pu{pu:konta} & Zarządzaj kontami & Konta użytkowników & \ref{wf:konta-sprzedawcow}, \ref{wf:dezaktywacja-klienta}, \ref{wf:konta-personelu} \\
+	\pu{pu:obciazenie} & Odnotuj wynik obciążenia karty & Rozliczenia & \ref{wf:obciazenie}, \ref{wf:proc-blokada} \\
+	\pu{pu:zestawienia} & Wyświetl zestawienia & Magazyn i~sprzedaż & \ref{wf:zestawienia} \\
+	\midrule
+	\multicolumn{4}{@{}l}{\textit{Czas}} \\
+	\pu{pu:nieodebrane} & Oznacz nieodebrane rezerwacje & Rezerwacje & \ref{wf:proc-nieodebrana}, \ref{wf:proc-blokada}, \ref{wf:powiadomienia} \\
+	\pu{pu:przypomnienie} & Wyślij przypomnienie o~odbiorze & Rezerwacje & \ref{wf:przypomnienie} \\
+\end{longtable}
+
+Zamknięcia przyjmowania rezerwacji o~18:00 (\ref{wf:proc-zamkniecie}) nie wyodrębniono jako osobnego przypadku użycia: system sprawdza godzinę przy każdym złożeniu, zmianie i~anulowaniu rezerwacji (\ref{pu:zlozenie}--\ref{pu:anulowanie}), a~katalog oznacza zamknięty dzień jako niedostępny.
+
+Między przypadkami użycia występują następujące związki:
+\begin{itemize}
+	\item \ref{pu:wydanie} ,,Wydaj rezerwację'' \guillemotleft include\guillemotright{} \ref{pu:wyszukanie} ,,Wyszukaj klienta'' oraz \ref{pu:sprzedaz} ,,Zarejestruj sprzedaż'', ponieważ wydanie zaczyna się od odszukania klienta i~kończy zapisem sprzedaży;
+	\item \ref{pu:zmiana} ,,Zmień rezerwację'' i~\ref{pu:anulowanie} ,,Anuluj rezerwację'' \guillemotleft extend\guillemotright{} \ref{pu:moje} ,,Przeglądaj swoje rezerwacje'';
+	\item \ref{pu:przygotowanie} ,,Przygotuj rezerwację do odbioru'' \guillemotleft extend\guillemotright{} \ref{pu:lista} ,,Przeglądaj rezerwacje na dzień'';
+	\item \ref{pu:wplata} ,,Odnotuj wpłatę zaległości'' \guillemotleft extend\guillemotright{} \ref{pu:wyszukanie} ,,Wyszukaj klienta'';
+	\item \ref{pu:reset} ,,Zresetuj hasło'' \guillemotleft extend\guillemotright{} \ref{pu:logowanie} ,,Zaloguj się'';
+	\item \ref{pu:konto} ,,Załóż konto klienta'' \guillemotleft extend\guillemotright{} \ref{pu:katalog} ,,Przeglądaj katalog'';
+	\item \ref{pu:karta} ,,Zarejestruj kartę płatniczą'' \guillemotleft extend\guillemotright{} \ref{pu:dane} ,,Wyświetl dane konta''.
+\end{itemize}
+
+Diagramy przypadków użycia dla modułów przedstawiono na rys.~\ref{rys:pu-konta}--\ref{rys:pu-rozliczenia}.
+
+\diagramvp{rys:pu-konta}{Diagram przypadków użycia dla modułu Konta użytkowników}{pu-modul-konta}{\ref{pu:konto}--\ref{pu:dane}, \ref{pu:karta} i~\ref{pu:konta}; aktorzy: Klient-obserwator, Użytkownik zalogowany, Klient, Właściciel, Operator płatności, Serwer poczty e-mail}
+
+\diagramvp{rys:pu-rezerwacje}{Diagram przypadków użycia dla modułu Rezerwacje}{pu-modul-rezerwacje}{\ref{pu:katalog}, \ref{pu:zlozenie}--\ref{pu:moje}, \ref{pu:lista}--\ref{pu:wydanie}, \ref{pu:plan}, \ref{pu:nieodebrane}, \ref{pu:przypomnienie}; aktorzy: Klient-obserwator, Klient, Sprzedawca, Właściciel, Czas, Serwer poczty e-mail}
+
+\diagramvp{rys:pu-magazyn}{Diagram przypadków użycia dla modułu Magazyn i~sprzedaż}{pu-modul-magazyn}{\ref{pu:dostawa}--\ref{pu:zamowienie}, \ref{pu:produkty}, \ref{pu:cena}, \ref{pu:zestawienia}; aktorzy: Sprzedawca, Właściciel}
+
+\diagramvp{rys:pu-rozliczenia}{Diagram przypadków użycia dla modułu Rozliczenia}{pu-modul-rozliczenia}{\ref{pu:zaleglosc}, \ref{pu:wyszukanie}, \ref{pu:wplata}, \ref{pu:obciazenie}; aktorzy: Klient, Sprzedawca, Właściciel}
 
 
 \clearpage
@@ -591,21 +927,383 @@ Diagramy przypadków użycia i~ich opisy w~rozdz.~\ref{ch:opis-pu} przedstawiaj�
 % przebieg podstawowy i alternatywny, warunki końcowe, rysunek ekranu. Jeśli diagramy PU zmieniono po etapie 2,
 % na początku rozdziału opisać poprawki, a poprzednie wersje dać na końcu (SH 4.1 i 4.6).
 
-\subsection{Przypadki użycia dla klienta-obserwatora}
+Opisy obejmują przypadki użycia o~największym znaczeniu dla celu systemu: rezerwacje, ich przygotowanie i~wydanie, rozliczenie rezerwacji nieodebranych, plan dostawy, ewidencję dostaw i~sprzedaży oraz konta użytkowników. Każdy opis podaje aktora, realizowane wymagania funkcjonalne, zdarzenie inicjujące, warunki początkowe, przebieg podstawowy, przebiegi alternatywne i~warunki końcowe, tak jak w~przykładowym raporcie ,,Sklep hydrauliczny''. Przebieg alternatywny wskazuje krok przebiegu podstawowego, w~którym się zaczyna. Numery przypadków użycia odpowiadają tab.~\ref{tab:pu}.
+Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każdego ekranu wymieniono przy rysunku, a~kroki, w~których się pojawia, wskazuje opis przypadku użycia.
+% Ekrany: makiety albo zrzuty z aplikacji, pliki wg schematu z CLAUDE.md (rysunki/ekrany/puNN-<opis>.png).
 
+\subsection{Przypadki użycia dla klienta-obserwatora}
+\label{sec:pu-obserwator}
+
+\subsubsection{PU ,,Załóż konto klienta''}
+\label{sec:pu-konto}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:konto}.
+	\item \textbf{Aktor:} klient-obserwator; uczestniczą operator płatności i~serwer poczty e-mail.
+	\item \textbf{Wymagania:} \ref{wf:rejestracja}, \ref{wf:karta}, \ref{wf:login}, \ref{wf:logowanie}, \ref{wf:powiadomienia}.
+	\item \textbf{Zdarzenie inicjujące:} wybranie polecenia ,,Załóż konto'' na stronie katalogu.
+	\item \textbf{Warunki początkowe:} użytkownik nie jest zalogowany.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System wyświetla formularz z~polami: imię, nazwisko, adres e-mail, numer telefonu, hasło i~powtórzenie hasła.
+		\item Użytkownik wypełnia formularz i~zatwierdza go.
+		\item System sprawdza, czy adres e-mail nie należy do innego konta i~czy hasło spełnia reguły z~\ref{wf:logowanie}.
+		\item System zapisuje konto z~rolą klienta; loginem jest adres e-mail.
+		\item System przekierowuje użytkownika do formularza rejestracji karty operatora płatności.
+		\item Użytkownik podaje dane karty w~formularzu operatora.
+		\item Operator płatności zwraca identyfikator karty, a~system zapisuje go przy koncie.
+		\item System wysyła na adres klienta wiadomość z~potwierdzeniem założenia konta.
+		\item System wyświetla komunikat o~założeniu konta i~formularz logowania.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 3 adres e-mail należy już do innego konta albo hasło nie spełnia reguł. System wyświetla komunikat przy błędnym polu i~wraca do kroku 2 z~zachowanymi danymi, bez hasła.
+		\item W~kroku 6 lub 7 rejestracja karty nie powiodła się albo użytkownik ją przerwał. Konto pozostaje zapisane bez karty, a~system informuje, że do czasu zarejestrowania karty nie można składać rezerwacji (\ref{wf:rejestracja}). Kartę klient rejestruje później w~danych konta (\ref{pu:karta}).
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} istnieje konto klienta z~identyfikatorem karty, a~klient otrzymał wiadomość e-mail z~potwierdzeniem.
+\end{itemize}
+
+\ekran{rys:ekran-pu02-konto}{Ekran zakładania konta klienta}{pu02-zalozenie-konta}{Zawartość ekranu: pola imię, nazwisko, adres e-mail, numer telefonu, hasło i~powtórzenie hasła, wymagania dotyczące hasła, przycisk ,,Załóż konto. Opis: p.~\ref{sec:pu-konto}, kroki 1--3 i~A1.}
+% W wersji minimalnej i standardowej formularz operatora jest symulowany (2.5).
+
+\subsubsection{PU ,,Zaloguj się''}
+\label{sec:pu-logowanie}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:logowanie}.
+	\item \textbf{Aktor:} klient-obserwator.
+	\item \textbf{Wymagania:} \ref{wf:login}, \ref{wf:logowanie}, \ref{wf:panel-admina}, \ref{wf:dezaktywowane}, \ref{wf:zalogowanie}.
+	\item \textbf{Zdarzenie inicjujące:} wybranie polecenia ,,Zaloguj się''.
+	\item \textbf{Warunki początkowe:} użytkownik nie jest zalogowany.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System wyświetla formularz logowania z~polami login i~hasło.
+		\item Użytkownik wpisuje login i~hasło i~zatwierdza formularz.
+		\item System sprawdza, czy istnieje aktywne konto o~podanym loginie i~czy hasło jest poprawne.
+		\item System loguje użytkownika i~wyświetla panel odpowiedni dla jego roli: klientowi panel klienta, a~sprzedawcy i~właścicielowi panel administratora.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 3 login lub hasło są błędne albo konto jest dezaktywowane. System wyświetla komunikat o~niepowodzeniu, bez wskazania, które dane są błędne, i~wraca do kroku 1.
+		\item W~kroku 1 użytkownik wybiera polecenie ,,Nie pamiętam hasła''. Dalej realizuje się \ref{pu:reset} ,,Zresetuj hasło''.
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} użytkownik jest zalogowany i~widzi panel swojej roli.
+\end{itemize}
+
+\ekran{rys:ekran-pu03-logowanie}{Ekran logowania}{pu03-logowanie}{Zawartość ekranu: pola login i~hasło, przycisk ,,Zaloguj się, odnośniki ,,Nie pamiętam hasła i~,,Załóż konto, miejsce na komunikat o~niepowodzeniu. Opis: p.~\ref{sec:pu-logowanie}, kroki 1--2 i~A1--A2.}
+
+\subsubsection{PU ,,Zresetuj hasło''}
+\label{sec:pu-reset}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:reset}.
+	\item \textbf{Aktor:} klient-obserwator; uczestniczy serwer poczty e-mail.
+	\item \textbf{Wymagania:} \ref{wf:reset-hasla}, \ref{wf:logowanie}.
+	\item \textbf{Zdarzenie inicjujące:} wybranie polecenia ,,Nie pamiętam hasła'' w~formularzu logowania.
+	\item \textbf{Warunki początkowe:} użytkownik nie jest zalogowany.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System wyświetla formularz z~polem adres e-mail.
+		\item Użytkownik podaje adres e-mail konta i~zatwierdza formularz.
+		\item System wysyła na ten adres jednorazowy link do ustawienia nowego hasła, ważny przez 3~dni, i~wyświetla komunikat o~wysłaniu wiadomości.
+		\item Użytkownik otwiera link z~wiadomości.
+		\item System wyświetla formularz z~polami nowe hasło i~powtórzenie hasła.
+		\item Użytkownik wpisuje nowe hasło i~zatwierdza formularz.
+		\item System sprawdza reguły hasła, zapisuje nowe hasło i~unieważnia link.
+		\item System wyświetla komunikat o~zmianie hasła i~odnośnik do formularza logowania.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 3 adres nie należy do żadnego aktywnego konta. System wyświetla ten sam komunikat co w~kroku 3, ale nie wysyła wiadomości, aby nie ujawniać, które adresy mają konto.
+		\item W~kroku 4 link wygasł albo został już użyty. System wyświetla komunikat o~nieważnym linku, a~użytkownik może wrócić do kroku 1.
+		\item W~kroku 7 hasło nie spełnia reguł albo powtórzenie się nie zgadza. System wyświetla komunikat i~wraca do kroku 5.
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} konto ma nowe hasło, a~link nie działa. Użytkownik nie jest zalogowany.
+\end{itemize}
+
+\ekran{rys:ekran-pu04-reset}{Ekran resetu hasła}{pu04-reset-hasla}{Zawartość ekranu: pole adres e-mail, przycisk ,,Wyślij link, komunikat o~wysłaniu wiadomości. Opis: p.~\ref{sec:pu-reset}, kroki 1--3.}
+
+\ekran{rys:ekran-pu04-nowe-haslo}{Ekran ustawienia nowego hasła}{pu04-nowe-haslo}{Zawartość ekranu: pola nowe hasło i~powtórzenie hasła, wymagania dotyczące hasła, przycisk ,,Zmień hasło. Opis: p.~\ref{sec:pu-reset}, kroki 5--8.}
 
 \subsection{Przypadki użycia dla klienta}
+\label{sec:pu-klient}
 
+\subsubsection{PU ,,Złóż rezerwację''}
+\label{sec:pu-zlozenie}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:zlozenie}.
+	\item \textbf{Aktor:} klient; uczestniczy serwer poczty e-mail.
+	\item \textbf{Wymagania:} \ref{wf:rez-zlozenie}, \ref{wf:proc-zlozenie}, \ref{wf:proc-zamkniecie}, \ref{wf:proc-blokada}, \ref{wf:powiadomienia}.
+	\item \textbf{Zdarzenie inicjujące:} wybranie w~panelu klienta polecenia ,,Zarezerwuj'' przy jednym z~dni w~katalogu.
+	\item \textbf{Warunki początkowe:} klient jest zalogowany.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System sprawdza, czy klient może złożyć rezerwację na wybrany dzień: ma zarejestrowaną kartę, jego zaległość nie przekracza 100~zł, nie ma innej niezakończonej rezerwacji na ten dzień, a~przyjmowanie rezerwacji na ten dzień trwa.
+		\item System wyświetla produkty w~ofercie z~ceną za kilogram i~ilością dostępną do rezerwacji na ten dzień.
+		\item Klient wpisuje ilości wybranych produktów w~kilogramach, z~dokładnością do 0,1~kg.
+		\item System pokazuje łączną masę i~orientacyjną wartość rezerwacji według cen bieżących.
+		\item Klient zatwierdza rezerwację.
+		\item System w~jednej transakcji blokuje wiersze planu dostawy wybranych produktów na ten dzień (p.~\ref{sec:wspolbieznosc}) i~sprawdza, czy łączna masa nie przekracza 20~kg, ilość każdego produktu nie przekracza ilości dostępnej do rezerwacji, a~godzina jest wcześniejsza niż 18:00 w~dniu poprzedzającym dzień odbioru.
+		\item System zapisuje rezerwację z~pozycjami w~stanie złożona.
+		\item System wysyła klientowi wiadomość e-mail z~dniem odbioru i~listą pozycji.
+		\item System wyświetla rezerwację na liście rezerwacji klienta.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 1 klient nie ma zarejestrowanej karty albo jego zaległość przekracza 100~zł. System wyświetla przyczynę: przy braku karty z~odnośnikiem do jej rejestracji (\ref{pu:karta}), a~przy zaległości z~jej kwotą (\ref{pu:zaleglosc}). Przypadek użycia kończy się.
+		\item W~kroku 1 klient ma już niezakończoną rezerwację na ten dzień. System wyświetla tę rezerwację, a~klient może ją zmienić (\ref{pu:zmiana}). Przypadek użycia kończy się.
+		\item W~kroku 6 łączna masa przekracza 20~kg albo ilość produktu przekracza ilość dostępną, np. dlatego, że w~międzyczasie zarezerwował go inny klient. System wycofuje transakcję, wyświetla komunikat z~aktualną ilością dostępną i~wraca do kroku 3 z~zachowanymi ilościami.
+		\item W~kroku 1 lub 6 minęła 18:00 w~dniu poprzedzającym dzień odbioru. System wyświetla komunikat, że przyjmowanie rezerwacji na ten dzień zakończyło się. Przypadek użycia kończy się.
+		\item W~kroku 6 transakcja przekroczyła czas oczekiwania na blokadę. System wycofuje transakcję i~prosi o~ponowne zatwierdzenie, wracając do kroku 5.
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} rezerwacja jest złożona, ilość dostępna do rezerwacji każdego produktu na ten dzień zmniejszyła się o~zarezerwowaną ilość, a~klient otrzymał potwierdzenie e-mail.
+\end{itemize}
+
+\ekran{rys:ekran-pu08-rezerwacja}{Ekran składania rezerwacji}{pu08-rezerwacja}{Zawartość ekranu: dzień odbioru; tabela produktów z~nazwą i~odmianą, ceną za kilogram, ilością dostępną do rezerwacji i~polem ilości; łączna masa z~limitem 20~kg, orientacyjna wartość, przycisk ,,Zarezerwuj. Opis: p.~\ref{sec:pu-zlozenie}, kroki 2--5 i~A3.}
+
+\subsubsection{PU ,,Anuluj rezerwację''}
+\label{sec:pu-anulowanie}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:anulowanie}.
+	\item \textbf{Aktor:} klient; uczestniczy serwer poczty e-mail.
+	\item \textbf{Wymagania:} \ref{wf:rez-anulowanie}, \ref{wf:proc-zamkniecie}, \ref{wf:powiadomienia}.
+	\item \textbf{Zdarzenie inicjujące:} wybranie polecenia ,,Anuluj'' przy rezerwacji na liście rezerwacji klienta (\ref{pu:moje}).
+	\item \textbf{Warunki początkowe:} klient jest zalogowany i~ma rezerwację w~stanie złożona.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System wyświetla szczegóły rezerwacji i~prosi o~potwierdzenie anulowania.
+		\item Klient potwierdza anulowanie.
+		\item System sprawdza, czy jest przed 18:00 w~dniu poprzedzającym dzień odbioru.
+		\item System zmienia stan rezerwacji na anulowana, co zwalnia jej ilości w~planie dostawy.
+		\item System wysyła klientowi wiadomość e-mail o~anulowaniu rezerwacji.
+		\item System wyświetla listę rezerwacji klienta z~nowym stanem.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 2 klient rezygnuje z~anulowania. Rezerwacja pozostaje złożona.
+		\item W~kroku 3 minęła 18:00 w~dniu poprzedzającym dzień odbioru. System wyświetla komunikat, że rezerwacji nie można już anulować, a~nieodebranie jej spowoduje naliczenie opłaty. Rezerwacja pozostaje złożona. Po tej godzinie system nie pokazuje już polecenia ,,Anuluj''.
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} rezerwacja jest anulowana bez opłaty, a~jej ilości są znów dostępne do rezerwacji.
+\end{itemize}
+
+\ekran{rys:ekran-pu11-moje-rezerwacje}{Ekran listy rezerwacji klienta}{pu11-moje-rezerwacje}{Zawartość ekranu: rezerwacje bieżące i~zakończone z~dniem odbioru, stanem i~orientacyjną wartością, polecenia ,,Zmień i~,,Anuluj przy rezerwacjach złożonych przed terminem. Opis: p.~\ref{sec:pu-anulowanie}, zdarzenie inicjujące i~krok 6.}
+
+\ekran{rys:ekran-pu10-anulowanie}{Ekran potwierdzenia anulowania rezerwacji}{pu10-anulowanie}{Zawartość ekranu: dzień odbioru, pozycje z~ilościami, informacja o~terminie bezpłatnego anulowania, przyciski ,,Anuluj rezerwację i~,,Wróć. Opis: p.~\ref{sec:pu-anulowanie}, kroki 1--2.}
+
+\subsubsection{PU ,,Zarejestruj kartę płatniczą''}
+\label{sec:pu-karta}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:karta}; rozszerza \ref{pu:dane}.
+	\item \textbf{Aktor:} klient; uczestniczy operator płatności.
+	\item \textbf{Wymagania:} \ref{wf:karta-ponowna}, \ref{wf:karta}.
+	\item \textbf{Zdarzenie inicjujące:} wybranie polecenia ,,Zarejestruj kartę'' albo ,,Zmień kartę'' w~danych konta lub w~komunikacie o~braku karty (\ref{pu:zlozenie}, A1).
+	\item \textbf{Warunki początkowe:} klient jest zalogowany.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System wyświetla informację, czy konto ma zarejestrowaną kartę, oraz polecenie ,,Zarejestruj kartę'' albo ,,Zmień kartę''.
+		\item Klient wybiera polecenie.
+		\item System przekierowuje klienta do formularza rejestracji karty operatora płatności.
+		\item Klient podaje dane karty w~formularzu operatora.
+		\item Operator płatności zwraca identyfikator karty, a~system zapisuje go w~miejsce poprzedniego.
+		\item System wyświetla komunikat o~zarejestrowaniu karty i~informację, czy konto może składać rezerwacje (\ref{wf:zaleglosc}).
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 4 lub 5 rejestracja karty nie powiodła się albo klient ją przerwał. System pozostawia dotychczasowy stan konta, czyli brak karty albo poprzednią kartę, wyświetla komunikat o~niepowodzeniu i~wraca do kroku 1.
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} konto ma zarejestrowaną kartę z~nowym identyfikatorem, a~kolejne obciążenia zaległości dotyczą tej karty.
+\end{itemize}
+
+\ekran{rys:ekran-pu13-karta}{Ekran rejestracji karty płatniczej w~danych konta}{pu13-rejestracja-karty}{Zawartość ekranu: dane konta, informacja ,,karta zarejestrowana albo ,,brak karty, przycisk ,,Zarejestruj kartę albo ,,Zmień kartę, miejsce na komunikat o~wyniku. Opis: p.~\ref{sec:pu-karta}, kroki 1--2 i~6.}
 
 \subsection{Przypadki użycia dla sprzedawcy}
+\label{sec:pu-sprzedawca}
 
+Przypadki użycia sprzedawcy realizuje również właściciel (tab.~\ref{tab:aktorzy}).
+
+\subsubsection{PU ,,Zarejestruj przyjęcie dostawy''}
+\label{sec:pu-dostawa}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:dostawa}.
+	\item \textbf{Aktor:} sprzedawca.
+	\item \textbf{Wymagania:} \ref{wf:dostawa}.
+	\item \textbf{Zdarzenie inicjujące:} dostawca przywiózł towar, a~osoba otwierająca sklep wybiera w~panelu administratora polecenie ,,Przyjmij dostawę''.
+	\item \textbf{Warunki początkowe:} sprzedawca jest zalogowany, a~dostawa na bieżący dzień nie została jeszcze zarejestrowana.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System wyświetla produkty z~planu dostawy na bieżący dzień z~ilością planowaną i~polem na ilość dostarczoną.
+		\item Sprzedawca wpisuje ilości faktycznie dostarczone w~kilogramach i~zatwierdza formularz.
+		\item System w~jednej transakcji zapisuje dostawę z~pozycjami i~zwiększa stan każdego dostarczonego produktu.
+		\item System wyświetla różnice między ilością dostarczoną a~planem dostawy dla każdego produktu.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 2 sprzedawca wpisał ilość ujemną albo z~dokładnością większą niż 0,01~kg. System wyświetla komunikat przy błędnym polu i~wraca do kroku 2.
+		\item W~kroku 4 ilość dostarczona produktu jest mniejsza od ilości zarezerwowanej na ten dzień. System wyróżnia ten produkt, aby personel mógł uprzedzić klientów, których rezerwacje go zawierają.
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} dostawa jest zapisana, a~stan produktów zwiększył się o~dostarczone ilości.
+\end{itemize}
+
+\ekran{rys:ekran-pu14-dostawa}{Ekran przyjęcia dostawy}{pu14-przyjecie-dostawy}{Zawartość ekranu: dzień dostawy; tabela produktów z~ilością planowaną, polem ilości dostarczonej i~różnicą, wyróżnienie produktów dostarczonych w~ilości mniejszej od zarezerwowanej, przycisk ,,Zapisz dostawę. Opis: p.~\ref{sec:pu-dostawa}, kroki 1--4 i~A2.}
+
+\subsubsection{PU ,,Zarejestruj sprzedaż''}
+\label{sec:pu-sprzedaz}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:sprzedaz}.
+	\item \textbf{Aktor:} sprzedawca.
+	\item \textbf{Wymagania:} \ref{wf:sprzedaz}.
+	\item \textbf{Zdarzenie inicjujące:} klient przy ladzie wybrał towar, a~sprzedawca wybiera polecenie ,,Nowa sprzedaż''.
+	\item \textbf{Warunki początkowe:} sprzedawca jest zalogowany.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System wyświetla pusty formularz sprzedaży.
+		\item Sprzedawca wybiera produkt i~wpisuje masę odczytaną z~wagi.
+		\item System pokazuje cenę obowiązującą w~chwili sprzedaży, wartość pozycji i~sumę sprzedaży.
+		\item Kroki 2--3 powtarza się dla kolejnych produktów.
+		\item Sprzedawca zatwierdza sprzedaż.
+		\item System w~jednej transakcji blokuje wiersze sprzedawanych produktów, sprawdza, czy żaden nie spadnie poniżej zera, zapisuje sprzedaż z~cenami pozycji i~zmniejsza stany.
+		\item System wyświetla kwotę do zapłaty. Klient płaci poza systemem.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 6 masa produktu przekracza jego stan. System wycofuje transakcję, wyświetla bieżący stan produktu i~wraca do kroku 2 z~zachowanymi pozycjami.
+		\item Przed krokiem 5 klient rezygnuje z~zakupu. Sprzedawca porzuca formularz, a~system niczego nie zapisuje.
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} sprzedaż jest zapisana z~cenami z~chwili sprzedaży, a~stany produktów zmniejszyły się o~sprzedane masy.
+\end{itemize}
+
+\ekran{rys:ekran-pu15-sprzedaz}{Ekran rejestracji sprzedaży}{pu15-sprzedaz}{Zawartość ekranu: wybór produktu i~pole masy; lista pozycji z~produktem, masą, ceną za kilogram i~wartością; suma do zapłaty, przycisk ,,Zatwierdź sprzedaż. Opis: p.~\ref{sec:pu-sprzedaz}, kroki 1--7.}
+
+\subsubsection{PU ,,Przygotuj rezerwację do odbioru''}
+\label{sec:pu-przygotowanie}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:przygotowanie}.
+	\item \textbf{Aktor:} sprzedawca.
+	\item \textbf{Wymagania:} \ref{wf:lista-rezerwacji}, \ref{wf:przygotowanie}, \ref{wf:proc-przygotowanie}.
+	\item \textbf{Zdarzenie inicjujące:} wybranie rezerwacji z~listy rezerwacji na bieżący dzień (\ref{pu:lista}).
+	\item \textbf{Warunki początkowe:} sprzedawca jest zalogowany, dostawa na bieżący dzień jest przyjęta (\ref{pu:dostawa}), a~rezerwacja jest złożona z~dniem odbioru równym bieżącemu dniowi.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System wyświetla pozycje rezerwacji z~zarezerwowanymi ilościami i~polem na odważoną masę.
+		\item Sprzedawca kompletuje i~waży towar, a~następnie wpisuje odważoną masę każdej pozycji.
+		\item Sprzedawca zatwierdza formularz.
+		\item System zapisuje odważone masy i~zmienia stan rezerwacji na przygotowana do odbioru.
+		\item System wyświetla listę rezerwacji na bieżący dzień z~nowym stanem.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 2 towaru jednego z~produktów nie wystarcza. Sprzedawca wpisuje masę, którą udało się skompletować, także 0~kg. Kwotę do zapłaty system wyliczy przy wydaniu z~odważonych mas (\ref{wf:wydanie}).
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} rezerwacja jest przygotowana do odbioru, a~przy każdej pozycji zapisano odważoną masę.
+\end{itemize}
+
+\ekran{rys:ekran-pu19-lista}{Ekran listy rezerwacji na dzień}{pu19-rezerwacje-na-dzien}{Zawartość ekranu: wybór dnia; rezerwacje z~klientem, pozycjami i~stanem, polecenia ,,Przygotuj i~,,Wydaj. Opis: p.~\ref{sec:pu-przygotowanie}, zdarzenie inicjujące i~krok 5.}
+
+\ekran{rys:ekran-pu20-przygotowanie}{Ekran przygotowania rezerwacji do odbioru}{pu20-przygotowanie-rezerwacji}{Zawartość ekranu: klient i~dzień odbioru; pozycje z~zarezerwowaną ilością i~polem odważonej masy, przycisk ,,Przygotowana. Opis: p.~\ref{sec:pu-przygotowanie}, kroki 1--4 i~A1.}
+
+\subsubsection{PU ,,Wydaj rezerwację''}
+\label{sec:pu-wydanie}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:wydanie}; zawiera \ref{pu:wyszukanie} i~\ref{pu:sprzedaz}.
+	\item \textbf{Aktor:} sprzedawca.
+	\item \textbf{Wymagania:} \ref{wf:wyszukanie}, \ref{wf:wydanie}, \ref{wf:proc-wydanie}.
+	\item \textbf{Zdarzenie inicjujące:} klient zgłasza się przy ladzie po odbiór rezerwacji.
+	\item \textbf{Warunki początkowe:} sprzedawca jest zalogowany, a~klient ma na bieżący dzień rezerwację złożoną lub przygotowaną do odbioru; jest przed 18:00.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item Sprzedawca wyszukuje klienta po nazwisku, adresie e-mail lub numerze telefonu (\ref{pu:wyszukanie}).
+		\item System wyświetla rezerwację klienta na bieżący dzień.
+		\item Sprzedawca wybiera polecenie ,,Wydaj''.
+		\item System wyświetla pozycje z~odważonymi masami, cenami obowiązującymi w~dniu odbioru i~kwotą do zapłaty.
+		\item Klient płaci poza systemem, a~sprzedawca potwierdza wydanie.
+		\item System w~jednej transakcji rejestruje wydanie jako sprzedaż, zmniejsza stany produktów i~zmienia stan rezerwacji na odebrana.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 2 rezerwacja jest złożona, ale nieprzygotowana. Sprzedawca waży towar przy kliencie i~wpisuje odważone masy, tak jak w~\ref{pu:przygotowanie}, po czym przechodzi do kroku 4.
+		\item W~kroku 2 klient ma zaległość. System wyświetla jej kwotę, a~sprzedawca może odnotować wpłatę (\ref{pu:wplata}) przed wydaniem albo po nim.
+		\item W~kroku 5 klient odmawia zapłaty. Sprzedawca nie potwierdza wydania, a~rezerwacja pozostaje w~dotychczasowym stanie.
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} rezerwacja jest odebrana, a~wydany towar zapisano jako sprzedaż.
+\end{itemize}
+
+\ekran{rys:ekran-pu21-wydanie}{Ekran wydania rezerwacji}{pu21-wydanie-rezerwacji}{Zawartość ekranu: klient i~jego zaległość; pozycje z~odważoną masą, ceną z~dnia odbioru i~wartością; kwota do zapłaty, przycisk ,,Wydaj, polecenie odnotowania wpłaty zaległości. Opis: p.~\ref{sec:pu-wydanie}, kroki 2--6 i~A1--A2.}
 
 \subsection{Przypadki użycia dla właściciela}
+\label{sec:pu-wlasciciel}
 
+\subsubsection{PU ,,Ustal plan dostawy''}
+\label{sec:pu-plan}
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:plan}.
+	\item \textbf{Aktor:} właściciel.
+	\item \textbf{Wymagania:} \ref{wf:plan-dostawy}, \ref{wf:proc-zamkniecie}.
+	\item \textbf{Zdarzenie inicjujące:} wybranie polecenia ,,Plan dostawy'' w~panelu administratora.
+	\item \textbf{Warunki początkowe:} właściciel jest zalogowany.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System wyświetla dla każdego produktu w~ofercie i~każdego z~siedmiu kolejnych dni plan dostawy, ilość zarezerwowaną i~ilość dostępną do rezerwacji. Plan dnia, którego właściciel jeszcze nie zmieniał, równa się standardowej dziennej ilości produktu.
+		\item Właściciel zmienia plan wybranego produktu na wybrany dzień i~zatwierdza zmianę.
+		\item System w~jednej transakcji blokuje wiersz planu, sprawdza, czy nowy plan nie jest mniejszy od ilości zarezerwowanej, i~zapisuje go.
+		\item System wyświetla nową ilość dostępną do rezerwacji, którą od tej chwili pokazuje też katalog.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 3 nowy plan jest mniejszy od ilości zarezerwowanej. System wyświetla ilość zarezerwowaną i~nie zapisuje zmiany.
+		\item W~kroku 2 właściciel wybrał dzień, dla którego przyjmowanie rezerwacji już się zakończyło. System nie pozwala zmienić planu, ponieważ zamówienie u~dostawcy na ten dzień zostało złożone.
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} plan dostawy jest zapisany, a~ilość dostępna do rezerwacji równa się planowi pomniejszonemu o~ilość zarezerwowaną.
+\end{itemize}
+
+\ekran{rys:ekran-pu26-plan}{Ekran planu dostawy}{pu26-plan-dostawy}{Zawartość ekranu: tabela produktów na siedem kolejnych dni z~planem, ilością zarezerwowaną i~dostępną; pole zmiany planu, oznaczenie dni zamkniętych, miejsce na komunikat. Opis: p.~\ref{sec:pu-plan}, kroki 1--4 i~A1--A2.}
+
+\subsection{Przypadki użycia uruchamiane przez czas}
+\label{sec:pu-czas}
+
+\subsubsection{PU ,,Oznacz nieodebrane rezerwacje''}
+\label{sec:pu-nieodebrane}
+% Uruchamiane o 18:00 przez cron jako polecenie Django (p. sec:technologie, Q6 — do akceptacji).
+
+\begin{itemize}
+	\item \textbf{Przypadek użycia:} \ref{pu:nieodebrane}.
+	\item \textbf{Aktor:} czas; uczestniczy serwer poczty e-mail.
+	\item \textbf{Wymagania:} \ref{wf:proc-nieodebrana}, \ref{wf:proc-blokada}, \ref{wf:powiadomienia}.
+	\item \textbf{Zdarzenie inicjujące:} godzina 18:00, czyli zamknięcie sklepu.
+	\item \textbf{Warunki początkowe:} na bieżący dzień istnieją rezerwacje złożone lub przygotowane do odbioru.
+	\item \textbf{Przebieg podstawowy:}
+	\begin{enumerate}
+		\item System wybiera rezerwacje złożone i~przygotowane do odbioru z~dniem odbioru równym bieżącemu dniowi.
+		\item Dla każdej z~nich system zmienia stan na nieodebrana.
+		\item System liczy wartość rezerwacji z~zarezerwowanych ilości i~cen obowiązujących w~bieżącym dniu, a~opłatę za nieodebranie jako 10\% tej wartości, zaokrągloną do 1~gr; przy wartości 80~zł opłata wynosi 8~zł.
+		\item System dopisuje opłatę do zaległości klienta.
+		\item Jeśli zaległość klienta przekroczyła 100~zł, system blokuje mu składanie nowych rezerwacji.
+		\item System wysyła klientowi wiadomość e-mail o~naliczonej opłacie, a~przy blokadzie także o~niej.
+	\end{enumerate}
+	\item \textbf{Przebiegi alternatywne:}
+	\begin{enumerate}[label=A\arabic*.]
+		\item W~kroku 1 nie ma takich rezerwacji. Przypadek użycia kończy się bez zmian.
+		\item W~kroku 6 wysłanie wiadomości nie powiodło się. Stan rezerwacji i~opłata pozostają zapisane, a~klient widzi opłatę w~panelu klienta (\ref{pu:zaleglosc}).
+	\end{enumerate}
+	\item \textbf{Warunki końcowe:} żadna rezerwacja z~bieżącego dnia nie jest już złożona ani przygotowana, a~opłaty za nieodebrane rezerwacje powiększyły zaległości klientów.
+\end{itemize}
 
 \subsection{Diagramy czynności wybranych przypadków użycia}
+\label{sec:czynnosci}
 % Dla 1--2 najbardziej złożonych PU (instrukcje IO). Q4 (04.11.2026): diagramy czynności zostają, Visual Paradigm.
 
+Diagramy czynności przedstawiono dla dwóch przypadków użycia o~największej liczbie warunków i~rozgałęzień: złożenia rezerwacji (rys.~\ref{rys:czynnosci-zlozenie}) i~wydania rezerwacji (rys.~\ref{rys:czynnosci-wydanie}).
+
+\diagramvp{rys:czynnosci-zlozenie}{Diagram czynności przypadku użycia \ref{pu:zlozenie} ,,Złóż rezerwację''}{czynnosci-pu08-zlozenie-rezerwacji}{przebieg z~p.~\ref{sec:pu-zlozenie}: decyzje po krokach 1 i~6 (A1--A5), tory: Klient, System}
+
+\diagramvp{rys:czynnosci-wydanie}{Diagram czynności przypadku użycia \ref{pu:wydanie} ,,Wydaj rezerwację''}{czynnosci-pu21-wydanie-rezerwacji}{przebieg z~p.~\ref{sec:pu-wydanie}: wyszukanie klienta, decyzja ,,przygotowana?'' (A1), zaległość (A2), zapłata (A3); tory: Sprzedawca, System}
 
 
 \clearpage
@@ -616,30 +1314,275 @@ Diagramy przypadków użycia i~ich opisy w~rozdz.~\ref{ch:opis-pu} przedstawiaj�
 % Wzór: Sklep hydrauliczny rozdz. 5 (tabela postaci normalnych, kolejne wersje modelu z oceną NF, 5.7 graf stanów),
 % Model Bazy danych.pdf (pojęciowy -> konceptualny -> logiczny, 1NF--3NF).
 
-Model bazy danych przedstawia strukturę informacyjną systemu: dane, które system przechowuje, i~związki między nimi. Diagramy ERD i~diagram klas wykonuje się w~Visual Paradigm (p.~\ref{sec:wykonalnosc}).
+Model bazy danych przedstawia strukturę informacyjną systemu: dane, które system przechowuje, i~związki między nimi. Diagramy ERD i~diagram klas wykonuje się w~Visual Paradigm Community Edition (p.~\ref{sec:technologie}). ERD przedstawia się w~notacji Crow's Foot (,,kurza stopka''): każda tabela ma wypisane atrybuty z~oznaczeniem klucza głównego (PK) i~kluczy obcych (FK), a~liczność związku pokazuje zakończenie linii, np. jedna kreska oznacza dokładnie jeden, a~rozwidlenie z~kółkiem zero lub wiele.
 
 \subsection{Podejście code-first}
+\label{sec:code-first}
 % Notatka uwaga 6: model bazy danych powstaje z klas ORM Django (reverse engineering), a nie jako klasyczny projekt bazy.
+% Q11 (nazwy PL bez znaków diakrytycznych, stan i zaległość liczone) — propozycja agenta 04.11.2026, do akceptacji.
 
+Zgodnie z~uwagą prowadzącego z~konsultacji 19.10.2026 bazy danych nie projektuje się osobno, lecz wyprowadza z~klas modeli Django: każda klasa modelu odpowiada jednej tabeli, a~tabele tworzą migracje Django. Dlatego rozdział nosi nazwę ,,Model bazy danych''. Na etapie projektu model zapisano jako skrypt SQL dla MySQL 8.4 (plik \texttt{baza/schema.sql} w~repozytorium), zgodny ze słownikiem danych z~p.~\ref{sec:slownik}. Na podstawie skryptu wykonuje się w~Visual Paradigm diagramy ERD. Po implementacji model porównuje się z~bazą utworzoną przez migracje, a~różnice względem tego rozdziału opisuje się w~rozdz.~\ref{ch:implementacja}.
+
+Nazwy tabel i~atrybutów, np. \texttt{pozycja\_\allowbreak{}rezerwacji}, są polskie i~nie zawierają znaków diakrytycznych. Modele Django otrzymują te same nazwy tabel przez atrybut \texttt{Meta.\allowbreak{}db\_\allowbreak{}table}. Konta i~role przechowują tabele modułu \texttt{django.\allowbreak contrib.\allowbreak auth} (\texttt{auth\_\allowbreak{}user}, \texttt{auth\_\allowbreak{}group}, \texttt{auth\_\allowbreak{}user\_\allowbreak{}groups}), których się nie zmienia; dane klienta spoza konta przechowuje osobna tabela powiązana z~kontem (\ref{wn:django}). Tabel technicznych Django, np. sesji i~historii migracji, nie ujęto w~modelu.
 
 \subsection{Identyfikacja encji i~związków}
+\label{sec:encje}
 
+Encje wyznaczono z~opisu świata rzeczywistego (p.~\ref{sec:system}) i~wymagań funkcjonalnych (p.~\ref{sec:wf}). Każda encja ma sztuczny klucz główny \texttt{id} nadawany automatycznie, z~wyjątkiem profilu klienta, którego kluczem jest klucz konta. Klucze naturalne zapisano jako ograniczenia unikalności (tab.~\ref{tab:encje}).
+
+\begin{table}[H]
+	\centering
+	\caption{Encje modelu bazy danych}
+	\label{tab:encje}
+	\footnotesize
+	\begin{tabularx}{\textwidth}{@{}L{3.3cm}L{3.4cm}>{\raggedright\arraybackslash}X@{}}
+		\toprule
+		Encja (tabela) & Klucz unikalny & Znaczenie \\
+		\midrule
+		Konto (\texttt{auth\_\allowbreak{}user}) & \texttt{username} & konto personelu lub klienta \\
+		Rola (\texttt{auth\_\allowbreak{}group}) & \texttt{name} & klient, sprzedawca albo właściciel \\
+		Profil klienta (\texttt{profil\_\allowbreak{}klienta}) & \texttt{identyfikator\_\allowbreak{}karty} & telefon i~identyfikator karty klienta \\
+		Produkt (\texttt{produkt}) & (\texttt{nazwa}, \texttt{odmiana}) & produkt sprzedawany na wagę \\
+		Cena produktu (\texttt{cena\_\allowbreak{}produktu}) & (\texttt{produkt\_\allowbreak{}id}, \texttt{obowiazuje\_\allowbreak{}od}) & cena za kilogram od danego dnia \\
+		Plan dostawy (\texttt{plan\_\allowbreak{}dostawy}) & (\texttt{produkt\_\allowbreak{}id}, \texttt{dzien}) & ilość produktu planowana na dzień, pula rezerwacji \\
+		Dostawa (\texttt{dostawa}) & \texttt{dzien} & przyjęcie towaru danego dnia \\
+		Pozycja dostawy (\texttt{pozycja\_\allowbreak{}dostawy}) & (\texttt{dostawa\_\allowbreak{}id}, \texttt{produkt\_\allowbreak{}id}) & dostarczona ilość produktu \\
+		Ubytek (\texttt{ubytek}) & -- & wyrzucona masa produktu \\
+		Rezerwacja (\texttt{rezerwacja}) & (\texttt{aktywny\_\allowbreak{}klient\_\allowbreak{}id}, \texttt{dzien\_\allowbreak{}odbioru}) & rezerwacja klienta na dzień odbioru \\
+		Pozycja rezerwacji (\texttt{pozycja\_\allowbreak{}rezerwacji}) & (\texttt{rezerwacja\_\allowbreak{}id}, \texttt{produkt\_\allowbreak{}id}) & zarezerwowana ilość produktu \\
+		Sprzedaż (\texttt{sprzedaz}) & \texttt{rezerwacja\_\allowbreak{}id} & sprzedaż przy ladzie lub wydanie rezerwacji \\
+		Pozycja sprzedaży (\texttt{pozycja\_\allowbreak{}sprzedazy}) & (\texttt{sprzedaz\_\allowbreak{}id}, \texttt{produkt\_\allowbreak{}id}) & sprzedana masa produktu z~ceną \\
+		Rozliczenie zaległości (\texttt{rozliczenie\_\allowbreak{}zaleglosci}) & -- & wpłata w~sklepie albo wynik obciążenia karty \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+Związki między encjami i~ich liczności zestawiono w~tab.~\ref{tab:zwiazki}. Liczność zapisano od strony pierwszej encji do drugiej, np. ,,1 : 0..*'' oznacza, że jeden produkt ma zero lub wiele pozycji rezerwacji, a~każda pozycja dotyczy dokładnie jednego produktu.
+
+\begin{table}[H]
+	\centering
+	\caption{Związki między encjami}
+	\label{tab:zwiazki}
+	\footnotesize
+	\begin{tabularx}{\textwidth}{@{}L{3.0cm}L{3.3cm}L{1.6cm}>{\raggedright\arraybackslash}X@{}}
+		\toprule
+		Encja & Encja & Liczność & Znaczenie \\
+		\midrule
+		Konto & Profil klienta & 1 : 0..1 & tylko konto klienta ma profil \\
+		Konto & Rola & 0..* : 0..* & przez \texttt{auth\_\allowbreak{}user\_\allowbreak{}groups}; aplikacja wymaga dokładnie jednej roli na konto (\ref{wf:role}) \\
+		Produkt & Cena produktu & 1 : 1..* & historia cen \\
+		Produkt & Plan dostawy & 1 : 0..* & plan na kolejne dni \\
+		Dostawa & Pozycja dostawy & 1 : 1..* & produkty w~dostawie \\
+		Produkt & Pozycja dostawy & 1 : 0..* & \\
+		Produkt & Ubytek & 1 : 0..* & \\
+		Profil klienta & Rezerwacja & 1 : 0..* & rezerwacje klienta \\
+		Rezerwacja & Pozycja rezerwacji & 1 : 1..* & produkty w~rezerwacji \\
+		Produkt & Pozycja rezerwacji & 1 : 0..* & \\
+		Rezerwacja & Sprzedaż & 1 : 0..1 & wydanie rezerwacji zapisane jako sprzedaż \\
+		Sprzedaż & Pozycja sprzedaży & 1 : 0..* & sprzedane produkty; wydanie rezerwacji odważonej na 0~kg nie ma pozycji \\
+		Produkt & Pozycja sprzedaży & 1 : 0..* & \\
+		Profil klienta & Rozliczenie zaległości & 1 : 0..* & wpłaty i~obciążenia karty \\
+		Konto & Dostawa, Ubytek, Sprzedaż, Rozliczenie zaległości & 1 : 0..* & członek personelu, który zarejestrował operację \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+Plan dostawy nie ma klucza obcego do rezerwacji. Ilość zarezerwowaną produktu na dzień system wylicza jako sumę pozycji rezerwacji z~tym produktem i~dniem odbioru, z~pominięciem rezerwacji anulowanych, a~ilość dostępną do rezerwacji jako plan pomniejszony o~tę sumę.
 
 \subsection{Model konceptualny (ERD)}
+\label{sec:erd-konceptualny}
 
+Model konceptualny przedstawia encje z~tab.~\ref{tab:encje} i~związki z~tab.~\ref{tab:zwiazki} bez typów danych (rys.~\ref{rys:erd-konceptualny}). Diagram wykonuje się w~notacji Crow's Foot, tak jak model logiczny.
+
+\diagramvp{rys:erd-konceptualny}{Model konceptualny bazy danych (ERD, notacja Crow's Foot)}{erd-konceptualny}{encje z~tab.~\ref{tab:encje} z~kluczami głównymi, związki i~liczności z~tab.~\ref{tab:zwiazki}; bez typów danych}
 
 \subsection{Model logiczny i~normalizacja}
+\label{sec:normalizacja}
 
+Model logiczny (rys.~\ref{rys:erd-logiczny}) zawiera tabele z~atrybutami, typami danych, kluczami głównymi i~obcymi oraz ograniczeniami opisanymi w~słowniku danych (p.~\ref{sec:slownik}). Odpowiada on skryptowi \texttt{baza/schema.sql}.
+
+\diagramvp{rys:erd-logiczny}{Model logiczny bazy danych (ERD, notacja Crow's Foot)}{erd-logiczny}{diagram wykonany w~Visual Paradigm na podstawie \texttt{baza/schema.sql} (instrukcja w~\texttt{baza/README.md}); tabele z~atrybutami, typami, PK, FK i~liczności}
+
+Model jest w~trzeciej postaci normalnej:
+\begin{itemize}
+	\item \textbf{1NF.} Każdy atrybut przechowuje jedną wartość. Pozycje dostaw, rezerwacji i~sprzedaży są osobnymi wierszami, a~nie listą w~jednym polu. Nazwę i~odmianę produktu przechowuje się w~osobnych atrybutach.
+	\item \textbf{2NF.} Klucze główne są jednokolumnowe, więc żaden atrybut nie zależy od części klucza. W~tabelach pozycji klucz naturalny, np. (\texttt{rezerwacja\_\allowbreak{}id}, \texttt{produkt\_\allowbreak{}id}), jest ograniczeniem unikalności, a~ilość zależy od całej pary.
+	\item \textbf{3NF.} Atrybuty spoza klucza nie zależą od innych atrybutów spoza klucza. Dane klienta przechowuje tylko konto i~profil klienta, a~nie rezerwacja. Cena produktu nie jest atrybutem produktu, lecz osobnej tabeli z~datą obowiązywania. Ilości planowanej nie kopiuje się do pozycji dostawy, bo wynika z~planu dostawy na ten dzień.
+\end{itemize}
+
+Kilka atrybutów pozornie powiela inne dane, ale wynika z~reguł sklepu. Cena w~pozycji sprzedaży jest ceną z~chwili sprzedaży i~nie zmienia się po zmianie ceny produktu (\ref{wf:sprzedaz}). Opłata za nieodebranie jest zapisywana, ponieważ liczy się ją raz, o~18:00 w~dniu odbioru, z~ówczesnych cen (\ref{wf:proc-nieodebrana}). Atrybut \texttt{aktywny\_\allowbreak{}klient\_\allowbreak{}id} rezerwacji jest wyliczany przez bazę ze stanu i~klienta; służy tylko do wymuszenia jednej niezakończonej rezerwacji klienta na dzień, ponieważ MySQL nie obsługuje indeksów unikalnych z~warunkiem.
+
+Stanu produktu i~zaległości klienta nie przechowuje się, aby nie mogły rozejść się z~ewidencją. Stan produktu to suma dostarczonych ilości pomniejszona o~sumę sprzedanych mas i~ubytków, a~zaległość to suma opłat za nieodebranie pomniejszona o~sumę skutecznych rozliczeń. Przy sprzedaży i~ubytku aplikacja blokuje wiersz produktu (p.~\ref{sec:wspolbieznosc}), aby dwie jednoczesne operacje nie obniżyły stanu poniżej zera. Jeśli przy danych z~kilku lat liczenie tych sum okaże się zbyt wolne (\ref{wn:wspolbieznosc}), można dodać do produktu i~profilu klienta atrybuty z~bieżącą wartością, aktualizowane w~tych samych transakcjach.
+
+Reguł, których nie da się zapisać jako ograniczenia jednej tabeli, pilnuje aplikacja w~transakcji: łączna masa rezerwacji do 20~kg, ilość dostępna do rezerwacji, plan nie mniejszy od ilości zarezerwowanej, termin 18:00 i~jedna rola na konto.
 
 \subsection{Diagram klas modeli ORM}
+\label{sec:diagram-klas}
 
+Diagram klas (rys.~\ref{rys:diagram-klas}) przedstawia klasy modeli Django odpowiadające tabelom z~p.~\ref{sec:slownik}, z~atrybutami, typami pól Django i~asocjacjami odpowiadającymi kluczom obcym. Klasa \texttt{User} pochodzi z~modułu \texttt{django.\allowbreak contrib.\allowbreak auth}. Stany rezerwacji przedstawia się jako typ wyliczeniowy.
+
+\diagramvp{rys:diagram-klas}{Diagram klas modeli ORM}{klasy-modele-orm}{klasy modeli Django (\texttt{Produkt}, \texttt{CenaProduktu}, \texttt{PlanDostawy}, \texttt{Dostawa}, \texttt{PozycjaDostawy}, \texttt{Ubytek}, \texttt{ProfilKlienta}, \texttt{Rezerwacja}, \texttt{PozycjaRezerwacji}, \texttt{Sprzedaz}, \texttt{PozycjaSprzedazy}, \texttt{RozliczenieZaleglosci}) oraz \texttt{User} i~\texttt{Group} z~Django; po implementacji odtworzyć z~kodu}
 
 \subsection{Słownik danych (definicje obiektów)}
+\label{sec:slownik}
 
+Słownik danych (tab.~\ref{tab:slownik}) definiuje wszystkie tabele i~atrybuty modelu. Typy danych są typami MySQL 8.4. Wszystkie tabele używają silnika InnoDB i~kodowania \texttt{utf8mb4} z~polskim porządkiem sortowania (\texttt{utf8mb4\_\allowbreak{}pl\_\allowbreak{}0900\_\allowbreak{}ai\_\allowbreak{}ci}). Klucze obce nie mają akcji kaskadowych, ponieważ danych ewidencji się nie usuwa: produkty wycofuje się z~oferty, a~konta dezaktywuje. Masy zapisuje się z~dokładnością do 0,01~kg, a~kwoty do 1~gr.
+
+{\footnotesize
+\begin{longtable}{@{}L{3.3cm}L{2.2cm}L{3.2cm}>{\raggedright\arraybackslash}p{5.9cm}@{}}
+	\caption{Słownik danych}
+	\label{tab:slownik}\\
+	\toprule
+	Atrybut & Typ & Ograniczenia & Opis \\
+	\endfirsthead
+	\toprule
+	Atrybut & Typ & Ograniczenia & Opis \\
+	\endhead
+	\bottomrule
+	\endfoot
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{auth\_\allowbreak{}user} --- konto użytkownika, tabela Django} \\
+	\midrule
+	\texttt{id} & \texttt{INT} & PK, autonumer & identyfikator konta \\
+	\texttt{password} & \texttt{VARCHAR(128)} & NOT NULL & skrót hasła \\
+	\texttt{last\_\allowbreak{}login} & \texttt{DATETIME(6)} & NULL & chwila ostatniego logowania \\
+	\texttt{is\_\allowbreak{}superuser} & \texttt{BOOL} & NOT NULL & konto z~wszystkimi uprawnieniami (właściciel tworzony przy instalacji) \\
+	\texttt{username} & \texttt{VARCHAR(150)} & UNIQUE & login; u~klienta adres e-mail \\
+	\texttt{first\_\allowbreak{}name} & \texttt{VARCHAR(150)} & NOT NULL & imię \\
+	\texttt{last\_\allowbreak{}name} & \texttt{VARCHAR(150)} & NOT NULL & nazwisko \\
+	\texttt{email} & \texttt{VARCHAR(254)} & NOT NULL & adres e-mail; unikalność sprawdza formularz \\
+	\texttt{is\_\allowbreak{}staff} & \texttt{BOOL} & NOT NULL & dostęp do panelu administratora (personel) \\
+	\texttt{is\_\allowbreak{}active} & \texttt{BOOL} & NOT NULL & konto aktywne; fałsz po dezaktywacji \\
+	\texttt{date\_\allowbreak{}joined} & \texttt{DATETIME(6)} & NOT NULL & chwila założenia konta \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{auth\_\allowbreak{}group} --- rola użytkownika, tabela Django} \\
+	\midrule
+	\texttt{id} & \texttt{INT} & PK, autonumer & identyfikator roli \\
+	\texttt{name} & \texttt{VARCHAR(150)} & UNIQUE & nazwa roli: klient, sprzedawca, właściciel \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{auth\_\allowbreak{}user\_\allowbreak{}groups} --- przypisanie roli do konta, tabela Django} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator przypisania \\
+	\texttt{user\_\allowbreak{}id} & \texttt{INT} & FK auth\_user & konto \\
+	\texttt{group\_\allowbreak{}id} & \texttt{INT} & FK auth\_group & rola; para (user\_id, group\_id) unikalna \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{profil\_\allowbreak{}klienta} --- dane klienta spoza konta Django} \\
+	\midrule
+	\texttt{uzytkownik\_\allowbreak{}id} & \texttt{INT} & PK, FK auth\_user & konto klienta (związek 1:1) \\
+	\texttt{telefon} & \texttt{VARCHAR(20)} & NOT NULL, indeks & numer telefonu \\
+	\texttt{identyfikator\_\allowbreak{}karty} & \texttt{VARCHAR(64)} & NULL, UNIQUE & identyfikator karty nadany przez operatora płatności; pusty, dopóki karty nie zarejestrowano \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{produkt} --- produkt w~asortymencie} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator produktu \\
+	\texttt{nazwa} & \texttt{VARCHAR(60)} & NOT NULL & nazwa, np. ziemniaki \\
+	\texttt{odmiana} & \texttt{VARCHAR(60)} & NOT NULL, domyślnie pusta & odmiana; para (nazwa, odmiana) unikalna \\
+	\texttt{standardowa\_\allowbreak{}ilosc\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $\geq 0$ & standardowa dzienna ilość, domyślny plan dostawy \\
+	\texttt{w\_\allowbreak{}ofercie} & \texttt{BOOL} & NOT NULL, domyślnie prawda & fałsz po wycofaniu produktu z~oferty \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{cena\_\allowbreak{}produktu} --- cena produktu obowiązująca od danego dnia} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator ceny \\
+	\texttt{produkt\_\allowbreak{}id} & \texttt{BIGINT} & FK produkt & produkt \\
+	\texttt{cena\_\allowbreak{}za\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $> 0$ & cena za kilogram w~złotych \\
+	\texttt{obowiazuje\_\allowbreak{}od} & \texttt{DATE} & NOT NULL & pierwszy dzień obowiązywania; para (produkt\_id, obowiazuje\_od) unikalna \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{plan\_\allowbreak{}dostawy} --- plan dostawy produktu na dzień, czyli pula rezerwacji} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator planu \\
+	\texttt{produkt\_\allowbreak{}id} & \texttt{BIGINT} & FK produkt & produkt \\
+	\texttt{dzien} & \texttt{DATE} & NOT NULL & dzień dostawy; para (produkt\_id, dzien) unikalna \\
+	\texttt{ilosc\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $\geq 0$ & planowana ilość; nie mniejsza od ilości zarezerwowanej (sprawdza aplikacja) \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{dostawa} --- przyjęta dostawa z~danego dnia} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator dostawy \\
+	\texttt{dzien} & \texttt{DATE} & UNIQUE & dzień dostawy; jedna dostawa dziennie \\
+	\texttt{zarejestrowano} & \texttt{DATETIME(6)} & NOT NULL & chwila rejestracji \\
+	\texttt{zarejestrowal\_\allowbreak{}id} & \texttt{INT} & FK auth\_user & członek personelu, który zarejestrował dostawę \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{pozycja\_\allowbreak{}dostawy} --- ilość produktu w~dostawie} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator pozycji \\
+	\texttt{dostawa\_\allowbreak{}id} & \texttt{BIGINT} & FK dostawa & dostawa \\
+	\texttt{produkt\_\allowbreak{}id} & \texttt{BIGINT} & FK produkt & produkt; para (dostawa\_id, produkt\_id) unikalna \\
+	\texttt{ilosc\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $\geq 0$ & ilość faktycznie dostarczona \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{ubytek} --- towar wyrzucony z~powodu utraty świeżości} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator ubytku \\
+	\texttt{produkt\_\allowbreak{}id} & \texttt{BIGINT} & FK produkt & produkt \\
+	\texttt{masa\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $> 0$ & masa ubytku \\
+	\texttt{data\_\allowbreak{}czas} & \texttt{DATETIME(6)} & NOT NULL, indeks & chwila rejestracji \\
+	\texttt{zarejestrowal\_\allowbreak{}id} & \texttt{INT} & FK auth\_user & członek personelu, który zarejestrował ubytek \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{rezerwacja} --- rezerwacja klienta na dzień odbioru} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator rezerwacji \\
+	\texttt{klient\_\allowbreak{}id} & \texttt{INT} & FK profil\_klienta & klient \\
+	\texttt{dzien\_\allowbreak{}odbioru} & \texttt{DATE} & NOT NULL, indeks ze stanem & dzień odbioru \\
+	\texttt{stan} & \texttt{VARCHAR(12)} & CHECK: zlozona, przygotowana, odebrana, anulowana, nieodebrana & stan rezerwacji (p.~\ref{sec:graf-stanow}) \\
+	\texttt{zlozono} & \texttt{DATETIME(6)} & NOT NULL & chwila złożenia \\
+	\texttt{zmieniono} & \texttt{DATETIME(6)} & NOT NULL & chwila ostatniej zmiany pozycji lub stanu \\
+	\texttt{oplata\_\allowbreak{}za\_\allowbreak{}nieodebranie} & \texttt{DECIMAL(7,2)} & NULL; CHECK: wypełniona tylko w~stanie nieodebrana, $\geq 0$ & opłata naliczona o~18:00 w~dniu odbioru \\
+	\texttt{aktywny\_\allowbreak{}klient\_\allowbreak{}id} & \texttt{INT} & kolumna wyliczana; UNIQUE z~dzien\_odbioru & klient\_id dla rezerwacji złożonej lub przygotowanej, w~pozostałych stanach pusta; wymusza jedną niezakończoną rezerwację klienta na dzień \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{pozycja\_\allowbreak{}rezerwacji} --- zarezerwowana ilość produktu} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator pozycji \\
+	\texttt{rezerwacja\_\allowbreak{}id} & \texttt{BIGINT} & FK rezerwacja & rezerwacja \\
+	\texttt{produkt\_\allowbreak{}id} & \texttt{BIGINT} & FK produkt & produkt; para (rezerwacja\_id, produkt\_id) unikalna \\
+	\texttt{ilosc\_\allowbreak{}kg} & \texttt{DECIMAL(4,1)} & CHECK $> 0$ i~$\leq 20$ & zarezerwowana ilość z~dokładnością do 0,1~kg \\
+	\texttt{masa\_\allowbreak{}odwazona\_\allowbreak{}kg} & \texttt{DECIMAL(6,2)} & NULL, CHECK $\geq 0$ & masa odważona przy przygotowaniu lub wydaniu \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{sprzedaz} --- sprzedaż przy ladzie albo wydanie rezerwacji} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator sprzedaży \\
+	\texttt{data\_\allowbreak{}czas} & \texttt{DATETIME(6)} & NOT NULL, indeks & chwila sprzedaży \\
+	\texttt{sprzedawca\_\allowbreak{}id} & \texttt{INT} & FK auth\_user & członek personelu, który zarejestrował sprzedaż \\
+	\texttt{rezerwacja\_\allowbreak{}id} & \texttt{BIGINT} & NULL, UNIQUE, FK rezerwacja & wydana rezerwacja; pusta przy zwykłej sprzedaży \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{pozycja\_\allowbreak{}sprzedazy} --- sprzedana masa produktu} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator pozycji \\
+	\texttt{sprzedaz\_\allowbreak{}id} & \texttt{BIGINT} & FK sprzedaz & sprzedaż \\
+	\texttt{produkt\_\allowbreak{}id} & \texttt{BIGINT} & FK produkt & produkt; para (sprzedaz\_id, produkt\_id) unikalna \\
+	\texttt{masa\_\allowbreak{}kg} & \texttt{DECIMAL(6,2)} & CHECK $> 0$ & sprzedana masa \\
+	\texttt{cena\_\allowbreak{}za\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $> 0$ & cena obowiązująca w~chwili sprzedaży \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{rozliczenie\_\allowbreak{}zaleglosci} --- wpłata zaległości w~sklepie albo wynik obciążenia karty} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator rozliczenia \\
+	\texttt{klient\_\allowbreak{}id} & \texttt{INT} & FK profil\_klienta & klient \\
+	\texttt{rodzaj} & \texttt{VARCHAR(10)} & CHECK: wplata, obciazenie & rodzaj rozliczenia \\
+	\texttt{kwota} & \texttt{DECIMAL(8,2)} & CHECK $> 0$ & kwota wpłaty albo obciążenia \\
+	\texttt{skuteczne} & \texttt{BOOL} & CHECK: wpłata zawsze skuteczna & fałsz dla nieudanego obciążenia karty \\
+	\texttt{data\_\allowbreak{}czas} & \texttt{DATETIME(6)} & NOT NULL, indeks & chwila odnotowania \\
+	\texttt{zarejestrowal\_\allowbreak{}id} & \texttt{INT} & FK auth\_user & członek personelu, który odnotował rozliczenie \\
+\end{longtable}
+}
 
 \subsection{Graf stanów rezerwacji}
-% Wzór: Sklep hydrauliczny 5.7 (rysunek + numerowana lista stanów i przejść).
+\label{sec:graf-stanow}
+% Wzór: Sklep hydrauliczny 5.7 (rysunek + numerowana lista stanów i przejść). Q4: graf stanów zostaje (Karol, 04.11.2026).
 
+Stan rezerwacji przechowuje atrybut \texttt{stan} tabeli \texttt{rezerwacja}. Graf stanów (rys.~\ref{rys:graf-stanow}) przedstawia stany z~p.~\ref{sec:system} i~przypadki użycia, które je zmieniają.
+
+\diagramvp{rys:graf-stanow}{Graf stanów rezerwacji}{stany-rezerwacja}{diagram maszyny stanów UML: stan początkowy $\rightarrow$ złożona; złożona $\rightarrow$ anulowana, przygotowana do odbioru, odebrana, nieodebrana; przygotowana do odbioru $\rightarrow$ odebrana, nieodebrana; anulowana, odebrana i~nieodebrana $\rightarrow$ stan końcowy}
+
+\begin{enumerate}
+	\item \textbf{Złożona} (\texttt{zlozona}). Stan początkowy po złożeniu rezerwacji (\ref{pu:zlozenie}). Zmiana pozycji (\ref{pu:zmiana}) nie zmienia stanu. Z~tego stanu rezerwacja przechodzi:
+	\begin{itemize}
+		\item do stanu anulowana, gdy klient anuluje ją przed 18:00 w~dniu poprzedzającym dzień odbioru (\ref{pu:anulowanie});
+		\item do stanu przygotowana do odbioru, gdy sprzedawca w~dniu odbioru wpisze odważone masy (\ref{pu:przygotowanie});
+		\item do stanu odebrana, gdy sprzedawca wyda nieprzygotowaną rezerwację, ważąc towar przy kliencie (\ref{pu:wydanie}, A1);
+		\item do stanu nieodebrana, gdy nie wydano jej do 18:00 w~dniu odbioru (\ref{pu:nieodebrane}).
+	\end{itemize}
+	\item \textbf{Przygotowana do odbioru} (\texttt{przygotowana}). Towar jest skompletowany i~zważony. Rezerwacja przechodzi do stanu odebrana po wydaniu (\ref{pu:wydanie}) albo do stanu nieodebrana o~18:00 w~dniu odbioru (\ref{pu:nieodebrane}).
+	\item \textbf{Odebrana} (\texttt{odebrana}). Stan końcowy. Wydanie zapisano jako sprzedaż powiązaną z~rezerwacją.
+	\item \textbf{Anulowana} (\texttt{anulowana}). Stan końcowy. Ilości rezerwacji nie liczą się do ilości zarezerwowanej, a~klient może złożyć nową rezerwację na ten dzień, jeśli przyjmowanie rezerwacji trwa.
+	\item \textbf{Nieodebrana} (\texttt{nieodebrana}). Stan końcowy. Rezerwacja ma naliczoną opłatę za nieodebranie, która powiększa zaległość klienta.
+\end{enumerate}
 
 
 \clearpage
@@ -734,6 +1677,7 @@ Model bazy danych przedstawia strukturę informacyjną systemu: dane, które sys
 \subsection{Uruchomienie aplikacji}
 
 \subsubsection{Środowisko uruchomieniowe w~sklepie}
+% Wg 3.3.1 (Q6, do akceptacji): mini PC, Ubuntu Server 24.04 LTS, MySQL 8.4, Gunicorn + Nginx, HTTPS Let's Encrypt (Certbot), cron.
 
 
 \subsubsection{Instrukcja instalacji na komputerze w~sklepie}
@@ -743,9 +1687,11 @@ Model bazy danych przedstawia strukturę informacyjną systemu: dane, które sys
 
 
 \subsubsection{Kopia zapasowa i~odtwarzanie}
+% Wg 3.3.1 i WN kopia: mysqldump z cron po zamknięciu sklepu na dysk zewnętrzny; próba odtworzenia na innym komputerze (CSF).
 
 
 \subsubsection{Dostęp do aplikacji}
+% Wg 3.3.1: domena + Let's Encrypt, przekierowanie portów 80/443 na routerze, ewentualnie dynamiczny DNS; /admin/ tylko z LAN (Nginx).
 
 
 \subsection{Przewodnik po rolach użytkowników}

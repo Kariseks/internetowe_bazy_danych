@@ -88,7 +88,8 @@ Specyfikacja projektu (bez numeru) — TODO na koniec            [SH Specyfikacj
   4.1 Identyfikacja aktorów  4.2 Diagramy przypadków użycia dla poszczególnych modułów
 5 Opis przypadków użycia                                         [SH 4]                  ch:opis-pu
   5.1–5.4 PU dla klienta-obserwatora / klienta / sprzedawcy / właściciela (makiety + scenariusze)
-  5.5 Diagramy czynności wybranych przypadków użycia ★ (Q4: zostaje)
+  5.5 Przypadki użycia uruchamiane przez czas ★ (oznaczenie nieodebranych o 18:00)
+  5.6 Diagramy czynności wybranych przypadków użycia ★ (Q4: zostaje)
 6 Model bazy danych                                              [SH 5; N19 uwaga 6]     ch:model-bd
   6.1 Podejście code-first ★  6.2 Identyfikacja encji i związków  6.3 Model konceptualny (ERD) ★nazwa
   6.4 Model logiczny i normalizacja  6.5 Diagram klas modeli ORM  6.6 Słownik danych (definicje obiektów) ★nazwa
@@ -144,8 +145,8 @@ Etapy wytycznych → rozdziały: etap 1 → rozdz. 1, 2.1–2.2, 3 (WF/WN domyka
 | W4 pkt 5 Dobór technik modelowania | 3.3.1 Wybór technologii, wersje i licencje (UML + ERD, Visual Paradigm) ★ |
 | W4 pkt 5e Struktura funkcjonalna i informacyjna | wstęp rozdz. 4 Diagramy przypadków użycia (funkcjonalna) ★, wstęp rozdz. 6 Model bazy danych (informacyjna) ★ |
 | W4 5a UML — diagramy PU | 4 Diagramy przypadków użycia |
-| W4 5a UML — scenariusze PU | 5.1–5.4 Przypadki użycia dla … |
-| W4 5a UML — diagram czynności | 5.5 Diagramy czynności wybranych przypadków użycia ★ (Q4) |
+| W4 5a UML — scenariusze PU | 5.1–5.5 Przypadki użycia dla … |
+| W4 5a UML — diagram czynności | 5.6 Diagramy czynności wybranych przypadków użycia ★ (Q4) |
 | W4 5a UML — diagram klas | 6.5 Diagram klas modeli ORM |
 | W4 5a UML — diagram stanów | 6.7 Graf stanów rezerwacji |
 | W4 5b ERD | 6.3 Model konceptualny (ERD) ★, 6.4 Model logiczny i normalizacja |
@@ -175,7 +176,7 @@ Etapy wytycznych → rozdziały: etap 1 → rozdz. 1, 2.1–2.2, 3 (WF/WN domyka
 | N19 ustalenia: konfiguracja środowiska i prosta działająca wersja | 7.2 Środowisko programistyczne i repozytorium kodu ★ |
 | N19 ustalenia: zamknięcie fazy projektowej (WF/WN, PU, klasy ORM, SWOT, kosztorys) | 2.3, 2.4, 4, 6.5, 3.1, 3.4 |
 
-Luki: brak. Q4/Q5 rozstrzygnięte 04.11.2026 (UML + ERD w Visual Paradigm; diagramy czynności zostają w 5.5). Otwarte: Literatura i spis rysunków — Q14.
+Luki: brak. Q4/Q5 rozstrzygnięte 04.11.2026 (UML + ERD w Visual Paradigm; diagramy czynności zostają w 5.6). Otwarte: Literatura i spis rysunków — Q14.
 
 Drobne poprawki LaTeX (też do akceptacji): makro `\figura` z trzecim argumentem `\label`; opcjonalnie `\listoffigures` na końcu, tak jak w przykładach.
 
@@ -183,7 +184,7 @@ Drobne poprawki LaTeX (też do akceptacji): makro `\figura` z trzecim argumentem
 
 ## 2. Plan per sekcja
 
-Tabele poniżej są pogrupowane wg etapów wytycznych; numery sekcji w szkielecie podaje §1 (etap 1 → rozdz. 1, 2.1–2.2 i 3; etap 2 → 2.3–2.5 i rozdz. 4–7; etap 3 → rozdz. 8–11; etap 4 → rozdz. 12; etap 5 → rozdz. 13–14).
+Tabele poniżej są pogrupowane wg etapów wytycznych; numery sekcji w szkielecie podaje §1 (etap 1 → rozdz. 1, 2.1–2.2 i 3; etap 2 → 2.3–2.5 i rozdz. 4–6; etap 3 → rozdz. 7–10; etap 4 → rozdz. 11; etap 5 → rozdz. 12–13).
 
 Legenda: **Treść**, **Rys./Tab.**, **Od Karola**, **Zależy od** (numer pytania z §5).
 
@@ -280,14 +281,14 @@ Szczegóły i kolejność budowy: §6.
 1. ~~**Zakres po konsultacji 19.10.**~~ **ROZSTRZYGNIĘTE 03.11.2026: TAK.** W MVP są rezerwacje z odbiorem osobistym, konta klientów, klient-obserwator i osobny panel klienta; admin tylko dla personelu.
 2. ~~**Utracona treść etapu 1.**~~ **ROZSTRZYGNIĘTE 03.11.2026: pisać od nowa.** Treści z `git HEAD` (`rozdzialy/01-analiza.tex`) nie przywraca się ani nie wkleja; statusy ✅ etapu 1 w `PLAN.md` są nieważne.
 3. ~~**SQLite czy MySQL.**~~ **ROZSTRZYGNIĘTE 04.11.2026 przez Karola: MySQL** (zastępuje wcześniejszą tego dnia decyzję „SQLite”). Powody: W4 pkt 7 zaleca Python + MySQL; nie trzeba uzasadniać współbieżności SQLite, przed którą przestrzegał prowadzący (N19 uwaga 1). Silnik InnoDB, sterownik Django `mysqlclient`; wersja MySQL Community Server **8.4 LTS — zatwierdzona 04.11.2026 (Q10)**. W 3.3.2: blokady na poziomie wierszy, rezerwacja w jednej transakcji (`transaction.atomic` + `select_for_update` na wierszu planu dostawy: sprawdzenie dostępnej ilości i zapis pozycji), więc rezerwacje tuż przed 18:00 nie przekroczą planu dostawy. W 3.3.1 napisać wprost, że na konsultacji 19.10 zespół miał SQLite i zmienił wybór po uwadze 1. SQLite najwyżej do lokalnych testów programistów.
-4. **Techniki modelowania (wytyczne pkt 5).** Proponowany zestaw: UML (aktorzy, PU per moduł, scenariusze z makietami, czynności dla 1–2 PU, stany rezerwacji, komponenty, klasy modeli ORM) + ERD (konceptualny i logiczny) + normalizacja. DHF/DNF/DFE pomijamy. Zgoda? Czy któryś diagram ma odpaść (np. czynności), żeby zmieścić się do 17.11?
-5. **Notacja i narzędzie diagramów.** Przykłady BD używają ERD w notacji Chena (konceptualny) i logicznego ERD; przykłady IO używają Visual Paradigm. Którą notację ERD wybieramy (Chen czy „kurza stopka”) i jakie narzędzie (draw.io, PlantUML, Visual Paradigm)? Dla code-first: czy ERD i diagram klas generujemy z modeli (np. `django-extensions graph_models`)?
-6. **Wdrożenie i dostęp klientów — CZĘŚCIOWO ROZSTRZYGNIĘTE 04.11.2026 (Karol):** klienci i personel łączą się przez przeglądarkę z serwerem aplikacji Django na komputerze w sklepie (WN4); HTTPS z internetu, admin tylko z LAN i praca całodobowa — do akceptacji (`CLAUDE.md` pkt 55). Otwarte: sprzęt i system komputera. Pierwotne pytanie: **Wdrożenie i dostęp klientów.** System ma działać na komputerze w sklepie, bez hostingu. Jak klienci rezerwują z domu? Warianty: tylko w sieci lokalnej (np. tablet przy ladzie), udostępnienie komputera w internecie (przekierowanie portów lub tunel) albo jednak tani hosting. Jaki system operacyjny i sprzęt ma ten komputer?
+4. ~~**Techniki modelowania (wytyczne pkt 5).**~~ **ROZSTRZYGNIĘTE 04.11.2026 (Karol):** UML (przypadki użycia, czynności, klasy, stany) + ERD, wszystko w Visual Paradigm Community Edition; rozdział „Techniki modelowania” usunięty, techniki w 3.3.1; graf stanów rezerwacji (6.7) zostaje.
+5. ~~**Notacja i narzędzie diagramów.**~~ **ROZSTRZYGNIĘTE 04.11.2026 (Karol):** Visual Paradigm Community Edition (bez numeru wersji); ERD w notacji Crow's Foot, jak modele bazy w „Sklepie hydraulicznym” (rozdz. 5); materiały IO nie zawierają ERD.
+6. ~~**Wdrożenie i dostęp klientów.**~~ **ROZSTRZYGNIĘTE 04.11.2026 (Karol zatwierdził propozycję agenta, `CLAUDE.md` pkt 71; tekst w 3.3.1):** mini PC (np. Intel N100, 16 GB, SSD 512 GB), Ubuntu Server 24.04 LTS, Nginx + Gunicorn, Let's Encrypt (Certbot), porty 80/443 i ewentualnie dynamiczny DNS, admin tylko z LAN, `cron` dla 18:00, 6:00 i kopii.
 7. ~~**Reguły rezerwacji.**~~ **ROZSTRZYGNIĘTE 04.11.2026** (fakty od Karola + uzupełnienia agenta; pełna lista w `CLAUDE.md`, dziennik decyzji). Od Karola: sklep czynny codziennie 6:00–18:00; właściciel Jan Nowak (JDG); krajowe warzywa i owoce bez zmian sezonowych, wszystko na wagę; jeden dostawca, dostawa codziennie o 4:00; rezerwacje tylko z towaru dostępnego w dniu odbioru; rezerwacja do 7 dni naprzód (zwykle na następny dzień), limit 20 kg (jedna skrzynka); odbiór do 18:00 dnia odbioru; nieodebranie = utrata zadatku 10% wartości; rejestracja z kartą płatniczą, zadatek pobierany po fakcie; blokada nowych rezerwacji przy zaległości > 100 zł. Agent uzupełnił: plan dostawy jako pula rezerwacji, zamknięcie zapisów i bezpłatne anulowanie do 18:00 dnia poprzedniego, jedna rezerwacja na klienta na dzień, rozliczanie zaległości i zniesienie blokady, dostawca bez konta (wszystko do akceptacji Karola).
 8. ~~**Wersje min/std/rozsz.**~~ **ZAPROPONOWANE 04.11.2026 przez agenta, do akceptacji Karola (`CLAUDE.md` pkt 56; tekst w 2.5):** min = konta, katalog, plan dostawy, rezerwacje z warunkami WF39–WF40, wydanie, oznaczanie nieodebranych z opłatą; std = ewidencja, stan „przygotowana”, zmiana rezerwacji, zaległości i blokada; rozsz. = zestawienia właściciela, telefony, testowe środowisko operatora. Dawny podział poniżej jest nieaktualny (MVP musi mieć rezerwacje, N19 §1). Pierwotne pytanie: **Wersje min/std/rozsz.** Przykłady je mają, wytyczne nie wymagają. Dodajemy? Proponowany podział: min = produkty, stany, dostawy, sprzedaż w adminie; std = panel klienta z rezerwacjami; rozsz. = raporty i statystyki, wygasanie rezerwacji, powiadomienia.
-9. **Koszt wytworzenia.** Wytyczne wymagają kosztu. Narzędzia: 0 zł (licencje). Praca: podasz godziny i stawkę, czy zostawiamy szacunek względny z jawnym zastrzeżeniem? Czy liczymy sprzęt w sklepie jako istniejący (0 zł)?
+9. ~~**Koszt wytworzenia.**~~ **ROZSTRZYGNIĘTE 04.11.2026 (Karol): kwoty zatwierdzone** (`CLAUDE.md` pkt 66; tekst w 3.4): 40 zł/h × 210 h = 8 400 zł, sprzęt 2 650 zł, utrzymanie 190 zł/rok. Pierwotne pytanie: Wytyczne wymagają kosztu. Narzędzia: 0 zł (licencje). Praca: podasz godziny i stawkę, czy zostawiamy szacunek względny z jawnym zastrzeżeniem? Czy liczymy sprzęt w sklepie jako istniejący (0 zł)?
 10. ~~**Wersje technologii.**~~ **ROZSTRZYGNIĘTE 04.11.2026 (Karol): Python 3.12, Django 5.2 LTS, MySQL Community Server 8.4 LTS.** Numer poprawki z `requirements.txt` przy implementacji. Pierwotne pytanie: Notatka wymaga konkretnych wersji. Które wersje Pythona i Django (np. Django 5.2 LTS)? Czy zapisujemy je dopiero po utworzeniu `requirements.txt`?
-11. **Nazewnictwo i model stanu.** Modele PL (`Produkt`, `Rezerwacja`) czy EN (`Product`, `Reservation`)? Czy stan to pole ilości aktualizowane transakcyjnie, czy wartość liczona z ruchów (dostawy − sprzedaż − rezerwacje)? To wpływa na ERD, normalizację i kod.
+11. **Nazewnictwo i model stanu — ZAPROPONOWANE 04.11.2026 przez agenta, do akceptacji (`CLAUDE.md` pkt 80–81; tekst w 6.1, 6.4, `baza/schema.sql`):** nazwy polskie bez znaków diakrytycznych przez `Meta.db_table`; stan produktu i zaległość liczone z ruchów, nie przechowywane. Pierwotne pytanie: Modele PL (`Produkt`, `Rezerwacja`) czy EN (`Product`, `Reservation`)? Czy stan to pole ilości aktualizowane transakcyjnie, czy wartość liczona z ruchów (dostawy − sprzedaż − rezerwacje)? To wpływa na ERD, normalizację i kod.
 12. **Zmiana szkieletu i `PLAN.md`.** **Szkielet ZROBIONY 04.11.2026** — `sprawozdanie.tex` przebudowano na wzór „Sklepu hydraulicznego” (14 rozdziałów po korekcie wg wytycznych, patrz §1; kopie przed zmianami: `dokumentacja/sprawozdanie.pre-restructure.tex.bak` i `dokumentacja/sprawozdanie.pre-restructure2.tex.bak`). **Otwarte:** przebudowa kolejki `PLAN.md` z przypisaniem osób. Pierwotne pytanie: czy akceptujesz nowy szkielet z §1 (nowe: parametry skalowalne, wersje, scenariusze z makietami, diagramy czynności i stanów, „Model bazy danych”, model fizyczny, fragment kodu, zmiany i problemy, podręcznik; scalenie podsekcji etapu 5)? Czy przebudować kolejkę `PLAN.md` pod ten szkielet, z przypisaniem osób (prowadzący zalecił wspólną pracę przy projekcie)?
 13. ~~**Sprzątanie instrukcji agenta.**~~ **ZROBIONE 03.11.2026.** Instrukcje przeniesiono do `CLAUDE.md` i `.claude/skills/`; `cursor.md`, `SKILL.md` i generyczny szablon `sprawozdanie-pwr-latex` usunięto (do odzyskania z git).
 14. **Literatura i spis rysunków.** Dodać krótką bibliografię (dokumentacja Django, MySQL, UML) i `\listoffigures` jak w przykładach?
@@ -407,12 +408,12 @@ Zasada (jak w SH): najpierw jak sklep działa dziś, potem dlaczego potrzebny je
 | 1 ✅ | 1.1 Obecny sposób działania sklepu + 1.3 Proponowany system + 1.5 Parametry skalowalne — **napisane 04.11.2026** (dawny „Opis słowny” podzielony 04.11 na „jak jest” i „co system wprowadza”); uzupełnienia agenta czekają na akceptację Karola | — (Q7 rozstrzygnięte) | Z opisu wynikają wszystkie kolejne sekcje etapu 1 i wymagania etapu 2 |
 | 2 ✅ | 1.2 Problemy prowadzenia sklepu bez systemu — **napisane 04.11.2026** (P1–P8, etykiety `prob:rezerwacja`, `prob:zamawianie`, `prob:straty`, `prob:ewidencja`, `prob:informacja`, `prob:kolejki`, `prob:dostawa`, `prob:wiedza`; numeracja stała); uzupełnienia agenta do akceptacji Karola | — | Wynika z opisu „jak jest”; uzasadnia system i cel |
 | 3 ✅ | 1.4 Interesariusze i otoczenie systemu — **napisane 04.11.2026** (`sec:otoczenie`, `tab:otoczenie`): zapłata za towar, kasa fiskalna i terminal poza systemem; dostawca bez konta; operator płatności tylko dla opłaty za nieodebranie; uzupełnienia agenta (pkt 30–33 w `CLAUDE.md`) do akceptacji | — | Domyka granicę systemu opisanego w 1.3 |
-| 4 ✅ | 2.1 Cel projektu + 2.2 Zakres projektu (z „Uwagą”) — **napisane 04.11.2026 razem z całym rozdz. 2** (2.3 WF1–WF44, 2.4 WN1–WN11, 2.5 wersje — na prośbę Karola wcześniej niż „na początku etapu 2”); uzupełnienia agenta pkt 38–56 w `CLAUDE.md` do akceptacji | podział funkcji na wersje (Q8) | Cel odpowiada na P1–P8; zakres wynika z Q1 |
-| 5 **następny** | 3.1 Analiza SWOT | punkty zespołu po poprawkach prowadzącego (N19 uwaga 5) | Wymaga znanego zakresu i ograniczeń |
-| 6 | 3.2 Czynniki krytyczne sukcesu (CSF) | które warunki są sprawdzalne na działającej aplikacji | Wynikają z celu i ze SWOT |
-| 7 | 3.3 Techniczna wykonalność systemu (3.3.1 technologie, wersje i licencje; 3.3.2 współbieżne zapisy w MySQL/InnoDB) | licencje (do weryfikacji), sprzęt komputera w sklepie (Q6); wersje zatwierdzone (Q10) | Najwięcej otwartych decyzji technicznych; potrzebny gotowy zakres |
-| 8 | 3.4 Koszt wytworzenia systemu (kosztorys) | godziny i stawka albo szacunek względny, sprzęt (Q9) | Zależy od stosu i licencji z punktu 7 |
-| 9 | 3.5 Plan projektu | czy daty pośrednie z §6.8 zostają | Plan zależy od zakresu |
-| 10 | 3.6 Grupa projektowa i podział obowiązków (3.6.1 skład, 3.6.2 podział w etapach; tuż przed harmonogramem) | kto grał właściciela w wywiadzie; podział zadań i przebudowa `PLAN.md` (Q12) | Podział zależy od planu |
-| 11 | 3.7 Harmonogram | daty etapów i rezultaty | Ostatnia sekcja części analitycznej; terminy znane |
-| 12 | Specyfikacja projektu (bez numeru) | — (Q3, Q10 rozstrzygnięte) | Streszczenie całości — pisać na końcu (TODO w `.tex`) |
+| 4 ✅ | 2.1 Cel projektu + 2.2 Zakres projektu (z „Uwagą”) — **napisane 04.11.2026 razem z całym rozdz. 2** (2.3 WF1–WF48 (po dopisaniu WF 04.11.2026), 2.4 WN1–WN11, 2.5 wersje — na prośbę Karola wcześniej niż „na początku etapu 2”); uzupełnienia agenta pkt 38–56 w `CLAUDE.md` do akceptacji | podział funkcji na wersje (Q8) | Cel odpowiada na P1–P8; zakres wynika z Q1 |
+| 5 ✅ | 3.1 Analiza SWOT — **napisane 04.11.2026** (`tab:swot`); 3.1–3.7 napisane razem, uzupełnienia agenta pkt 62–70 w `CLAUDE.md` do akceptacji | punkty zespołu po poprawkach prowadzącego (N19 uwaga 5) | Wymaga znanego zakresu i ograniczeń |
+| 6 ✅ | 3.2 Czynniki krytyczne sukcesu (CSF) | które warunki są sprawdzalne na działającej aplikacji | Wynikają z celu i ze SWOT |
+| 7 ✅ | 3.3 Techniczna wykonalność systemu (3.3.1 technologie, wersje i licencje; 3.3.2 współbieżne zapisy w MySQL/InnoDB) | licencje (do weryfikacji), sprzęt i system komputera w sklepie, serwer WSGI/HTTPS (Q6); Q5 i Q10 rozstrzygnięte | Najwięcej otwartych decyzji technicznych; potrzebny gotowy zakres |
+| 8 ✅ | 3.4 Koszt wytworzenia systemu (kosztorys) | godziny i stawka albo szacunek względny, sprzęt (Q9) | Zależy od stosu i licencji z punktu 7 |
+| 9 ✅ | 3.5 Plan projektu | czy daty pośrednie z §6.8 zostają | Plan zależy od zakresu |
+| 10 ✅ | 3.6 Grupa projektowa i podział obowiązków (3.6.1 skład, 3.6.2 podział w etapach; tuż przed harmonogramem) | kto grał właściciela w wywiadzie; podział zadań i przebudowa `PLAN.md` (Q12) | Podział zależy od planu |
+| 11 ✅ | 3.7 Harmonogram | daty etapów i rezultaty | Ostatnia sekcja części analitycznej; terminy znane |
+| 12 **następny** | Specyfikacja projektu (bez numeru); etap 2 na prośbę Karola: rozdz. 4–5 (pkt 72–79) i rozdz. 6 z `baza/schema.sql` (pkt 80–86) napisane 04.11.2026; czekają diagramy VP i ekrany (schemat nazw w `CLAUDE.md`) | — (Q3, Q10 rozstrzygnięte) | Streszczenie całości — pisać na końcu (TODO w `.tex`) |
