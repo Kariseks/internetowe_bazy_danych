@@ -1,7 +1,7 @@
 % !TeX program = pdflatex
 % !TeX encoding = UTF-8
 % !BIB program = bibtex
-% Sprawozdanie z projektu IBD — lokalny warzywniak (Django + SQLite)
+% Sprawozdanie z projektu IBD — lokalny warzywniak (Django + MySQL)
 % Jednolity plik: bez \input rozdziałów. Struktura wg IDB_wytyczne_v4 + formatka PWr.
 
 \documentclass[12pt,a4paper,oneside]{article}
@@ -269,7 +269,7 @@ Rezerwacja należy do jednego klienta i~dotyczy jednego dnia odbioru. Składa si
 % Decyzje 04.11.2026: dostawca bez konta (dostawy wprowadza personel); operator płatności kartą, kasa fiskalna
 % i terminal płatniczy należą do otoczenia systemu, bez integracji.
 
-Interesariuszami systemu są osoby, które z~niego korzystają lub od których zależy jego działanie. Użytkownikami są właściciel, sprzedawcy, klienci i~klienci-obserwatorzy. Dostawca, operator płatności, kasa fiskalna i~terminal płatniczy należą do otoczenia systemu: wymieniają się ze sklepem towarem, pieniędzmi lub danymi, ale nie korzystają z~systemu bezpośrednio. Tab.~\ref{tab:otoczenie} przedstawia, co każdy z~nich przekazuje do systemu i~co z~niego otrzymuje.
+Interesariuszami systemu są osoby, które z~niego korzystają lub od których zależy jego działanie. Użytkownikami są właściciel, sprzedawcy, klienci i~klienci-obserwatorzy. Dostawca, operator płatności, serwer poczty e-mail, kasa fiskalna i~terminal płatniczy należą do otoczenia systemu: wymieniają się ze sklepem towarem, pieniędzmi lub danymi, ale nie korzystają z~systemu bezpośrednio. Tab.~\ref{tab:otoczenie} przedstawia, co każdy z~nich przekazuje do systemu i~co z~niego otrzymuje.
 
 \begin{table}[H]
 	\centering
@@ -282,10 +282,11 @@ Interesariuszami systemu są osoby, które z~niego korzystają lub od których z
 		\midrule
 		Właściciel (Jan Nowak) & panel administratora & Wprowadza asortyment, ceny, plan dostawy i~konta sprzedawców, odnotowuje wynik obciążenia kart. Otrzymuje stan towaru, historię sprzedaży, rezerwacje i~zaległości klientów. \\
 		Sprzedawcy & panel administratora & Rejestrują przyjęcie dostawy, sprzedaż przy ladzie, wydanie rezerwacji i~wpłaty zaległości. Otrzymują listę rezerwacji na dany dzień, stan i~plan dostawy. \\
-		Klient & panel klienta & Podaje dane przy rejestracji, składa i~anuluje rezerwacje. Otrzymuje stan swoich rezerwacji, zaległość i~informację o~blokadzie. \\
+		Klient & panel klienta & Podaje dane przy rejestracji, składa i~anuluje rezerwacje. Otrzymuje stan swoich rezerwacji, zaległość, informację o~blokadzie oraz wiadomości e-mail. \\
 		Klient-obserwator & katalog bez logowania & Otrzymuje asortyment, ceny i~ilości dostępne do rezerwacji. \\
 		Dostawca & brak & Otrzymuje telefonicznie zamówienie przygotowane na podstawie planu dostawy. Przywieziony towar wprowadza do systemu personel. \\
 		Operator płatności & brak (formularz operatora) & Przy rejestracji przekazuje identyfikator karty klienta. Obciążenie karty opłatą za nieodebranie zleca właściciel poza systemem. \\
+		Serwer poczty e-mail & brak & Przekazuje klientom wiadomości wysyłane przez system: potwierdzenia, przypomnienia i~linki do resetu hasła. \\
 		Kasa fiskalna & brak & Brak wymiany danych. Sprzedawca rejestruje sprzedaż osobno w~kasie i~w~systemie. \\
 		Terminal płatniczy & brak & Brak wymiany danych. Obsługuje zapłatę kartą za towar przy ladzie. \\
 		\bottomrule
@@ -339,58 +340,166 @@ Parametry są ze sobą spójne. W~typowym dniu sprzedaż przy ladzie wynosi oko�
 \label{sec:cel}
 % Wytyczne v4 pkt 4d. Cel z odwołaniami do P1--P8. Wzór: Sklep hydrauliczny 2.1.
 
+Celem projektu jest budowa aplikacji webowej z~bazą danych, która ogranicza straty warzywniaka na psującym się towarze (\ref{prob:straty}) przez rezerwacje konkretnych ilości towaru z~odbiorem osobistym. Rezerwacje powiązane z~planem dostawy pozwalają właścicielowi znać część popytu przed złożeniem zamówienia u~dostawcy (\ref{prob:rezerwacja}, \ref{prob:zamawianie}), a~duże zakupy przenoszą poza godziny szczytu (\ref{prob:kolejki}).
+
+System prowadzi też ewidencję dostaw, sprzedaży i~stanu towaru. Daje ona dane do planowania zamówień i~kontroli dostaw oraz do oceny, czy straty maleją (\ref{prob:ewidencja}, \ref{prob:dostawa}, \ref{prob:wiedza}). Publiczny katalog pokazuje klientom asortyment, ceny i~ilości dostępne do rezerwacji przed wizytą w~sklepie (\ref{prob:informacja}).
+
+System działa jako strona internetowa uruchomiona na komputerze w~sklepie, bez zewnętrznego hostingu. Klienci korzystają z~panelu klienta, a~personel z~panelu administratora (Django Admin). Przeglądanie katalogu nie wymaga konta, a~konto jest potrzebne do złożenia rezerwacji.
+
+Uwaga: System nie obejmuje dowozu towaru do klienta ani płatności online za towar. Za towar, także zarezerwowany, klient płaci przy ladzie gotówką albo kartą w~terminalu, poza systemem. System nie jest zintegrowany z~kasą fiskalną i~jej nie zastępuje. Dostawca nie ma konta w~systemie: zamówienie przekazuje mu się telefonicznie, a~dostawę wprowadza personel. System nie obsługuje wielu sklepów, programu lojalnościowego ani aplikacji mobilnej.
 
 \subsection{Zakres projektu}
 \label{sec:zakres}
 % Wytyczne v4 pkt 4d; notatka 19.10 §1 (rezerwacje ilości, odbiór osobisty, bez dowozu i płatności online).
-% W zakresie / poza zakresem + „Uwaga:” z tym, czego system nie robi (wzór: SH 2.1).
 
+Projekt obejmuje analizę pracy sklepu, projekt systemu i~bazy danych, implementację w~języku Python z~użyciem Django i~bazy MySQL, testy oraz wdrożenie na komputerze w~sklepie wraz z~instrukcją instalacji i~podręcznikiem użytkownika. Prace prowadzi się w~pięciu etapach wytycznych, a~ich terminy podano w~harmonogramie.
+
+Funkcje systemu dzielą się na pięć obszarów. Katalog i~konta obejmują publiczny przegląd oferty, rejestrację klienta z~kartą płatniczą oraz logowanie. Rezerwacje i~plan dostawy obejmują składanie, zmianę i~anulowanie rezerwacji, pulę ilości wyznaczaną przez plan dostawy oraz kompletowanie i~wydawanie rezerwacji. Ewidencja obejmuje przyjęcie dostawy z~porównaniem z~planem, sprzedaż przy ladzie, ubytki towaru i~bieżący stan. Rozliczenia obejmują opłaty za nieodebranie rezerwacji, zaległości klientów i~blokadę nowych rezerwacji. Administracja obejmuje asortyment, ceny i~konta personelu. Szczegółowe wymagania podano w~p.~\ref{sec:wf} i~p.~\ref{sec:wn}, a~kolejność ich realizacji w~wersjach systemu w~p.~\ref{sec:wersje}.
 
 \subsection{Wymagania funkcjonalne}
 \label{sec:wf}
 
+Wymagania funkcjonalne ponumerowano WF1, WF2 itd. w~całym podrozdziale; numery te przywołują opisy przypadków użycia i~testy.
+
 \subsubsection{Konta użytkowników}
 
+\begin{enumerate}[label=WF\arabic*.,ref=WF\arabic*,series=wf,leftmargin=1.6cm]
+	\item \label{wf:uzytkownicy} Użytkownikami systemu są personel sklepu (właściciel i~sprzedawcy) oraz klienci. Katalog jest dostępny także bez logowania, dla klienta-obserwatora.
+	\item W~systemie przewidziano trzy role użytkowników zalogowanych: klient, sprzedawca i~właściciel. Każde konto ma dokładnie jedną rolę.
+	\item Konto właściciela zakłada się przy instalacji systemu. W~systemie musi istnieć co najmniej jedno aktywne konto właściciela.
+	\item Konta sprzedawców zakłada, dezaktywuje i~ponownie aktywuje właściciel. Konta personelu nie usuwa się, aby zachować powiązanie z~zarejestrowanymi dostawami i~sprzedażą. Konto sprzedawcy zawiera tylko dane potrzebne systemowi: login, imię, nazwisko, adres e-mail, hasło w~postaci skrótu, rolę i~informację, czy konto jest aktywne. System nie przechowuje innych danych personelu, np. numeru PESEL, adresu ani telefonu.
+	\item \label{wf:rejestracja} Konto klienta zakłada sam klient-obserwator. Podaje imię, nazwisko, adres e-mail i~numer telefonu, ustala hasło oraz rejestruje kartę płatniczą w~formularzu operatora płatności. Konto bez zarejestrowanej karty nie może składać rezerwacji.
+	\item System przechowuje z~danych karty wyłącznie identyfikator nadany przez operatora płatności. Numer karty nie trafia do systemu.
+	\item Właściciel może dezaktywować konto klienta. Dezaktywacja nie usuwa rezerwacji ani zaległości klienta.
+\end{enumerate}
 
 \subsubsection{Identyfikacja i~uwierzytelnianie użytkowników}
 
+\begin{enumerate}[resume*=wf]
+	\item Każde konto ma unikalny login i~unikalny adres e-mail. Login sprzedawcy nadaje właściciel przy zakładaniu konta, a~loginem klienta jest jego adres e-mail.
+	\item Logowanie odbywa się loginem i~hasłem. Hasło ma co najmniej 8~znaków, nie może składać się wyłącznie z~cyfr, być podobne do danych użytkownika ani należeć do listy często używanych haseł.
+	\item Panel administratora jest dostępny wyłącznie dla kont sprzedawców i~właściciela. Klient po zalogowaniu ma dostęp tylko do panelu klienta.
+	\item \label{wf:reset-hasla} Reset zapomnianego hasła: użytkownik podaje adres e-mail konta, a~system wysyła na ten adres jednorazowy link do ustawienia nowego hasła, ważny przez 3~dni.
+	\item \label{wf:dezaktywowane} Konto dezaktywowane nie może się zalogować.
+\end{enumerate}
 
 \subsubsection{Funkcje dostępne dla sprzedawcy}
 
+Zalogowany użytkownik z~rolą sprzedawcy ma dostęp do następujących funkcji:
+
+\begin{enumerate}[resume*=wf]
+	\item \label{wf:sprzedaz} Rejestracja sprzedaży przy ladzie: produkty i~masy w~kilogramach. Cenę pozycji system pobiera z~ceny obowiązującej w~chwili sprzedaży. Sprzedaż nie może obniżyć stanu produktu poniżej zera.
+	\item Rejestracja przyjęcia dostawy na dany dzień: ilości faktycznie dostarczonych produktów. System pokazuje różnice względem planu dostawy na ten dzień.
+	\item Rejestracja ubytku towaru, który stracił świeżość i~został wyrzucony, z~podaniem produktu i~masy. Ubytek obniża stan produktu.
+	\item Przegląd bieżącego stanu produktów, planu dostawy na najbliższe siedem dni i~historii sprzedaży.
+	\item \label{wf:zestawienie-zamowienia} Przygotowanie zestawienia zamówienia na następny dzień: lista produktów i~ilości z~planu dostawy, przekazywana dostawcy telefonicznie.
+	\item \label{wf:lista-rezerwacji} Przegląd rezerwacji na wybrany dzień wraz z~pozycjami i~stanem każdej rezerwacji.
+	\item \label{wf:przygotowanie} Oznaczenie rezerwacji jako przygotowanej do odbioru, z~wpisaniem odważonej masy każdej pozycji.
+	\item \label{wf:wydanie} Wydanie rezerwacji klientowi. System wylicza kwotę do zapłaty z~odważonych mas i~cen obowiązujących w~dniu odbioru, rejestruje wydanie jako sprzedaż i~oznacza rezerwację jako odebraną.
+	\item \label{wf:wyszukanie}Wyszukanie klienta po nazwisku, adresie e-mail lub numerze telefonu oraz podgląd jego rezerwacji i~zaległości.
+	\item \label{wf:wplata} Odnotowanie wpłaty zaległości dokonanej przez klienta w~sklepie.
+\end{enumerate}
 
 \subsubsection{Funkcje dostępne dla właściciela}
 
+Zalogowany użytkownik z~rolą właściciela ma dostęp do wszystkich funkcji sprzedawcy oraz do następujących:
+
+\begin{enumerate}[resume*=wf]
+	\item \label{wf:produkty} Dodawanie i~edycja produktów: nazwa, odmiana, cena za kilogram i~standardowa dzienna ilość. Produkt, którego sklep przestaje sprzedawać, wycofuje się z~oferty bez usuwania go z~historii.
+	\item Zmiana ceny produktu. System zapisuje datę, od której nowa cena obowiązuje, i~przechowuje ceny wcześniejsze.
+	\item \label{wf:plan-dostawy} Ustalanie planu dostawy dla każdego produktu na każdy z~najbliższych siedmiu dni. Domyślnie plan równa się standardowej dziennej ilości produktu. Właściciel może go zwiększyć albo zmniejszyć, ale nie poniżej ilości już zarezerwowanej na ten dzień.
+	\item \label{wf:konta-personelu} Zakładanie, dezaktywacja i~ponowna aktywacja kont sprzedawców oraz dezaktywacja kont klientów.
+	\item \label{wf:obciazenie} Przegląd klientów z~zaległością i~odnotowanie wyniku comiesięcznego obciążenia karty: obciążenie skuteczne zmniejsza zaległość o~pobraną kwotę, a~nieudane jej nie zmienia.
+	\item \label{wf:zestawienia} Zestawienia za wybrany okres: sprzedaż i~ubytki według produktów, różnice między planem a~przyjętą dostawą oraz liczba i~wartość rezerwacji nieodebranych.
+\end{enumerate}
 
 \subsubsection{Funkcje dostępne dla klienta}
 
+Zalogowany użytkownik z~rolą klienta ma dostęp do następujących funkcji:
+
+\begin{enumerate}[resume*=wf]
+	\item \label{wf:rez-zlozenie} Złożenie rezerwacji na wybrany dzień odbioru spośród siedmiu kolejnych dni, począwszy od następnego. Klient wybiera produkty i~ilości w~kilogramach z~dokładnością do 0,1~kg, a~system pokazuje orientacyjną wartość rezerwacji według cen bieżących.
+	\item \label{wf:rez-zmiana} Zmiana pozycji złożonej rezerwacji do 18:00 w~dniu poprzedzającym dzień odbioru, na tych samych zasadach co przy składaniu.
+	\item \label{wf:rez-anulowanie} Anulowanie rezerwacji do 18:00 w~dniu poprzedzającym dzień odbioru, bez opłaty.
+	\item \label{wf:rez-przeglad} Przegląd własnych rezerwacji, bieżących i~zakończonych, wraz z~ich stanem.
+	\item \label{wf:zaleglosc} Podgląd naliczonych opłat za nieodebranie, sumy zaległości i~informacji, czy konto może składać nowe rezerwacje.
+\end{enumerate}
 
 \subsubsection{Funkcje dostępne dla zalogowanego użytkownika}
 
+Każdy zalogowany użytkownik, niezależnie od roli, ma dostęp do następujących funkcji:
+
+\begin{enumerate}[resume*=wf]
+	\item \label{wf:wylogowanie} Wylogowanie.
+	\item Zmiana własnego hasła po podaniu hasła dotychczasowego.
+	\item \label{wf:dane-konta} Podgląd własnych danych konta. Klient może zmienić swój numer telefonu.
+\end{enumerate}
 
 \subsubsection{Funkcje dostępne dla klienta-obserwatora}
 % Odpowiednik „niezalogowanego użytkownika” w Sklepie hydraulicznym 2.2.7.
 
+Użytkownik niezalogowany, czyli klient-obserwator, ma dostęp do następujących funkcji:
+
+\begin{enumerate}[resume*=wf]
+	\item \label{wf:katalog} Przegląd katalogu: produkty w~ofercie, ceny za kilogram oraz ilości dostępne do rezerwacji na każdy z~siedmiu kolejnych dni. Dzień, dla którego przyjmowanie rezerwacji już się zakończyło, oznacza się jako niedostępny.
+	\item Założenie konta klienta (\ref{wf:rejestracja}).
+	\item \label{wf:zalogowanie} Zalogowanie się.
+\end{enumerate}
 
 \subsubsection{Funkcje wymagane do obsługi procesu rezerwacji}
 
+Rezerwacja przechodzi przez etapy opisane poniżej, a~jej stany odpowiadają opisowi z~p.~\ref{sec:system}. Do etapu złożenia stosuje się wszystkie warunki z~pierwszego punktu jednocześnie.
+
+\begin{enumerate}[resume*=wf]
+	\item \label{wf:proc-zlozenie} Złożenie rezerwacji przez klienta. System przyjmuje rezerwację tylko wtedy, gdy: klient ma zarejestrowaną kartę i~jego zaległość nie przekracza 100~zł; nie ma on innej niezakończonej rezerwacji na ten dzień; rezerwację składa się przed 18:00 w~dniu poprzedzającym dzień odbioru; łączna masa pozycji nie przekracza 20~kg; ilość każdego produktu nie przekracza ilości dostępnej do rezerwacji, czyli planu dostawy pomniejszonego o~ilość zarezerwowaną na ten dzień. Sprawdzenie ilości i~zapis rezerwacji wykonuje się w~jednej transakcji. Po zapisie rezerwacja jest złożona.
+	\item \label{wf:proc-zamkniecie} Zamknięcie przyjmowania rezerwacji na dany dzień o~18:00 dnia poprzedniego. Od tej chwili klient nie może złożyć, zmienić ani anulować rezerwacji na ten dzień, a~zestawienie zamówienia (\ref{wf:zestawienie-zamowienia}) obejmuje wszystkie rezerwacje.
+	\item \label{wf:proc-przygotowanie} Przygotowanie rezerwacji przez sprzedawcę w~dniu odbioru, po przyjęciu dostawy (\ref{wf:przygotowanie}).
+	\item \label{wf:proc-wydanie} Wydanie rezerwacji przy ladzie do 18:00 w~dniu odbioru (\ref{wf:wydanie}). Zapłata za towar odbywa się poza systemem.
+	\item \label{wf:proc-nieodebrana} Oznaczenie jako nieodebranej każdej rezerwacji złożonej lub przygotowanej, której nie wydano do 18:00 w~dniu odbioru. System nalicza wtedy opłatę za nieodebranie równą 10\% wartości rezerwacji, liczonej z~zarezerwowanych ilości i~cen obowiązujących w~dniu odbioru, zaokrągloną do 1~gr, i~dopisuje ją do zaległości klienta.
+	\item \label{wf:proc-blokada} Blokada nowych rezerwacji klienta, gdy suma jego zaległości przekracza 100~zł. Rezerwacje złożone wcześniej pozostają ważne. Blokada ustaje samoczynnie, gdy po wpłacie w~sklepie (\ref{wf:wplata}) lub skutecznym obciążeniu karty (\ref{wf:obciazenie}) zaległość spadnie do 100~zł lub mniej.
+	\item \label{wf:powiadomienia} Powiadomienia e-mail do klienta: potwierdzenie założenia konta, potwierdzenie złożenia, zmiany i~anulowania rezerwacji z~dniem odbioru i~listą pozycji oraz informacja o~naliczeniu opłaty za nieodebranie i~o~blokadzie nowych rezerwacji.
+	\item \label{wf:przypomnienie} Przypomnienie e-mail wysyłane klientowi o~6:00 w~dniu odbioru rezerwacji, z~godziną zamknięcia sklepu i~wysokością opłaty za nieodebranie.
+\end{enumerate}
 
 \subsection{Wymagania niefunkcjonalne}
 \label{sec:wn}
-% Komputer w sklepie, bez hostingu (notatka §1); współbieżne zapisy SQLite (uwaga 1, Q3); osobny panel klienta (uwaga 3).
+% Komputer w sklepie, bez hostingu (notatka §1); współbieżne zapisy w MySQL/InnoDB (uwaga 1, Q3); osobny panel klienta (uwaga 3).
 
+Wymagania niefunkcjonalne ponumerowano WN1, WN2 itd. Wartości liczbowe odnoszą się do parametrów z~tab.~\ref{tab:parametry}.
+
+\begin{enumerate}[label=WN\arabic*.,ref=WN\arabic*,leftmargin=1.6cm]
+	\item Aplikacja webowa z~graficznym interfejsem w~języku polskim. Panel klienta jest oddzielony od panelu administratora (Django Admin), z~którego korzysta wyłącznie personel.
+	\item Baza danych MySQL Community Server w~wersji 8.4 LTS z~silnikiem InnoDB i~kodowaniem \texttt{utf8mb4}. Aplikacja w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, połączona z~bazą przez sterownik \texttt{mysqlclient}. Wszystkie narzędzia mają bezpłatne licencje open source, także do użytku komercyjnego. Uzasadnienie wyboru i~licencje podano w~p.~\ref{sec:wykonalnosc}.
+	\item System w~możliwie największym stopniu korzysta z~wbudowanych mechanizmów Django: uwierzytelniania z~grupami użytkowników jako rolami (\texttt{django.\allowbreak contrib.\allowbreak auth}), panelu administratora (\texttt{django.\allowbreak contrib.\allowbreak admin}), formularzy z~walidacją, ORM z~migracjami, sesji, ochrony CSRF, widoków resetu hasła i~wysyłki poczty. Dane klienta spoza modelu użytkownika Django, czyli telefon, identyfikator karty i~zaległość, przechowuje się w~osobnym modelu powiązanym z~kontem.
+	\item Aplikacja Django działa jako serwer na jednym komputerze w~sklepie, bez zewnętrznego hostingu, a~klienci i~personel łączą się z~nim przez przeglądarkę. Katalog i~panel klienta są dostępne z~internetu przez połączenie szyfrowane (HTTPS), a~panel administratora tylko z~sieci lokalnej sklepu.
+	\item Ponieważ rezerwacje przyjmuje się także wieczorem i~w~nocy, komputer z~systemem pracuje całą dobę.
+	\item \label{wn:wspolbieznosc} System obsługuje jednocześnie co najmniej 2~osoby personelu i~20~klientów bez utraty ani podwojenia zapisów. Operacje zmieniające pulę rezerwacji lub stan towaru wykonuje się w~transakcjach z~blokadą zmienianych wierszy.
+	\item Przy obciążeniu z~\ref{wn:wspolbieznosc} wyświetlenie katalogu i~zapisanie rezerwacji trwa nie dłużej niż 2~s.
+	\item Baza mieści dane z~co najmniej pięciu lat pracy sklepu, czyli przy wartościach docelowych z~tab.~\ref{tab:parametry} około 2~mln wierszy.
+	\item Masy przechowuje się jako liczby dziesiętne z~dokładnością do 0,01~kg, a~kwoty z~dokładnością do 1~gr. Terminy, w~tym godzinę 18:00, liczy się według czasu lokalnego (strefa Europe/Warsaw).
+	\item Wiadomości e-mail system wysyła przez serwer SMTP skrzynki pocztowej sklepu. W~środowisku programistycznym i~podczas testów wiadomości wypisuje się na konsolę zamiast je wysyłać.
+	\item Hasła przechowuje się wyłącznie w~postaci skrótów, mechanizmem Django. Formularze są chronione przed atakami CSRF. Dane osobowe klientów widzi tylko personel i~sam klient.
+	\item Kopię zapasową bazy wykonuje się codziennie po zamknięciu sklepu i~przechowuje poza komputerem z~systemem. Odtworzenie bazy z~kopii trwa nie dłużej niż 1~h.
+	\item \label{wn:przegladarki} Panel administratora działa w~przeglądarkach Chrome, Firefox i~Edge w~wersjach aktualnych w~dniu wdrożenia, na ekranie o~szerokości co najmniej 1280~px. Panel klienta działa w~tych samych przeglądarkach na komputerze, a~w~wersji rozszerzonej także na ekranach telefonów od 360~px szerokości.
+\end{enumerate}
 
 \subsection{Funkcjonalności implementowane i~testowane na zaliczenie}
 \label{sec:wersje}
 % Wersje minimalna, standardowa, rozszerzona (Q8). Wzór: Sklep hydrauliczny 2.4.
 
+Wymagania z~p.~\ref{sec:wf} podzielono na trzy wersje. Każda kolejna obejmuje funkcje poprzedniej. Wymagania niefunkcjonalne obowiązują we wszystkich wersjach, z~wyjątkiem obsługi telefonów w~\ref{wn:przegladarki}.
+
 \subsubsection{Wersja minimalna}
 
+Wersja minimalna obejmuje konta i~uwierzytelnianie wszystkich ról (\ref{wf:uzytkownicy}--\ref{wf:dezaktywowane}, \ref{wf:konta-personelu}, \ref{wf:wylogowanie}--\ref{wf:dane-konta}), w~tym reset hasła przez e-mail (\ref{wf:reset-hasla}), panel administratora dla personelu i~osobny panel klienta. Właściciel prowadzi asortyment, ceny i~plan dostawy (\ref{wf:produkty}--\ref{wf:plan-dostawy}). Klient-obserwator przegląda katalog z~ilościami dostępnymi do rezerwacji i~zakłada konto (\ref{wf:katalog}--\ref{wf:zalogowanie}). Klient składa, przegląda i~anuluje rezerwacje (\ref{wf:rez-zlozenie}, \ref{wf:rez-anulowanie}, \ref{wf:rez-przeglad}) z~zachowaniem wszystkich warunków \ref{wf:proc-zlozenie} i~zamknięcia o~18:00 (\ref{wf:proc-zamkniecie}). Sprzedawca przegląda rezerwacje na dany dzień i~je wydaje (\ref{wf:lista-rezerwacji}, \ref{wf:wydanie}), a~rezerwacje niewydane do 18:00 system oznacza jako nieodebrane z~naliczeniem opłaty (\ref{wf:proc-nieodebrana}). Rejestrację karty w~tej wersji symuluje się: formularz zastępujący formularz operatora zwraca testowy identyfikator karty.
 
 \subsubsection{Wersja standardowa}
 
+Wersja standardowa dodaje ewidencję sklepu: sprzedaż przy ladzie, przyjęcie dostawy z~porównaniem z~planem, ubytki, stan i~historię sprzedaży oraz zestawienie zamówienia (\ref{wf:sprzedaz}--\ref{wf:zestawienie-zamowienia}). Rezerwacja otrzymuje stan przygotowanej do odbioru z~odważonymi masami (\ref{wf:przygotowanie}), a~klient może zmienić rezerwację do 18:00 dnia poprzedniego (\ref{wf:rez-zmiana}). Dochodzą rozliczenia: podgląd zaległości przez klienta, blokada nowych rezerwacji, wpłata w~sklepie i~odnotowanie wyniku obciążenia karty (\ref{wf:zaleglosc}, \ref{wf:proc-blokada}, \ref{wf:wplata}, \ref{wf:obciazenie}), a~także wyszukiwanie klienta przez personel (\ref{wf:wyszukanie}) i~powiadomienia e-mail o~koncie, rezerwacjach i~opłatach (\ref{wf:powiadomienia}).
 
 \subsubsection{Wersja rozszerzona}
 
+Wersja rozszerzona dodaje zestawienia dla właściciela za wybrany okres (\ref{wf:zestawienia}): sprzedaż i~ubytki według produktów, różnice dostaw i~rezerwacje nieodebrane. Klient otrzymuje przypomnienie e-mail w~dniu odbioru (\ref{wf:przypomnienie}), a~panel klienta zostaje dostosowany do ekranów telefonów (\ref{wn:przegladarki}). W~tej wersji rejestrację karty łączy się z~testowym środowiskiem operatora płatności zamiast formularza symulowanego.
 
 
 \clearpage
@@ -412,13 +521,27 @@ Parametry są ze sobą spójne. W~typowym dniu sprzedaż przy ladzie wynosi oko�
 
 \subsubsection{Wybór technologii, wersje i~licencje}
 % Wytyczne v4 pkt 7--8 (zalecane Python + MySQL, inne dopuszczalne); notatka uwaga 6 (konkretne wersje, licencje open source).
+% Wytyczne v4 pkt 5 (techniki modelowania): decyzja Karola 04.11.2026 — UML + ERD w Visual Paradigm (Q4, Q5).
+
+Z~technik modelowania wymienionych w~wytycznych wybrano UML i~diagram związków encji (ERD). Diagramy UML przypadków użycia, czynności i~klas oraz ERD wykonuje się w~narzędziu Visual Paradigm, z~którego grupa korzystała na kursie Inżynieria oprogramowania, w~wydaniu Community Edition, bezpłatnym do użytku niekomercyjnego.
+% TODO: numer wersji Visual Paradigm i potwierdzenie wydania/licencji (Karol).
+Diagramy hierarchii i~następstwa funkcji (DHF, DNF) oraz definicje funkcji elementarnych (DFE) pominięto, ponieważ strukturę funkcjonalną systemu opisują przypadki użycia (rozdz.~\ref{ch:diagramy-pu} i~\ref{ch:opis-pu}), a~strukturę informacyjną model bazy danych (rozdz.~\ref{ch:model-bd}).
+% Wersje zatwierdzone przez Karola 04.11.2026 (Q10): Python 3.12, Django 5.2 LTS, MySQL Community Server 8.4 LTS (WN2).
+% Wbudowane mechanizmy Django (auth z grupami, admin, formularze, ORM, sesje, reset hasła, poczta) — WN3; e-mail przez SMTP.
+% Q3 (04.11.2026, Karol): MySQL Community Server; sterownik mysqlclient; licencje
+% (MySQL Community: GPLv2, mysqlclient: GPL-2.0) zweryfikować w dokumentacji przed wpisaniem. Zmiana względem notatki §1
+% (zespół wybrał wtedy SQLite) — napisać wprost, że zmieniono po uwadze 1 i zgodnie z pkt 7. SQLite tylko do lokalnych testów
+% programistów, jeśli w ogóle.
 
 
-\subsubsection{Współbieżne zapisy w~bazie SQLite}
-% Notatka uwaga 1: ostrzeżenie prowadzącego, propozycja kolejkowania zapisów. Q3 (04.11.2026): SQLite zostaje —
-% obciążenie z tab:parametry (2 os. personelu + do 20 klientów naraz, do 45 rezerwacji i ok. 220 sprzedaży dziennie);
-% zapisy szeregowane przez blokadę bazy (kolejkowanie), WAL, transakcje IMMEDIATE, timeout; sprawdzenie puli i zapis
-% rezerwacji w jednej transakcji (także tuż przed 18:00); MySQL/MariaDB jako ścieżka rozwoju (zmiana DATABASES).
+\subsubsection{Współbieżne zapisy w~bazie MySQL (InnoDB)}
+% Notatka uwaga 1: prowadzący ostrzegł przed SQLite przy jednoczesnych zapisach; Q3 (04.11.2026, Karol): MySQL.
+% Treść: silnik InnoDB z blokadami na poziomie wierszy — zapisy różnych klientów i sprzedawców nie blokują całej bazy;
+% obciążenie z tab:parametry (2 os. personelu + do 20 klientów naraz, do 45 rezerwacji i ok. 220 sprzedaży dziennie).
+% Rezerwacja: w jednej transakcji (transaction.atomic) blokada wiersza planu dostawy produktu na dany dzień
+% (select_for_update, SELECT ... FOR UPDATE), sprawdzenie ilości dostępnej do rezerwacji, zapis pozycji — dwie rezerwacje
+% tuż przed 18:00 nie przekroczą planu dostawy; druga czeka na zwolnienie blokady. Tak samo sprzedaż i dostawa (stan >= 0).
+% Krótkie transakcje; przy przekroczeniu czasu oczekiwania na blokadę lub zakleszczeniu — komunikat i ponowienie.
 
 
 \subsection{Koszt wytworzenia systemu (kosztorys)}
@@ -447,23 +570,11 @@ Parametry są ze sobą spójne. W~typowym dniu sprzedaż przy ladzie wynosi oko�
 
 \clearpage
 % =====================================================================
-\section{Techniki modelowania}
-\label{ch:techniki}
-% Wytyczne v4 pkt 5: dobór technik (UML zalecany, ERD/OZ + definicje obiektów, DHF/DNF, DFE) i opis struktury
-% funkcjonalnej oraz informacyjnej. Decyzja Q4. Krótko: która technika, w którym rozdziale.
-
-\subsection{Dobór technik modelowania i~diagramów}
-
-
-\subsection{Struktura funkcjonalna i~informacyjna systemu}
-
-
-
-\clearpage
-% =====================================================================
 \section{Diagramy przypadków użycia}
 \label{ch:diagramy-pu}
-% Wytyczne v4 pkt 5 (UML). Wzór: Sklep hydrauliczny rozdz. 3; «include» i «extend» obowiązkowe (IO zad. 5).
+% Wytyczne v4 pkt 5 (UML, Visual Paradigm). Wzór: Sklep hydrauliczny rozdz. 3; «include» i «extend» obowiązkowe (IO zad. 5).
+
+Diagramy przypadków użycia i~ich opisy w~rozdz.~\ref{ch:opis-pu} przedstawiają strukturę funkcjonalną systemu, wymaganą przez wytyczne obok struktury informacyjnej. Każdy przypadek użycia odpowiada jednemu lub kilku wymaganiom funkcjonalnym z~p.~\ref{sec:wf}.
 
 \subsection{Identyfikacja aktorów}
 
@@ -493,7 +604,7 @@ Parametry są ze sobą spójne. W~typowym dniu sprzedaż przy ladzie wynosi oko�
 
 
 \subsection{Diagramy czynności wybranych przypadków użycia}
-% Dla 1--2 najbardziej złożonych PU (instrukcje IO). Do decyzji Q4 — usunąć, jeśli Karol nie wybierze.
+% Dla 1--2 najbardziej złożonych PU (instrukcje IO). Q4 (04.11.2026): diagramy czynności zostają, Visual Paradigm.
 
 
 
@@ -504,6 +615,8 @@ Parametry są ze sobą spójne. W~typowym dniu sprzedaż przy ladzie wynosi oko�
 % Wytyczne v4 pkt 5 (struktura informacyjna, ERD); notatka uwaga 6 (code-first: „model bazy danych”, nie „projekt”).
 % Wzór: Sklep hydrauliczny rozdz. 5 (tabela postaci normalnych, kolejne wersje modelu z oceną NF, 5.7 graf stanów),
 % Model Bazy danych.pdf (pojęciowy -> konceptualny -> logiczny, 1NF--3NF).
+
+Model bazy danych przedstawia strukturę informacyjną systemu: dane, które system przechowuje, i~związki między nimi. Diagramy ERD i~diagram klas wykonuje się w~Visual Paradigm (p.~\ref{sec:wykonalnosc}).
 
 \subsection{Podejście code-first}
 % Notatka uwaga 6: model bazy danych powstaje z klas ORM Django (reverse engineering), a nie jako klasyczny projekt bazy.

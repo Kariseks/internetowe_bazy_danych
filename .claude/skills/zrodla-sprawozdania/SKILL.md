@@ -45,7 +45,7 @@ Raport ma układ i~logikę wywodu raportu „Sklep hydrauliczny” (SH; pełny s
 2. **Dlaczego system** (1.2) — problemy P1–P8 wynikające z~opisu „jak jest”: problem, skutek z~liczbą, mechanizm systemu, który go rozwiązuje (krótko, z~odwołaniem do 1.3).
 3. **Co system wprowadza i~zmienia** (1.3) — reguły pracy po wdrożeniu (rezerwacje, plan dostawy, opłata, ewidencja) i~role; w~SH to część rozdz. 1 (stany zamówienia, atrybuty produktu). Potem otoczenie (1.4) i~parametry skalowalne (1.5).
 4. **Cel i~wymagania** (rozdz. 2, jak SH 2) — osobno cel i~zakres z~„Uwagą”, WF w~kolejności SH, WN, wersje.
-5. **Uzasadnienie potrzeby realizacji i~organizacja** (rozdz. 3, z~wytycznych, brak w~SH) — SWOT, CSF, techniczna wykonalność (wybór technologii, ryzyko SQLite), kosztorys, plan, grupa (skład, podział w~etapach), harmonogram.
+5. **Uzasadnienie potrzeby realizacji i~organizacja** (rozdz. 3, z~wytycznych, brak w~SH) — SWOT, CSF, techniczna wykonalność (wybór technologii, współbieżność w~MySQL), kosztorys, plan, grupa (skład, podział w~etapach), harmonogram.
 6. **Techniki modelowania** (rozdz. 4, W4 pkt 5) — dobór technik i~diagramów, struktura funkcjonalna i~informacyjna.
 7. Dalej jak SH: diagramy PU (5) → opis PU (6, z~diagramami czynności) → model bazy danych (7, od podejścia code-first) → implementacja (8: technologie, środowisko i~repozytorium, architektura trójwarstwowa, szablony, moduły, panele, model fizyczny, bezpieczeństwo) → moduły i~klasy (9) → fragment kodu (10); potem walidacja i~testy (11), wdrożenie aplikacji i~podręcznik (12), prezentacja i~zaliczenie (13), wnioski (14).
 
@@ -68,7 +68,7 @@ Kolejność omawiania z~Karolem: `docs/plan-sprawozdania.md` §7.
 | Zakres projektu (2.2) | proza + tabela „w~zakresie / poza” + „Uwaga:” | Zakres wg Q1 i~decyzji z~1.4. Wersje minimalna / standardowa / rozszerzona w~2.5 (wzór: SH 2.4, Szkółka 2.3). |
 | SWOT (3.1) | tabela 4 pola | Słabe = wewnętrzne (np. 2~tygodnie na wdrożenie); zagrożenia = zewnętrzne (np. nieprzewidziane błędy techniczne). Bez „brak kodu na etapie analizy”. |
 | CSF (3.2) | tabela: czynnik, skutek braku | Sprawdzalne na działającej aplikacji. |
-| Techniczna wykonalność systemu (3.3) | proza; 3.3.1 wybór technologii, wersje i~licencje; 3.3.2 współbieżne zapisy w~SQLite | Stos z~**konkretnymi wersjami** (Python, Django) i~licencjami (N19 uwaga 6); ryzyko SQLite i~kolejkowanie zapisów (N19 uwaga 1, Q3). |
+| Techniczna wykonalność systemu (3.3) | proza; 3.3.1 wybór technologii, wersje i~licencje; 3.3.2 współbieżne zapisy w~MySQL (InnoDB) | Stos z~**konkretnymi wersjami** (Python, Django, MySQL) i~licencjami (N19 uwaga 6); zmiana SQLite → MySQL po uwadze 1 (Q3), blokady wierszy i~transakcja rezerwacji. |
 | Koszt wytworzenia systemu (kosztorys) (3.4) | tabela | Narzędzia 0~zł (licencje open source); praca tylko z~danych od Karola albo jawny szacunek względny. |
 | Plan projektu (3.5) | proza lub lista etapów z~rezultatami | — |
 | Grupa i~podział obowiązków (3.6) | 3.6.1 tabela składu; 3.6.2 `longtable` obowiązków w~etapach | Na analizie jedna osoba w~roli właściciela, dwie jako analitycy (wywiad). Projekt wspólnie; podział backend/frontend/BD dopiero przy kodzie. Tuż przed harmonogramem. |

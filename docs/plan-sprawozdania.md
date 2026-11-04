@@ -57,7 +57,7 @@ Logika SH: **jak jest** (rozdz. 1) → **po co system i co ma robić** (2.1 cel,
 
 ### Szkielet
 
-Stan 04.11.2026 (trzecia korekta): każdy element wytycznych v4 i notatki 19.10 ma własny nagłówek o nazwie bliskiej brzmieniu wytycznych (★ = punkt dodany albo przemianowany w tej korekcie).
+Stan 04.11.2026 (trzecia korekta; czwarta: usunięto rozdz. „Techniki modelowania” — techniki i narzędzie w 3.3.1, struktura funkcjonalna we wstępie rozdz. 4, informacyjna we wstępie rozdz. 6): każdy element wytycznych v4 i notatki 19.10 ma własny nagłówek o nazwie bliskiej brzmieniu wytycznych (★ = punkt dodany albo przemianowany w tej korekcie).
 
 ```
 Specyfikacja projektu (bez numeru) — TODO na koniec            [SH Specyfikacja]       sec:specyfikacja
@@ -78,48 +78,46 @@ Specyfikacja projektu (bez numeru) — TODO na koniec            [SH Specyfikacj
 3 Uzasadnienie potrzeby realizacji i organizacja projektu ★nazwa  [W4 4a–4e, etap 1]     ch:uzasadnienie
   3.1 Analiza SWOT  3.2 Czynniki krytyczne sukcesu (CSF)
   3.3 Techniczna wykonalność systemu ★nazwa                                 sec:wykonalnosc
-      3.3.1 Wybór technologii, wersje i licencje ★  3.3.2 Współbieżne zapisy w bazie SQLite ★
+      3.3.1 Wybór technologii, wersje i licencje ★ (+ techniki modelowania: UML + ERD w Visual Paradigm)  3.3.2 Współbieżne zapisy w bazie MySQL (InnoDB) ★
   3.4 Koszt wytworzenia systemu (kosztorys) ★nazwa                          sec:koszt
   3.5 Plan projektu
   3.6 Grupa projektowa i podział obowiązków                                 sec:grupa
       3.6.1 Skład grupy ★  3.6.2 Podział obowiązków w etapach projektu ★
   3.7 Harmonogram
-4 Techniki modelowania ★                                         [W4 pkt 5]              ch:techniki
-  4.1 Dobór technik modelowania i diagramów ★  4.2 Struktura funkcjonalna i informacyjna systemu ★
-5 Diagramy przypadków użycia                                     [SH 3]                  ch:diagramy-pu
-  5.1 Identyfikacja aktorów  5.2 Diagramy przypadków użycia dla poszczególnych modułów
-6 Opis przypadków użycia                                         [SH 4]                  ch:opis-pu
-  6.1–6.4 PU dla klienta-obserwatora / klienta / sprzedawcy / właściciela (makiety + scenariusze)
-  6.5 Diagramy czynności wybranych przypadków użycia ★ (Q4 — usunąć, jeśli Karol nie wybierze)
-7 Model bazy danych                                              [SH 5; N19 uwaga 6]     ch:model-bd
-  7.1 Podejście code-first ★  7.2 Identyfikacja encji i związków  7.3 Model konceptualny (ERD) ★nazwa
-  7.4 Model logiczny i normalizacja  7.5 Diagram klas modeli ORM  7.6 Słownik danych (definicje obiektów) ★nazwa
-  7.7 Graf stanów rezerwacji
-8 Opis implementacji                                             [SH 6; W4 7–9]          ch:implementacja
-  8.1 Technologie  8.2 Środowisko programistyczne i repozytorium kodu ★
-  8.3 Architektura trójwarstwowa ★nazwa (sec:architektura)  8.4 Oddzielenie kodu od HTML – szablony Django ★
-  8.5 Moduły funkcjonalne  8.6 Panel klienta i panel administratora  8.7 Model fizyczny bazy danych ★nazwa  8.8 Bezpieczeństwo
-9 Główne moduły i klasy                                          [SH 7]                  ch:moduly
-  9.1 Aplikacje Django i modele  9.2 Widoki i szablony panelu klienta  9.3 Konfiguracja panelu administratora  9.4 Pozostałe pliki
-10 Opis wybranego fragmentu kodu źródłowego                      [SH 8]                  ch:kod
-11 Walidacja i testy                                             [etap 3; IO, RE 5.4–5.5] ch:testy
-  11.1 Testy jednostkowe  11.2 Testy akceptacyjne PU  11.3 Zmienione i niezrealizowane koncepcje, napotkane problemy
-12 Wdrożenie aplikacji i podręcznik dla użytkownika ★nazwa        [SH 9; etap 4]          ch:wdrozenie
-  12.1 Uruchomienie aplikacji: 12.1.1 Środowisko uruchomieniowe w sklepie ★nazwa
-       12.1.2 Instrukcja instalacji na komputerze w sklepie ★nazwa  12.1.3 Dane początkowe i konta
-       12.1.4 Kopia zapasowa i odtwarzanie  12.1.5 Dostęp do aplikacji
-  12.2 Przewodnik po rolach użytkowników (4 role)  12.3 Checklista odbioru
-13 Prezentacja i zaliczenie projektu ★nazwa                       [W4 pkt 6, etap 5]      ch:prezentacja
-  13.1 Plan prezentacji ★  13.2 Materiały przekazywane do zaliczenia ★
-14 Wnioski                                                       [SH 10]                 ch:wnioski
+4 Diagramy przypadków użycia                                     [SH 3]                  ch:diagramy-pu
+  4.1 Identyfikacja aktorów  4.2 Diagramy przypadków użycia dla poszczególnych modułów
+5 Opis przypadków użycia                                         [SH 4]                  ch:opis-pu
+  5.1–5.4 PU dla klienta-obserwatora / klienta / sprzedawcy / właściciela (makiety + scenariusze)
+  5.5 Diagramy czynności wybranych przypadków użycia ★ (Q4: zostaje)
+6 Model bazy danych                                              [SH 5; N19 uwaga 6]     ch:model-bd
+  6.1 Podejście code-first ★  6.2 Identyfikacja encji i związków  6.3 Model konceptualny (ERD) ★nazwa
+  6.4 Model logiczny i normalizacja  6.5 Diagram klas modeli ORM  6.6 Słownik danych (definicje obiektów) ★nazwa
+  6.7 Graf stanów rezerwacji
+7 Opis implementacji                                             [SH 6; W4 7–9]          ch:implementacja
+  7.1 Technologie  7.2 Środowisko programistyczne i repozytorium kodu ★
+  7.3 Architektura trójwarstwowa ★nazwa (sec:architektura)  7.4 Oddzielenie kodu od HTML – szablony Django ★
+  7.5 Moduły funkcjonalne  7.6 Panel klienta i panel administratora  7.7 Model fizyczny bazy danych ★nazwa  7.8 Bezpieczeństwo
+8 Główne moduły i klasy                                          [SH 7]                  ch:moduly
+  8.1 Aplikacje Django i modele  8.2 Widoki i szablony panelu klienta  8.3 Konfiguracja panelu administratora  8.4 Pozostałe pliki
+9 Opis wybranego fragmentu kodu źródłowego                      [SH 8]                  ch:kod
+10 Walidacja i testy                                             [etap 3; IO, RE 5.4–5.5] ch:testy
+  10.1 Testy jednostkowe  10.2 Testy akceptacyjne PU  10.3 Zmienione i niezrealizowane koncepcje, napotkane problemy
+11 Wdrożenie aplikacji i podręcznik dla użytkownika ★nazwa        [SH 9; etap 4]          ch:wdrozenie
+  11.1 Uruchomienie aplikacji: 11.1.1 Środowisko uruchomieniowe w sklepie ★nazwa
+       11.1.2 Instrukcja instalacji na komputerze w sklepie ★nazwa  11.1.3 Dane początkowe i konta
+       11.1.4 Kopia zapasowa i odtwarzanie  11.1.5 Dostęp do aplikacji
+  11.2 Przewodnik po rolach użytkowników (4 role)  11.3 Checklista odbioru
+12 Prezentacja i zaliczenie projektu ★nazwa                       [W4 pkt 6, etap 5]      ch:prezentacja
+  12.1 Plan prezentacji ★  12.2 Materiały przekazywane do zaliczenia ★
+13 Wnioski                                                       [SH 10]                 ch:wnioski
 (Literatura, Spis rysunków — jak w SH; decyzja Q14)
 ```
 
-Etapy wytycznych → rozdziały: etap 1 → rozdz. 1, 2.1–2.2, 3 (WF/WN domyka się w fazie projektowej, zgodnie z „Ustaleniami” notatki 19.10); etap 2 → 2.3–2.5, rozdz. 4–7; etap 3 → rozdz. 8–11; etap 4 → rozdz. 12; etap 5 → rozdz. 13–14.
+Etapy wytycznych → rozdziały: etap 1 → rozdz. 1, 2.1–2.2, 3 (WF/WN domyka się w fazie projektowej, zgodnie z „Ustaleniami” notatki 19.10); etap 2 → 2.3–2.5, rozdz. 4–6; etap 3 → rozdz. 7–10; etap 4 → rozdz. 11; etap 5 → rozdz. 12–13.
 
 **Wzięte z SH:** nienumerowana Specyfikacja; rozdz. 1 jako opis świata, który zawiera także reguły dziedziny, na których oprze się system; tytuł i układ rozdz. 2 (cel z „Uwagą”, WF w kolejności SH, WN, wersje); diagramy PU i opis PU wg aktorów; rozdział bazy zakończony grafem stanów; rozdział implementacji z architekturą warstwową i modelem danych; moduły i klasy; fragment kodu; podręcznik z „Uruchomieniem aplikacji” i przewodnikiem po rolach; wnioski.
 
-**Własne (wymagane przez W4/N19 albo decyzje Karola):** w rozdz. 1 podział na jak jest → problemy P1–P8 → proponowany system → otoczenie podsystemu → parametry skalowalne; osobne „Cel projektu” i „Zakres projektu” (W4 4d); rozdz. 3 z SWOT, CSF, techniczną wykonalnością (z wyborem technologii i ryzykiem SQLite), kosztorysem, planem, grupą tuż przed harmonogramem; rozdz. 4 „Techniki modelowania” (W4 pkt 5); diagramy czynności (Q4); „Podejście code-first” i „Słownik danych (definicje obiektów)” w modelu bazy; środowisko programistyczne, architektura trójwarstwowa i szablony jako osobne podrozdziały implementacji (W4 pkt 9); rozdział testów (walidacja); instalacja na komputerze w sklepie, kopia, checklista odbioru; rozdział prezentacji i zaliczenia.
+**Własne (wymagane przez W4/N19 albo decyzje Karola):** w rozdz. 1 podział na jak jest → problemy P1–P8 → proponowany system → otoczenie podsystemu → parametry skalowalne; osobne „Cel projektu” i „Zakres projektu” (W4 4d); rozdz. 3 z SWOT, CSF, techniczną wykonalnością (z wyborem technologii i współbieżnością w MySQL), kosztorysem, planem, grupą tuż przed harmonogramem; techniki modelowania i narzędzie (UML + ERD, Visual Paradigm) w 3.3.1 (W4 pkt 5); diagramy czynności (Q4); „Podejście code-first” i „Słownik danych (definicje obiektów)” w modelu bazy; środowisko programistyczne, architektura trójwarstwowa i szablony jako osobne podrozdziały implementacji (W4 pkt 9); rozdział testów (walidacja); instalacja na komputerze w sklepie, kopia, checklista odbioru; rozdział prezentacji i zaliczenia.
 
 ### Pokrycie wymagań
 
@@ -143,41 +141,41 @@ Etapy wytycznych → rozdziały: etap 1 → rozdz. 1, 2.1–2.2, 3 (WF/WN domyka
 | W4 4d Techniczna wykonalność systemu | 3.3 Techniczna wykonalność systemu ★ |
 | W4 4d Koszt wytworzenia | 3.4 Koszt wytworzenia systemu (kosztorys) ★ |
 | W4 4e Harmonogram | 3.7 Harmonogram |
-| W4 pkt 5 Dobór technik modelowania | 4.1 Dobór technik modelowania i diagramów ★ |
-| W4 pkt 5e Struktura funkcjonalna i informacyjna | 4.2 Struktura funkcjonalna i informacyjna systemu ★ |
-| W4 5a UML — diagramy PU | 5 Diagramy przypadków użycia |
-| W4 5a UML — scenariusze PU | 6.1–6.4 Przypadki użycia dla … |
-| W4 5a UML — diagram czynności | 6.5 Diagramy czynności wybranych przypadków użycia ★ (Q4) |
-| W4 5a UML — diagram klas | 7.5 Diagram klas modeli ORM |
-| W4 5a UML — diagram stanów | 7.7 Graf stanów rezerwacji |
-| W4 5b ERD | 7.3 Model konceptualny (ERD) ★, 7.4 Model logiczny i normalizacja |
-| W4 5b Definicje obiektów | 7.6 Słownik danych (definicje obiektów) ★ |
-| W4 5c–d DHF, DNF, DFE | nie wybrano; uzasadnienie w 4.1 ★ |
-| W4 pkt 6 Prezentacja wraz z dokumentacją | 13 Prezentacja i zaliczenie projektu ★: 13.1 Plan prezentacji ★, 13.2 Materiały przekazywane do zaliczenia ★ |
+| W4 pkt 5 Dobór technik modelowania | 3.3.1 Wybór technologii, wersje i licencje (UML + ERD, Visual Paradigm) ★ |
+| W4 pkt 5e Struktura funkcjonalna i informacyjna | wstęp rozdz. 4 Diagramy przypadków użycia (funkcjonalna) ★, wstęp rozdz. 6 Model bazy danych (informacyjna) ★ |
+| W4 5a UML — diagramy PU | 4 Diagramy przypadków użycia |
+| W4 5a UML — scenariusze PU | 5.1–5.4 Przypadki użycia dla … |
+| W4 5a UML — diagram czynności | 5.5 Diagramy czynności wybranych przypadków użycia ★ (Q4) |
+| W4 5a UML — diagram klas | 6.5 Diagram klas modeli ORM |
+| W4 5a UML — diagram stanów | 6.7 Graf stanów rezerwacji |
+| W4 5b ERD | 6.3 Model konceptualny (ERD) ★, 6.4 Model logiczny i normalizacja |
+| W4 5b Definicje obiektów | 6.6 Słownik danych (definicje obiektów) ★ |
+| W4 5c–d DHF, DNF, DFE | nie wybrano; uzasadnienie w 3.3.1 ★ |
+| W4 pkt 6 Prezentacja wraz z dokumentacją | 12 Prezentacja i zaliczenie projektu ★: 12.1 Plan prezentacji ★, 12.2 Materiały przekazywane do zaliczenia ★ |
 | W4 pkt 7–8 Technologie | 3.3.1 Wybór technologii, wersje i licencje ★, 8.1 Technologie |
-| W4 pkt 9 Architektura trójwarstwowa | 8.3 Architektura trójwarstwowa ★ |
-| W4 pkt 9 Oddzielenie kodu od HTML przez szablony | 8.4 Oddzielenie kodu od HTML – szablony Django ★, 9.2 Widoki i szablony panelu klienta |
+| W4 pkt 9 Architektura trójwarstwowa | 7.3 Architektura trójwarstwowa ★ |
+| W4 pkt 9 Oddzielenie kodu od HTML przez szablony | 7.4 Oddzielenie kodu od HTML – szablony Django ★, 8.2 Widoki i szablony panelu klienta |
 | W4 etap 1 Przygotowanie i uzasadnienie potrzeby realizacji | 3 Uzasadnienie potrzeby realizacji i organizacja projektu ★ |
 | W4 etap 1 Analiza problemu | 1.2 Problemy prowadzenia sklepu bez systemu |
-| W4 etap 2 Faza projektowa | 2.3–2.5, 4–7 |
-| W4 etap 3 Implementacja | 8 Opis implementacji, 9 Główne moduły i klasy, 10 Opis wybranego fragmentu kodu |
-| W4 etap 3 Walidacja | 11 Walidacja i testy |
-| W4 etap 4 Wdrożenie aplikacji | 12 Wdrożenie aplikacji i podręcznik dla użytkownika ★ |
-| W4 etap 5 Prezentacja i zaliczenie całości | 13 Prezentacja i zaliczenie projektu ★, 14 Wnioski |
+| W4 etap 2 Faza projektowa | 2.3–2.5, 4–6 |
+| W4 etap 3 Implementacja | 7 Opis implementacji, 8 Główne moduły i klasy, 9 Opis wybranego fragmentu kodu |
+| W4 etap 3 Walidacja | 10 Walidacja i testy |
+| W4 etap 4 Wdrożenie aplikacji | 11 Wdrożenie aplikacji i podręcznik dla użytkownika ★ |
+| W4 etap 5 Prezentacja i zaliczenie całości | 12 Prezentacja i zaliczenie projektu ★, 13 Wnioski |
 | N19 zakres: rezerwacje ilości, odbiór osobisty, bez dowozu i płatności online | 2.2 Zakres projektu ★, 1.3, 2.3.8 |
-| N19 uwaga 1: SQLite a współbieżne zapisy | 3.3.2 Współbieżne zapisy w bazie SQLite ★ |
-| N19 uwaga 2: klient-obserwator | 2.3.7 Funkcje dostępne dla klienta-obserwatora, 6.1, 12.2.1 |
-| N19 uwaga 3: Django Admin tylko dla personelu, osobny panel klienta | 8.6 Panel klienta i panel administratora |
+| N19 uwaga 1: SQLite a współbieżne zapisy | 3.3.2 Współbieżne zapisy w bazie MySQL (InnoDB) ★ (zmiana na MySQL, Q3) |
+| N19 uwaga 2: klient-obserwator | 2.3.7 Funkcje dostępne dla klienta-obserwatora, 5.1, 11.2.1 |
+| N19 uwaga 3: Django Admin tylko dla personelu, osobny panel klienta | 7.6 Panel klienta i panel administratora |
 | N19 uwaga 4: wywiad (właściciel + analitycy), wspólne projektowanie, podział przy kodowaniu | 3.6.2 Podział obowiązków w etapach projektu ★ |
 | N19 uwaga 5: poprawki SWOT | 3.1 Analiza SWOT |
 | N19 uwaga 6: konkretne wersje Django i Pythona, licencje | 3.3.1 Wybór technologii, wersje i licencje ★, 8.1 |
 | N19 uwaga 6: kosztorys z 0 zł za narzędzia | 3.4 Koszt wytworzenia systemu (kosztorys) ★ |
-| N19 uwaga 6: „model bazy danych” z klas ORM (code-first) | 7 Model bazy danych, 7.1 Podejście code-first ★, 7.5 |
-| N19 uwaga 6: instrukcja instalacji na komputerze w sklepie | 12.1.2 Instrukcja instalacji na komputerze w sklepie ★ |
-| N19 ustalenia: konfiguracja środowiska i prosta działająca wersja | 8.2 Środowisko programistyczne i repozytorium kodu ★ |
-| N19 ustalenia: zamknięcie fazy projektowej (WF/WN, PU, klasy ORM, SWOT, kosztorys) | 2.3, 2.4, 5, 7.5, 3.1, 3.4 |
+| N19 uwaga 6: „model bazy danych” z klas ORM (code-first) | 6 Model bazy danych, 6.1 Podejście code-first ★, 6.5 |
+| N19 uwaga 6: instrukcja instalacji na komputerze w sklepie | 11.1.2 Instrukcja instalacji na komputerze w sklepie ★ |
+| N19 ustalenia: konfiguracja środowiska i prosta działająca wersja | 7.2 Środowisko programistyczne i repozytorium kodu ★ |
+| N19 ustalenia: zamknięcie fazy projektowej (WF/WN, PU, klasy ORM, SWOT, kosztorys) | 2.3, 2.4, 4, 6.5, 3.1, 3.4 |
 
-Luki: brak. Otwarte: diagram czynności (6.5) i ewentualny diagram stanów interfejsu zależą od Q4; Literatura i spis rysunków — Q14.
+Luki: brak. Q4/Q5 rozstrzygnięte 04.11.2026 (UML + ERD w Visual Paradigm; diagramy czynności zostają w 5.5). Otwarte: Literatura i spis rysunków — Q14.
 
 Drobne poprawki LaTeX (też do akceptacji): makro `\figura` z trzecim argumentem `\label`; opcjonalnie `\listoffigures` na końcu, tak jak w przykładach.
 
@@ -202,7 +200,7 @@ Legenda: **Treść**, **Rys./Tab.**, **Od Karola**, **Zależy od** (numer pytani
 | CSF | aktualizacja o rezerwacje (stan nie ujemny po rezerwacji, odbiór) | tab. | — | — |
 | Cel, zakres, wersje | cel biznesowy: mniej strat; w zakresie / poza zakresem (dowóz, płatność online) | tab. zakresu, lista wersji | które funkcje są w wersji min/std/rozsz. | Q8 |
 | Koszt wytworzenia | narzędzia 0 zł (licencje), sprzęt istniejący w sklepie, praca | tab. kosztów | godziny/stawka albo zgoda na szacunek względny | Q9 |
-| Wykonalność | Django, Python, SQLite/MySQL z wersjami; ryzyko współbieżnych zapisów | — | wersje (lub `requirements.txt`) | Q3, Q10 |
+| Wykonalność | Django, Python, MySQL (InnoDB, `mysqlclient`) z wersjami; współbieżne zapisy w InnoDB | — | wersje (lub `requirements.txt`) | Q3, Q10 |
 | Plan i harmonogram | etapy i daty, rezultaty | tab. harmonogramu | — | — |
 
 ### Etap 2 — Faza projektowa (termin 17.11)
@@ -239,7 +237,7 @@ Legenda: **Treść**, **Rys./Tab.**, **Od Karola**, **Zależy od** (numer pytani
 | Środowisko | komputer w sklepie: system, Python, sieć, dostęp klientów | tab. | parametry sprzętu | Q6 |
 | Instrukcja | venv, pip, migrate, createsuperuser, loaddata, uruchomienie (serwer WSGI albo runserver), autostart | listingi bash | system docelowy | Q6 |
 | Dane i konta | fixtures asortymentu, konta demo (bez haseł) | tab. | lista produktów startowych | — |
-| Kopia | kopia `db.sqlite3` / `dumpdata`, odtworzenie | listing | — | Q3 |
+| Kopia | kopia `mysqldump` / `dumpdata`, odtworzenie | listing | — | Q3 |
 | Podręcznik | per rola: gość, klient, sprzedawca, właściciel | zrzuty | zrzuty | — |
 | Checklista odbioru | punkty odbioru i wynik | tab. | wynik odbioru | — |
 
@@ -281,18 +279,18 @@ Szczegóły i kolejność budowy: §6.
 
 1. ~~**Zakres po konsultacji 19.10.**~~ **ROZSTRZYGNIĘTE 03.11.2026: TAK.** W MVP są rezerwacje z odbiorem osobistym, konta klientów, klient-obserwator i osobny panel klienta; admin tylko dla personelu.
 2. ~~**Utracona treść etapu 1.**~~ **ROZSTRZYGNIĘTE 03.11.2026: pisać od nowa.** Treści z `git HEAD` (`rozdzialy/01-analiza.tex`) nie przywraca się ani nie wkleja; statusy ✅ etapu 1 w `PLAN.md` są nieważne.
-3. ~~**SQLite czy MySQL.**~~ **ROZSTRZYGNIĘTE 04.11.2026: wariant (c) — SQLite, MySQL/MariaDB jako opisana ścieżka rozwoju.** Wytyczne pkt 7 tylko *zalecają* Python + MySQL, a pkt 8 dopuszcza inne technologie; notatka 19.10 zawiera ostrzeżenie (uwaga 1), nie wymóg, i zostawia temat „do głębszego przemyślenia”. Obciążenie z `tab:parametry` (2 os. personelu + do 20 klientów naraz, do 45 rezerwacji i ok. 220 sprzedaży dziennie, jeden komputer w sklepie) to pojedyncze zapisy na minutę; SQLite szereguje zapisy blokadą bazy (to jest kolejkowanie zaproponowane na konsultacji). Warunki do opisania w 3.3.2 i spełnienia w kodzie: tryb WAL, transakcje `IMMEDIATE` i `timeout` w `DATABASES['OPTIONS']`, krótkie transakcje, sprawdzenie dostępnej ilości i zapis rezerwacji w jednej transakcji (wyklucza przekroczenie planu dostawy także przy rezerwacjach tuż przed 18:00). Pierwotne pytanie: Wytyczne zalecają Python + MySQL. Prowadzący ostrzegł przed SQLite przy jednoczesnych zapisach, a rezerwacje klientów przez sieć oznaczają wielu piszących. Warianty: (a) SQLite z uzasadnieniem (mały ruch, jeden komputer, tryb WAL, krótkie transakcje) i opisem ryzyka; (b) MySQL/MariaDB — w Django to zmiana `DATABASES`, raport zyskuje zgodność z zaleceniem; (c) SQLite teraz, MySQL jako opisana ścieżka rozwoju. Który?
+3. ~~**SQLite czy MySQL.**~~ **ROZSTRZYGNIĘTE 04.11.2026 przez Karola: MySQL** (zastępuje wcześniejszą tego dnia decyzję „SQLite”). Powody: W4 pkt 7 zaleca Python + MySQL; nie trzeba uzasadniać współbieżności SQLite, przed którą przestrzegał prowadzący (N19 uwaga 1). Silnik InnoDB, sterownik Django `mysqlclient`; wersja MySQL Community Server **8.4 LTS — zatwierdzona 04.11.2026 (Q10)**. W 3.3.2: blokady na poziomie wierszy, rezerwacja w jednej transakcji (`transaction.atomic` + `select_for_update` na wierszu planu dostawy: sprawdzenie dostępnej ilości i zapis pozycji), więc rezerwacje tuż przed 18:00 nie przekroczą planu dostawy. W 3.3.1 napisać wprost, że na konsultacji 19.10 zespół miał SQLite i zmienił wybór po uwadze 1. SQLite najwyżej do lokalnych testów programistów.
 4. **Techniki modelowania (wytyczne pkt 5).** Proponowany zestaw: UML (aktorzy, PU per moduł, scenariusze z makietami, czynności dla 1–2 PU, stany rezerwacji, komponenty, klasy modeli ORM) + ERD (konceptualny i logiczny) + normalizacja. DHF/DNF/DFE pomijamy. Zgoda? Czy któryś diagram ma odpaść (np. czynności), żeby zmieścić się do 17.11?
 5. **Notacja i narzędzie diagramów.** Przykłady BD używają ERD w notacji Chena (konceptualny) i logicznego ERD; przykłady IO używają Visual Paradigm. Którą notację ERD wybieramy (Chen czy „kurza stopka”) i jakie narzędzie (draw.io, PlantUML, Visual Paradigm)? Dla code-first: czy ERD i diagram klas generujemy z modeli (np. `django-extensions graph_models`)?
-6. **Wdrożenie i dostęp klientów.** System ma działać na komputerze w sklepie, bez hostingu. Jak klienci rezerwują z domu? Warianty: tylko w sieci lokalnej (np. tablet przy ladzie), udostępnienie komputera w internecie (przekierowanie portów lub tunel) albo jednak tani hosting. Jaki system operacyjny i sprzęt ma ten komputer?
+6. **Wdrożenie i dostęp klientów — CZĘŚCIOWO ROZSTRZYGNIĘTE 04.11.2026 (Karol):** klienci i personel łączą się przez przeglądarkę z serwerem aplikacji Django na komputerze w sklepie (WN4); HTTPS z internetu, admin tylko z LAN i praca całodobowa — do akceptacji (`CLAUDE.md` pkt 55). Otwarte: sprzęt i system komputera. Pierwotne pytanie: **Wdrożenie i dostęp klientów.** System ma działać na komputerze w sklepie, bez hostingu. Jak klienci rezerwują z domu? Warianty: tylko w sieci lokalnej (np. tablet przy ladzie), udostępnienie komputera w internecie (przekierowanie portów lub tunel) albo jednak tani hosting. Jaki system operacyjny i sprzęt ma ten komputer?
 7. ~~**Reguły rezerwacji.**~~ **ROZSTRZYGNIĘTE 04.11.2026** (fakty od Karola + uzupełnienia agenta; pełna lista w `CLAUDE.md`, dziennik decyzji). Od Karola: sklep czynny codziennie 6:00–18:00; właściciel Jan Nowak (JDG); krajowe warzywa i owoce bez zmian sezonowych, wszystko na wagę; jeden dostawca, dostawa codziennie o 4:00; rezerwacje tylko z towaru dostępnego w dniu odbioru; rezerwacja do 7 dni naprzód (zwykle na następny dzień), limit 20 kg (jedna skrzynka); odbiór do 18:00 dnia odbioru; nieodebranie = utrata zadatku 10% wartości; rejestracja z kartą płatniczą, zadatek pobierany po fakcie; blokada nowych rezerwacji przy zaległości > 100 zł. Agent uzupełnił: plan dostawy jako pula rezerwacji, zamknięcie zapisów i bezpłatne anulowanie do 18:00 dnia poprzedniego, jedna rezerwacja na klienta na dzień, rozliczanie zaległości i zniesienie blokady, dostawca bez konta (wszystko do akceptacji Karola).
-8. **Wersje min/std/rozsz.** Przykłady je mają, wytyczne nie wymagają. Dodajemy? Proponowany podział: min = produkty, stany, dostawy, sprzedaż w adminie; std = panel klienta z rezerwacjami; rozsz. = raporty i statystyki, wygasanie rezerwacji, powiadomienia.
+8. ~~**Wersje min/std/rozsz.**~~ **ZAPROPONOWANE 04.11.2026 przez agenta, do akceptacji Karola (`CLAUDE.md` pkt 56; tekst w 2.5):** min = konta, katalog, plan dostawy, rezerwacje z warunkami WF39–WF40, wydanie, oznaczanie nieodebranych z opłatą; std = ewidencja, stan „przygotowana”, zmiana rezerwacji, zaległości i blokada; rozsz. = zestawienia właściciela, telefony, testowe środowisko operatora. Dawny podział poniżej jest nieaktualny (MVP musi mieć rezerwacje, N19 §1). Pierwotne pytanie: **Wersje min/std/rozsz.** Przykłady je mają, wytyczne nie wymagają. Dodajemy? Proponowany podział: min = produkty, stany, dostawy, sprzedaż w adminie; std = panel klienta z rezerwacjami; rozsz. = raporty i statystyki, wygasanie rezerwacji, powiadomienia.
 9. **Koszt wytworzenia.** Wytyczne wymagają kosztu. Narzędzia: 0 zł (licencje). Praca: podasz godziny i stawkę, czy zostawiamy szacunek względny z jawnym zastrzeżeniem? Czy liczymy sprzęt w sklepie jako istniejący (0 zł)?
-10. **Wersje technologii.** Notatka wymaga konkretnych wersji. Które wersje Pythona i Django (np. Django 5.2 LTS)? Czy zapisujemy je dopiero po utworzeniu `requirements.txt`?
+10. ~~**Wersje technologii.**~~ **ROZSTRZYGNIĘTE 04.11.2026 (Karol): Python 3.12, Django 5.2 LTS, MySQL Community Server 8.4 LTS.** Numer poprawki z `requirements.txt` przy implementacji. Pierwotne pytanie: Notatka wymaga konkretnych wersji. Które wersje Pythona i Django (np. Django 5.2 LTS)? Czy zapisujemy je dopiero po utworzeniu `requirements.txt`?
 11. **Nazewnictwo i model stanu.** Modele PL (`Produkt`, `Rezerwacja`) czy EN (`Product`, `Reservation`)? Czy stan to pole ilości aktualizowane transakcyjnie, czy wartość liczona z ruchów (dostawy − sprzedaż − rezerwacje)? To wpływa na ERD, normalizację i kod.
 12. **Zmiana szkieletu i `PLAN.md`.** **Szkielet ZROBIONY 04.11.2026** — `sprawozdanie.tex` przebudowano na wzór „Sklepu hydraulicznego” (14 rozdziałów po korekcie wg wytycznych, patrz §1; kopie przed zmianami: `dokumentacja/sprawozdanie.pre-restructure.tex.bak` i `dokumentacja/sprawozdanie.pre-restructure2.tex.bak`). **Otwarte:** przebudowa kolejki `PLAN.md` z przypisaniem osób. Pierwotne pytanie: czy akceptujesz nowy szkielet z §1 (nowe: parametry skalowalne, wersje, scenariusze z makietami, diagramy czynności i stanów, „Model bazy danych”, model fizyczny, fragment kodu, zmiany i problemy, podręcznik; scalenie podsekcji etapu 5)? Czy przebudować kolejkę `PLAN.md` pod ten szkielet, z przypisaniem osób (prowadzący zalecił wspólną pracę przy projekcie)?
 13. ~~**Sprzątanie instrukcji agenta.**~~ **ZROBIONE 03.11.2026.** Instrukcje przeniesiono do `CLAUDE.md` i `.claude/skills/`; `cursor.md`, `SKILL.md` i generyczny szablon `sprawozdanie-pwr-latex` usunięto (do odzyskania z git).
-14. **Literatura i spis rysunków.** Dodać krótką bibliografię (dokumentacja Django, SQLite, UML) i `\listoffigures` jak w przykładach?
+14. **Literatura i spis rysunków.** Dodać krótką bibliografię (dokumentacja Django, MySQL, UML) i `\listoffigures` jak w przykładach?
 
 ---
 
@@ -339,14 +337,15 @@ Właściciel i sprzedawca mogą być jedną osobą; rozdziela się role, nie eta
 
 | Element | Propozycja | Źródło / status |
 |---|---|---|
-| Język | Python 3.12 | komputer deweloperski: Python 3.12.3 (odczyt 03.11.2026); wersja w sklepie ⛔ |
-| Framework | Django 5.2 LTS | Django [N19]; wybór linii LTS [ZAŁ.] — zweryfikować aktualny numer poprawki przy tworzeniu `requirements.txt` (Q10) |
+| Język | Python 3.12 | **zatwierdzone 04.11.2026 (Q10)**; komputer deweloperski: Python 3.12.3 |
+| Framework | Django 5.2 LTS | **zatwierdzone 04.11.2026 (Q10)**; numer poprawki z `requirements.txt` |
+| Wbudowane mechanizmy Django | auth z grupami jako rolami, admin, formularze, ORM i migracje, sesje, CSRF, widoki resetu hasła, backend poczty (SMTP w sklepie, konsola w dev/testach) | **Karol 04.11.2026:** jak najwięcej z Django (WN3, WN o poczcie) |
 | Szablony | system szablonów Django (oddzielenie HTML od logiki) | [W4 pkt 9] |
-| Baza | SQLite (MySQL/MariaDB jako ścieżka rozwoju) | SQLite [N19]; MySQL zalecany [W4 pkt 7]; ostrzeżenie o współbieżności [N19 uwaga 1] — **Q3 rozstrzygnięte 04.11.2026: SQLite** (WAL, `IMMEDIATE`, timeout; MySQL/MariaDB jako ścieżka rozwoju) |
+| Baza | MySQL Community Server (InnoDB), sterownik `mysqlclient`; wersja 8.4 LTS (zatwierdzona 04.11.2026, Q10) | MySQL zalecany [W4 pkt 7]; ostrzeżenie o SQLite [N19 uwaga 1]; na konsultacji SQLite [N19 §1] — **Q3 rozstrzygnięte 04.11.2026 przez Karola: MySQL** |
 | Panel personelu | `django.contrib.admin` | [N19 uwaga 3] |
 | Uwierzytelnianie | `django.contrib.auth` + grupy (Właściciel, Sprzedawca, Klient) | [ZAŁ.] |
 | Serwer w sklepie | serwer WSGI (np. waitress lub gunicorn) zamiast `runserver` | [ZAŁ.] — zależy od systemu w sklepie (Q6) |
-| Licencje | Python (PSF), Django (BSD), SQLite (domena publiczna), MySQL/MariaDB (GPL) — narzędzia 0 zł | obowiązek wpisania licencji i 0 zł [N19 uwaga 6]; nazwy licencji [ZAŁ.] — zweryfikować w dokumentacji przed wpisaniem do raportu |
+| Licencje | Python (PSF), Django (BSD), MySQL Community Server (GPLv2), `mysqlclient` (GPL-2.0) — narzędzia 0 zł | obowiązek wpisania licencji i 0 zł [N19 uwaga 6]; nazwy licencji [ZAŁ.] — zweryfikować w dokumentacji przed wpisaniem do raportu |
 
 ### 6.5 Podział na aplikacje Django [ZAŁ. w całości]
 
@@ -408,12 +407,12 @@ Zasada (jak w SH): najpierw jak sklep działa dziś, potem dlaczego potrzebny je
 | 1 ✅ | 1.1 Obecny sposób działania sklepu + 1.3 Proponowany system + 1.5 Parametry skalowalne — **napisane 04.11.2026** (dawny „Opis słowny” podzielony 04.11 na „jak jest” i „co system wprowadza”); uzupełnienia agenta czekają na akceptację Karola | — (Q7 rozstrzygnięte) | Z opisu wynikają wszystkie kolejne sekcje etapu 1 i wymagania etapu 2 |
 | 2 ✅ | 1.2 Problemy prowadzenia sklepu bez systemu — **napisane 04.11.2026** (P1–P8, etykiety `prob:rezerwacja`, `prob:zamawianie`, `prob:straty`, `prob:ewidencja`, `prob:informacja`, `prob:kolejki`, `prob:dostawa`, `prob:wiedza`; numeracja stała); uzupełnienia agenta do akceptacji Karola | — | Wynika z opisu „jak jest”; uzasadnia system i cel |
 | 3 ✅ | 1.4 Interesariusze i otoczenie systemu — **napisane 04.11.2026** (`sec:otoczenie`, `tab:otoczenie`): zapłata za towar, kasa fiskalna i terminal poza systemem; dostawca bez konta; operator płatności tylko dla opłaty za nieodebranie; uzupełnienia agenta (pkt 30–33 w `CLAUDE.md`) do akceptacji | — | Domyka granicę systemu opisanego w 1.3 |
-| 4 **następny** | 2.1 Cel projektu + 2.2 Zakres projektu (z „Uwagą”); przy okazji ustala się podział na wersje 2.5 | podział funkcji na wersje (Q8) | Cel odpowiada na P1–P8; zakres wynika z Q1 |
-| 5 | 3.1 Analiza SWOT | punkty zespołu po poprawkach prowadzącego (N19 uwaga 5) | Wymaga znanego zakresu i ograniczeń |
+| 4 ✅ | 2.1 Cel projektu + 2.2 Zakres projektu (z „Uwagą”) — **napisane 04.11.2026 razem z całym rozdz. 2** (2.3 WF1–WF44, 2.4 WN1–WN11, 2.5 wersje — na prośbę Karola wcześniej niż „na początku etapu 2”); uzupełnienia agenta pkt 38–56 w `CLAUDE.md` do akceptacji | podział funkcji na wersje (Q8) | Cel odpowiada na P1–P8; zakres wynika z Q1 |
+| 5 **następny** | 3.1 Analiza SWOT | punkty zespołu po poprawkach prowadzącego (N19 uwaga 5) | Wymaga znanego zakresu i ograniczeń |
 | 6 | 3.2 Czynniki krytyczne sukcesu (CSF) | które warunki są sprawdzalne na działającej aplikacji | Wynikają z celu i ze SWOT |
-| 7 | 3.3 Techniczna wykonalność systemu (3.3.1 technologie, wersje i licencje; 3.3.2 współbieżne zapisy w SQLite) | wersje (Q10), komputer w sklepie i dostęp klientów (Q6) | Najwięcej otwartych decyzji technicznych; potrzebny gotowy zakres |
+| 7 | 3.3 Techniczna wykonalność systemu (3.3.1 technologie, wersje i licencje; 3.3.2 współbieżne zapisy w MySQL/InnoDB) | licencje (do weryfikacji), sprzęt komputera w sklepie (Q6); wersje zatwierdzone (Q10) | Najwięcej otwartych decyzji technicznych; potrzebny gotowy zakres |
 | 8 | 3.4 Koszt wytworzenia systemu (kosztorys) | godziny i stawka albo szacunek względny, sprzęt (Q9) | Zależy od stosu i licencji z punktu 7 |
 | 9 | 3.5 Plan projektu | czy daty pośrednie z §6.8 zostają | Plan zależy od zakresu |
 | 10 | 3.6 Grupa projektowa i podział obowiązków (3.6.1 skład, 3.6.2 podział w etapach; tuż przed harmonogramem) | kto grał właściciela w wywiadzie; podział zadań i przebudowa `PLAN.md` (Q12) | Podział zależy od planu |
 | 11 | 3.7 Harmonogram | daty etapów i rezultaty | Ostatnia sekcja części analitycznej; terminy znane |
-| 12 | Specyfikacja projektu (bez numeru) | wersje technologii (Q10), baza (Q3) | Streszczenie całości — pisać na końcu (TODO w `.tex`) |
+| 12 | Specyfikacja projektu (bez numeru) | — (Q3, Q10 rozstrzygnięte) | Streszczenie całości — pisać na końcu (TODO w `.tex`) |

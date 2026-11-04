@@ -164,11 +164,11 @@ Numeracja wg szkieletu z 04.11.2026 (układ „Sklepu hydraulicznego” + osobne
 
 | Podpunkt | dawniej | Fakty | Wzór formy | Status |
 |---|---|---|---|---|
-| 2.1 Cel projektu | 1.7 | N19 §1 (ograniczenie strat przez rezerwacje); P1–P8 (`sec:problemy`) | SH 2.1 s. 11; SZ 2.1 s. 7 | OK |
-| 2.2 Zakres projektu | 1.7 | N19 §1 + uwagi 2–3; H01 § zakres (wyłączenia); decyzje 1.4 (zapłata za towar, kasa, terminal poza systemem) | SH 2.1 „Uwaga” s. 11 | OK (Q1) |
-| 2.3 Wymagania funkcjonalne (2.3.1–2.3.8, kolejność SH) | 2.1 | N19 §1 (rezerwacja ilości, odbiór, płatność na miejscu) + uwagi 2–3; H01 opis (dostawy, sprzedaż, stan); Q7 w `CLAUDE.md` (reguły rezerwacji, opłata, blokada) | SH 2.2.1–2.2.8 s. 11–14; SZ 2.2.1 s. 7–10; BIB F01–F08 s. 2; IO Wymagania zad. 4 | ◐ — reguły haseł, uprawnienia właściciel vs sprzedawca ⛔ |
-| 2.4 Wymagania niefunkcjonalne | 2.2 | N19 §1 (komputer w sklepie, bez hostingu, Django/SQLite) + uwaga 1 (współbieżność) + uwaga 3 (osobny panel); W4 pkt 7, 9 | SH 2.3 s. 14; SZ 2.2.2 s. 10; ROW Wymagania s. 3–4; BIB N01–N08 | ◐ — sprzęt, system, sieć, dostęp klientów ⛔ |
-| 2.5 Wersje min/std/rozsz. | 1.7 | brak | SH 2.4 s. 14; SZ 2.3 s. 10; DEMO3 1.6; ROW Wymagania s. 4 | ⛔ podział |
+| 2.1 Cel projektu | 1.7 | N19 §1 (ograniczenie strat przez rezerwacje); P1–P8 (`sec:problemy`) | SH 2.1 s. 11; SZ 2.1 s. 7 | **napisane 04.11.2026**, uzupełnienia agenta do akceptacji (pkt 38) |
+| 2.2 Zakres projektu | 1.7 | N19 §1 + uwagi 2–3; H01 § zakres (wyłączenia); decyzje 1.4 (zapłata za towar, kasa, terminal poza systemem) | SH 2.1 „Uwaga” s. 11 | **napisane 04.11.2026**, uzupełnienia agenta do akceptacji (pkt 39) |
+| 2.3 Wymagania funkcjonalne (2.3.1–2.3.8, kolejność SH) | 2.1 | N19 §1 (rezerwacja ilości, odbiór, płatność na miejscu) + uwagi 2–3; H01 opis (dostawy, sprzedaż, stan); Q7 w `CLAUDE.md` (reguły rezerwacji, opłata, blokada) | SH 2.2.1–2.2.8 s. 11–14; SZ 2.2.1 s. 7–10; BIB F01–F08 s. 2; IO Wymagania zad. 4 | **napisane 04.11.2026**, uzupełnienia agenta do akceptacji (pkt 40–54) |
+| 2.4 Wymagania niefunkcjonalne | 2.2 | N19 §1 (komputer w sklepie, bez hostingu, Django; baza zmieniona na MySQL — Q3) + uwaga 1 (współbieżność) + uwaga 3 (osobny panel); W4 pkt 7, 9 | SH 2.3 s. 14; SZ 2.2.2 s. 10; ROW Wymagania s. 3–4; BIB N01–N08 | **napisane 04.11.2026**, uzupełnienia agenta do akceptacji (pkt 55; Q6 otwarte) |
+| 2.5 Wersje min/std/rozsz. | 1.7 | brak | SH 2.4 s. 14; SZ 2.3 s. 10; DEMO3 1.6; ROW Wymagania s. 4 | **napisane 04.11.2026**, uzupełnienia agenta do akceptacji (pkt 56 (Q8)) |
 
 ### Rozdz. 3. Uzasadnienie potrzeby realizacji i organizacja projektu (etap 1; brak w SH — wymagania W4 4a–4e)
 
@@ -176,84 +176,77 @@ Numeracja wg szkieletu z 04.11.2026 (układ „Sklepu hydraulicznego” + osobne
 |---|---|---|---|---|
 | 3.1 Analiza SWOT | 1.5 | H01 § SWOT + N19 uwaga 5 (poprawki) | W4 pkt 4b | ◐ — akceptacja nowej wersji |
 | 3.2 CSF | 1.6 | H01 § CSF (do uzupełnienia o rezerwacje) | W4 pkt 4b | ◐ |
-| 3.3 Techniczna wykonalność systemu (3.3.1 wybór technologii, wersje i licencje; 3.3.2 współbieżne zapisy w SQLite) | 1.8 | N19 §1 (Django, SQLite, komputer w sklepie) + uwagi 1, 6; H01 § Wykonalność; A1 środowisko dev | — | ◐ — wersje (Q10); baza: SQLite (Q3 rozstrzygnięte 04.11.2026) |
+| 3.3 Techniczna wykonalność systemu (3.3.1 wybór technologii, wersje i licencje; 3.3.2 współbieżne zapisy w MySQL (InnoDB)) | 1.8 | N19 §1 (Django, komputer w sklepie; SQLite z konsultacji zastąpiony MySQL) + uwagi 1, 6; H01 § Wykonalność; A1 środowisko dev | — | ◐ — wersje zatwierdzone (Q10: Python 3.12, Django 5.2 LTS, MySQL 8.4 LTS); licencje do weryfikacji |
 | 3.4 Koszt wytworzenia systemu (kosztorys) | 1.7 | N19 uwaga 6 (0 zł narzędzia, licencje) | — | ◐ — praca (godziny, stawka), sprzęt ⛔ |
 | 3.5 Plan projektu | 1.9 | PLAN.md kolejka; N19 „Ustalenia” (1 miesiąc na projekt, równoległa konfiguracja) | — | OK |
 | 3.6 Grupa i podział obowiązków (3.6.1 skład grupy; 3.6.2 podział w etapach — N19 uwaga 4) | 1.1 | PLAN.md „Ustalenia”, kolejka; H01 § Grupa (tabele); N19 uwaga 4 (role w wywiadzie, wspólne projektowanie) | — | ◐ — kto grał właściciela w wywiadzie ⛔ |
 | 3.7 Harmonogram | 1.10 | PLAN.md „Terminy”; H01 § Harmonogram (z 05.10) | — | OK |
 
-### Rozdz. 4. Techniki modelowania (etap 2)
+### Rozdz. 4. Diagramy przypadków użycia (etap 2)
 
 | Podpunkt | dawniej | Fakty | Wzór formy | Status |
 |---|---|---|---|---|
-| 4.1 Dobór technik modelowania i diagramów | — | W4 pkt 5 (UML zalecany; ERD/OZ + definicje obiektów; DHF/DNF; DFE) | IO instrukcje (dobór diagramów); Etapy realizacji (ROW) | ◐ — zestaw do decyzji (Q4) |
-| 4.2 Struktura funkcjonalna i informacyjna | — | W4 pkt 5e | — | ◐ (Q4) |
+| 4.1 Identyfikacja aktorów | 2.4 | N19 uwaga 2 (właściciel, sprzedawca, dostawca, klient, klient-obserwator); decyzja 04.11.2026: dostawca bez konta, więc nie jest aktorem systemu | ROW Diagramy PU s. 1; SH 3.1 s. 15; SZ 3.1 s. 11 | OK |
+| 4.2 Diagramy PU per moduł | 2.4 | N19 (funkcje) | ROW s. 2–6; SH 3.2 s. 17–19; RE 2.2–2.5 s. 4–6; IO zad. 5 s. 3 | ◐ — lista PU do akceptacji |
 
-### Rozdz. 5. Diagramy przypadków użycia (etap 2)
-
-| Podpunkt | dawniej | Fakty | Wzór formy | Status |
-|---|---|---|---|---|
-| 5.1 Identyfikacja aktorów | 2.4 | N19 uwaga 2 (właściciel, sprzedawca, dostawca, klient, klient-obserwator); decyzja 04.11.2026: dostawca bez konta, więc nie jest aktorem systemu | ROW Diagramy PU s. 1; SH 3.1 s. 15; SZ 3.1 s. 11 | OK |
-| 5.2 Diagramy PU per moduł | 2.4 | N19 (funkcje) | ROW s. 2–6; SH 3.2 s. 17–19; RE 2.2–2.5 s. 4–6; IO zad. 5 s. 3 | ◐ — lista PU do akceptacji |
-
-### Rozdz. 6. Opis przypadków użycia (etap 2)
+### Rozdz. 5. Opis przypadków użycia (etap 2)
 
 | Podpunkt | dawniej | Fakty | Wzór formy | Status |
 |---|---|---|---|---|
-| 6.1–6.4 Scenariusze PU + makiety (per rola) | 2.4 | brak gotowych | SH 4.2–4.5 s. 24–50 (= DEMO1); SZ 3.3 s. 15–40; DEMO2; DEMO3; RE 3 s. 7–19; BIB s. 4–11; IO zad. 6 s. 4; IO prezentacja zad. 1 | ⛔ przebiegi do akceptacji |
-| 6.5 Diagramy czynności wybranych PU (+ ewentualnie stany GUI) | 2.5 | brak | IO realizacja PU s. 1–3; BIB s. 11–13; IO prezentacja zad. 2 | ⛔ (Q4) |
+| 5.1–5.4 Scenariusze PU + makiety (per rola) | 2.4 | brak gotowych | SH 4.2–4.5 s. 24–50 (= DEMO1); SZ 3.3 s. 15–40; DEMO2; DEMO3; RE 3 s. 7–19; BIB s. 4–11; IO zad. 6 s. 4; IO prezentacja zad. 1 | ⛔ przebiegi do akceptacji |
+| 5.5 Diagramy czynności wybranych PU (+ ewentualnie stany GUI) | 2.5 | brak | IO realizacja PU s. 1–3; BIB s. 11–13; IO prezentacja zad. 2 | ⛔ (Q4) |
 
-### Rozdz. 7. Model bazy danych (etap 2)
-
-| Podpunkt | dawniej | Fakty | Wzór formy | Status |
-|---|---|---|---|---|
-| 7.1 Podejście code-first | — | N19 uwaga 6 (model z klas ORM, reverse engineering) | — | OK (forma) |
-| 7.2 Identyfikacja encji i związków | 2.6 | H01 (produkt, dostawa, pozycje, sprzedaż, stan); N19 (rezerwacja, konta); Q7 (plan dostawy) | Model BD (ROW) s. 1–2; RE 4.1–4.2 s. 19–20; SZ 4.1 s. 41 | ◐ |
-| 7.3 Model konceptualny (ERD) | 2.6 | jw. | Etapy realizacji (notacja Chena); Model BD s. 2–3; SZ 4.2 s. 42 | ◐ — notacja/narzędzie (Q5) |
-| 7.4 Model logiczny i normalizacja | 2.6 | N19 uwaga 6 (code-first, z ORM) | Model BD s. 3–5; SZ 4.3–4.4 s. 43; RE s. 20; SH 5 tab. NF s. 53–54 | ◐ |
-| 7.5 Diagram klas ORM | 2.6 | N19 uwaga 6 + „Ustalenia” | IO 3-warstwowa zad. 2; BIB s. 14–19 | ◐ — z kodu |
-| 7.6 Słownik danych (definicje obiektów, W4 5b) | 2.6 | — | RE 4.3 tabela atrybutów s. 21 | ⛔ (z modeli) |
-| 7.7 Graf stanów rezerwacji | 2.5 | N19 (rezerwacja → odbiór osobisty); Q7 (złożona → odebrana / anulowana / nieodebrana) | SH 5.7 s. 65–67; IO prezentacja zad. 2 | ◐ — reguły przejść do akceptacji |
-
-### Rozdz. 8–11. Implementacja i walidacja (etap 3)
+### Rozdz. 6. Model bazy danych (etap 2)
 
 | Podpunkt | dawniej | Fakty | Wzór formy | Status |
 |---|---|---|---|---|
-| 8.1 Technologie | 3.1 | N19 §1 + uwaga 6; W4 pkt 7–8 | RE 5.1 s. 22; SH 6.1.1 s. 69; SZ 5.1 s. 45 | ◐ — wersje ⛔ |
-| 8.2 Środowisko programistyczne i repozytorium kodu | — | N19 „Ustalenia” (konfiguracja środowiska, prosta działająca wersja); A1 środowisko dev | RE 5.3 (link do repozytorium) | ◐ — adres repozytorium ⛔ |
-| 8.3 Architektura trójwarstwowa | 2.3 | W4 pkt 9 | IO 3-warstwowa zad. 1 s. 1–2; BIB s. 14; SH 6.1.2 s. 69 | OK (forma) |
-| 8.4 Oddzielenie kodu od HTML – szablony Django | — | W4 pkt 9 | IO 3-warstwowa; SH 7.1.8 | ⛔ (z kodu) |
-| 8.5 Moduły funkcjonalne | 3.2 | brak kodu | SH 6 s. 69–70; SZ 5.2 s. 45–47 | ⛔ (z repo, gdy powstanie) |
-| 8.6 Panel klienta i panel administratora | 2.3 | N19 uwaga 3 | SH 6.1.2 s. 69 | OK (forma) |
-| 8.7 Model fizyczny bazy danych | 3.3 | N19 uwaga 6 | RE 5.2 DDL s. 22–23 | ⛔ (z kodu) |
-| 8.8 Bezpieczeństwo | — | N19 uwaga 3 | SH 6 s. 70; SZ 5.2 | ⛔ (z kodu) |
-| 9.1 Aplikacje Django i modele | 3.3 | — | SH 7 s. 71–73 | ⛔ (z kodu) |
-| 9.2 Widoki i szablony panelu klienta | 3.4 | N19 uwagi 2–3 | SH 7.1.8 s. 72; SZ 5.2 UI | ⛔ (z kodu, zrzuty) |
-| 9.3 Konfiguracja panelu administratora | 3.5 | N19 uwaga 3 | — | ⛔ (z kodu) |
-| 9.4 Pozostałe pliki | — | — | SH 7 s. 73 | ⛔ (z kodu) |
-| 10 Fragment kodu | 3.6 | — | SH 8 s. 75–85; SZ 6 s. 49–52; RE 5.6 s. 25 | ⛔ |
-| 11.1–11.2 Testy jednostkowe i akceptacyjne | 3.7 | — | IO testy jednostkowe; IO akceptacyjne; BIB s. 61–64 | ⛔ wyniki |
-| 11.3 Zmiany i problemy | 3.8 | N19 uwaga 1 (temat SQLite otwarty) | RE 5.4–5.5 s. 23–24 | ⛔ |
+| 6.1 Podejście code-first | — | N19 uwaga 6 (model z klas ORM, reverse engineering) | — | OK (forma) |
+| 6.2 Identyfikacja encji i związków | 2.6 | H01 (produkt, dostawa, pozycje, sprzedaż, stan); N19 (rezerwacja, konta); Q7 (plan dostawy) | Model BD (ROW) s. 1–2; RE 4.1–4.2 s. 19–20; SZ 4.1 s. 41 | ◐ |
+| 6.3 Model konceptualny (ERD) | 2.6 | jw. | Etapy realizacji (notacja Chena); Model BD s. 2–3; SZ 4.2 s. 42 | ◐ — notacja/narzędzie (Q5) |
+| 6.4 Model logiczny i normalizacja | 2.6 | N19 uwaga 6 (code-first, z ORM) | Model BD s. 3–5; SZ 4.3–4.4 s. 43; RE s. 20; SH 5 tab. NF s. 53–54 | ◐ |
+| 6.5 Diagram klas ORM | 2.6 | N19 uwaga 6 + „Ustalenia” | IO 3-warstwowa zad. 2; BIB s. 14–19 | ◐ — z kodu |
+| 6.6 Słownik danych (definicje obiektów, W4 5b) | 2.6 | — | RE 4.3 tabela atrybutów s. 21 | ⛔ (z modeli) |
+| 6.7 Graf stanów rezerwacji | 2.5 | N19 (rezerwacja → odbiór osobisty); Q7 (złożona → odebrana / anulowana / nieodebrana) | SH 5.7 s. 65–67; IO prezentacja zad. 2 | ◐ — reguły przejść do akceptacji |
 
-### Rozdz. 12. Wdrożenie aplikacji i podręcznik dla użytkownika (etap 4)
+### Rozdz. 7–10. Implementacja i walidacja (etap 3)
 
 | Podpunkt | dawniej | Fakty | Wzór formy | Status |
 |---|---|---|---|---|
-| 12.1.1 Środowisko uruchomieniowe w sklepie | 4.1 | N19 §1 (komputer w sklepie, bez hostingu) | SH 9.1 s. 87–88; RE 6.1 s. 27 | ⛔ sprzęt, system, sieć |
-| 12.1.2 Instrukcja instalacji na komputerze w sklepie | 4.2 | N19 uwaga 6 (wymagana jasna instrukcja) | SH 9.1 s. 87–88 | ⛔ (po zbudowaniu) |
-| 12.1.3 Dane początkowe i konta | 4.3 | — | — | ⛔ lista produktów, konta |
-| 12.1.4 Kopia i odtwarzanie | 4.4 | H01 § CSF (kopia pliku bazy) | — | ◐ |
-| 12.2 Przewodnik po rolach | 4.5 | — | RE 6 s. 27–36; SH 9.2 s. 89–98; SZ 7 s. 53–64 | ⛔ zrzuty |
-| 12.3 Checklista odbioru | 4.6 | — | — | ⛔ wynik odbioru |
-| 12.1.5 Dostęp do aplikacji | — | N19 §1 (komputer w sklepie) | SH 9.1.4 s. 88 | ⛔ adres, sieć (Q6) |
+| 7.1 Technologie | 3.1 | N19 §1 + uwaga 6; W4 pkt 7–8 | RE 5.1 s. 22; SH 6.1.1 s. 69; SZ 5.1 s. 45 | ◐ — wersje ⛔ |
+| 7.2 Środowisko programistyczne i repozytorium kodu | — | N19 „Ustalenia” (konfiguracja środowiska, prosta działająca wersja); A1 środowisko dev | RE 5.3 (link do repozytorium) | ◐ — adres repozytorium ⛔ |
+| 7.3 Architektura trójwarstwowa | 2.3 | W4 pkt 9 | IO 3-warstwowa zad. 1 s. 1–2; BIB s. 14; SH 6.1.2 s. 69 | OK (forma) |
+| 7.4 Oddzielenie kodu od HTML – szablony Django | — | W4 pkt 9 | IO 3-warstwowa; SH 7.1.8 | ⛔ (z kodu) |
+| 7.5 Moduły funkcjonalne | 3.2 | brak kodu | SH 6 s. 69–70; SZ 5.2 s. 45–47 | ⛔ (z repo, gdy powstanie) |
+| 7.6 Panel klienta i panel administratora | 2.3 | N19 uwaga 3 | SH 6.1.2 s. 69 | OK (forma) |
+| 7.7 Model fizyczny bazy danych | 3.3 | N19 uwaga 6 | RE 5.2 DDL s. 22–23 | ⛔ (z kodu) |
+| 7.8 Bezpieczeństwo | — | N19 uwaga 3 | SH 6 s. 70; SZ 5.2 | ⛔ (z kodu) |
+| 8.1 Aplikacje Django i modele | 3.3 | — | SH 7 s. 71–73 | ⛔ (z kodu) |
+| 8.2 Widoki i szablony panelu klienta | 3.4 | N19 uwagi 2–3 | SH 7.1.8 s. 72; SZ 5.2 UI | ⛔ (z kodu, zrzuty) |
+| 8.3 Konfiguracja panelu administratora | 3.5 | N19 uwaga 3 | — | ⛔ (z kodu) |
+| 8.4 Pozostałe pliki | — | — | SH 7 s. 73 | ⛔ (z kodu) |
+| 9 Fragment kodu | 3.6 | — | SH 8 s. 75–85; SZ 6 s. 49–52; RE 5.6 s. 25 | ⛔ |
+| 10.1–10.2 Testy jednostkowe i akceptacyjne | 3.7 | — | IO testy jednostkowe; IO akceptacyjne; BIB s. 61–64 | ⛔ wyniki |
+| 10.3 Zmiany i problemy | 3.8 | N19 uwaga 1 (zmiana SQLite → MySQL, Q3) | RE 5.4–5.5 s. 23–24 | ⛔ |
 
-### Rozdz. 13–14. Prezentacja, zaliczenie i wnioski (etap 5)
+### Rozdz. 11. Wdrożenie aplikacji i podręcznik dla użytkownika (etap 4)
 
 | Podpunkt | dawniej | Fakty | Wzór formy | Status |
 |---|---|---|---|---|
-| 13.1 Plan prezentacji | 5.1 | W4 pkt 6; PLAN.md 5.1–5.5 | — | ⛔ podział wypowiedzi |
-| 13.2 Materiały przekazywane do zaliczenia | — | W4 pkt 6 („wraz z dokumentacją”) | RE 5.3 | ⛔ |
-| 14 Wnioski | 5.2 | — | SH 10 s. 99; SZ 8 s. 65–66; SZ 9 s. 67 | ⛔ ocena zespołu |
+| 11.1.1 Środowisko uruchomieniowe w sklepie | 4.1 | N19 §1 (komputer w sklepie, bez hostingu) | SH 9.1 s. 87–88; RE 6.1 s. 27 | ⛔ sprzęt, system, sieć |
+| 11.1.2 Instrukcja instalacji na komputerze w sklepie | 4.2 | N19 uwaga 6 (wymagana jasna instrukcja) | SH 9.1 s. 87–88 | ⛔ (po zbudowaniu) |
+| 11.1.3 Dane początkowe i konta | 4.3 | — | — | ⛔ lista produktów, konta |
+| 11.1.4 Kopia i odtwarzanie | 4.4 | H01 § CSF (kopia pliku bazy) | — | ◐ |
+| 11.2 Przewodnik po rolach | 4.5 | — | RE 6 s. 27–36; SH 9.2 s. 89–98; SZ 7 s. 53–64 | ⛔ zrzuty |
+| 11.3 Checklista odbioru | 4.6 | — | — | ⛔ wynik odbioru |
+| 11.1.5 Dostęp do aplikacji | — | N19 §1 (komputer w sklepie) | SH 9.1.4 s. 88 | ⛔ adres, sieć (Q6) |
+
+### Rozdz. 12–13. Prezentacja, zaliczenie i wnioski (etap 5)
+
+| Podpunkt | dawniej | Fakty | Wzór formy | Status |
+|---|---|---|---|---|
+| 12.1 Plan prezentacji | 5.1 | W4 pkt 6; PLAN.md 5.1–5.5 | — | ⛔ podział wypowiedzi |
+| 12.2 Materiały przekazywane do zaliczenia | — | W4 pkt 6 („wraz z dokumentacją”) | RE 5.3 | ⛔ |
+| 13 Wnioski | 5.2 | — | SH 10 s. 99; SZ 8 s. 65–66; SZ 9 s. 67 | ⛔ ocena zespołu |
 
 ### Podpunkty bez źródła — co musi dostarczyć Karol
 
@@ -262,8 +255,8 @@ Numeracja wg szkieletu z 04.11.2026 (układ „Sklepu hydraulicznego” + osobne
 3. ~~Jak sklep działa dziś~~ — Karol 04.11.2026 (Q7), uzupełnienia agenta do akceptacji (1.1, 1.2, 1.3).
 4. Podział funkcji na wersje minimalną, standardową i rozszerzoną (2.5).
 5. Koszt pracy (godziny, stawka albo zgoda na szacunek względny); sprzęt w sklepie (3.4).
-6. Wersje Pythona i Django (3.3.1, 8.1; Q10). Baza: SQLite (Q3 rozstrzygnięte 04.11.2026).
+6. ~~Wersje technologii~~ — rozstrzygnięte 04.11.2026 (Q10): Python 3.12, Django 5.2 LTS, MySQL 8.4 LTS. Zostaje weryfikacja licencji (3.3.1).
 7. Reguły haseł; uprawnienia właściciela vs sprzedawcy (2.3). Reguły rezerwacji — Karol 04.11.2026 (Q7); dostawca bez konta — decyzja 04.11.2026.
-8. Komputer w sklepie: system, sprzęt, sieć; jak klienci docierają do panelu (2.4, 12.1; Q6).
-9. Akceptacja listy PU i ich przebiegów (5.2, 6).
-10. Wszystko z rozdz. 8–14, co wynika z działającego kodu: struktura, modele, zrzuty, wyniki testów, zmiany i problemy, dane początkowe, wynik odbioru, wnioski, podział prezentacji.
+8. Komputer w sklepie: system, sprzęt, sieć; jak klienci docierają do panelu (2.4, 11.1; Q6).
+9. Akceptacja listy PU i ich przebiegów (4.2, 5).
+10. Wszystko z rozdz. 7–13, co wynika z działającego kodu: struktura, modele, zrzuty, wyniki testów, zmiany i problemy, dane początkowe, wynik odbioru, wnioski, podział prezentacji.
