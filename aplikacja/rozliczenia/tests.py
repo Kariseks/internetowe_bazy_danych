@@ -36,6 +36,11 @@ class PanelRozliczenTests(TestCase):
     def test_zaleglosci_tylko_dla_wlasciciela(self):
         self.assertEqual(self.client.get('/admin/zaleglosci/').status_code, 403)
 
+    def test_identyfikator_karty_do_obciazenia(self):
+        self.assertNotContains(self.client.get('/admin/klienci/12/'), 'tok_12')
+        self.client.force_login(konto('wlasciciel', 'wlasciciel'))
+        self.assertContains(self.client.get('/admin/zaleglosci/'), 'tok_14')
+
     def test_enter_nie_wybiera_wyniku_obciazenia(self):
         self.client.force_login(konto('wlasciciel', 'wlasciciel'))
         strona = self.client.get('/admin/zaleglosci/').content.decode()

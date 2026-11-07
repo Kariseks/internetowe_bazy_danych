@@ -498,10 +498,10 @@ Wymagania niefunkcjonalne ponumerowano WN1, WN2 itd. Wartości liczbowe odnoszą
 	\item \label{wn:wdrozenie} Aplikacja Django działa jako serwer na jednym komputerze w~sklepie, bez zewnętrznego hostingu, a~klienci i~personel łączą się z~nim przez przeglądarkę. Katalog i~panel klienta są dostępne z~internetu przez połączenie szyfrowane (HTTPS), a~panel administratora tylko z~sieci lokalnej sklepu.
 	\item Ponieważ rezerwacje przyjmuje się także wieczorem i~w~nocy, komputer z~systemem pracuje całą dobę.
 	\item \label{wn:wspolbieznosc} System obsługuje jednocześnie co najmniej 2~osoby personelu i~20~klientów bez utraty ani podwojenia zapisów. Operacje zmieniające pulę rezerwacji lub stan towaru wykonuje się w~transakcjach z~blokadą zmienianych wierszy.
-	\item Przy obciążeniu z~\ref{wn:wspolbieznosc} wyświetlenie katalogu i~zapisanie rezerwacji trwa nie dłużej niż 2~s.
+	\item \label{wn:wydajnosc} Przy obciążeniu z~\ref{wn:wspolbieznosc} wyświetlenie katalogu i~zapisanie rezerwacji trwa nie dłużej niż 2~s.
 	\item Baza mieści dane z~co najmniej pięciu lat pracy sklepu, czyli przy wartościach docelowych z~tab.~\ref{tab:parametry} około 2~mln wierszy.
-	\item Masy przechowuje się jako liczby dziesiętne z~dokładnością do 0,01~kg, a~kwoty z~dokładnością do 1~gr. Terminy, w~tym godzinę 18:00, liczy się według czasu lokalnego (strefa Europe/Warsaw).
-	\item Wiadomości e-mail system wysyła przez serwer SMTP skrzynki pocztowej sklepu. W~środowisku programistycznym i~podczas testów wiadomości wypisuje się na konsolę zamiast je wysyłać.
+	\item \label{wn:czas} Masy przechowuje się jako liczby dziesiętne z~dokładnością do 0,01~kg, a~kwoty z~dokładnością do 1~gr. Terminy, w~tym godzinę 18:00, liczy się według czasu lokalnego (strefa Europe/Warsaw).
+	\item \label{wn:poczta} Wiadomości e-mail system wysyła przez serwer SMTP skrzynki pocztowej sklepu. W~środowisku programistycznym i~podczas testów wiadomości wypisuje się na konsolę zamiast je wysyłać.
 	\item Hasła przechowuje się wyłącznie w~postaci skrótów, mechanizmem Django. Formularze są chronione przed atakami CSRF. Dane osobowe klientów widzi tylko personel i~sam klient.
 	\item \label{wn:kopia} Kopię zapasową bazy wykonuje się codziennie po zamknięciu sklepu i~przechowuje poza komputerem z~systemem. Odtworzenie bazy z~kopii trwa nie dłużej niż 1~h.
 	\item \label{wn:przegladarki} Panel administratora działa w~przeglądarkach Chrome, Firefox i~Edge w~wersjach aktualnych w~dniu wdrożenia, na ekranie o~szerokości co najmniej 1280~px. Panel klienta działa w~tych samych przeglądarkach na komputerze, a~w~wersji rozszerzonej także na ekranach telefonów od 360~px szerokości.
@@ -1772,21 +1772,108 @@ Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapi
 
 
 \subsection{Przewodnik po rolach użytkowników}
+\label{sec:przewodnik}
+
+Aplikacja ma dwa panele, a~rola konta wyznacza, z~którego korzysta użytkownik. Panel klienta z~katalogiem otwiera się pod adresem sklepu z~dowolnej sieci, a~panel administratora pod tym samym adresem z~końcówką \texttt{/admin/}, wyłącznie z~sieci lokalnej sklepu (\ref{wn:wdrozenie}). Klient loguje się w~panelu klienta adresem e-mail, a~sprzedawca i~właściciel w~panelu administratora loginem nadanym przez właściciela. Próba zalogowania się w~panelu innej roli jest odrzucana. Poniżej opisano dla każdej roli, gdzie w~aplikacji znajdują się jej funkcje i~o~czym trzeba pamiętać przy pracy. Przebieg krok po kroku podają opisy przypadków użycia w~rozdz.~\ref{ch:opis-pu}, a~ekrany pokazane tam na rysunkach są tu tylko przywoływane.
 
 \subsubsection{Klient-obserwator}
 
+Każda osoba, która otwiera stronę sklepu bez logowania, widzi katalog produktów (\ref{pu:katalog}, rys.~\ref{rys:ekran-pu01-katalog}). Tabela podaje dla każdego produktu w~ofercie cenę za kilogram i~ilość, którą można jeszcze zarezerwować na każdy z~siedmiu kolejnych dni. Kolumna dnia, dla którego przyjmowanie rezerwacji już się zakończyło, jest oznaczona jako zamknięta. Odnośnik ,,Zarezerwuj'' pod nazwą dnia prowadzi do formularza logowania, a~po zalogowaniu od razu do formularza rezerwacji na ten dzień.
+
+\ekran{rys:ekran-pu01-katalog}{Katalog produktów widziany bez logowania}{pu01-katalog}{Zawartość ekranu: odnośniki ,,Załóż konto'' i~,,Zaloguj się''; tabela produktów z~ceną za kilogram i~ilością dostępną na siedem kolejnych dni, dzień zamknięty wyszarzony, odnośnik ,,Zarezerwuj'' przy każdym otwartym dniu.}
+
+Konto zakłada się odnośnikiem ,,Załóż konto'' w~nagłówku strony (\ref{pu:konto}, rys.~\ref{rys:ekran-pu02-konto}). Formularz wymaga imienia, nazwiska, adresu e-mail, numeru telefonu i~dwukrotnie wpisanego hasła spełniającego reguły wypisane pod polem. Adres e-mail jest później loginem. Po zatwierdzeniu formularza otwiera się formularz operatora płatności (rys.~\ref{rys:ekran-pu13-operator}). W~wersji minimalnej i~standardowej systemu (p.~\ref{sec:wersje}) jest to symulacja: polecenie ,,Zatwierdź kartę'' zapisuje testowy identyfikator karty, a~,,Przerwij'' pozostawia konto bez karty. Konto powstaje w~obu przypadkach, ale bez karty nie można składać rezerwacji, więc kartę dołącza się później w~danych konta. Na koniec system wysyła potwierdzenie e-mailem i~wyświetla formularz logowania. Użytkownik, który nie pamięta hasła, wybiera na formularzu logowania odnośnik ,,Nie pamiętam hasła'' (\ref{pu:reset}, rys.~\ref{rys:ekran-pu04-reset}). Link do ustawienia nowego hasła przychodzi e-mailem i~jest ważny 3~dni.
+
+\ekran{rys:ekran-pu13-operator}{Symulowany formularz operatora płatności}{pu13-formularz-operatora}{Zawartość ekranu: oznaczenie symulacji, informacja, że numer karty nie trafia do systemu sklepu, przyciski ,,Zatwierdź kartę'' i~,,Przerwij''.}
 
 \subsubsection{Klient}
 
+Po zalogowaniu nagłówek panelu klienta zawiera odnośniki ,,Katalog'', ,,Moje rezerwacje'', ,,Zaległość'', imię i~nazwisko klienta prowadzące do danych konta oraz ,,Wyloguj''.
+
+Rezerwację składa się z~katalogu odnośnikiem ,,Zarezerwuj'' przy wybranym dniu (\ref{pu:zlozenie}, rys.~\ref{rys:ekran-pu08-rezerwacja}). Przy produktach wpisuje się ilości w~kilogramach z~dokładnością do 0,1~kg, a~produkt z~pustym polem nie wchodzi do rezerwacji. Strona na bieżąco pokazuje łączną masę i~orientacyjną wartość według dzisiejszych cen. Rezerwacja może mieć najwyżej 20~kg, a~ilość produktu nie może przekroczyć ilości dostępnej; po przekroczeniu system wyświetla komunikat i~zachowuje wpisane ilości. Na jeden dzień klient może mieć jedną rezerwację. Gdy klient nie ma karty, ma zaległość powyżej 100~zł albo ma już rezerwację na ten dzień, strona zamiast formularza podaje powód z~odnośnikiem do rejestracji karty, zaległości albo istniejącej rezerwacji. Potwierdzenie złożenia rezerwacji przychodzi e-mailem.
+
+Strona ,,Moje rezerwacje'' (\ref{pu:moje}, rys.~\ref{rys:ekran-pu11-moje-rezerwacje}) dzieli rezerwacje na bieżące i~zakończone, podając dzień odbioru, stan, łączną masę oraz orientacyjną wartość. Do 18:00 dnia poprzedzającego dzień odbioru przy złożonej rezerwacji widoczne są polecenia ,,Zmień'' i~,,Anuluj''. Zmiana otwiera formularz rezerwacji z~wpisanymi ilościami (\ref{pu:zmiana}), a~anulowanie wymaga potwierdzenia (\ref{pu:anulowanie}, rys.~\ref{rys:ekran-pu10-anulowanie}) i~jest bezpłatne. Po tym terminie polecenia znikają i~rezerwacji nie można już zmienić ani anulować.
+
+Rezerwację odbiera się w~sklepie w~dniu odbioru do 18:00, podając sprzedawcy nazwisko, adres e-mail albo numer telefonu. Klient płaci przy ladzie za masę odważoną przez sprzedawcę, po cenach z~dnia odbioru. Gdy klient nie odbierze rezerwacji do 18:00, system oznacza ją jako nieodebraną i~nalicza opłatę w~wysokości 10\% wartości zarezerwowanych ilości, o~czym klient dostaje wiadomość e-mail.
+
+Strona ,,Zaległość'' (\ref{pu:zaleglosc}, rys.~\ref{rys:ekran-pu12-zaleglosc}) pokazuje sumę nieopłaconych opłat, listę opłat z~wartością rezerwacji i~informację, czy klient może składać nowe rezerwacje. Przy zaległości powyżej 100~zł nowe rezerwacje są wstrzymane, a~rezerwacje złożone wcześniej pozostają ważne. Zaległość można zapłacić w~sklepie, a~raz w~miesiącu właściciel pobiera ją z~karty. Gdy zaległość spadnie do 100~zł, blokada ustaje sama.
+
+\ekran{rys:ekran-pu12-zaleglosc}{Zaległość klienta}{pu12-zaleglosc}{Zawartość ekranu: kwota zaległości, informacja, czy klient może składać nowe rezerwacje; tabela opłat z~dniem odbioru, wartością rezerwacji i~opłatą.}
+
+Dane konta otwiera odnośnik z~imieniem i~nazwiskiem w~nagłówku (\ref{pu:dane}, rys.~\ref{rys:ekran-pu13-karta}). Klient może zmienić tu numer telefonu; imienia, nazwiska i~adresu e-mail zmienić nie można. W~części ,,Karta płatnicza'' polecenie ,,Zarejestruj kartę'' albo ,,Zmień kartę'' otwiera formularz operatora płatności (\ref{pu:karta}), a~nowy identyfikator karty zastępuje poprzedni. Odnośnik ,,Zmień hasło'' prowadzi do formularza, w~którym podaje się obecne i~nowe hasło (\ref{pu:haslo}).
 
 \subsubsection{Sprzedawca}
 
+Sprzedawca pracuje w~panelu administratora na komputerze w~sklepie. Stroną startową jest pulpit (rys.~\ref{rys:ekran-pulpit}), który układa dzień pracy w~cztery kroki: przyjęcie dostawy, przygotowanie rezerwacji, wydawanie do 18:00 i~zamówienie towaru na następny dzień. Przy każdym kroku pulpit podaje, ile zostało do zrobienia, i~ma przycisk prowadzący do właściwej strony. Po prawej stronie znajdują się przycisk ,,Nowa sprzedaż'', wyszukiwarka klientów i~lista dzisiejszych odbiorów ze stanem rezerwacji. Menu po lewej grupuje strony w~części ,,Przy ladzie'' (sprzedaż, rezerwacje, klienci) i~,,Towar'' (dostawa, ubytek, stan, plan dostawy, zamówienie u~dostawcy, historia sprzedaży). Odnośnik z~imieniem i~nazwiskiem w~lewym dolnym rogu prowadzi do danych konta z~poleceniem zmiany hasła.
+
+\ekran{rys:ekran-pulpit}{Pulpit sprzedawcy w~panelu administratora}{pulpit-personelu}{Zawartość ekranu: menu z~częściami ,,Przy ladzie'' i~,,Towar''; cztery kroki dnia pracy z~liczbą rzeczy do zrobienia i~przyciskami; przycisk ,,Nowa sprzedaż'', wyszukiwarka klientów, lista dzisiejszych odbiorów ze stanem rezerwacji.}
+
+Rano osoba otwierająca sklep zapisuje dostawę na stronie ,,Przyjęcie dostawy'' (\ref{pu:dostawa}, rys.~\ref{rys:ekran-pu14-dostawa}). Pola są wypełnione ilościami z~planu dostawy, a~sprzedawca poprawia je na ilości faktycznie dostarczone. Dostawę zapisuje się raz dziennie, dlatego przed zapisaniem trzeba sprawdzić wszystkie pozycje. Po zapisaniu produkty dostarczone w~ilości mniejszej niż zarezerwowana są wyróżnione.
+
+Rezerwacje przygotowuje się poza godzinami największego ruchu. Strona ,,Rezerwacje'' (\ref{pu:lista}, rys.~\ref{rys:ekran-pu19-lista}) pokazuje rezerwacje z~wybranego dnia, domyślnie dzisiejszego. Polecenie ,,Przygotuj'' otwiera listę pozycji (\ref{pu:przygotowanie}, rys.~\ref{rys:ekran-pu20-przygotowanie}), w~której przy każdym produkcie wpisuje się masę odważoną na wadze. Gdy towaru zabrakło, wpisuje się masę mniejszą od zarezerwowanej, także 0~kg. Po zapisaniu rezerwacja ma stan ,,przygotowana''.
+
+Wydanie rezerwacji (\ref{pu:wydanie}) zaczyna się od wyszukania klienta po nazwisku, adresie e-mail albo numerze telefonu, w~wyszukiwarce na pulpicie lub na stronie ,,Klienci''. Karta klienta (rys.~\ref{rys:ekran-pu22-karta-klienta}) pokazuje u~góry dzisiejszą rezerwację z~przyciskiem ,,Wydaj'', a~niżej zaległość, opłaty i~historię wpłat. Ekran wydania (rys.~\ref{rys:ekran-pu21-wydanie}) podaje masy, ceny z~dnia odbioru, kwotę do zapłaty i~zaległość klienta. Klient płaci przy ladzie, sprzedawca rejestruje sprzedaż w~kasie fiskalnej, a~potem zatwierdza wydanie przyciskiem ,,Wydaj''. System zapisuje wtedy sprzedaż i~zmniejsza stan produktów. Rezerwacji nieprzygotowanej system nie wydaje od razu, tylko najpierw otwiera ważenie pozycji. Wpłatę zaległości odnotowuje się na karcie klienta, wpisując kwotę i~wybierając ,,Odnotuj wpłatę'' (\ref{pu:wplata}).
+
+\ekran{rys:ekran-pu22-karta-klienta}{Karta klienta w~panelu administratora}{pu22-karta-klienta}{Zawartość ekranu: telefon, e-mail, stan karty i~blokady; dzisiejsza rezerwacja z~przyciskiem ,,Wydaj''; zaległość z~polem kwoty i~przyciskiem ,,Odnotuj wpłatę''; opłaty za nieodebranie, wpłaty i~obciążenia, lista rezerwacji klienta.}
+
+Sprzedaż przy ladzie rejestruje się na stronie ,,Nowa sprzedaż'' (\ref{pu:sprzedaz}, rys.~\ref{rys:ekran-pu15-sprzedaz}). Produkty są pokazane jako kafelki z~ceną i~stanem; kliknięcie kafelka dodaje pozycję, w~której wpisuje się masę z~wagi. Kwota do zapłaty liczy się na bieżąco, a~przycisk ,,Zatwierdź sprzedaż'' zapisuje całość. Gdy masa któregoś produktu przekracza jego stan, system niczego nie zapisuje i~podaje ten stan. Tę samą sprzedaż rejestruje się w~kasie fiskalnej, która nie jest połączona z~systemem. Towar wyrzucony z~powodu utraty świeżości zapisuje się na stronie ,,Ubytek towaru'' (\ref{pu:ubytek}), podając produkt i~masę. Strona ,,Stan produktów'' (\ref{pu:stan}) pokazuje bieżący stan i~cenę każdego produktu, a~,,Historia sprzedaży'' sprzedaże z~wybranego dnia.
+
+O~18:00 system sam oznacza niewydane rezerwacje z~danego dnia jako nieodebrane i~nalicza opłaty bez udziału personelu (\ref{pu:nieodebrane}). O~tej samej godzinie kończą się zapisy na następny dzień, a~strona ,,Zamówienie u~dostawcy'' (\ref{pu:zamowienie}) podaje ilości do zamówienia telefonicznie. Zamówienie składa właściciel, a~pod jego nieobecność sprzedawca z~popołudniowej zmiany.
 
 \subsubsection{Właściciel}
 
+Właściciel ma wszystkie funkcje sprzedawcy, a~w~menu dodatkowo część ,,Właściciel'' z~czterema stronami. Tylko właściciel zmienia też plan dostawy; sprzedawca widzi plan bez możliwości zapisu.
+
+Strona ,,Produkty i~ceny'' (\ref{pu:produkty}) zawiera wszystkie produkty, także wycofane z~oferty. Nowy produkt dodaje się poleceniem ,,Dodaj produkt'', podając nazwę, odmianę, standardową dzienną ilość, cenę za kilogram i~dzień, od którego cena obowiązuje. Kliknięcie produktu otwiera jego stronę (rys.~\ref{rys:ekran-pu25-cena}). W~lewej części strony zmienia się dane produktu. Produktu się nie usuwa, tylko odznacza pole ,,W~ofercie'', dzięki czemu zostaje w~historii sprzedaży. W~prawej części wpisuje się nową cenę i~dzień, od którego obowiązuje (\ref{pu:cena}), a~poprzednie ceny zostają w~historii cen.
+
+\ekran{rys:ekran-pu25-cena}{Dane produktu i~zmiana ceny}{pu25-zmiana-ceny}{Zawartość ekranu: formularz danych produktu (nazwa, odmiana, standardowa dzienna ilość, pole ,,W~ofercie''); formularz nowej ceny z~dniem, od którego obowiązuje; historia cen.}
+
+Plan dostawy (\ref{pu:plan}, rys.~\ref{rys:ekran-pu26-plan}) to tabela produktów na siedem kolejnych dni. Domyślnie plan każdego dnia równa się standardowej dziennej ilości produktu, a~klienci mogą zarezerwować najwyżej tyle, ile wynosi plan. Właściciel zwiększa plan, gdy spodziewa się większego popytu, albo zmniejsza go, ale nie poniżej ilości już zarezerwowanej. Planu na dzień, dla którego przyjmowanie rezerwacji się zakończyło, nie można już zmienić.
+
+Strona ,,Zaległości klientów'' (\ref{pu:obciazenie}, rys.~\ref{rys:ekran-pu28-zaleglosci}) wymienia klientów z~zaległością, od największej, z~identyfikatorem karty i~informacją, czy ich nowe rezerwacje są zablokowane. Raz w~miesiącu właściciel obciąża karty klientów u~operatora płatności poza systemem, podając operatorowi identyfikator karty i~kwotę zaległości, a~wynik każdego obciążenia zapisuje na tej stronie, wpisując kwotę i~wybierając ,,Pobrano'' albo ,,Nie pobrano''. Pobrana kwota zmniejsza zaległość, a~nieudane obciążenie zostaje zapisane w~historii klienta bez zmiany zaległości.
+
+\ekran{rys:ekran-pu28-zaleglosci}{Zaległości klientów}{pu28-zaleglosci}{Zawartość ekranu: klienci z~zaległością od największej, z~telefonem, informacją o~blokadzie nowych rezerwacji i~identyfikatorem karty; przy każdym pole kwoty i~przyciski ,,Pobrano'' i~,,Nie pobrano''.}
+
+Strona ,,Konta'' (\ref{pu:konta}, rys.~\ref{rys:ekran-pu27-konta}) zawiera listy personelu i~klientów. Konto sprzedawcy zakłada się formularzem ,,Nowy sprzedawca'', podając login, imię, nazwisko, adres e-mail i~hasło. Kont się nie usuwa: konto sprzedawcy, który przestał pracować, dezaktywuje się i~w~razie potrzeby aktywuje ponownie, a~konto klienta można tylko dezaktywować. Konta właściciela nie dezaktywuje się z~tej strony.
+
+\ekran{rys:ekran-pu27-konta}{Konta personelu i~klientów}{pu27-konta}{Zawartość ekranu: tabela personelu (osoba, login, rola, stan konta, przycisk ,,Dezaktywuj'' albo ,,Aktywuj''), tabela klientów z~przyciskiem ,,Dezaktywuj''; formularz ,,Nowy sprzedawca''.}
+
+Strona ,,Zestawienia'' (\ref{pu:zestawienia}) podaje dla wybranego okresu sprzedaż i~ubytki według produktów, różnice między planem a~dostawą oraz liczbę i~wartość rezerwacji nieodebranych. Na ich podstawie właściciel ustala standardowe ilości produktów i~sprawdza, ile towaru traci świeżość.
 
 \subsection{Checklista odbioru}
+\label{sec:checklista}
 
+Odbiór przeprowadza się na komputerze w~sklepie po instalacji według rozdz.~\ref{ch:wdrozenie}, wspólnie z~właścicielem. Punkty z~tab.~\ref{tab:checklista} sprawdzają to, czego testy z~rozdz.~\ref{ch:testy} nie obejmują, bo wymaga docelowego komputera, sieci i~serwera poczty: wymagania niefunkcjonalne, czynniki sukcesu z~tab.~\ref{tab:csf} i~pełny dzień pracy sklepu. Aplikację uznaje się za odebraną, gdy wszystkie punkty są spełnione.
+% TODO: wyniki odbioru (kolumna „Wynik”) po instalacji w sklepie
+
+{\small
+\begin{longtable}{@{}L{0.6cm}L{2.6cm}L{7.4cm}L{2.2cm}L{1.4cm}@{}}
+	\caption{Checklista odbioru aplikacji}
+	\label{tab:checklista}\\
+	\toprule
+	Nr & Punkt & Kryterium & Źródło & Wynik \\
+	\midrule
+	\endfirsthead
+	\toprule
+	Nr & Punkt & Kryterium & Źródło & Wynik \\
+	\midrule
+	\endhead
+	\bottomrule
+	\endfoot
+	1 & Instalacja & Aplikacja zainstalowana według instrukcji uruchamia się po ponownym włączeniu komputera bez ręcznych czynności. & tab.~\ref{tab:csf} & \\
+	2 & Testy & Polecenie \texttt{python manage.py test} uruchomione na komputerze w~sklepie kończy się bez błędów, łącznie z~testami akceptacyjnymi z~p.~\ref{sec:testy-akceptacyjne}. & rozdz.~\ref{ch:testy} & \\
+	3 & Dostęp & Panel klienta otwiera się z~sieci komórkowej przez HTTPS bez ostrzeżenia o~certyfikacie. Adres \texttt{/admin/} jest z~tej sieci niedostępny, a~z~sieci sklepu dostępny. & \ref{wn:wdrozenie} & \\
+	4 & Konta i~dane & Istnieją aktywne konta właściciela i~sprzedawców, każde loguje się w~panelu administratora. Katalog pokazuje produkty z~cenami i~ilościami. & rozdz.~\ref{ch:wdrozenie} & \\
+	5 & Dzień pracy & Testowy klient rezerwuje towar na następny dzień, a~zamówienie u~dostawcy go uwzględnia. Następnego dnia personel przyjmuje dostawę, przygotowuje i~wydaje rezerwację. Stan produktów równa się dostawie pomniejszonej o~sprzedaż. & tab.~\ref{tab:csf} & \\
+	6 & Godzina 18:00 & O~18:00 czasu lokalnego zapisy na następny dzień się zamykają, a~niewydana rezerwacja testowa zostaje oznaczona jako nieodebrana z~opłatą 10\%. & \ref{wn:czas}, tab.~\ref{tab:csf} & \\
+	7 & Poczta & Potwierdzenie założenia konta, potwierdzenie rezerwacji, informacja o~opłacie i~link resetu hasła docierają na zewnętrzną skrzynkę przez serwer SMTP sklepu. & \ref{wn:poczta} & \\
+	8 & Czas odpowiedzi & Katalog i~zapis rezerwacji trwają nie dłużej niż 2~s przy obciążeniu z~\ref{wn:wspolbieznosc}. & \ref{wn:wydajnosc} & \\
+	9 & Sprzedaż przy ladzie & Zarejestrowanie zakupu trzech produktów trwa nie dłużej niż 30~s. & tab.~\ref{tab:csf} & \\
+	10 & Przeglądarki & Oba panele działają w~Chrome, Firefox i~Edge, panel administratora na ekranie o~szerokości 1280~px. & \ref{wn:przegladarki} & \\
+	11 & Kopia zapasowa & Kopia z~poprzedniego dnia jest na dysku zewnętrznym. Odtworzona na innym komputerze w~czasie nie dłuższym niż 1~h zawiera rezerwacje i~zaległości klientów. & \ref{wn:kopia}, tab.~\ref{tab:csf} & \\
+	12 & Podręcznik & Sprzedawca i~właściciel wykonują czynności swojej roli z~p.~\ref{sec:przewodnik} bez pomocy zespołu. & p.~\ref{sec:przewodnik} & \\
+\end{longtable}
+}
 
 
 \clearpage

@@ -235,7 +235,7 @@ ul.errorlist li { margin: 0; padding: 0; font-size: inherit; list-style: none; b
 .wplata .pole { margin: 0; flex: 1; }
 .w-wierszu { display: flex; align-items: center; gap: 0.4rem; }
 .w-wierszu input[type="text"] { width: 6rem; }
-.konta { display: grid; grid-template-columns: minmax(0, 1fr) 21rem; gap: 1.75rem; align-items: start; }
+.konta { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: 1.75rem; align-items: start; }
 
 /* Komunikaty */
 ul.messagelist { margin: 1rem 2.25rem -0.5rem; padding: 0; }
