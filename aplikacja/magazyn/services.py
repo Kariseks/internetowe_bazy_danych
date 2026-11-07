@@ -28,7 +28,7 @@ def produkt(produkt_id):
 
 
 def dodaj_produkt(nazwa, odmiana, standardowa_ilosc_kg, w_ofercie, cena_za_kg, obowiazuje_od):
-    """PU24. Produkt od razu z pierwszą ceną. Rzuca ProduktOdrzucony."""
+    """PU24. Produkt od razu z pierwszą ceną. Zwraca produkt (pole id). Rzuca ProduktOdrzucony."""
     raise NotImplementedError('dodaj_produkt')
 
 

@@ -1665,7 +1665,80 @@ Stan rezerwacji przechowuje atrybut \texttt{stan} tabeli \texttt{rezerwacja}. Gr
 
 
 \subsection{Testy akceptacyjne przypadków użycia}
+\label{sec:testy-akceptacyjne}
+% Wzór formy: instrukcja IO „Testowanie akceptacyjne realizacji przypadków użycia” (stan przed → operacja PU → stan po).
 
+Test akceptacyjny sprawdza, czy przypadek użycia działa zgodnie ze swoim opisem z~rozdz.~\ref{ch:opis-pu} na poziomie całej aplikacji, a~nie pojedynczej funkcji. Każdy test ustala stan danych przed wykonaniem przypadku użycia, wykonuje go z~określonymi danymi wejściowymi i~porównuje stan danych po wykonaniu z~oczekiwanym. Plan obejmuje 37~testów dla 12~przypadków użycia opisanych scenariuszami: przebieg podstawowy i~przebiegi alternatywne każdego z~nich (tab.~\ref{tab:testy-akceptacyjne}).
+
+Testy zapisano jako testy Django w~pakiecie \texttt{akceptacja}. Klient testowy Django (\texttt{django.test.Client}) wysyła żądania do widoków tak jak przeglądarka, więc każde żądanie przechodzi przez widok, funkcje logiki w~\texttt{services.py} i~modele ORM aż do bazy danych. Stan początkowy test tworzy funkcjami zapisu z~\texttt{services.py}, a~stan po wykonaniu przypadku użycia odczytuje funkcjami odczytu z~tego samego modułu. Testy TA14 i~TA16 korzystają z~dwóch połączeń z~bazą naraz. Godzinę, od której zależy zamknięcie przyjmowania rezerwacji o~18:00, test ustawia na stałe, a~wiadomości e-mail zbiera zamiast wysyłać je do serwera poczty. Przypadek \ref{pu:nieodebrane} test uruchamia tym samym poleceniem Django, które w~sklepie uruchamia \texttt{cron}. Test TA14 sprawdza też pierwszy czynnik sukcesu z~tab.~\ref{tab:csf}: dwie jednoczesne rezerwacje nie przekraczają planu dostawy.
+
+Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapisuje (\ref{pu:anulowanie} A1, \ref{pu:sprzedaz} A2, \ref{pu:wydanie} A3), oraz \ref{pu:logowanie} A2, który przechodzi do \ref{pu:reset} z~osobnymi testami. W~tabeli D oznacza bieżący dzień, a~D+1 dzień następny. Ilości, ceny i~adresy są danymi testowymi.
+% TODO: wyniki testów akceptacyjnych (zaliczony / niezaliczony) po zaimplementowaniu logiki
+
+{\small
+\begin{longtable}{@{}L{0.9cm}L{1.5cm}L{3.8cm}L{3.6cm}L{4.5cm}@{}}
+	\caption{Plan testów akceptacyjnych przypadków użycia}
+	\label{tab:testy-akceptacyjne}\\
+	\toprule
+	Test & Przebieg & Stan początkowy & Działanie & Oczekiwany wynik \\
+	\midrule
+	\endfirsthead
+	\toprule
+	Test & Przebieg & Stan początkowy & Działanie & Oczekiwany wynik \\
+	\midrule
+	\endhead
+	\bottomrule
+	\endfoot
+	TA1 & \ref{pu:konto}, podst. & Brak konta z~adresem anna@example.com. & Rejestracja z~poprawnymi danymi, zatwierdzenie karty w~formularzu operatora. & Konto z~rolą klient, loginem równym adresowi i~identyfikatorem karty; jedna wiadomość e-mail; formularz logowania. \\
+	TA2 & A1 & Konto z~adresem anna@example.com istnieje. & Rejestracja z~tym adresem; osobno z~hasłem 12345678. & Komunikat przy błędnym polu, pole hasła puste; liczba kont bez zmian. \\
+	TA3 & A2 & Brak konta. & Rejestracja z~poprawnymi danymi, przerwanie rejestracji karty. & Konto bez karty; komunikat, że bez karty nie można składać rezerwacji. \\
+	\midrule
+	TA4 & \ref{pu:logowanie}, podst. & Aktywne konta klienta i~sprzedawcy. & Logowanie klienta w~panelu klienta, a~sprzedawcy w~panelu administratora. & Każdy jest zalogowany i~widzi panel swojej roli. \\
+	TA5 & A1 & Jak w~TA4; konto drugiego klienta dezaktywowane. & Logowanie z~błędnym hasłem, na konto dezaktywowane, sprzedawcy w~panelu klienta, klienta w~panelu administratora. & Za każdym razem ten sam komunikat; nikt nie jest zalogowany. \\
+	\midrule
+	TA6 & \ref{pu:reset}, podst. & Aktywne konto klienta. & Prośba o~reset, otwarcie linku z~wiadomości, ustawienie nowego hasła. & Jedna wiadomość z~linkiem; logowanie nowym hasłem działa, a~starym nie; link przestaje działać. \\
+	TA7 & A1 & Brak konta z~adresem nikt@example.com; inne konto dezaktywowane. & Prośba o~reset na każdy z~tych adresów. & Ten sam komunikat co w~TA6; żadna wiadomość nie zostaje wysłana. \\
+	TA8 & A2 & Link z~TA6 już użyty; drugi link starszy niż 3~dni. & Otwarcie każdego z~linków. & Komunikat o~nieważnym linku; hasło bez zmian. \\
+	TA9 & A3 & Aktywne konto, ważny link. & Nowe hasło 12345678; osobno różne hasło i~powtórzenie. & Komunikat przy polu; hasło bez zmian, link nadal ważny. \\
+	\midrule
+	TA10 & \ref{pu:zlozenie}, podst. & Klient z~kartą, bez zaległości. Plan ziemniaków na D+2: 100~kg, zarezerwowano 90~kg. & Rezerwacja 8~kg ziemniaków na D+2. & Rezerwacja złożona z~jedną pozycją; dostępne do rezerwacji 2~kg; jedna wiadomość e-mail. \\
+	TA11 & A1 & Jak w~TA10, ale klient bez karty; osobno klient z~zaległością 100,01~zł i~100,00~zł. & Wybranie polecenia ,,Zarezerwuj'' przy D+2. & Bez karty: komunikat z~odnośnikiem do rejestracji karty. Przy 100,01~zł: komunikat z~kwotą. Brak nowej rezerwacji. Przy 100,00~zł: formularz rezerwacji. \\
+	TA12 & A2 & Klient ma złożoną rezerwację na D+2. & Wybranie polecenia ,,Zarezerwuj'' przy D+2. & Wyświetlona istniejąca rezerwacja z~poleceniem zmiany; liczba rezerwacji bez zmian. \\
+	TA13 & A3 & Jak w~TA10; plan marchwi na D+2 wystarcza. & Rezerwacja 11~kg ziemniaków; osobno 10~kg ziemniaków i~11~kg marchwi. & Komunikat z~ilością dostępną 10~kg albo o~limicie 20~kg; wpisane ilości zachowane; brak nowej rezerwacji. \\
+	TA14 & A3 & Jak w~TA10; drugi klient z~kartą. & Obaj klienci jednocześnie rezerwują po 10~kg ziemniaków na D+2. & Przyjęta dokładnie jedna rezerwacja; zarezerwowano 100~kg. \\
+	TA15 & A4 & Jak w~TA10, ale plan na D+1; godzina 18:00 dnia D. & Wybranie ,,Zarezerwuj'' przy D+1; osobno zatwierdzenie formularza otwartego przed 18:00. & Komunikat o~zakończeniu przyjmowania rezerwacji; brak nowej rezerwacji. \\
+	TA16 & A5 & Jak w~TA10; wiersz planu ziemniaków na D+2 zablokowany przez inną transakcję dłużej niż czas oczekiwania na blokadę. & Rezerwacja 8~kg ziemniaków na D+2. & Komunikat z~prośbą o~ponowne zatwierdzenie; wpisane ilości zachowane; brak nowej rezerwacji. \\
+	\midrule
+	TA17 & \ref{pu:anulowanie}, podst. & Złożona rezerwacja 8~kg ziemniaków na D+2; na D+2 zarezerwowano łącznie 98~kg. & Anulowanie i~potwierdzenie. & Stan anulowana; zarezerwowano 90~kg; jedna wiadomość e-mail. \\
+	TA18 & A2 & Złożona rezerwacja na D+1; godzina 18:00 dnia D. & Otwarcie strony anulowania tej rezerwacji. & Komunikat o~braku możliwości anulowania i~o~opłacie; stan złożona; na liście rezerwacji brak polecenia ,,Anuluj''. \\
+	\midrule
+	TA19 & \ref{pu:karta}, podst. & Klient bez karty; osobno klient z~kartą. & Rejestracja karty i~zatwierdzenie w~formularzu operatora. & Zapisany identyfikator karty, u~drugiego klienta nowy w~miejsce poprzedniego; komunikat, że konto może składać rezerwacje. \\
+	TA20 & A1 & Jak w~TA19. & Przerwanie rejestracji karty. & Komunikat o~niepowodzeniu; konto bez karty albo z~poprzednim identyfikatorem. \\
+	\midrule
+	TA21 & \ref{pu:dostawa}, podst. & Brak dostawy na D. Plan ziemniaków na D 100~kg, stan ziemniaków 5~kg. & Wpisanie 98~kg ziemniaków i~planowanych ilości pozostałych produktów. & Dostawa zapisana; stan ziemniaków 103~kg; różnica dla ziemniaków $-2$~kg. \\
+	TA22 & A1 & Jak w~TA21. & Ilość ziemniaków $-1$~kg; osobno 2,345~kg. & Komunikat przy polu; brak dostawy; stany bez zmian. \\
+	TA23 & A2 & Jak w~TA21; na D zarezerwowano 90~kg ziemniaków. & Wpisanie 85~kg ziemniaków. & Dostawa zapisana; ziemniaki wyróżnione jako dostarczone w~ilości mniejszej niż zarezerwowana. \\
+	\midrule
+	TA24 & \ref{pu:sprzedaz}, podst. & Stan ziemniaków 10~kg, cena 3,20~zł/kg. & Sprzedaż 2,5~kg ziemniaków. & Sprzedaż z~ceną pozycji 3,20~zł/kg; stan ziemniaków 7,5~kg; kwota do zapłaty 8,00~zł. \\
+	TA25 & A1 & Jak w~TA24. & Sprzedaż 12~kg ziemniaków i~1~kg marchwi. & Komunikat ze stanem ziemniaków 10~kg; pozycje zachowane; liczba sprzedaży i~stany bez zmian. \\
+	\midrule
+	TA26 & \ref{pu:przygotowanie}, podst. & Dostawa na D przyjęta. Złożona rezerwacja na D: 8~kg ziemniaków, 2~kg marchwi. & Wpisanie mas 8,05~kg i~1,95~kg. & Stan przygotowana do odbioru; masy zapisane przy pozycjach. \\
+	TA27 & A1 & Jak w~TA26. & Wpisanie mas 8,05~kg i~0~kg. & Stan przygotowana do odbioru; masa marchwi 0~kg. \\
+	\midrule
+	TA28 & \ref{pu:wydanie}, podst. & Rezerwacja z~TA26 przygotowana. Ceny na D: ziemniaki 3,20~zł/kg, marchew 4,00~zł/kg; stany 50~kg i~20~kg; przed 18:00. & Wyszukanie klienta, wydanie, potwierdzenie. & Kwota do zapłaty 33,56~zł; sprzedaż powiązana z~rezerwacją; stany 41,95~kg i~18,05~kg; stan rezerwacji odebrana. \\
+	TA29 & A1 & Rezerwacja z~TA26, nieprzygotowana; ceny jak w~TA28. & Wydanie z~wpisaniem mas 8,05~kg i~0~kg. & Kwota do zapłaty 25,76~zł; stan rezerwacji odebrana. \\
+	TA30 & A2 & Jak w~TA28; zaległość klienta 9,00~zł. & Wyszukanie klienta. & Rezerwacja wyświetlona razem z~zaległością 9,00~zł i~formularzem wpłaty; wydanie możliwe. \\
+	\midrule
+	TA31 & \ref{pu:plan}, podst. & Plan ziemniaków na D+3 100~kg, zarezerwowano 90~kg. & Zmiana planu na 110~kg. & Plan 110~kg; dostępne do rezerwacji 20~kg w~planie i~w~katalogu. \\
+	TA32 & A1 & Jak w~TA31. & Zmiana planu na 80~kg. & Komunikat z~ilością zarezerwowaną 90~kg; plan 100~kg. \\
+	TA33 & A2 & Godzina 18:00 dnia D. & Zmiana planu na D+1, także wysłana spoza formularza. & Brak pola dla D+1; zmiana odrzucona, plan bez zmian. \\
+	\midrule
+	TA34 & \ref{pu:nieodebrane}, podst. & Na D: złożona rezerwacja 20~kg jabłek po 4,00~zł/kg (zaległość klienta 0~zł), rezerwacja przygotowana innego klienta i~rezerwacja odebrana. & Uruchomienie polecenia o~18:00. & Obie niewydane rezerwacje nieodebrane; opłata za rezerwację jabłek 8,00~zł, zaległość 8,00~zł; rezerwacja odebrana bez zmian; wiadomość o~opłacie do obu klientów. \\
+	TA35 & podst. & Jak w~TA34, ale zaległość klienta 95,00~zł. & Uruchomienie polecenia o~18:00. & Zaległość 103,00~zł; klient nie może składać nowych rezerwacji; wiadomość z~informacją o~blokadzie. \\
+	TA36 & A1 & Brak niewydanych rezerwacji na D. & Uruchomienie polecenia o~18:00. & Brak zmian w~danych; żadna wiadomość nie zostaje wysłana. \\
+	TA37 & A2 & Jak w~TA34; serwer poczty niedostępny. & Uruchomienie polecenia o~18:00. & Stan nieodebrana i~opłata zapisane mimo błędu wysyłki. \\
+\end{longtable}
+}
 
 \subsection{Zmienione i~niezrealizowane koncepcje, napotkane problemy}
 

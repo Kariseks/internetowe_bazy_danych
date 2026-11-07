@@ -27,7 +27,8 @@ def ustaw_aktywnosc(konto_id, aktywne):
 def zaloz_klienta(imie, nazwisko, email, telefon, haslo):
     """PU2 kroki 3–4. Konto z rolą klient, login = e-mail, bez karty. Zwraca User.
 
-    Wysyła powiadomienia.konto_zalozone. Rzuca KontoOdrzucone, np. gdy e-mail jest zajęty.
+    Wysyła powiadomienia.konto_zalozone wprost, nie przez transaction.on_commit (patrz rezerwacje/services.py).
+    Rzuca KontoOdrzucone, np. gdy e-mail jest zajęty.
     """
     raise NotImplementedError('zaloz_klienta')
 

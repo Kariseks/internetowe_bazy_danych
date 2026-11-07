@@ -1,4 +1,9 @@
-"""Reguły rezerwacji. Na razie stuby, jak w magazyn/services.py."""
+"""Reguły rezerwacji. Na razie stuby, jak w magazyn/services.py.
+
+Czas zawsze z django.utils.timezone (timezone.now(), timezone.localdate()): testy akceptacyjne go zamrażają.
+Powiadomienia wysyła się wprost po zapisie, nie przez transaction.on_commit: w TestCase transakcja nie jest
+zatwierdzana, więc testy akceptacyjne nie zobaczyłyby wiadomości.
+"""
 from decimal import Decimal
 
 import atrapy
@@ -97,7 +102,7 @@ def rezerwacja_klienta(uzytkownik, rezerwacja_id):
 
 
 def zloz_rezerwacje(uzytkownik, dzien, pozycje):
-    """PU8 kroki 6–8. pozycje: lista (produkt_id, ilosc_kg) z ilością > 0.
+    """PU8 kroki 6–8. pozycje: lista (produkt_id, ilosc_kg) z ilością > 0. Zwraca rezerwację.
 
     Jedna transakcja z blokadą planu dostawy (WF warunki złożenia); potem powiadomienia.rezerwacja(r, 'zlozona').
     Rzuca RezerwacjaOdrzucona z treścią do wyświetlenia (A3: podać aktualną ilość dostępną, A4, A5).
@@ -116,3 +121,12 @@ def anuluj_rezerwacje(uzytkownik, rezerwacja_id):
     Rzuca RezerwacjaOdrzucona.
     """
     raise NotImplementedError('anuluj_rezerwacje')
+
+
+def oznacz_nieodebrane(dzien):
+    """PU30, o 18:00 (polecenie oznacz_nieodebrane). Złożone i przygotowane rezerwacje z tego dnia: stan nieodebrana,
+    opłata 10% wartości z zarezerwowanych ilości i cen z tego dnia, zaokrąglona do 1 gr, dopisana do zaległości.
+
+    Potem powiadomienia.oplata dla każdej. Błąd wysyłki wiadomości nie cofa zapisu.
+    """
+    raise NotImplementedError('oznacz_nieodebrane')

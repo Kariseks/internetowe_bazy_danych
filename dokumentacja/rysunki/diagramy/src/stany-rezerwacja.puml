@@ -1,0 +1,27 @@
+@startuml stany-rezerwacja
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 200
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 11
+hide empty description
+
+state "złożona" as Zlozona
+state "przygotowana do odbioru" as Przygotowana
+state "odebrana" as Odebrana
+state "anulowana" as Anulowana
+state "nieodebrana" as Nieodebrana
+
+[*] --> Zlozona : złożenie (PU8)
+Zlozona --> Zlozona : zmiana pozycji (PU9)
+Zlozona --> Anulowana : anulowanie przed 18:00\ndnia poprzedniego (PU10)
+Zlozona --> Przygotowana : wpisanie odważonych\nmas (PU20)
+Zlozona --> Odebrana : wydanie z ważeniem\nprzy kliencie (PU21, A1)
+Zlozona --> Nieodebrana : 18:00 w dniu odbioru\n/ naliczenie opłaty (PU30)
+Przygotowana --> Odebrana : wydanie (PU21)
+Przygotowana --> Nieodebrana : 18:00 w dniu odbioru\n/ naliczenie opłaty (PU30)
+
+Anulowana --> [*]
+Odebrana --> [*]
+Nieodebrana --> [*]
+@enduml
