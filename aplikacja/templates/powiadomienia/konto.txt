@@ -1,0 +1,4 @@
+{% autoescape off %}Konto w Warzywniaku zostało założone. Logujesz się adresem {{ uzytkownik.email }}.
+
+Rezerwacje można składać po zarejestrowaniu karty płatniczej. Jeśli rejestracja karty się nie udała, zrobisz to w danych konta.
+{% endautoescape %}

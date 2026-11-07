@@ -1,24 +1,16 @@
-from decimal import Decimal
-
 from django import forms
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
 
 from config.panel import strona
+from magazyn.forms import pole_masy
 
 from . import services
 
 
 class KwotaForm(forms.Form):
-    kwota = forms.DecimalField(
-        label='Kwota [zł]',
-        min_value=Decimal('0.01'),
-        max_digits=8,
-        decimal_places=2,
-        localize=True,
-        widget=forms.TextInput(attrs={'inputmode': 'decimal', 'autocomplete': 'off'}),
-    )
+    kwota = pole_masy(label='Kwota [zł]')
 
 
 def klienci(request):

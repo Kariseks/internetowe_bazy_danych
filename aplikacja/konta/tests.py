@@ -1,3 +1,4 @@
+from decimal import Decimal
 from unittest.mock import patch
 
 from django.conf import settings
@@ -6,9 +7,10 @@ from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 
+import atrapy
 from magazyn.tests import konto
 
-from . import services
+from . import powiadomienia, services
 from .role import jest_wlascicielem
 
 STRONY_PERSONELU = [
@@ -129,7 +131,7 @@ class LogowanieTests(TestCase):
         self.assertNotIn('_auth_user_id', self.client.session)
 
     def test_next_ma_pierwszenstwo(self):
-        self.assertRedirects(self.zaloguj(next=reverse('rejestracja')), reverse('rejestracja'))
+        self.assertRedirects(self.zaloguj(next=reverse('moje_rezerwacje')), reverse('moje_rezerwacje'))
 
     def test_zalogowany_nie_widzi_formularza(self):
         self.client.force_login(self.klient)
@@ -214,3 +216,154 @@ class ResetHaslaTests(TestCase):
             self.assertTrue(odpowiedz.context['form'].errors)
         self.klient.refresh_from_db()
         self.assertTrue(self.klient.check_password(HASLO))
+
+
+class RejestracjaTests(TestCase):
+    def dane(self, **pola):
+        return {'imie': 'Anna', 'nazwisko': 'Kowalska', 'email': 'Anna@Example.com', 'telefon': '501 200 300',
+                'haslo': 'Warzywa-2026!', 'haslo2': 'Warzywa-2026!', **pola}
+
+    @patch('konta.services.zaloz_klienta')
+    def test_konto_i_przejscie_do_karty(self, zapis):
+        zapis.return_value = get_user_model().objects.create_user('zalozone@example.com')
+        self.assertRedirects(self.client.post(reverse('rejestracja'), self.dane()), reverse('karta'))
+        zapis.assert_called_once_with('Anna', 'Kowalska', 'anna@example.com', '501 200 300', 'Warzywa-2026!')
+        self.assertEqual(self.client.session['nowe_konto'], zapis.return_value.pk)
+
+    @patch('konta.services.zaloz_klienta')
+    def test_bledne_dane(self, zapis):
+        nowy_klient()
+        for pola, blad in [
+            ({'email': ADRES.upper()}, 'Konto z tym adresem e-mail już istnieje.'),
+            ({'haslo2': 'Inne-Haslo-2026'}, 'Hasła nie są takie same.'),
+            ({'haslo': '12345678', 'haslo2': '12345678'}, 'To hasło jest zbyt powszechne.'),
+            ({'telefon': 'abc'}, 'Podaj numer telefonu'),
+        ]:
+            odpowiedz = self.client.post(reverse('rejestracja'), self.dane(**pola))
+            self.assertContains(odpowiedz, blad)
+            self.assertNotContains(odpowiedz, 'Warzywa-2026!')
+        zapis.assert_not_called()
+
+    def test_zapis_bez_logiki(self):
+        self.assertContains(self.client.post(reverse('rejestracja'), self.dane(), follow=True), 'nic nie zapisano')
+
+    def test_zalogowany_wraca_do_katalogu(self):
+        self.client.force_login(nowy_klient())
+        self.assertRedirects(self.client.get(reverse('rejestracja')), reverse('katalog'))
+
+
+@patch('konta.services.zapisz_karte')
+class KartaTests(TestCase):
+    def nowe_konto(self):
+        sesja = self.client.session
+        sesja['nowe_konto'] = nowy_klient().pk
+        sesja.save()
+
+    def test_po_zalozeniu_konta(self, zapis):
+        self.nowe_konto()
+        odpowiedz = self.client.post(reverse('karta'), {'wynik': 'zatwierdz'}, follow=True)
+        self.assertRedirects(odpowiedz, reverse('logowanie'))
+        self.assertContains(odpowiedz, 'Konto założone')
+        konto_id, identyfikator = zapis.call_args.args
+        self.assertEqual(konto_id, get_user_model().objects.get(username=ADRES).pk)
+        self.assertTrue(identyfikator.startswith('test_'))
+        self.assertNotIn('nowe_konto', self.client.session)
+
+    def test_przerwanie_zostawia_konto_bez_karty(self, zapis):
+        self.nowe_konto()
+        odpowiedz = self.client.post(reverse('karta'), {'wynik': 'przerwij'}, follow=True)
+        self.assertContains(odpowiedz, 'Bez karty nie można składać rezerwacji.')
+        self.assertContains(odpowiedz, 'Konto założone')
+        zapis.assert_not_called()
+
+    def test_klient_zmienia_karte(self, zapis):
+        klient = nowy_klient()
+        self.client.force_login(klient)
+        self.assertRedirects(self.client.post(reverse('karta'), {'wynik': 'zatwierdz'}), reverse('konto'))
+        self.assertEqual(zapis.call_args.args[0], klient.pk)
+
+    def test_bez_konta_trafia_na_logowanie(self, zapis):
+        self.assertRedirects(self.client.get(reverse('karta')), reverse('logowanie'))
+
+
+class KontoKlientaTests(TestCase):
+    def setUp(self):
+        self.klient = nowy_klient()
+        self.client.force_login(self.klient)
+
+    @patch('konta.services.zmien_telefon')
+    def test_zmiana_telefonu(self, zapis):
+        self.assertRedirects(self.client.post(reverse('konto'), {'telefon': '600 100 200'}), reverse('konto'))
+        zapis.assert_called_once_with(self.klient, '600 100 200')
+        self.assertContains(self.client.post(reverse('konto'), {'telefon': '12'}), 'Podaj numer telefonu')
+
+    def test_brak_karty(self):
+        bez_karty = atrapy.profil_klienta(self.klient)
+        bez_karty.identyfikator_karty = None
+        with patch('konta.services.profil_klienta', return_value=bez_karty):
+            self.assertContains(self.client.get(reverse('konto')), 'Zarejestruj kartę')
+        odpowiedz = self.client.get(reverse('konto'))
+        self.assertContains(odpowiedz, 'Zmień kartę')
+        self.assertContains(odpowiedz, 'Konto może składać rezerwacje.')
+
+    def test_zmiana_hasla(self):
+        nowe = 'Nowe-Haslo-2026'
+        odpowiedz = self.client.post(reverse('zmiana_hasla'), {'old_password': HASLO, 'new_password1': nowe, 'new_password2': nowe})
+        self.assertRedirects(odpowiedz, reverse('konto'))
+        self.klient.refresh_from_db()
+        self.assertTrue(self.klient.check_password(nowe))
+
+
+class PowiadomieniaTests(TestCase):
+    def setUp(self):
+        self.rezerwacja = atrapy.rezerwacja_klienta(None, 401)
+
+    def wiadomosc(self):
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ['kowalska@example.com'])
+        return mail.outbox[0]
+
+    def test_konto(self):
+        powiadomienia.konto_zalozone(nowy_klient())
+        self.assertEqual(mail.outbox[0].to, [ADRES])
+        self.assertIn(f'adresem {ADRES}', mail.outbox[0].body)
+
+    def test_rezerwacja(self):
+        powiadomienia.rezerwacja(self.rezerwacja, 'zlozona')
+        wiadomosc = self.wiadomosc()
+        self.assertEqual(wiadomosc.subject, 'Warzywniak: rezerwacja złożona')
+        self.assertIn('- Ziemniaki (Irys): 10 kg\n- Jabłka (Ligol): 4,5 kg', wiadomosc.body)
+        self.assertIn('do 18:00, ', wiadomosc.body)
+
+    def test_anulowanie_bez_pozycji(self):
+        powiadomienia.rezerwacja(self.rezerwacja, 'anulowana')
+        wiadomosc = self.wiadomosc()
+        self.assertIn('anulowana bez opłaty', wiadomosc.body)
+        self.assertNotIn('Ziemniaki', wiadomosc.body)
+
+    def test_oplata_i_blokada(self):
+        self.rezerwacja.oplata_za_nieodebranie = Decimal('9.00')
+        powiadomienia.oplata(self.rezerwacja)
+        self.assertIn('Opłata za nieodebranie: 9,00 zł', self.wiadomosc().body)
+        self.assertNotIn('nie możesz składać', mail.outbox[0].body)
+        self.rezerwacja.klient.zablokowany = True
+        powiadomienia.oplata(self.rezerwacja)
+        self.assertIn('nie możesz składać nowych rezerwacji', mail.outbox[1].body)
+
+    def test_przypomnienie(self):
+        powiadomienia.przypomnienie(self.rezerwacja, Decimal('5.99'))
+        self.assertIn('naliczy opłatę 5,99 zł', self.wiadomosc().body)
+
+
+class StronyBledowTests(TestCase):
+    def test_404(self):
+        odpowiedz = self.client.get('/nie-ma-takiej-strony/')
+        self.assertEqual(odpowiedz.status_code, 404)
+        self.assertContains(odpowiedz, 'Nie ma takiej strony', status_code=404)
+
+    def test_403_dla_personelu_prowadzi_do_panelu(self):
+        self.client.force_login(konto('sprzedawca', 'sprzedawca'))
+        for strona in ['/konto/', '/admin/konta/']:
+            odpowiedz = self.client.get(strona)
+            self.assertContains(odpowiedz, 'Brak dostępu', status_code=403)
+            self.assertContains(odpowiedz, 'href="/admin/"', status_code=403)

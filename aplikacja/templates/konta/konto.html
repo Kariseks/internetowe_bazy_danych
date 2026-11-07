@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Moje konto – Warzywniak{% endblock %}
+{% block atrapa %}{% include "_atrapa.html" %}{% endblock %}
+{% block content %}
+<div class="karta">
+	<h1>Moje konto</h1>
+	<dl class="dane">
+		<div><dt>Imię i nazwisko</dt><dd>{{ user.get_full_name|default:"nie podano" }}</dd></div>
+		<div><dt>E-mail (login)</dt><dd>{{ user.email|default:user.get_username }}</dd></div>
+	</dl>
+	<form method="post" class="telefon">
+		{% csrf_token %}
+		{% include "konta/_pola.html" %}
+		<button class="przycisk maly" type="submit">Zapisz numer</button>
+	</form>
+	<h2>Karta płatnicza</h2>
+	{% if profil.identyfikator_karty %}
+		<p>Karta zarejestrowana. Z niej pobieramy opłaty za nieodebrane rezerwacje.</p>
+		{% if profil.zablokowany %}
+			<p class="ostrzezenie">Nowe rezerwacje są wstrzymane: zaległość wynosi {{ profil.zaleglosc|floatformat:2 }} zł, a limit to 100 zł.</p>
+		{% else %}
+			<p>Konto może składać rezerwacje.</p>
+		{% endif %}
+		<a class="przycisk drugi" href="{% url 'karta' %}">Zmień kartę</a>
+	{% else %}
+		<p class="ostrzezenie">Brak karty. Bez karty nie można składać rezerwacji.</p>
+		<a class="przycisk" href="{% url 'karta' %}">Zarejestruj kartę</a>
+	{% endif %}
+	<p class="odnosniki"><a href="{% url 'zmiana_hasla' %}">Zmień hasło</a></p>
+</div>
+{% endblock %}

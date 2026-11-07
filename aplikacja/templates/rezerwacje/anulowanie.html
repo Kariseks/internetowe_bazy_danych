@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Anulowanie rezerwacji – Warzywniak{% endblock %}
+{% block atrapa %}{% include "_atrapa.html" %}{% endblock %}
+{% block content %}
+<div class="karta">
+	<h1>Anulować rezerwację?</h1>
+	<p>Odbiór: <strong>{{ rezerwacja.dzien_odbioru|date:"l"|lower }}, {{ rezerwacja.dzien_odbioru|date:"j E Y" }}</strong></p>
+	{% include "admin/panel/_pozycje.html" with pozycje=rezerwacja.pozycje %}
+	<p>Bez opłaty można anulować do {{ rezerwacja.termin|date:"H:i" }}, {{ rezerwacja.termin|date:"l"|lower }}, {{ rezerwacja.termin|date:"j E" }}. Anulowanej rezerwacji nie da się przywrócić.</p>
+	<form method="post">
+		{% csrf_token %}
+		<button class="przycisk ostrzegawczy" type="submit">Anuluj rezerwację</button>
+	</form>
+	<p class="odnosniki"><a href="{% url 'moje_rezerwacje' %}">Wróć</a></p>
+</div>
+{% endblock %}

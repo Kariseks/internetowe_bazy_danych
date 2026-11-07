@@ -31,22 +31,57 @@
 		</form>
 		{% endif %}
 		<h2>Opłaty za nieodebranie</h2>
-		<div class="arkusz"><table class="tabela">
-			<thead><tr><th>Dzień odbioru</th><th class="liczba">Opłata</th></tr></thead>
-			<tbody>{% for o in dane.oplaty %}<tr><td>{{ o.dzien_odbioru|date:"j E Y" }}</td><td class="liczba">{{ o.oplata_za_nieodebranie|floatformat:2 }} zł</td></tr>{% empty %}<tr><td colspan="2" class="pusto">Brak opłat.</td></tr>{% endfor %}</tbody>
-		</table></div>
+		<div class="arkusz">
+			<table class="tabela">
+				<thead><tr><th>Dzień odbioru</th><th class="liczba">Opłata</th></tr></thead>
+				<tbody>
+					{% for o in dane.oplaty %}
+					<tr>
+						<td>{{ o.dzien_odbioru|date:"j E Y" }}</td>
+						<td class="liczba">{{ o.oplata_za_nieodebranie|floatformat:2 }} zł</td>
+					</tr>
+					{% empty %}
+					<tr><td colspan="2" class="pusto">Brak opłat.</td></tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 		<h2>Wpłaty i obciążenia</h2>
-		<div class="arkusz"><table class="tabela">
-			<thead><tr><th>Data</th><th>Rodzaj</th><th class="liczba">Kwota</th></tr></thead>
-			<tbody>{% for r in dane.rozliczenia %}<tr><td>{{ r.data_czas|date:"j E, H:i" }}</td><td>{% if r.rodzaj == 'wplata' %}Wpłata w sklepie{% elif r.skuteczne %}Obciążenie karty{% else %}Obciążenie nieudane{% endif %}</td><td class="liczba">{{ r.kwota|floatformat:2 }} zł</td></tr>{% empty %}<tr><td colspan="3" class="pusto">Brak wpłat i obciążeń.</td></tr>{% endfor %}</tbody>
-		</table></div>
+		<div class="arkusz">
+			<table class="tabela">
+				<thead><tr><th>Data</th><th>Rodzaj</th><th class="liczba">Kwota</th></tr></thead>
+				<tbody>
+					{% for r in dane.rozliczenia %}
+					<tr>
+						<td>{{ r.data_czas|date:"j E, H:i" }}</td>
+						<td>{% if r.rodzaj == 'wplata' %}Wpłata w sklepie{% elif r.skuteczne %}Obciążenie karty{% else %}Obciążenie nieudane{% endif %}</td>
+						<td class="liczba">{{ r.kwota|floatformat:2 }} zł</td>
+					</tr>
+					{% empty %}
+					<tr><td colspan="3" class="pusto">Brak wpłat i obciążeń.</td></tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</section>
 	<section>
 		<h2>Rezerwacje</h2>
-		<div class="arkusz"><table class="tabela">
-			<thead><tr><th>Odbiór</th><th>Pozycje</th><th>Stan</th></tr></thead>
-			<tbody>{% for r in dane.rezerwacje %}<tr><td>{{ r.dzien_odbioru|date:"j E" }}</td><td>{% include "admin/panel/_pozycje.html" with pozycje=r.pozycje %}</td><td>{% include "admin/panel/_stan.html" with stan=r.stan %}</td></tr>{% empty %}<tr><td colspan="3" class="pusto">Klient nie ma rezerwacji.</td></tr>{% endfor %}</tbody>
-		</table></div>
+		<div class="arkusz">
+			<table class="tabela">
+				<thead><tr><th>Odbiór</th><th>Pozycje</th><th>Stan</th></tr></thead>
+				<tbody>
+					{% for r in dane.rezerwacje %}
+					<tr>
+						<td>{{ r.dzien_odbioru|date:"j E" }}</td>
+						<td>{% include "admin/panel/_pozycje.html" with pozycje=r.pozycje %}</td>
+						<td>{% include "admin/panel/_stan.html" with stan=r.stan %}</td>
+					</tr>
+					{% empty %}
+					<tr><td colspan="3" class="pusto">Klient nie ma rezerwacji.</td></tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</section>
 </div>
 {% endwith %}

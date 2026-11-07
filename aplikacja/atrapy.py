@@ -293,3 +293,83 @@ def konta():
         k.uzytkownik.rola = 'klient'
         wynik.append(k.uzytkownik)
     return wynik
+
+
+def katalog():
+    dane = plan_tygodnia()
+    for w in dane.wiersze:
+        w.cena_za_kg = cena(w.produkt.id)
+    return dane
+
+
+def oferta_na_dzien(dzien, rezerwacja_id=None):
+    dane = katalog()
+    if dzien not in [d.dzien for d in dane.dni]:
+        return []
+    wlasne = {}
+    if rezerwacja_id:
+        wlasne = {p.produkt.id: p.ilosc_kg for p in _rezerwacje_klienta()[0].pozycje}
+    wynik = []
+    for w in dane.wiersze:
+        komorka = next(k for k in w.komorki if k.dzien == dzien)
+        dostepne = komorka.dostepne_kg + wlasne.get(w.produkt.id, 0)
+        wynik.append(Atrapa(produkt=w.produkt, cena_za_kg=w.cena_za_kg, dostepne_kg=dostepne))
+    return wynik
+
+
+def profil_klienta(uzytkownik):
+    return Atrapa(uzytkownik=uzytkownik, telefon='501 200 300', identyfikator_karty='test_4f1c2a9b', zaleglosc=D('12.40'), zablokowany=False)
+
+
+def _termin(dzien):
+    return timezone.make_aware(datetime.combine(dzien - timedelta(days=1), time(18, 0)))
+
+
+def _rezerwacje_klienta():
+    dzis = timezone.localdate()
+    dane = [
+        (401, dzis + timedelta(days=2), 'zlozona', [(1, '10.0'), (8, '4.5'), (2, '2.0')], False),
+        (402, dzis, 'przygotowana', [(4, '1.5'), (5, '2.0')], True),
+        (403, dzis - timedelta(days=4), 'odebrana', [(1, '8.0'), (3, '2.0')], True),
+        (404, dzis - timedelta(days=8), 'nieodebrana', [(8, '20.0')], False),
+        (405, dzis - timedelta(days=11), 'anulowana', [(6, '3.0')], False),
+    ]
+    wynik = []
+    for rezerwacja_id, dzien, stan, pozycje, odwazone in dane:
+        r = _rezerwacja(rezerwacja_id, 11, dzien, stan, pozycje, odwazone)
+        r.termin = _termin(dzien)
+        r.mozna_zmienic = stan == 'zlozona' and teraz() < r.termin
+        r.wartosc = sum((p.ilosc_kg * cena(p.produkt.id)).quantize(D('0.01')) for p in r.pozycje)
+        wynik.append(r)
+    return wynik
+
+
+def rezerwacje_klienta(uzytkownik):
+    return _rezerwacje_klienta()
+
+
+def rezerwacja_klienta(uzytkownik, rezerwacja_id):
+    return next((r for r in _rezerwacje_klienta() if r.id == rezerwacja_id), None)
+
+
+def przeszkoda(uzytkownik, dzien):
+    dni = {d.dzien: d.zamkniety for d in katalog().dni}
+    if dni.get(dzien, True):
+        return Atrapa(powod='zamkniete', rezerwacja=None, zaleglosc=None)
+    istniejaca = next(
+        (r for r in _rezerwacje_klienta() if r.dzien_odbioru == dzien and r.stan in ('zlozona', 'przygotowana')),
+        None,
+    )
+    if istniejaca:
+        return Atrapa(powod='istnieje', rezerwacja=istniejaca, zaleglosc=None)
+    return None
+
+
+def zaleglosc_klienta(uzytkownik):
+    dzien = timezone.localdate() - timedelta(days=8)
+    return Atrapa(
+        zaleglosc=D('12.40'),
+        zablokowany=False,
+        oplaty=[Atrapa(rezerwacja_id=404, dzien_odbioru=dzien, wartosc=D('90.00'), oplata_za_nieodebranie=D('9.00')),
+                Atrapa(rezerwacja_id=398, dzien_odbioru=dzien - timedelta(days=20), wartosc=D('34.00'), oplata_za_nieodebranie=D('3.40'))],
+    )

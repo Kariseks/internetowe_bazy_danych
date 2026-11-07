@@ -1,0 +1,2 @@
+{% for p in rezerwacja.pozycje %}- {{ p.produkt }}: {{ p.ilosc_kg|floatformat:"-1" }} kg
+{% endfor %}

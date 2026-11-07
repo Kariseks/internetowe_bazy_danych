@@ -1,7 +1,9 @@
 from django.urls import path
-from django.views.generic import TemplateView
+
+from config.panel import obsluz_brak_logiki
 
 from . import views
+from .dostep import tylko_klient, widok_klienta
 
 urlpatterns = [
     path('logowanie/', views.Logowanie.as_view(), name='logowanie'),
@@ -11,5 +13,8 @@ urlpatterns = [
     path('haslo/reset/', views.ResetHasla.as_view(), name='admin_password_reset'),
     path('haslo/nowe/<uidb64>/<token>/', views.NoweHaslo.as_view(), name='haslo_nowe'),
     path('haslo/zmienione/', views.HasloZmienione.as_view(), name='haslo_zmienione'),
-    path('rejestracja/', TemplateView.as_view(template_name='konta/rejestracja.html'), name='rejestracja'),
+    path('rejestracja/', obsluz_brak_logiki(views.rejestracja), name='rejestracja'),
+    path('konto/', widok_klienta(views.konto), name='konto'),
+    path('konto/haslo/', tylko_klient(views.ZmianaHasla.as_view()), name='zmiana_hasla'),
+    path('konto/karta/', obsluz_brak_logiki(views.karta), name='karta'),
 ]

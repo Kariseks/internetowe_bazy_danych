@@ -5,11 +5,11 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 
-def pole_masy(minimum='0.01', **kwargs):
+def pole_masy(minimum='0.01', miejsca=2, **kwargs):
     return forms.DecimalField(
         min_value=Decimal(minimum),
         max_digits=7,
-        decimal_places=2,
+        decimal_places=miejsca,
         localize=True,
         widget=forms.TextInput(attrs={'inputmode': 'decimal', 'autocomplete': 'off'}),
         **kwargs,

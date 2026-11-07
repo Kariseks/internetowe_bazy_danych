@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Nie ma takiej strony – Warzywniak{% endblock %}
+{% block content %}
+<div class="karta">
+	<h1>Nie ma takiej strony</h1>
+	<p>Sprawdź adres albo zacznij od katalogu.</p>
+	<a class="przycisk" href="{% url 'katalog' %}">Przejdź do katalogu</a>
+</div>
+{% endblock %}

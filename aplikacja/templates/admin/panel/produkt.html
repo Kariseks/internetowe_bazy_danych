@@ -18,10 +18,19 @@
 			<button class="przycisk glowny" type="submit" name="zapisz_cene">Zapisz cenę</button>
 		</form>
 		<h2>Historia cen</h2>
-		<div class="arkusz"><table class="tabela">
-			<thead><tr><th>Obowiązuje od</th><th class="liczba">Cena za kg</th></tr></thead>
-			<tbody>{% for c in produkt.ceny %}<tr><td>{{ c.obowiazuje_od|date:"j E Y" }}</td><td class="liczba">{{ c.cena_za_kg|floatformat:2 }} zł</td></tr>{% endfor %}</tbody>
-		</table></div>
+		<div class="arkusz">
+			<table class="tabela">
+				<thead><tr><th>Obowiązuje od</th><th class="liczba">Cena za kg</th></tr></thead>
+				<tbody>
+					{% for c in produkt.ceny %}
+					<tr>
+						<td>{{ c.obowiazuje_od|date:"j E Y" }}</td>
+						<td class="liczba">{{ c.cena_za_kg|floatformat:2 }} zł</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</section>
 </div>
 {% endblock %}

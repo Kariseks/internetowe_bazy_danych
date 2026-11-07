@@ -14,6 +14,8 @@
 	--ramka: #b6c3ab;
 	--burak: #8c1d4f;
 	--burak-tlo: #f9e8ef;
+	--marchew: #a84a08;
+	--marchew-tlo: #fdeedd;
 	--limonka: #d8f26b;
 }
 
@@ -30,7 +32,7 @@ a:hover { color: var(--jarmuz); }
 .naglowek form { margin: 0; }
 .naglowek button { padding: 0; border: 0; background: none; font: inherit; text-decoration: underline; cursor: pointer; }
 
-main { max-width: 60rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
+main { max-width: 64rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
 .karta { max-width: 26rem; margin: 0 auto; padding: 1.75rem; border: 1px solid var(--linia); border-radius: 8px; background: #fff; }
 .karta h1 { margin: 0 0 1rem; font-size: 1.75rem; line-height: 1.2; }
 .karta p { margin: 0 0 1rem; }
@@ -48,4 +50,77 @@ main { max-width: 60rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
 
 .errorlist { margin: 0.35rem 0 0; padding: 0; color: var(--burak); font-size: 0.9rem; list-style: none; }
 .errorlist.nonfield { margin: 0 0 1rem; padding: 0.6rem 0.8rem; border-radius: 6px; background: var(--burak-tlo); }
-.komunikat { max-width: 26rem; margin: 0 auto 1rem; padding: 0.7rem 0.9rem; border-radius: 6px; background: #dff0d8; }
+.komunikat { max-width: 40rem; margin: 0 auto 1rem; padding: 0.7rem 0.9rem; border-radius: 6px; background: #dff0d8; }
+
+/* Panel klienta */
+h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 0.75rem; }
+h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
+.wstep { max-width: 46rem; margin: 0 0 1.25rem; color: var(--cichy); }
+.atrapa { display: inline-block; margin: 0 0 1rem; padding: 0.2rem 0.65rem; border-radius: 4px; background: var(--marchew-tlo); color: var(--marchew); font-size: 0.85rem; }
+.komunikat.warning, .komunikat.info { background: var(--marchew-tlo); color: var(--marchew); }
+.komunikat.error { background: var(--burak-tlo); color: var(--burak); }
+
+.arkusz { border: 1px solid var(--linia); border-radius: 8px; background: #fff; }
+.przewijany { overflow-x: auto; }
+.tabela { width: 100%; border-collapse: collapse; }
+.tabela th, .tabela td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--linia); text-align: left; vertical-align: top; }
+.tabela thead th { color: var(--cichy); font-size: 0.85rem; font-weight: 600; }
+.tabela tbody tr:last-child > * { border-bottom: 0; }
+.tabela tbody th { font-weight: 600; }
+.tabela .liczba { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tabela .pusto { color: var(--cichy); text-align: center; }
+.tabela .polecenia { white-space: nowrap; }
+.tabela .polecenia small { display: block; margin-top: 0.3rem; color: var(--cichy); }
+.ukryte { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.ilosci th, .ilosci td { vertical-align: middle; }
+.rezerwacje { table-layout: fixed; }
+.rezerwacje th:nth-child(1) { width: 9.5rem; }
+.rezerwacje th:nth-child(3) { width: 6.5rem; }
+.rezerwacje th:nth-child(4) { width: 9rem; }
+.rezerwacje th:nth-child(5) { width: 13rem; }
+.rezerwacje th:nth-child(6) { width: 10rem; }
+
+.katalog .dzien { text-align: right; white-space: nowrap; }
+.katalog .dzien span { color: var(--tusz); }
+.katalog .dzien small, .katalog .zarezerwuj { display: block; margin-top: 0.2rem; font-size: 0.85rem; }
+.katalog .zarezerwuj { font-weight: 600; }
+.katalog .zamkniety { background: #f4f6f0; color: var(--cichy); }
+.katalog .brak { color: var(--cichy); }
+
+.pozycje { margin: 0; padding: 0; list-style: none; }
+.pozycje span { color: var(--cichy); }
+.karta .pozycje { margin: 0 0 1rem; }
+
+.stan { display: inline-block; padding: 0.08rem 0.5rem; border-radius: 99px; background: #e4eadc; font-size: 0.85rem; white-space: nowrap; }
+.stan-przygotowana { background: var(--marchew-tlo); color: var(--marchew); }
+.stan-odebrana { background: #d9eedf; color: var(--lisc-ciemny); }
+.stan-anulowana { background: none; color: var(--cichy); text-decoration: line-through; padding-left: 0; }
+.stan-nieodebrana { background: var(--burak-tlo); color: var(--burak); }
+
+.przycisk.maly { display: inline-block; width: auto; padding: 0.4rem 0.8rem; font-size: 0.9rem; }
+.przycisk.drugi { border: 1px solid var(--ramka); background: #fff; color: var(--lisc); }
+.przycisk.drugi:hover { background: var(--kapusta); color: var(--jarmuz); }
+.przycisk.ostrzegawczy { background: var(--burak); }
+.przycisk.ostrzegawczy:hover { background: #6f1640; }
+.karta .przycisk + .przycisk { margin-top: 0.6rem; }
+
+.pole-ilosci input { width: 6.5rem; padding: 0.4rem 0.55rem; border: 1px solid var(--ramka); border-radius: 6px; font: inherit; text-align: right; }
+.pole-ilosci input:focus { outline: 3px solid var(--limonka); border-color: var(--lisc); }
+.podsumowanie { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 2rem; padding: 1rem 0.8rem; border-top: 1px solid var(--linia); }
+.podsumowanie p { margin: 0; }
+.podsumowanie .przycisk { width: auto; margin-left: auto; padding-inline: 2rem; }
+#form-rezerwacja > .errorlist.nonfield { margin: 0.8rem; }
+
+.dane { margin: 0 0 1rem; }
+.dane div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px solid var(--linia); }
+.dane dt { color: var(--cichy); }
+.dane dd { margin: 0; text-align: right; }
+.telefon { margin-bottom: 0.5rem; }
+.karta h2 { margin-top: 1.5rem; }
+.ostrzezenie { padding: 0.6rem 0.8rem; border-radius: 6px; background: var(--marchew-tlo); color: var(--marchew); }
+.symulacja { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 4px; background: var(--kapusta); color: var(--cichy); font-size: 0.85rem; }
+
+.saldo { max-width: 40rem; padding: 1.25rem 1.5rem; }
+.saldo p { margin: 0 0 0.75rem; }
+.saldo .kwota { font: 700 2.2rem/1.1 "Bricolage Grotesque", system-ui, sans-serif; }
+.saldo .podpowiedz { margin: 0; }

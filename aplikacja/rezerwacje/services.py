@@ -1,8 +1,9 @@
-"""Reguły rezerwacji po stronie personelu. Na razie stuby, jak w magazyn/services.py.
+"""Reguły rezerwacji. Na razie stuby, jak w magazyn/services.py."""
+from decimal import Decimal
 
-Funkcje panelu klienta dojdą, gdy powstanie ten panel.
-"""
 import atrapy
+
+LIMIT_KG = Decimal(20)
 
 
 class RezerwacjaOdrzucona(Exception):
@@ -57,3 +58,61 @@ def plan_tygodnia():
 def ustaw_plan(produkt_id, dzien, ilosc_kg):
     """PU26 krok 3. Blokuje wiersz planu. Rzuca PlanOdrzucony."""
     raise NotImplementedError('ustaw_plan')
+
+
+# Panel klienta. Rezerwacje klienta mają pola jak w rezerwacje_na_dzien oraz:
+# termin (18:00 dnia poprzedniego), mozna_zmienic (złożona i przed terminem), wartosc (orientacyjna, ceny bieżące).
+
+
+def katalog():
+    """PU1. Produkty w ofercie. Pola jak w plan_tygodnia, wiersz ma też cena_za_kg (dzisiejsza)."""
+    return atrapy.katalog()
+
+
+def oferta_na_dzien(dzien, rezerwacja_id=None):
+    """PU8 krok 2, PU9. Produkty w ofercie: produkt, cena_za_kg, dostepne_kg. Pusta lista, gdy dnia nie ma w katalogu.
+
+    Przy zmianie rezerwacji (rezerwacja_id) dostepne_kg obejmuje też ilości tej rezerwacji.
+    """
+    return atrapy.oferta_na_dzien(dzien, rezerwacja_id)
+
+
+def przeszkoda(uzytkownik, dzien):
+    """PU8 krok 1. None, gdy klient może rezerwować na ten dzień. Inaczej pola: powod, rezerwacja, zaleglosc.
+
+    powod: karta (brak karty), zaleglosc (ponad 100 zł, podać kwotę), istnieje (niezakończona rezerwacja
+    na ten dzień, podać ją), zamkniete (dzień spoza katalogu albo po terminie).
+    """
+    return atrapy.przeszkoda(uzytkownik, dzien)
+
+
+def rezerwacje_klienta(uzytkownik):
+    """PU11. Wszystkie rezerwacje klienta, od najpóźniejszego dnia odbioru."""
+    return atrapy.rezerwacje_klienta(uzytkownik)
+
+
+def rezerwacja_klienta(uzytkownik, rezerwacja_id):
+    """PU9, PU10. None, gdy nie istnieje albo należy do innego klienta."""
+    return atrapy.rezerwacja_klienta(uzytkownik, rezerwacja_id)
+
+
+def zloz_rezerwacje(uzytkownik, dzien, pozycje):
+    """PU8 kroki 6–8. pozycje: lista (produkt_id, ilosc_kg) z ilością > 0.
+
+    Jedna transakcja z blokadą planu dostawy (WF warunki złożenia); potem powiadomienia.rezerwacja(r, 'zlozona').
+    Rzuca RezerwacjaOdrzucona z treścią do wyświetlenia (A3: podać aktualną ilość dostępną, A4, A5).
+    """
+    raise NotImplementedError('zloz_rezerwacje')
+
+
+def zmien_rezerwacje(uzytkownik, rezerwacja_id, pozycje):
+    """PU9. Jak zloz_rezerwacje, pozycje zastępują dotychczasowe; powiadomienie 'zmieniona'. Rzuca RezerwacjaOdrzucona."""
+    raise NotImplementedError('zmien_rezerwacje')
+
+
+def anuluj_rezerwacje(uzytkownik, rezerwacja_id):
+    """PU10 kroki 3–5. Tylko złożona, przed terminem; zwalnia ilości w planie, powiadomienie 'anulowana'.
+
+    Rzuca RezerwacjaOdrzucona.
+    """
+    raise NotImplementedError('anuluj_rezerwacje')

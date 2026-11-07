@@ -3,6 +3,8 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
+import atrapy
+from konta.tests import nowy_klient
 from magazyn.tests import konto
 
 from . import services
@@ -51,3 +53,19 @@ class PanelRozliczenTests(TestCase):
         odpowiedz = self.client.post('/admin/zaleglosci/', {'klient': '14', 'kwota': 'abc'}, follow=True)
         zapis.assert_not_called()
         self.assertContains(odpowiedz, 'Podaj poprawną kwotę')
+
+
+class ZalegloscKlientaTests(TestCase):
+    def setUp(self):
+        self.client.force_login(nowy_klient())
+
+    def test_zaleglosc(self):
+        odpowiedz = self.client.get('/zaleglosc/')
+        self.assertContains(odpowiedz, '12,40 zł')
+        self.assertContains(odpowiedz, 'Możesz składać nowe rezerwacje.')
+
+    def test_blokada(self):
+        dane = atrapy.zaleglosc_klienta(None)
+        dane.zaleglosc, dane.zablokowany = Decimal('112.40'), True
+        with patch('rozliczenia.services.zaleglosc_klienta', return_value=dane):
+            self.assertContains(self.client.get('/zaleglosc/'), 'nie możesz składać nowych rezerwacji')

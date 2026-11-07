@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Zmiana hasła – Warzywniak{% endblock %}
+{% block content %}
+<div class="karta">
+	<h1>Zmiana hasła</h1>
+	<form method="post">
+		{% csrf_token %}
+		{% include "konta/_pola.html" %}
+		<button class="przycisk" type="submit">Zmień hasło</button>
+	</form>
+	<p class="odnosniki"><a href="{% url 'konto' %}">Wróć</a></p>
+</div>
+{% endblock %}

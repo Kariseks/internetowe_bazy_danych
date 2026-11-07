@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Brak dostępu – Warzywniak{% endblock %}
+{% block content %}
+<div class="karta">
+	<h1>Brak dostępu</h1>
+	{% if user.is_staff %}
+		<p>Ta strona jest przeznaczona dla innej roli.</p>
+		<a class="przycisk" href="{% url 'admin:index' %}">Panel administratora</a>
+	{% else %}
+		<p>Nie masz dostępu do tej strony.</p>
+		<a class="przycisk" href="{% url 'katalog' %}">Przejdź do katalogu</a>
+	{% endif %}
+</div>
+{% endblock %}

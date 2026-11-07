@@ -1,0 +1,6 @@
+{% autoescape off %}Dziś odbierasz rezerwację w Warzywniaku. Sklep jest czynny do 18:00.
+
+Pozycje:
+{% include "powiadomienia/_pozycje.txt" %}
+Jeśli rezerwacja nie zostanie odebrana do 18:00, sklep naliczy opłatę {{ oplata|floatformat:2 }} zł.
+{% endautoescape %}

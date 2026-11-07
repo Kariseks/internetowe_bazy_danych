@@ -42,3 +42,8 @@ def klienci_z_zaleglosci():
 def odnotuj_obciazenie(klient_id, kwota, skuteczne, kto):
     """PU28. Skuteczne zmniejsza zaległość o kwotę, nieudane jej nie zmienia. Rzuca RozliczenieOdrzucone."""
     raise NotImplementedError('odnotuj_obciazenie')
+
+
+def zaleglosc_klienta(uzytkownik):
+    """PU12. Pola: zaleglosc, zablokowany, oplaty (rezerwacja_id, dzien_odbioru, wartosc, oplata_za_nieodebranie)."""
+    return atrapy.zaleglosc_klienta(uzytkownik)

@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, time, timedelta
 from decimal import Decimal
 from unittest.mock import patch
 
@@ -7,6 +7,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+import atrapy
+from konta.tests import nowy_klient
 from magazyn.tests import konto
 
 from . import services
@@ -84,3 +86,113 @@ class PanelRezerwacjiTests(TestCase):
         self.assertEqual(zapis.call_args.args[0], 1)
         self.assertEqual(zapis.call_args.args[2], Decimal(5))
         self.assertContains(odpowiedz, 'Zarezerwowano 40 kg')
+
+
+def za_dni(n):
+    return (timezone.localdate() + timedelta(days=n)).isoformat()
+
+
+class PanelKlientaTests(TestCase):
+    def setUp(self):
+        self.klient = nowy_klient()
+        self.client.force_login(self.klient)
+        # Dzień bez rezerwacji klienta w atrapach (rezerwacja 401 jest za 2 dni).
+        self.nowa = reverse('nowa_rezerwacja', args=[za_dni(3)])
+
+    def strony(self):
+        return [self.nowa, '/rezerwacje/', '/rezerwacje/401/zmien/', '/rezerwacje/401/anuluj/', '/konto/', '/konto/haslo/', '/zaleglosc/']
+
+    def test_dostep(self):
+        for strona in self.strony():
+            self.assertEqual(self.client.get(strona).status_code, 200, strona)
+        self.client.force_login(konto('sprzedawca', 'sprzedawca'))
+        for strona in self.strony():
+            self.assertEqual(self.client.get(strona).status_code, 403, strona)
+        self.client.logout()
+        for strona in self.strony():
+            self.assertRedirects(self.client.get(strona), f'/logowanie/?next={strona}', fetch_redirect_response=False)
+
+    def test_katalog_kieruje_niezalogowanego_na_logowanie(self):
+        self.client.logout()
+        odpowiedz = self.client.get(reverse('katalog'))
+        self.assertContains(odpowiedz, f'/logowanie/?next={self.nowa}')
+        self.assertNotContains(odpowiedz, f'href="{self.nowa}"')
+        self.assertContains(self.client.get(reverse('katalog')), 'Załóż konto')
+
+    def test_katalog_po_18_zamyka_jutro(self):
+        jutro = reverse('nowa_rezerwacja', args=[za_dni(1)])
+        self.assertContains(self.client.get(reverse('katalog')), f'href="{self.nowa}"')
+        wieczor = timezone.make_aware(datetime.combine(timezone.localdate(), time(18, 0)))
+        with patch('atrapy.teraz', return_value=wieczor):
+            odpowiedz = self.client.get(reverse('katalog'))
+        self.assertNotContains(odpowiedz, jutro)
+        self.assertContains(odpowiedz, 'zamknięte')
+
+    @patch('rezerwacje.services.zloz_rezerwacje')
+    def test_formularz_rezerwacji(self, zapis):
+        for pola, blad in [
+            ({'p1': '15', 'p2': '5,5'}, 'najwyżej 20 kg, a ma 20,5 kg'),
+            ({'p1': '0,05'}, 'cyfr'),
+            ({}, 'Wpisz ilość co najmniej jednego produktu.'),
+            ({'p1': '0'}, 'Wpisz ilość co najmniej jednego produktu.'),
+            ({'p9': '19'}, 'Dostępne:'),
+        ]:
+            self.assertContains(self.client.post(self.nowa, pola), blad)
+        zapis.assert_not_called()
+        self.assertRedirects(self.client.post(self.nowa, {'p1': '12,5', 'p8': '7,5', 'p2': ''}), reverse('moje_rezerwacje'))
+        zapis.assert_called_once_with(self.klient, timezone.localdate() + timedelta(days=3), [(1, Decimal('12.5')), (8, Decimal('7.5'))])
+
+    @patch('rezerwacje.services.zloz_rezerwacje', side_effect=services.RezerwacjaOdrzucona('Dostępne już tylko 2 kg'))
+    def test_odrzucenie_zostawia_ilosci(self, _):
+        odpowiedz = self.client.post(self.nowa, {'p1': '5'})
+        self.assertContains(odpowiedz, 'Dostępne już tylko 2 kg')
+        self.assertContains(odpowiedz, 'value="5"')
+
+    def test_zapis_bez_logiki(self):
+        self.assertContains(self.client.post(self.nowa, {'p1': '5'}, follow=True), 'nic nie zapisano')
+
+    def test_przeszkody(self):
+        istniejaca = atrapy.rezerwacja_klienta(None, 401)
+        for przeszkoda, tekst in [
+            (atrapy.Atrapa(powod='karta', rezerwacja=None, zaleglosc=None), 'href="/konto/"'),
+            (atrapy.Atrapa(powod='zaleglosc', rezerwacja=None, zaleglosc=Decimal('123.40')), '123,40 zł'),
+            (atrapy.Atrapa(powod='istnieje', rezerwacja=istniejaca, zaleglosc=None), '/rezerwacje/401/zmien/'),
+        ]:
+            with patch('rezerwacje.services.przeszkoda', return_value=przeszkoda):
+                odpowiedz = self.client.get(self.nowa)
+            self.assertContains(odpowiedz, tekst)
+            self.assertNotContains(odpowiedz, 'Zarezerwuj</button>')
+        self.assertContains(self.client.get(reverse('nowa_rezerwacja', args=[za_dni(0)])), 'zakończyło się')
+
+    def test_nieznana_albo_cudza_rezerwacja(self):
+        for strona in ['/rezerwacje/999/zmien/', '/rezerwacje/999/anuluj/', '/rezerwacje/nowa/jutro/', '/rezerwacje/nowa/2026-13-40/']:
+            self.assertEqual(self.client.get(strona).status_code, 404, strona)
+
+    def test_moje_rezerwacje(self):
+        odpowiedz = self.client.get('/rezerwacje/')
+        self.assertContains(odpowiedz, '/rezerwacje/401/zmien/')
+        self.assertContains(odpowiedz, '/rezerwacje/401/anuluj/')
+        self.assertNotContains(odpowiedz, '/rezerwacje/402/')
+        self.assertEqual([r.id for r in odpowiedz.context['zakonczone']], [403, 404, 405])
+
+    def test_zmiana_wypelnia_ilosci(self):
+        self.assertContains(self.client.get('/rezerwacje/401/zmien/'), 'value="10,0"')
+
+    @patch('rezerwacje.services.zmien_rezerwacje')
+    def test_zmiana(self, zapis):
+        self.assertRedirects(self.client.post('/rezerwacje/401/zmien/', {'p1': '3'}), reverse('moje_rezerwacje'))
+        zapis.assert_called_once_with(self.klient, 401, [(1, Decimal(3))])
+
+    @patch('rezerwacje.services.anuluj_rezerwacje')
+    def test_anulowanie(self, zapis):
+        self.assertContains(self.client.get('/rezerwacje/401/anuluj/'), 'Anuluj rezerwację')
+        self.assertRedirects(self.client.post('/rezerwacje/401/anuluj/'), reverse('moje_rezerwacje'))
+        zapis.assert_called_once_with(self.klient, 401)
+
+    @patch('rezerwacje.services.anuluj_rezerwacje')
+    def test_po_terminie_nie_ma_zmian(self, zapis):
+        for strona in ['/rezerwacje/402/zmien/', '/rezerwacje/402/anuluj/']:
+            odpowiedz = self.client.post(strona, {'p1': '3'}, follow=True)
+            self.assertRedirects(odpowiedz, reverse('moje_rezerwacje'))
+            self.assertContains(odpowiedz, 'nie można już zmienić ani anulować')
+        zapis.assert_not_called()

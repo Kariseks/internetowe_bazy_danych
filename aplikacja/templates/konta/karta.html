@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Rejestracja karty – Warzywniak{% endblock %}
+{% block content %}
+<div class="karta operator">
+	<p class="symulacja">Symulacja formularza operatora płatności</p>
+	<h1>Rejestracja karty</h1>
+	<p>W tej wersji systemu dane karty nie są nigdzie wysyłane. Zatwierdzenie zwraca testowy identyfikator karty, tak jak zrobiłby to operator płatności. Numer karty nie trafia do systemu sklepu.</p>
+	<form method="post">
+		{% csrf_token %}
+		<button class="przycisk" type="submit" name="wynik" value="zatwierdz">Zatwierdź kartę</button>
+		<button class="przycisk drugi" type="submit" name="wynik" value="przerwij">Przerwij</button>
+	</form>
+	{% if nowe %}<p class="podpowiedz">Konto jest już założone. Jeśli przerwiesz, kartę zarejestrujesz później w danych konta.</p>{% endif %}
+</div>
+{% endblock %}

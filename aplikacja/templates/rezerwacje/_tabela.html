@@ -1,0 +1,25 @@
+<div class="arkusz">
+	<table class="tabela rezerwacje">
+		<thead><tr><th>Dzień odbioru</th><th>Pozycje</th><th class="liczba">Razem [kg]</th><th class="liczba">Wartość orient. [zł]</th><th>Stan</th><th><span class="ukryte">Polecenia</span></th></tr></thead>
+		<tbody>
+			{% for r in rezerwacje %}
+			<tr>
+				<td>{{ r.dzien_odbioru|date:"D, d.m.Y" }}</td>
+				<td>{% include "admin/panel/_pozycje.html" with pozycje=r.pozycje %}</td>
+				<td class="liczba">{{ r.laczna_masa|floatformat:"-1" }}</td>
+				<td class="liczba">{{ r.wartosc|floatformat:2 }}</td>
+				<td>{% include "admin/panel/_stan.html" with stan=r.stan %}</td>
+				<td class="polecenia">
+					{% if polecenia and r.mozna_zmienic %}
+						<a class="przycisk maly" href="{% url 'zmien_rezerwacje' r.id %}">Zmień</a>
+						<a class="przycisk maly drugi" href="{% url 'anuluj_rezerwacje' r.id %}">Anuluj</a>
+						<small>do {{ r.termin|date:"H:i, d.m" }}</small>
+					{% endif %}
+				</td>
+			</tr>
+			{% empty %}
+			<tr><td colspan="6" class="pusto">{{ pusto }}</td></tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

@@ -269,7 +269,6 @@ ul.object-tools a:link, ul.object-tools a:visited { border-radius: 6px; font-siz
 #content .inline-group { margin-bottom: 1.25rem; background: none; border: 0; }
 #content .inline-group .tabular tbody tr { background: #fff; }
 #content .inline-group .tabular thead th { color: var(--cichy); font-weight: 600; text-transform: none; }
-#content .inline-group .add-row { display: none; }
 #content .form-row input[type="text"], #content .form-row input[type="number"], #content .inline-group input[type="number"], #content .inline-group input[type="text"] { box-sizing: border-box; padding: 0.42rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; background: #fff; color: var(--tusz); font: inherit; }
 #content .form-row label { color: var(--tusz); font-size: 0.95rem; }
 #content .help { color: var(--cichy); font-size: 0.85rem; }

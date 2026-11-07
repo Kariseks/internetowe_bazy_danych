@@ -1,0 +1,9 @@
+{% autoescape off %}Rezerwacja na {{ rezerwacja.dzien_odbioru|date:"l, j E Y"|lower }} nie została odebrana do 18:00.
+
+Opłata za nieodebranie: {{ rezerwacja.oplata_za_nieodebranie|floatformat:2 }} zł.
+Twoja zaległość wynosi teraz {{ rezerwacja.klient.zaleglosc|floatformat:2 }} zł.
+{% if rezerwacja.klient.zablokowany %}
+Zaległość przekracza 100 zł, więc do czasu jej spłaty nie możesz składać nowych rezerwacji. Złożone wcześniej rezerwacje pozostają ważne.
+{% endif %}
+Zaległość można zapłacić w sklepie. Raz w miesiącu sklep pobiera ją z zarejestrowanej karty.
+{% endautoescape %}

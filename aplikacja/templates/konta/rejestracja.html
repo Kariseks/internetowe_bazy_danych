@@ -3,6 +3,12 @@
 {% block content %}
 <div class="karta">
 	<h1>Załóż konto</h1>
-	<p>Rejestracja jest w przygotowaniu.</p>
+	<p>Po założeniu konta zarejestrujesz kartę płatniczą. Bez niej nie można składać rezerwacji.</p>
+	<form method="post">
+		{% csrf_token %}
+		{% include "konta/_pola.html" %}
+		<button class="przycisk" type="submit">Załóż konto</button>
+	</form>
+	<p class="odnosniki"><a href="{% url 'logowanie' %}">Mam już konto</a></p>
 </div>
 {% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Zaległość – Warzywniak{% endblock %}
+{% block atrapa %}{% include "_atrapa.html" %}{% endblock %}
+{% block content %}
+<h1>Zaległość</h1>
+<div class="arkusz saldo">
+	<p class="kwota">{{ dane.zaleglosc|floatformat:2 }} zł</p>
+	{% if dane.zablokowany %}
+		<p class="ostrzezenie">Zaległość przekracza 100 zł, więc nie możesz składać nowych rezerwacji.</p>
+	{% else %}
+		<p>Możesz składać nowe rezerwacje.</p>
+	{% endif %}
+	<p class="podpowiedz">Zaległość można zapłacić w sklepie.</p>
+</div>
+<h2>Opłaty za nieodebrane rezerwacje</h2>
+<div class="arkusz">
+	<table class="tabela">
+		<thead><tr><th>Dzień odbioru</th><th class="liczba">Wartość rezerwacji [zł]</th><th class="liczba">Opłata [zł]</th></tr></thead>
+		<tbody>
+			{% for o in dane.oplaty %}
+			<tr><td>{{ o.dzien_odbioru|date:"D, d.m.Y" }}</td><td class="liczba">{{ o.wartosc|floatformat:2 }}</td><td class="liczba">{{ o.oplata_za_nieodebranie|floatformat:2 }}</td></tr>
+			{% empty %}
+			<tr><td colspan="3" class="pusto">Brak opłat.</td></tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

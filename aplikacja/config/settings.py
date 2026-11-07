@@ -145,3 +145,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Wiadomości e-mail: w pracy lokalnej i testach wypisywane na konsolę.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Panel klienta; personel loguje się w panelu administratora.
+LOGIN_URL = 'logowanie'

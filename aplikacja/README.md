@@ -1,7 +1,7 @@
 # Aplikacja Django
 
 Python 3.12, Django 5.2, MySQL 8.4 w Dockerze. `mysqlclient` wymaga bibliotek klienta MySQL.
-    
+
 ```bash
 cp .env.example .env
 uv venv --python 3.12 .venv

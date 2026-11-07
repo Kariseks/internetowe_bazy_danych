@@ -5,22 +5,31 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{% block title %}Warzywniak{% endblock %}</title>
 	<link rel="stylesheet" href="{% static 'sklep/sklep.css' %}">
+	{% block skrypty %}{% endblock %}
 </head>
 <body>
 	<header class="naglowek">
 		<a class="marka" href="{% url 'katalog' %}">Warzywniak</a>
 		<nav>
-			{% if user.is_authenticated %}
-				{% if user.is_staff %}<a href="{% url 'admin:index' %}">Panel administratora</a>{% endif %}
+			{% if user.is_staff %}
+				<a href="{% url 'admin:index' %}">Panel administratora</a>
 				<span>{% firstof user.get_full_name user.get_username %}</span>
 				<form method="post" action="{% url 'wyloguj' %}">{% csrf_token %}<button type="submit">Wyloguj</button></form>
+			{% elif user.is_authenticated %}
+				<a href="{% url 'katalog' %}">Katalog</a>
+				<a href="{% url 'moje_rezerwacje' %}">Moje rezerwacje</a>
+				<a href="{% url 'zaleglosc' %}">Zaległość</a>
+				<a href="{% url 'konto' %}">{% firstof user.get_full_name user.get_username %}</a>
+				<form method="post" action="{% url 'wyloguj' %}">{% csrf_token %}<button type="submit">Wyloguj</button></form>
 			{% else %}
+				<a href="{% url 'rejestracja' %}">Załóż konto</a>
 				<a href="{% url 'logowanie' %}">Zaloguj się</a>
 			{% endif %}
 		</nav>
 	</header>
 	<main>
-		{% for komunikat in messages %}<p class="komunikat">{{ komunikat }}</p>{% endfor %}
+		{% block atrapa %}{% endblock %}
+		{% for komunikat in messages %}<p class="komunikat {{ komunikat.tags }}">{{ komunikat }}</p>{% endfor %}
 		{% block content %}{% endblock %}
 	</main>
 </body>

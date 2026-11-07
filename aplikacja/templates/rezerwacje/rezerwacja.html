@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{% if rezerwacja %}Zmiana rezerwacji{% else %}Rezerwacja{% endif %} – Warzywniak{% endblock %}
+{% block skrypty %}<script src="{% static 'sklep/rezerwacja.js' %}" defer></script>{% endblock %}
+{% block atrapa %}{% include "_atrapa.html" %}{% endblock %}
+{% block content %}
+<h1>{% if rezerwacja %}Zmiana rezerwacji{% else %}Rezerwacja{% endif %} na {{ dzien|date:"l"|lower }}, {{ dzien|date:"j E" }}</h1>
+<p class="wstep">Wpisz ilości w kilogramach, z dokładnością do 0,1 kg. Rezerwacja może mieć najwyżej 20 kg. Za towar płacisz przy odbiorze, według masy po zważeniu i cen z dnia odbioru.</p>
+<form method="post" id="form-rezerwacja" class="arkusz">
+	{% csrf_token %}
+	{{ form.non_field_errors }}
+	<table class="tabela ilosci">
+		<thead><tr><th>Produkt</th><th class="liczba">Cena [zł/kg]</th><th class="liczba">Dostępne [kg]</th><th class="liczba">Ilość [kg]</th></tr></thead>
+		<tbody>
+			{% for w in form.oferta %}
+			<tr data-cena="{{ w.cena_za_kg|stringformat:'s' }}">
+				<th scope="row"><label for="{{ w.pole.id_for_label }}">{{ w.produkt }}</label></th>
+				<td class="liczba">{{ w.cena_za_kg|floatformat:2 }}</td>
+				<td class="liczba">{{ w.dostepne_kg|floatformat:"-1" }}</td>
+				<td class="liczba pole-ilosci">{{ w.pole }}{{ w.pole.errors }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<div class="podsumowanie">
+		<p>Łącznie: <strong id="masa">–</strong> z 20 kg</p>
+		<p>Wartość orientacyjna: <strong id="wartosc">–</strong></p>
+		<button class="przycisk" type="submit">{% if rezerwacja %}Zapisz zmiany{% else %}Zarezerwuj{% endif %}</button>
+	</div>
+</form>
+<p class="odnosniki"><a href="{% if rezerwacja %}{% url 'moje_rezerwacje' %}{% else %}{% url 'katalog' %}{% endif %}">Wróć</a></p>
+{% endblock %}

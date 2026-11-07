@@ -1,0 +1,7 @@
+{% autoescape off %}{% if zdarzenie == 'anulowana' %}Rezerwacja na {{ rezerwacja.dzien_odbioru|date:"l, j E Y"|lower }} została anulowana bez opłaty.{% else %}Rezerwacja na {{ rezerwacja.dzien_odbioru|date:"l, j E Y"|lower }} została {% if zdarzenie == 'zmieniona' %}zmieniona{% else %}złożona{% endif %}.
+
+Pozycje:
+{% include "powiadomienia/_pozycje.txt" %}
+Odbiór w sklepie do 18:00. Za towar płacisz przy odbiorze, według masy po zważeniu.
+Rezerwację można zmienić albo anulować bez opłaty do {{ rezerwacja.termin|date:"H:i, j E"|lower }}. Za nieodebraną rezerwację sklep pobiera opłatę 10% jej wartości.{% endif %}
+{% endautoescape %}
