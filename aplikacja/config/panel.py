@@ -26,15 +26,15 @@ def tylko_wlasciciel(widok):
     return opakowany
 
 
-def obsluz_brak_logiki(widok):
-    """Tymczasowe: zapis w stubie pokazuje komunikat zamiast błędu 500."""
+def obsluz_brak_logiki(widok, dokad=None):
+    """Tymczasowe: zapis w stubie pokazuje komunikat zamiast błędu 500, na tej samej stronie albo na stronie dokad."""
     @wraps(widok)
     def opakowany(request, *args, **kwargs):
         try:
             return widok(request, *args, **kwargs)
         except NotImplementedError as blad:
             messages.warning(request, f'Formularz jest poprawny, ale nic nie zapisano: {blad} nie ma jeszcze logiki.')
-            return redirect(request.get_full_path())
+            return redirect(dokad or request.get_full_path())
     return opakowany
 
 

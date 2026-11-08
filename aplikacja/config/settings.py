@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -148,3 +149,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Panel klienta; personel loguje się w panelu administratora.
 LOGIN_URL = 'logowanie'
+
+# Operator płatności: testowe środowisko Stripe. Bez klucza rejestracja karty jest symulowana.
+# Testy zawsze używają symulacji, żeby nie łączyć się z operatorem.
+STRIPE_SECRET_KEY = '' if sys.argv[1:2] == ['test'] else os.environ.get('STRIPE_SECRET_KEY', '')

@@ -601,6 +601,7 @@ System jest wykonalny technicznie w~przyjętym czasie, ponieważ opiera się na 
 % Licencje sprawdzone 04.11.2026: PyPI (Django BSD-3-Clause, mysqlclient GPL-2.0-or-later, python-dotenv BSD-3-Clause, gunicorn MIT, certbot Apache-2.0),
 % docs.python.org (PSF License Version 2), pliki LICENSE/COPYING w repozytoriach MySQL 8.4 (GPLv2), Git (GPLv2), nginx (BSD-2-Clause),
 % latex-project.org (LPPL); pliki licencji czcionek w aplikacja/static/panel/fonts (SIL OFL 1.1).
+% stripe (biblioteka Pythona): plik LICENSE w pakiecie 16.1.0, MIT, sprawdzone 08.11.2026.
 
 Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~dane przechowuje w~bazie MySQL Community Server 8.4 LTS z~silnikiem InnoDB. Wytyczne zalecają Python i~MySQL (pkt~7). Na konsultacji 19.10.2026 zespół przedstawił bazę SQLite, a~prowadzący ostrzegł, że SQLite źle obsługuje jednoczesne zapisy wielu użytkowników; dlatego wybrano MySQL. Wersje oznaczone jako LTS mają długi okres wsparcia, który obejmuje cały czas realizacji i~pierwsze lata pracy sklepu. Django łączy się z~bazą przez sterownik \texttt{mysqlclient}. Wszystkie narzędzia mają bezpłatne licencje (tab.~\ref{tab:technologie}), więc ich koszt wynosi 0~zł (p.~\ref{sec:koszt}).
 
@@ -618,6 +619,7 @@ Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~da
 		MySQL Community Server & 8.4 LTS & GPLv2 & baza danych (InnoDB, \texttt{utf8mb4}) \\
 		\texttt{mysqlclient} & zgodna z~Django 5.2 & GPL-2.0 lub nowsza & sterownik bazy dla Django \\
 		\texttt{python-dotenv} & 1.2.4 & BSD-3-Clause & wczytywanie ustawień i~haseł z~pliku \texttt{.env} spoza repozytorium \\
+		\texttt{stripe} & 16.1.0 & MIT & połączenie z~testowym środowiskiem operatora płatności Stripe przy rejestracji karty \\
 		Ubuntu Server & 24.04 LTS & bezpłatny, licencje open source & system operacyjny komputera w~sklepie \\
 		Gunicorn & zgodna z~Python 3.12 & MIT & serwer aplikacji WSGI uruchamiający Django \\
 		Nginx & z~repozytorium Ubuntu 24.04 & BSD-2-Clause & serwer HTTPS, pliki statyczne, ograniczenie panelu administratora do sieci lokalnej \\
@@ -1647,10 +1649,10 @@ Dane w~panelu klienta są ograniczone do zalogowanego konta. Widoki pobierają r
 \subsection{Widoki i~szablony panelu klienta}
 \label{sec:widoki-klienta}
 
-Panel klienta składa się z~15 widoków w~plikach \texttt{views.py} aplikacji \texttt{konta}, \texttt{rezerwacje} i~\texttt{rozliczenia} (tab.~\ref{tab:widoki-klienta}). Adresy przypisują im pliki \texttt{urls.py} każdej z~aplikacji i~plik \texttt{config/urls.py}. Widoki napisane w~projekcie odczytują dane i~zapisują zmiany wyłącznie przez funkcje modułów \texttt{services.py}, a~wynik przekazują do szablonu. Reguły rezerwacji nie powtarzają się więc w~kodzie widoków.
+Panel klienta składa się z~16 widoków w~plikach \texttt{views.py} aplikacji \texttt{konta}, \texttt{rezerwacje} i~\texttt{rozliczenia} (tab.~\ref{tab:widoki-klienta}). Adresy przypisują im pliki \texttt{urls.py} każdej z~aplikacji i~plik \texttt{config/urls.py}. Widoki napisane w~projekcie odczytują dane i~zapisują zmiany wyłącznie przez funkcje modułów \texttt{services.py}, a~wynik przekazują do szablonu. Reguły rezerwacji nie powtarzają się więc w~kodzie widoków.
 
 \begingroup\small
-\begin{longtable}{@{}L{4.8cm}L{2.6cm}L{5.2cm}L{1.9cm}@{}}
+\begin{longtable}{@{}L{4.35cm}L{2.9cm}L{5.35cm}L{1.9cm}@{}}
 	\caption{Widoki panelu klienta}
 	\label{tab:widoki-klienta}\\
 	\toprule
@@ -1664,27 +1666,32 @@ Panel klienta składa się z~15 widoków w~plikach \texttt{views.py} aplikacji \
 	\texttt{/} & \texttt{katalog} & \texttt{rezerwacje/katalog.html} & \ref{pu:katalog} \\
 	\texttt{/rejestracja/} & \texttt{rejestracja} & \texttt{konta/rejestracja.html} & \ref{pu:konto} \\
 	\texttt{/konto/karta/} & \texttt{karta} & \texttt{konta/karta.html} & \ref{pu:konto}, \ref{pu:karta} \\
+	\texttt{/konto/karta/powrot/} & \texttt{karta\_powrot} & -- & \ref{pu:konto}, \ref{pu:karta} \\
 	\texttt{/logowanie/} & \texttt{Logowanie} & \texttt{konta/logowanie.html} & \ref{pu:logowanie} \\
 	\texttt{/haslo/reset/}, \texttt{/haslo/nowe/…/}, \texttt{/haslo/zmienione/} & \texttt{ResetHasla}, \texttt{NoweHaslo}, \texttt{HasloZmienione} & \texttt{konta/reset\_hasla.html}, \texttt{konta/nowe\_haslo.html}, \texttt{konta/haslo\_zmienione.html} & \ref{pu:reset} \\
 	\texttt{/wyloguj/} & \texttt{Wylogowanie} & -- & \ref{pu:wylogowanie} \\
 	\texttt{/konto/haslo/} & \texttt{ZmianaHasla} & \texttt{konta/zmiana\_hasla.html} & \ref{pu:haslo} \\
 	\texttt{/konto/} & \texttt{konto} & \texttt{konta/konto.html} & \ref{pu:dane} \\
-	\texttt{/rezerwacje/nowa/<dzien>/} & \texttt{nowa} & \texttt{rezerwacje/rezerwacja.html}, \texttt{rezerwacje/przeszkoda.html} & \ref{pu:zlozenie} \\
-	\texttt{/rezerwacje/<id>/zmien/} & \texttt{zmien} & \texttt{rezerwacje/rezerwacja.html} & \ref{pu:zmiana} \\
-	\texttt{/rezerwacje/<id>/anuluj/} & \texttt{anuluj} & \texttt{rezerwacje/anulowanie.html} & \ref{pu:anulowanie} \\
+	\texttt{/rezerwacje/nowa/\allowbreak{}<dzien>/} & \texttt{nowa} & \texttt{rezerwacje/rezerwacja.html}, \texttt{rezerwacje/przeszkoda.html} & \ref{pu:zlozenie} \\
+	\texttt{/rezerwacje/<id>/\allowbreak{}zmien/} & \texttt{zmien} & \texttt{rezerwacje/rezerwacja.html} & \ref{pu:zmiana} \\
+	\texttt{/rezerwacje/<id>/\allowbreak{}anuluj/} & \texttt{anuluj} & \texttt{rezerwacje/anulowanie.html} & \ref{pu:anulowanie} \\
 	\texttt{/rezerwacje/} & \texttt{moje} & \texttt{rezerwacje/moje.html} & \ref{pu:moje} \\
 	\texttt{/zaleglosc/} & \texttt{zaleglosc} & \texttt{rozliczenia/zaleglosc.html} & \ref{pu:zaleglosc} \\
 	\bottomrule
 \end{longtable}
 \endgroup
 
-Logowanie, wylogowanie, reset i~zmiana hasła to klasy widoków z~\texttt{django.contrib.auth.views}. Projekt dodaje do nich tylko własne szablony, komunikaty po polsku i~formularz logowania, który odrzuca konta personelu (p.~\ref{sec:panele}). Link resetu hasła tworzy i~sprawdza Django, a~treść wiadomości pochodzi z~szablonów tekstowych \texttt{konta/reset\_email.txt} i~\texttt{konta/reset\_temat.txt}. Własne widoki napisano tylko dla funkcji, których Django nie dostarcza: katalogu, rejestracji, karty, danych konta, rezerwacji i~zaległości.
+Logowanie, wylogowanie, reset i~zmiana hasła to klasy widoków z~\texttt{django.contrib.\allowbreak{}auth.views}. Projekt dodaje do nich tylko własne szablony, komunikaty po polsku i~formularz logowania, który odrzuca konta personelu (p.~\ref{sec:panele}). Link resetu hasła tworzy i~sprawdza Django, a~treść wiadomości pochodzi z~szablonów tekstowych \texttt{konta/reset\_email.txt} i~\texttt{konta/reset\_temat.txt}. Własne widoki napisano tylko dla funkcji, których Django nie dostarcza: katalogu, rejestracji, karty, danych konta, rezerwacji i~zaległości.
 
-Złożenie i~zmianę rezerwacji obsługuje jeden formularz \texttt{RezerwacjaForm} (\texttt{rezerwacje/forms.py}) i~jeden szablon. Formularz tworzy pole ilości dla każdego produktu w~ofercie danego dnia. Sprawdza dokładność 0,1~kg, ilość dostępną każdego produktu, sumę do 20~kg i~to, że co najmniej jedna ilość jest większa od zera. Przy zmianie rezerwacji pola są wypełnione jej bieżącymi pozycjami. Zanim widok \texttt{nowa} pokaże formularz, sprawdza w~warstwie logiki przeszkody z~kroku~1 scenariusza \ref{pu:zlozenie}: brak karty, zaległość powyżej limitu, istniejącą rezerwację na ten dzień i~zakończone przyjmowanie rezerwacji. Gdy przeszkoda istnieje, widok zamiast formularza pokazuje szablon \texttt{przeszkoda.html} z~wyjaśnieniem, a~gdy klient może coś zrobić, także z~odnośnikiem do rejestracji karty, do zaległości albo do zmiany istniejącej rezerwacji. Warstwa logiki sprawdza warunki formularza ponownie w~transakcji zapisu (p.~\ref{sec:wspolbieznosc}), bo między wyświetleniem formularza a~zapisem inny klient mógł zarezerwować ten sam towar.
+Złożenie i~zmianę rezerwacji obsługuje jeden formularz \texttt{RezerwacjaForm} (\texttt{rezerwacje/\allowbreak{}forms.py}) i~jeden szablon. Formularz tworzy pole ilości dla każdego produktu w~ofercie danego dnia. Sprawdza dokładność 0,1~kg, ilość dostępną każdego produktu, sumę do 20~kg i~to, że co najmniej jedna ilość jest większa od zera. Przy zmianie rezerwacji pola są wypełnione jej bieżącymi pozycjami. Zanim widok \texttt{nowa} pokaże formularz, sprawdza w~warstwie logiki przeszkody z~kroku~1 scenariusza \ref{pu:zlozenie}: brak karty, zaległość powyżej limitu, istniejącą rezerwację na ten dzień i~zakończone przyjmowanie rezerwacji. Gdy przeszkoda istnieje, widok zamiast formularza pokazuje szablon \texttt{przeszkoda.html} z~wyjaśnieniem, a~gdy klient może coś zrobić, także z~odnośnikiem do rejestracji karty, do zaległości albo do zmiany istniejącej rezerwacji. Warstwa logiki sprawdza warunki formularza ponownie w~transakcji zapisu (p.~\ref{sec:wspolbieznosc}), bo między wyświetleniem formularza a~zapisem inny klient mógł zarezerwować ten sam towar.
 
 Widoki \texttt{zmien} i~\texttt{anuluj} pobierają rezerwację funkcją \texttt{rezerwacja\_klienta}, która zwraca tylko rezerwacje zalogowanego klienta. Gdy termin zmian już minął, widok przekierowuje klienta do listy rezerwacji z~informacją, że nieodebranie rezerwacji spowoduje naliczenie opłaty. Anulowanie wymaga potwierdzenia na osobnej stronie, a~rezerwacja zostaje anulowana dopiero po wysłaniu tego formularza metodą POST.
 
-W~wersji minimalnej i~standardowej widok \texttt{karta} symuluje formularz operatora płatności (p.~\ref{sec:wersje}). Jego szablon nie ma pól numeru karty, a~polecenie ,,Zatwierdź kartę'' zapisuje losowy identyfikator testowy w~miejsce poprzedniego. Widok obsługuje dwa przypadki: zalogowanego klienta (\ref{pu:karta}) i~konto założone przed chwilą w~\ref{pu:konto}. W~drugim przypadku klient nie jest jeszcze zalogowany, więc widok rejestracji zapamiętuje numer nowego konta w~sesji. Po zatwierdzeniu albo przerwaniu rejestracji karty widok usuwa ten numer z~sesji i~kieruje klienta do formularza logowania.
+Widok \texttt{karta} rejestruje kartę na dwa sposoby, zależnie od ustawienia \texttt{STRIPE\_\allowbreak{}SECRET\_\allowbreak{}KEY} z~pliku \texttt{.env} (p.~\ref{sec:wersje}). Bez klucza widok symuluje formularz operatora płatności: szablon nie ma pól numeru karty, a~polecenie ,,Zatwierdź kartę'' zapisuje losowy identyfikator testowy w~miejsce poprzedniego. Testy aplikacji zawsze używają symulacji, więc nie łączą się z~operatorem.
+
+Gdy klucz jest ustawiony, polecenie ,,Przejdź do operatora'' przekierowuje klienta na stronę płatności Stripe. Klient wpisuje tam kartę i~zgadza się na jej późniejsze obciążanie, a~jeśli wymaga tego bank, potwierdza kartę w~aplikacji banku (3-D Secure). Następnie Stripe odsyła klienta do widoku \texttt{karta\_powrot}. Adres powrotu może wpisać każdy, dlatego widok pobiera ze Stripe dane tej sesji i~sprawdza, czy zapisany w~niej numer konta zgadza się z~kontem klienta oraz czy karta została zapisana. Jeśli tak, system zapisuje identyfikator karty nadany przez Stripe, a~poprzednią kartę klienta usuwa w~Stripe, żeby właściciel nie obciążył jej przez pomyłkę. Połączenie ze Stripe obsługuje moduł \texttt{konta/operator.py}.
+
+W~obu trybach widok obsługuje zalogowanego klienta (\ref{pu:karta}) i~konto założone przed chwilą w~\ref{pu:konto}. W~drugim przypadku klient nie jest jeszcze zalogowany, więc widok rejestracji zapamiętuje numer nowego konta w~sesji. Po zatwierdzeniu albo przerwaniu rejestracji karty widok usuwa ten numer z~sesji i~kieruje klienta do formularza logowania.
 
 Wszystkie szablony panelu dziedziczą po \texttt{templates/base.html}. Szablon bazowy zawiera nagłówek z~nawigacją zależną od tego, czy użytkownik jest zalogowany i~czy jest klientem, oraz komunikaty z~\texttt{django.contrib.messages}. Powtarzające się fragmenty wydzielono do osobnych plików: \texttt{konta/\_pola.html} wypisuje pola formularza z~etykietami, podpowiedziami i~błędami, a~\texttt{rezerwacje/\_tabela.html} tabelę rezerwacji, użytą dla rezerwacji bieżących i~zakończonych.
 
@@ -1694,9 +1701,9 @@ Wygląd panelu określa jeden arkusz \texttt{static/sklep/sklep.css}. Reguła \t
 \subsection{Konfiguracja panelu administratora}
 \label{sec:konfiguracja-admina}
 
-Panel administratora to aplikacja \texttt{django.contrib.admin} z~własną klasą witryny \texttt{SklepAdminSite} (\texttt{config/admin.py}). W~\texttt{INSTALLED\_APPS} zamiast \texttt{django.contrib.admin} wpisano klasę konfiguracji \texttt{SklepAdminConfig}, która ustawia tę witrynę jako domyślną. Witryna zachowuje mechanizmy panelu Django: logowanie tylko dla aktywnych kont personelu, wylogowanie, zmianę hasła, ochronę CSRF i~komunikaty. Zmienia nagłówek na ,,Warzywniak'', wyłącza boczny pasek z~listą modeli, a~stronę startową zastępuje pulpitem z~dostawą i~rezerwacjami na bieżący dzień.
+Panel administratora to aplikacja \texttt{django.contrib.admin} z~własną klasą witryny \texttt{SklepAdminSite} (\texttt{config/admin.py}). Klasa konfiguracji \texttt{SklepAdminConfig}, wpisana w~\texttt{INSTALLED\_APPS} zamiast \texttt{django.contrib.admin}, ustawia tę witrynę jako domyślną. Witryna zachowuje mechanizmy panelu Django: logowanie tylko dla aktywnych kont personelu, wylogowanie, zmianę hasła, ochronę CSRF i~komunikaty. Zmienia nagłówek na ,,Warzywniak'', wyłącza boczny pasek z~listą modeli, a~stronę startową zastępuje pulpitem z~dostawą i~rezerwacjami na bieżący dzień.
 
-Do czynności personelu nie używa się standardowych list i~formularzy modeli (\texttt{ModelAdmin}). Formularz modelu zmienia jeden wiersz jednej tabeli, a~sprzedaż, przyjęcie dostawy czy wydanie rezerwacji zapisuje kilka tabel naraz. Taki zapis musi przejść przez reguły warstwy logiki: blokadę wierszy, stan nie mniejszy od zera i~pulę rezerwacji (p.~\ref{sec:wspolbieznosc}). Dlatego metoda \texttt{get\_urls} witryny dodaje 19~własnych stron przed adresami standardowymi (tab.~\ref{tab:strony-admina}). Każdą z~nich opakowuje metoda \texttt{admin\_view}, więc obowiązuje na niej to samo logowanie co w~reszcie panelu. Widoki stron leżą w~plikach \texttt{admin\_views.py} aplikacji \texttt{konta}, \texttt{magazyn}, \texttt{rezerwacje} i~\texttt{rozliczenia}, a~funkcje wspólne dla wielu stron w~\texttt{config/panel.py}.
+Do czynności personelu nie używa się standardowych list i~formularzy modeli, czyli klas \texttt{ModelAdmin}. Formularz modelu zmienia jeden wiersz jednej tabeli, a~sprzedaż, przyjęcie dostawy czy wydanie rezerwacji zapisuje kilka tabel naraz. Taki zapis musi przejść przez reguły warstwy logiki: blokadę wierszy, stan nie mniejszy od zera i~pulę rezerwacji (p.~\ref{sec:wspolbieznosc}). Dlatego metoda \texttt{get\_urls} witryny dodaje 19~własnych stron przed adresami standardowymi (tab.~\ref{tab:strony-admina}). Każdą z~nich opakowuje metoda \texttt{admin\_view}, więc obowiązuje na niej to samo logowanie co w~reszcie panelu. Widoki stron leżą w~plikach \texttt{admin\_views.py} aplikacji \texttt{konta}, \texttt{magazyn}, \texttt{rezerwacje} i~\texttt{rozliczenia}, a~funkcje wspólne dla wielu stron w~\texttt{config/panel.py}.
 
 \begin{longtable}{@{}L{3.5cm}L{5.4cm}L{3.6cm}L{2.2cm}@{}}
 	\caption{Strony panelu administratora}
@@ -1711,7 +1718,7 @@ Do czynności personelu nie używa się standardowych list i~formularzy modeli (
 	\endhead
 	Pulpit & (adres główny panelu) & -- & personel \\
 	Nowa sprzedaż & \texttt{sprzedaz/} & \ref{pu:sprzedaz} & personel \\
-	Rezerwacje & \texttt{rezerwacje/}, \texttt{rezerwacje/<id>/przygotuj/}, \texttt{rezerwacje/<id>/wydaj/} & \ref{pu:lista}, \ref{pu:przygotowanie}, \ref{pu:wydanie} & personel \\
+	Rezerwacje & \texttt{rezerwacje/}, \texttt{rezerwacje/<id>/\allowbreak{}przygotuj/}, \texttt{rezerwacje/<id>/wydaj/} & \ref{pu:lista}, \ref{pu:przygotowanie}, \ref{pu:wydanie} & personel \\
 	Klienci & \texttt{klienci/}, \texttt{klienci/<id>/} & \ref{pu:wyszukanie}, \ref{pu:wplata} & personel \\
 	Przyjęcie dostawy & \texttt{dostawa/} & \ref{pu:dostawa} & personel \\
 	Ubytek towaru & \texttt{ubytek/} & \ref{pu:ubytek} & personel \\
@@ -1729,7 +1736,7 @@ Do czynności personelu nie używa się standardowych list i~formularzy modeli (
 
 Sześć stron właściciela ma dodatkowo dekorator \texttt{tylko\_wlasciciel}, który zwraca odpowiedź 403 kontu spoza grupy \texttt{wlasciciel}. Konto superużytkownika panel traktuje jak konto właściciela. Metoda \texttt{each\_context} witryny przekazuje do każdego szablonu informację, czy zalogowany jest właściciel, a~menu pokazuje grupę ,,Właściciel'' tylko właścicielowi. Plan dostawy widzi cały personel, ale zmianę planu widok przyjmuje tylko od właściciela.
 
-Szablony stron leżą w~katalogu \texttt{templates/admin/panel/}. Wszystkie dziedziczą po szablonie \texttt{admin/base\_site.html}, który projekt zastępuje własną wersją. Zamiast górnego nagłówka Django ma ona menu boczne z~grupami ,,Przy ladzie'', ,,Towar'' i~,,Właściciel'', zakończone imieniem i~nazwiskiem zalogowanej osoby oraz poleceniem ,,Wyloguj''. Menu wydzielono do szablonu \texttt{\_nawigacja.html} w~tym samym katalogu. Arkusz \texttt{static/panel/panel.css} uzupełnia style panelu Django o~układ tabel i~formularzy ilości na ekranie o~szerokości 1280~px (\ref{wn:przegladarki}); tryb ciemny jest wyłączony. Skrypt \texttt{static/panel/sprzedaz.js} liczy na bieżąco kwotę sprzedaży, a~\texttt{static/panel/dostawa.js} różnicę między dostawą a~planem i~wyróżnia produkt, którego dostarczono mniej, niż zarezerwowano.
+Szablony stron leżą w~katalogu \texttt{templates/admin/panel/}. Wszystkie dziedziczą po szablonie \texttt{admin/base\_site.html}, który projekt zastępuje własną wersją. Zamiast górnego nagłówka Django ma ona menu boczne z~grupami ,,Przy ladzie'', ,,Towar'' i~,,Właściciel'', zakończone imieniem i~nazwiskiem zalogowanej osoby oraz poleceniem ,,Wyloguj''. Menu wydzielono do szablonu \texttt{\_nawigacja.html} w~tym samym katalogu. Arkusz \texttt{static/panel/panel.css} uzupełnia style panelu Django o~układ tabel i~formularzy ilości na ekranie o~szerokości 1280~px (\ref{wn:przegladarki}); tryb ciemny jest wyłączony. W~katalogu \texttt{static/panel/} są też dwa skrypty: \texttt{sprzedaz.js} liczy na bieżąco kwotę sprzedaży, a~\texttt{dostawa.js} pokazuje różnicę między dostawą a~planem i~wyróżnia produkt, którego dostarczono mniej, niż zarezerwowano.
 
 
 \subsection{Pozostałe pliki}
@@ -1871,9 +1878,11 @@ Każda osoba, która otwiera stronę sklepu bez logowania, widzi katalog produkt
 
 \ekran{rys:ekran-pu01-katalog}{Katalog produktów widziany bez logowania}{pu01-katalog}{Zawartość ekranu: odnośniki ,,Załóż konto'' i~,,Zaloguj się''; tabela produktów z~ceną za kilogram i~ilością dostępną na siedem kolejnych dni, dzień zamknięty wyszarzony, odnośnik ,,Zarezerwuj'' przy każdym otwartym dniu.}
 
-Konto zakłada się odnośnikiem ,,Załóż konto'' w~nagłówku strony (\ref{pu:konto}, rys.~\ref{rys:ekran-pu02-konto}). Formularz wymaga imienia, nazwiska, adresu e-mail, numeru telefonu i~dwukrotnie wpisanego hasła spełniającego reguły wypisane pod polem. Adres e-mail jest później loginem. Po zatwierdzeniu formularza otwiera się formularz operatora płatności (rys.~\ref{rys:ekran-pu13-operator}). W~wersji minimalnej i~standardowej systemu (p.~\ref{sec:wersje}) jest to symulacja: polecenie ,,Zatwierdź kartę'' zapisuje testowy identyfikator karty, a~,,Przerwij'' pozostawia konto bez karty. Konto powstaje w~obu przypadkach, ale bez karty nie można składać rezerwacji, więc kartę dołącza się później w~danych konta. Na koniec system wysyła potwierdzenie e-mailem i~wyświetla formularz logowania. Użytkownik, który nie pamięta hasła, wybiera na formularzu logowania odnośnik ,,Nie pamiętam hasła'' (\ref{pu:reset}, rys.~\ref{rys:ekran-pu04-reset}). Link do ustawienia nowego hasła przychodzi e-mailem i~jest ważny 3~dni.
+Konto zakłada się odnośnikiem ,,Załóż konto'' w~nagłówku strony (\ref{pu:konto}, rys.~\ref{rys:ekran-pu02-konto}). Formularz wymaga imienia, nazwiska, adresu e-mail, numeru telefonu i~dwukrotnie wpisanego hasła spełniającego reguły wypisane pod polem. Adres e-mail jest później loginem. Po zatwierdzeniu formularza otwiera się formularz operatora płatności (rys.~\ref{rys:ekran-pu13-operator}). W~wersji minimalnej i~standardowej systemu (p.~\ref{sec:wersje}) jest to symulacja: polecenie ,,Zatwierdź kartę'' zapisuje testowy identyfikator karty, a~,,Przerwij'' pozostawia konto bez karty. W~wersji rozszerzonej polecenie ,,Przejdź do operatora'' otwiera stronę Stripe, na której wpisuje się kartę (rys.~\ref{rys:ekran-pu13-stripe}); w~środowisku testowym przyjmowana jest karta 4242~4242~4242~4242 z~dowolną przyszłą datą ważności i~dowolnym kodem CVC. Strzałka powrotu na stronie Stripe działa jak ,,Przerwij''. Konto powstaje w~obu przypadkach, ale bez karty nie można składać rezerwacji, więc kartę dołącza się później w~danych konta. Na koniec system wysyła potwierdzenie e-mailem i~wyświetla formularz logowania. Użytkownik, który nie pamięta hasła, wybiera na formularzu logowania odnośnik ,,Nie pamiętam hasła'' (\ref{pu:reset}, rys.~\ref{rys:ekran-pu04-reset}). Link do ustawienia nowego hasła przychodzi e-mailem i~jest ważny 3~dni.
 
 \ekran{rys:ekran-pu13-operator}{Symulowany formularz operatora płatności}{pu13-formularz-operatora}{Zawartość ekranu: oznaczenie symulacji, informacja, że numer karty nie trafia do systemu sklepu, przyciski ,,Zatwierdź kartę'' i~,,Przerwij''.}
+
+\ekran{rys:ekran-pu13-stripe}{Strona operatora płatności Stripe w~środowisku testowym z~wpisaną kartą testową}{pu13-strona-operatora}{Zawartość ekranu: nazwa sklepu i~oznaczenie środowiska testowego, adres e-mail konta, pola karty, imię i~nazwisko posiadacza, zgoda na przyszłe obciążenia, przycisk ,,Zapisz''.}
 
 \subsubsection{Klient}
 
@@ -1923,7 +1932,7 @@ Strona ,,Produkty i~ceny'' (\ref{pu:produkty}) zawiera wszystkie produkty, takż
 
 Plan dostawy (\ref{pu:plan}, rys.~\ref{rys:ekran-pu26-plan}) to tabela produktów na siedem kolejnych dni. Domyślnie plan każdego dnia równa się standardowej dziennej ilości produktu, a~klienci mogą zarezerwować najwyżej tyle, ile wynosi plan. Właściciel zwiększa plan, gdy spodziewa się większego popytu, albo zmniejsza go, ale nie poniżej ilości już zarezerwowanej. Planu na dzień, dla którego przyjmowanie rezerwacji się zakończyło, nie można już zmienić.
 
-Strona ,,Zaległości klientów'' (\ref{pu:obciazenie}, rys.~\ref{rys:ekran-pu28-zaleglosci}) wymienia klientów z~zaległością, od największej, z~identyfikatorem karty i~informacją, czy ich nowe rezerwacje są zablokowane. Raz w~miesiącu właściciel obciąża karty klientów u~operatora płatności poza systemem, podając operatorowi identyfikator karty i~kwotę zaległości, a~wynik każdego obciążenia zapisuje na tej stronie, wpisując kwotę i~wybierając ,,Pobrano'' albo ,,Nie pobrano''. Pobrana kwota zmniejsza zaległość, a~nieudane obciążenie zostaje zapisane w~historii klienta bez zmiany zaległości.
+Strona ,,Zaległości klientów'' (\ref{pu:obciazenie}, rys.~\ref{rys:ekran-pu28-zaleglosci}) wymienia klientów z~zaległością, od największej, z~identyfikatorem karty i~informacją, czy ich nowe rezerwacje są zablokowane. Raz w~miesiącu właściciel obciąża karty klientów u~operatora płatności poza systemem, podając operatorowi identyfikator karty i~kwotę zaległości, a~wynik każdego obciążenia zapisuje na tej stronie, wpisując kwotę i~wybierając ,,Pobrano'' albo ,,Nie pobrano''. Pobrana kwota zmniejsza zaległość, a~nieudane obciążenie zostaje zapisane w~historii klienta bez zmiany zaległości. W~wersji rozszerzonej karty obciąża się w~panelu Stripe, w~którym klienta operatora wyszukuje się po adresie e-mail konta. Stripe nie przyjmuje obciążeń mniejszych niż 2~zł, więc zaległość poniżej tej kwoty przechodzi na kolejne miesiące, aż będzie można ją pobrać.
 
 \ekran{rys:ekran-pu28-zaleglosci}{Zaległości klientów}{pu28-zaleglosci}{Zawartość ekranu: klienci z~zaległością od największej, z~telefonem, informacją o~blokadzie nowych rezerwacji i~identyfikatorem karty; przy każdym pole kwoty i~przyciski ,,Pobrano'' i~,,Nie pobrano''.}
 

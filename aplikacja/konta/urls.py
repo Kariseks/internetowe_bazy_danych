@@ -17,4 +17,6 @@ urlpatterns = [
     path('konto/', widok_klienta(views.konto), name='konto'),
     path('konto/haslo/', tylko_klient(views.ZmianaHasla.as_view()), name='zmiana_hasla'),
     path('konto/karta/', obsluz_brak_logiki(views.karta), name='karta'),
+    # Powrót to GET: po błędzie stubu przekierowanie na ten sam adres zapętliłoby się.
+    path('konto/karta/powrot/', obsluz_brak_logiki(views.karta_powrot, dokad='karta'), name='karta_powrot'),
 ]

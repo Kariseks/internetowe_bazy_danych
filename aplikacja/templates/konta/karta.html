@@ -2,12 +2,18 @@
 {% block title %}Rejestracja karty – Warzywniak{% endblock %}
 {% block content %}
 <div class="karta operator">
-	<p class="symulacja">Symulacja formularza operatora płatności</p>
-	<h1>Rejestracja karty</h1>
-	<p>W tej wersji systemu dane karty nie są nigdzie wysyłane. Zatwierdzenie zwraca testowy identyfikator karty, tak jak zrobiłby to operator płatności. Numer karty nie trafia do systemu sklepu.</p>
+	{% if operator %}
+		<h1>Rejestracja karty</h1>
+		<p>Kartę wpisuje się na stronie operatora płatności Stripe. Sklep dostaje od operatora tylko identyfikator karty, bez jej numeru, i obciąża kartę wyłącznie opłatą za rezerwację, której nie odebrano.</p>
+		{% if testowy %}<p class="podpowiedz">Środowisko testowe operatora: karta 4242&nbsp;4242&nbsp;4242&nbsp;4242, dowolna przyszła data ważności i dowolny kod CVC.</p>{% endif %}
+	{% else %}
+		<p class="symulacja">Symulacja formularza operatora płatności</p>
+		<h1>Rejestracja karty</h1>
+		<p>W tej wersji systemu dane karty nie są nigdzie wysyłane. Zatwierdzenie zwraca testowy identyfikator karty, tak jak zrobiłby to operator płatności. Numer karty nie trafia do systemu sklepu.</p>
+	{% endif %}
 	<form method="post">
 		{% csrf_token %}
-		<button class="przycisk" type="submit" name="wynik" value="zatwierdz">Zatwierdź kartę</button>
+		<button class="przycisk" type="submit" name="wynik" value="zatwierdz">{% if operator %}Przejdź do operatora{% else %}Zatwierdź kartę{% endif %}</button>
 		<button class="przycisk drugi" type="submit" name="wynik" value="przerwij">Przerwij</button>
 	</form>
 	{% if nowe %}<p class="podpowiedz">Konto jest już założone. Jeśli przerwiesz, kartę zarejestrujesz później w danych konta.</p>{% endif %}

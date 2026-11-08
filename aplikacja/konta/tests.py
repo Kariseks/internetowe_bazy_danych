@@ -1,16 +1,18 @@
 from decimal import Decimal
+from types import SimpleNamespace as obiekt
 from unittest.mock import patch
 
+import stripe
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import mail
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
 
 import atrapy
 from magazyn.tests import konto
 
-from . import powiadomienia, services
+from . import operator, powiadomienia, services
 from .role import jest_wlascicielem
 
 STRONY_PERSONELU = [
@@ -284,6 +286,155 @@ class KartaTests(TestCase):
 
     def test_bez_konta_trafia_na_logowanie(self, zapis):
         self.assertRedirects(self.client.get(reverse('karta')), reverse('logowanie'))
+
+
+POWROT = reverse('karta_powrot')
+
+
+@override_settings(STRIPE_SECRET_KEY='sk_test_atrapa')
+@patch('konta.services.zapisz_karte')
+class KartaStripeTests(TestCase):
+    """Wersja rozszerzona: rejestracja karty u operatora (Stripe). Operator zastąpiony atrapą."""
+
+    def wyslij_do_operatora(self, rozpocznij):
+        rozpocznij.return_value = ('cs_test_1', 'https://checkout.stripe.com/c/pay/cs_test_1')
+        odpowiedz = self.client.post(reverse('karta'), {'wynik': 'zatwierdz'})
+        self.assertRedirects(odpowiedz, 'https://checkout.stripe.com/c/pay/cs_test_1', fetch_redirect_response=False)
+        return rozpocznij.call_args.args
+
+    @patch('konta.operator.odlacz')
+    @patch('konta.operator.zapisana_karta', return_value='pm_nowa')
+    @patch('konta.operator.rozpocznij')
+    def test_klient_zmienia_karte(self, rozpocznij, zapisana, odlacz, zapis):
+        klient = nowy_klient()
+        self.client.force_login(klient)
+        self.assertContains(self.client.get(reverse('karta')), 'Przejdź do operatora')
+        konto_id, email, poprzednia, powrot = self.wyslij_do_operatora(rozpocznij)
+        self.assertEqual((konto_id, email, powrot), (klient.pk, ADRES, 'http://testserver' + POWROT))
+        self.assertEqual(poprzednia, services.profil_klienta(klient).identyfikator_karty)
+        odpowiedz = self.client.get(POWROT, {'sesja': 'cs_test_1'}, follow=True)
+        self.assertRedirects(odpowiedz, reverse('konto'))
+        self.assertContains(odpowiedz, 'Karta zarejestrowana.')
+        zapisana.assert_called_once_with('cs_test_1', klient.pk)
+        zapis.assert_called_once_with(klient.pk, 'pm_nowa')
+        odlacz.assert_called_once_with(poprzednia)
+
+    @patch('konta.operator.zapisana_karta', return_value='pm_nowa')
+    @patch('konta.operator.rozpocznij')
+    def test_po_zalozeniu_konta(self, rozpocznij, zapisana, zapis):
+        konto_id = nowy_klient().pk
+        sesja = self.client.session
+        sesja['nowe_konto'] = konto_id
+        sesja.save()
+        self.assertIsNone(self.wyslij_do_operatora(rozpocznij)[2])
+        odpowiedz = self.client.get(POWROT, {'sesja': 'cs_test_1'}, follow=True)
+        self.assertRedirects(odpowiedz, reverse('logowanie'))
+        self.assertContains(odpowiedz, 'Konto założone')
+        zapis.assert_called_once_with(konto_id, 'pm_nowa')
+
+    @patch('konta.operator.zapisana_karta')
+    @patch('konta.operator.rozpocznij')
+    def test_przerwanie_u_operatora(self, rozpocznij, zapisana, zapis):
+        self.client.force_login(nowy_klient())
+        self.wyslij_do_operatora(rozpocznij)
+        odpowiedz = self.client.get(POWROT, {'przerwano': '1'}, follow=True)
+        self.assertContains(odpowiedz, 'Bez karty nie można składać rezerwacji.')
+        zapisana.assert_not_called()
+        zapis.assert_not_called()
+
+    @patch('konta.operator.zapisana_karta')
+    @patch('konta.operator.rozpocznij')
+    def test_obca_albo_niezakonczona_sesja(self, rozpocznij, zapisana, zapis):
+        self.client.force_login(nowy_klient())
+        # Sesja spoza tej przeglądarki: nie pyta się nawet operatora.
+        self.assertContains(self.client.get(POWROT, {'sesja': 'cs_test_obca'}, follow=True), 'Nie zarejestrowano karty')
+        zapisana.assert_not_called()
+        # Operator nie potwierdza karty.
+        zapisana.return_value = None
+        self.wyslij_do_operatora(rozpocznij)
+        self.assertContains(self.client.get(POWROT, {'sesja': 'cs_test_1'}, follow=True), 'Nie zarejestrowano karty')
+        # Sesja jest jednorazowa.
+        self.client.get(POWROT, {'sesja': 'cs_test_1'})
+        self.assertEqual(zapisana.call_count, 1)
+        zapis.assert_not_called()
+
+    @patch('konta.operator.rozpocznij', side_effect=operator.OperatorNiedostepny)
+    def test_operator_niedostepny(self, rozpocznij, zapis):
+        self.client.force_login(nowy_klient())
+        odpowiedz = self.client.post(reverse('karta'), {'wynik': 'zatwierdz'}, follow=True)
+        self.assertRedirects(odpowiedz, reverse('karta'))
+        self.assertContains(odpowiedz, 'Operator płatności nie odpowiada')
+
+    @patch('konta.operator.zapisana_karta', return_value='pm_nowa')
+    @patch('konta.operator.rozpocznij')
+    def test_zapis_bez_logiki_nie_zapetla_sie(self, rozpocznij, zapisana, zapis):
+        zapis.side_effect = NotImplementedError('zapisz_karte')
+        self.client.force_login(nowy_klient())
+        self.wyslij_do_operatora(rozpocznij)
+        odpowiedz = self.client.get(POWROT, {'sesja': 'cs_test_1'}, follow=True)
+        self.assertRedirects(odpowiedz, reverse('karta'))
+        self.assertContains(odpowiedz, 'nic nie zapisano')
+
+
+@override_settings(STRIPE_SECRET_KEY='sk_test_atrapa')
+@patch('konta.operator._stripe')
+class OperatorTests(TestCase):
+    def sesja(self, stripe_, konto='11', status='complete', intencja='succeeded', typ='card'):
+        stripe_.return_value.v1.checkout.sessions.retrieve.return_value = obiekt(
+            client_reference_id=konto, status=status,
+            setup_intent=obiekt(status=intencja, payment_method=obiekt(id='pm_1', type=typ)),
+        )
+
+    def parametry(self, stripe_):
+        return stripe_.return_value.v1.checkout.sessions.create.call_args.args[0]
+
+    def test_pierwsza_karta_tworzy_klienta_operatora(self, stripe_):
+        stripe_.return_value.v1.checkout.sessions.create.return_value = obiekt(id='cs_1', url='https://x')
+        self.assertEqual(operator.rozpocznij(11, ADRES, 'test_4f1c2a9b', 'https://sklep/powrot/'), ('cs_1', 'https://x'))
+        p = self.parametry(stripe_)
+        self.assertEqual((p['mode'], p['currency'], p['client_reference_id']), ('setup', 'pln', '11'))
+        self.assertEqual((p['customer_creation'], p['customer_email']), ('always', ADRES))
+        self.assertEqual(p['success_url'], 'https://sklep/powrot/?sesja={CHECKOUT_SESSION_ID}')
+        stripe_.return_value.v1.payment_methods.retrieve.assert_not_called()
+
+    def test_zmiana_karty_u_tego_samego_klienta_operatora(self, stripe_):
+        stripe_.return_value.v1.payment_methods.retrieve.return_value = obiekt(customer='cus_1')
+        operator.rozpocznij(11, ADRES, 'pm_stara', 'https://sklep/powrot/')
+        p = self.parametry(stripe_)
+        self.assertEqual(p['customer'], 'cus_1')
+        self.assertNotIn('customer_creation', p)
+
+    def test_blad_operatora(self, stripe_):
+        stripe_.return_value.v1.checkout.sessions.create.side_effect = stripe.APIConnectionError('brak sieci')
+        with self.assertLogs('konta.operator', 'ERROR'), self.assertRaises(operator.OperatorNiedostepny):
+            operator.rozpocznij(11, ADRES, None, 'https://sklep/powrot/')
+
+    def test_zapisana_karta(self, stripe_):
+        for pola, wynik in [
+            ({}, 'pm_1'),
+            ({'typ': 'link'}, 'pm_1'),
+            ({'konto': '12'}, None),
+            ({'status': 'open'}, None),
+            ({'intencja': 'requires_action'}, None),
+            ({'typ': 'blik'}, None),
+        ]:
+            with self.subTest(**pola):
+                self.sesja(stripe_, **pola)
+                self.assertEqual(operator.zapisana_karta('cs_1', 11), wynik)
+
+    def test_odlacza_tylko_karty_operatora(self, stripe_):
+        operator.odlacz('test_4f1c2a9b')
+        operator.odlacz(None)
+        stripe_.return_value.v1.payment_methods.detach.assert_not_called()
+        operator.odlacz('pm_stara')
+        stripe_.return_value.v1.payment_methods.detach.assert_called_once_with('pm_stara')
+
+
+class SymulacjaWTestachTests(SimpleTestCase):
+    def test_testy_nie_lacza_sie_z_operatorem(self):
+        """manage.py test pomija klucz Stripe z .env (config/settings.py)."""
+        self.assertEqual(settings.STRIPE_SECRET_KEY, '')
+        self.assertFalse(operator.wlaczony())
 
 
 class KontoKlientaTests(TestCase):
