@@ -4,9 +4,14 @@ Czas zawsze z django.utils.timezone (timezone.now(), timezone.localdate()): test
 Powiadomienia wysyła się wprost po zapisie, nie przez transaction.on_commit: w TestCase transakcja nie jest
 zatwierdzana, więc testy akceptacyjne nie zobaczyłyby wiadomości.
 """
+import logging
+import smtplib
 from decimal import Decimal
 
 import atrapy
+from konta import powiadomienia
+
+log = logging.getLogger(__name__)
 
 LIMIT_KG = Decimal(20)
 
@@ -130,3 +135,28 @@ def oznacz_nieodebrane(dzien):
     Potem powiadomienia.oplata dla każdej. Błąd wysyłki wiadomości nie cofa zapisu.
     """
     raise NotImplementedError('oznacz_nieodebrane')
+
+
+def do_przypomnienia(dzien):
+    """PU31 kroki 1–2. Złożone i przygotowane rezerwacje z tego dnia, pola jak w rezerwacje_na_dzien oraz oplata:
+    10% wartości z zarezerwowanych ilości i cen z tego dnia, zaokrąglona do 1 gr, czyli kwota, którą
+    oznacz_nieodebrane naliczy o 18:00. Tylko odczyt.
+    """
+    return atrapy.do_przypomnienia(dzien)
+
+
+def wyslij_przypomnienia(dzien):
+    """PU31, o 6:00 (polecenie wyslij_przypomnienia). Błąd wysyłki jednej wiadomości nie zatrzymuje pozostałych.
+
+    Zwraca (wysłane, nieudane): liczbę wysłanych wiadomości i listę rezerwacji, do których wysłanie się nie powiodło.
+    """
+    wyslane, nieudane = 0, []
+    for r in do_przypomnienia(dzien):
+        try:
+            powiadomienia.przypomnienie(r, r.oplata)
+        except (smtplib.SMTPException, OSError):
+            log.exception('Przypomnienie o rezerwacji %s nie zostało wysłane', r.id)
+            nieudane.append(r)
+        else:
+            wyslane += 1
+    return wyslane, nieudane

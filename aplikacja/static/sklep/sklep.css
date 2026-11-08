@@ -124,3 +124,87 @@ h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
 .saldo p { margin: 0 0 0.75rem; }
 .saldo .kwota { font: 700 2.2rem/1.1 "Bricolage Grotesque", system-ui, sans-serif; }
 .saldo .podpowiedz { margin: 0; }
+
+.cena-pod-nazwa { display: none; }
+
+/* Telefony (WN przeglądarki, wersja rozszerzona): od 360 px szerokości. */
+@media (max-width: 40rem) {
+	main { padding: 1.25rem 1rem 2rem; }
+	h1 { font-size: 1.55rem; }
+	.karta { padding: 1.25rem; }
+	.tabela th, .tabela td { padding: 0.55rem 0.6rem; }
+	.tabela thead th, .tabela thead th.liczba { white-space: normal; }
+	[data-etykieta]::before { content: attr(data-etykieta) ": "; color: var(--cichy); }
+	[data-jednostka]::after { content: " " attr(data-jednostka); }
+
+	/* Katalog: tabela przewija się w bok, nazwa produktu z ceną zostaje na miejscu. */
+	.katalog .cena { display: none; }
+	.katalog .cena-pod-nazwa { display: block; color: var(--cichy); font-size: 0.8rem; font-weight: 400; }
+	.katalog tbody th, .katalog thead th:first-child { position: sticky; left: 0; z-index: 1; min-width: 8.5rem; background: #fff; box-shadow: 1px 0 0 var(--linia); }
+
+	/* Formularz rezerwacji: cena i ilość dostępna pod nazwą, pole ilości obok. */
+	.ilosci thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+	.ilosci, .ilosci tbody { display: block; }
+	.ilosci tr { display: grid; grid-template-columns: auto minmax(0, 1fr) 5rem; grid-template-areas: "nazwa nazwa ilosc" "cena dostepne ilosc"; align-items: center; gap: 0.15rem 0.75rem; padding: 0.7rem 0.8rem; border-bottom: 1px solid var(--linia); }
+	.ilosci tbody tr:last-child { border-bottom: 0; }
+	.ilosci th, .ilosci td { padding: 0; border: 0; }
+	.ilosci th { grid-area: nazwa; }
+	.ilosci td.liczba:not(.pole-ilosci) { color: var(--cichy); font-size: 0.85rem; text-align: left; }
+	.ilosci td:nth-of-type(1) { grid-area: cena; }
+	.ilosci td:nth-of-type(2) { grid-area: dostepne; }
+	.ilosci .pole-ilosci { grid-area: ilosc; }
+	.pole-ilosci input { width: 5rem; }
+	.podsumowanie .przycisk { width: 100%; margin-left: 0; }
+
+	/* Moje rezerwacje: każda rezerwacja jako osobny blok. */
+	.rezerwacje thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+	.rezerwacje, .rezerwacje tbody { display: block; }
+	.rezerwacje tr { display: grid; grid-template-columns: 1fr auto; gap: 0.4rem 1rem; padding: 0.85rem 0.8rem; border-bottom: 1px solid var(--linia); }
+	.rezerwacje tbody tr:last-child { border-bottom: 0; }
+	.rezerwacje td { padding: 0; border: 0; }
+	.rezerwacje td:nth-child(1) { font-weight: 600; }
+	.rezerwacje td:nth-child(2), .rezerwacje td:nth-child(6), .rezerwacje .pusto { grid-column: 1 / -1; }
+	.rezerwacje td:nth-child(5) { grid-row: 1; grid-column: 2; justify-self: end; }
+	.rezerwacje td.liczba { text-align: left; font-size: 0.9rem; }
+	.rezerwacje td:nth-child(4) { text-align: right; }
+	.rezerwacje td:nth-child(6):not(:has(a)) { display: none; }
+	.tabela .polecenia { white-space: normal; }
+}
+
+/* Nagłówek: bieżąca strona i menu boczne na telefonie (menu.js). */
+.naglowek nav a[aria-current="page"] { text-decoration-thickness: 3px; text-decoration-color: var(--limonka); }
+.burger, .zaslona { display: none; }
+
+@media (max-width: 40rem) {
+	.menu-js .naglowek { position: sticky; top: 0; z-index: 15; flex-wrap: nowrap; }
+	.menu-js .burger { position: relative; z-index: 3; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; margin-right: -0.6rem; padding: 0; border: 0; border-radius: 6px; background: none; color: #fff; cursor: pointer; text-decoration: none; }
+	.menu-js .burger:focus-visible { outline: 3px solid var(--limonka); }
+	.kreski, .kreski::before, .kreski::after { display: block; width: 1.4rem; height: 2px; border-radius: 2px; background: currentColor; }
+	.kreski { position: relative; }
+	.kreski::before, .kreski::after { content: ""; position: absolute; left: 0; }
+	.kreski::before { top: -7px; }
+	.kreski::after { top: 7px; }
+	.menu-otwarte .kreski { background: transparent; }
+	.menu-otwarte .kreski::before { transform: translateY(7px) rotate(45deg); }
+	.menu-otwarte .kreski::after { transform: translateY(-7px) rotate(-45deg); }
+
+	.menu-js .naglowek nav { position: fixed; top: 0; right: 0; bottom: 0; z-index: 2; flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 0; width: min(17rem, 82vw); padding: 4.25rem 0 1.5rem; overflow-y: auto; background: var(--jarmuz); box-shadow: -8px 0 24px rgb(0 0 0 / 0.25); transform: translateX(100%); visibility: hidden; }
+	.menu-otwarte .naglowek nav { transform: none; visibility: visible; }
+	.menu-js .naglowek nav a, .menu-js .naglowek nav button, .menu-js .naglowek nav span { display: block; width: 100%; padding: 0.85rem 1.5rem; border-left: 4px solid transparent; font-size: 1.05rem; text-align: left; text-decoration: none; }
+	.menu-js .naglowek nav a:hover, .menu-js .naglowek nav button:hover { background: rgb(255 255 255 / 0.06); }
+	.menu-js .naglowek nav a[aria-current="page"] { border-left-color: var(--limonka); background: rgb(255 255 255 / 0.08); font-weight: 600; }
+	.menu-js .naglowek nav .uzytkownik { margin-top: auto; padding-top: 1rem; border-top: 1px solid rgb(255 255 255 / 0.15); font-weight: 600; }
+	.menu-js .naglowek nav .uzytkownik::before { content: "Twoje konto"; display: block; color: rgb(255 255 255 / 0.65); font-size: 0.8rem; font-weight: 400; }
+	.menu-js .zaslona { position: fixed; inset: 0; z-index: 1; display: block; background: rgb(10 20 15 / 0.45); opacity: 0; pointer-events: none; }
+	.menu-otwarte .zaslona { opacity: 1; pointer-events: auto; }
+	.menu-otwarte body { overflow: hidden; }
+
+	.menu-animacje .kreski, .menu-animacje .kreski::before, .menu-animacje .kreski::after { transition: transform 0.2s, background-color 0.2s; }
+	.menu-animacje .naglowek nav { transition: transform 0.2s, visibility 0s 0.2s; }
+	.menu-animacje.menu-otwarte .naglowek nav { transition: transform 0.2s; }
+	.menu-animacje .zaslona { transition: opacity 0.2s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.menu-animacje .naglowek nav, .menu-animacje.menu-otwarte .naglowek nav, .menu-animacje .kreski, .menu-animacje .kreski::before, .menu-animacje .kreski::after, .menu-animacje .zaslona { transition: none; }
+}

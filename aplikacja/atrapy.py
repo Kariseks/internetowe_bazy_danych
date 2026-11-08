@@ -132,6 +132,13 @@ def rezerwacje(dzien):
     return [_rezerwacja(301, 13, dzien, 'zlozona', [(1, '6.0'), (7, '2.0')])]
 
 
+def do_przypomnienia(dzien):
+    wynik = [r for r in rezerwacje(dzien) if r.stan in ('zlozona', 'przygotowana')]
+    for r in wynik:
+        r.oplata = (sum(p.ilosc_kg * cena(p.produkt.id) for p in r.pozycje) / 10).quantize(D('0.01'))
+    return wynik
+
+
 def rezerwacja(rezerwacja_id):
     return next((r for r in rezerwacje(timezone.localdate()) if r.id == rezerwacja_id), None)
 

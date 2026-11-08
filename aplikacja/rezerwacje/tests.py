@@ -1,7 +1,10 @@
 from datetime import datetime, time, timedelta
 from decimal import Decimal
+from io import StringIO
 from unittest.mock import patch
 
+from django.core import mail
+from django.core.management import call_command
 from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
@@ -196,3 +199,49 @@ class PanelKlientaTests(TestCase):
             self.assertRedirects(odpowiedz, reverse('moje_rezerwacje'))
             self.assertContains(odpowiedz, 'nie można już zmienić ani anulować')
         zapis.assert_not_called()
+
+
+class PrzypomnieniaTests(TestCase):
+    """PU31 na atrapach: dziś 101 i 103 są złożone, 102 przygotowana, 104 odebrana."""
+
+    def uruchom(self):
+        wyjscie, bledy = StringIO(), StringIO()
+        call_command('wyslij_przypomnienia', stdout=wyjscie, stderr=bledy)
+        return wyjscie.getvalue(), bledy.getvalue()
+
+    def test_tylko_rezerwacje_do_odbioru(self):
+        wyjscie, bledy = self.uruchom()
+        self.assertEqual(sorted(m.to[0] for m in mail.outbox), [
+            'kowalska@example.com', 'wisniewski@example.com', 'zielinska@example.com',
+        ])
+        self.assertIn('Wysłano przypomnień: 3.', wyjscie)
+        self.assertEqual(bledy, '')
+
+    def test_tresc_z_oplata(self):
+        self.uruchom()
+        tresc = next(m.body for m in mail.outbox if m.to == ['kowalska@example.com'])
+        # 10 kg × 3,20 zł + 3,5 kg × 3,80 zł = 45,30 zł, opłata 10%.
+        self.assertIn('naliczy opłatę 4,53 zł', tresc)
+        self.assertIn('Ziemniaki (Irys): 10 kg', tresc)
+
+    def test_blad_jednej_wiadomosci_nie_zatrzymuje_pozostalych(self):
+        with patch('konta.powiadomienia.send_mail', side_effect=[OSError('brak połączenia'), 1, 1]) as wysylka, \
+                self.assertLogs('rezerwacje.services', 'ERROR'):
+            wyjscie, bledy = self.uruchom()
+        self.assertEqual(wysylka.call_count, 3)
+        self.assertIn('Wysłano przypomnień: 2.', wyjscie)
+        self.assertIn('rezerwacjach: 101.', bledy)
+
+
+class NaglowekTests(TestCase):
+    def test_menu_klienta_z_biezaca_strona(self):
+        self.client.force_login(nowy_klient())
+        odpowiedz = self.client.get('/rezerwacje/')
+        self.assertContains(odpowiedz, 'aria-controls="menu"')
+        self.assertContains(odpowiedz, 'href="/rezerwacje/" aria-current="page"')
+        self.assertNotContains(odpowiedz, 'href="/zaleglosc/" aria-current')
+
+    def test_bez_menu_bocznego_dla_niezalogowanego(self):
+        odpowiedz = self.client.get('/')
+        self.assertNotContains(odpowiedz, 'class="burger"')
+        self.assertNotContains(odpowiedz, 'menu.js')

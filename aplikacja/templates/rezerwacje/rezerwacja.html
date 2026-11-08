@@ -15,8 +15,8 @@
 			{% for w in form.oferta %}
 			<tr data-cena="{{ w.cena_za_kg|stringformat:'s' }}">
 				<th scope="row"><label for="{{ w.pole.id_for_label }}">{{ w.produkt }}</label></th>
-				<td class="liczba">{{ w.cena_za_kg|floatformat:2 }}</td>
-				<td class="liczba">{{ w.dostepne_kg|floatformat:"-1" }}</td>
+				<td class="liczba" data-jednostka="zł/kg">{{ w.cena_za_kg|floatformat:2 }}</td>
+				<td class="liczba" data-etykieta="Dostępne" data-jednostka="kg">{{ w.dostepne_kg|floatformat:"-1" }}</td>
 				<td class="liczba pole-ilosci">{{ w.pole }}{{ w.pole.errors }}</td>
 			</tr>
 			{% endfor %}

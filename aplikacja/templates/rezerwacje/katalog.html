@@ -9,7 +9,7 @@
 		<thead>
 			<tr>
 				<th>Produkt</th>
-				<th class="liczba">Cena [zł/kg]</th>
+				<th class="liczba cena">Cena [zł/kg]</th>
 				{% for d in dane.dni %}
 				<th class="dzien{% if d.zamkniety %} zamkniety{% endif %}">
 					{{ d.dzien|date:"D" }} <span>{{ d.dzien|date:"d.m" }}</span>
@@ -26,8 +26,8 @@
 		<tbody>
 			{% for w in dane.wiersze %}
 			<tr>
-				<th scope="row">{{ w.produkt }}</th>
-				<td class="liczba">{{ w.cena_za_kg|floatformat:2 }}</td>
+				<th scope="row">{{ w.produkt }}<small class="cena-pod-nazwa">{{ w.cena_za_kg|floatformat:2 }} zł/kg</small></th>
+				<td class="liczba cena">{{ w.cena_za_kg|floatformat:2 }}</td>
 				{% for k in w.komorki %}
 				<td class="liczba{% if k.zamkniety %} zamkniety{% elif not k.dostepne_kg %} brak{% endif %}">{% if k.zamkniety %}–{% else %}{{ k.dostepne_kg|floatformat:"-1" }} kg{% endif %}</td>
 				{% endfor %}

@@ -6,8 +6,8 @@
 			<tr>
 				<td>{{ r.dzien_odbioru|date:"D, d.m.Y" }}</td>
 				<td>{% include "admin/panel/_pozycje.html" with pozycje=r.pozycje %}</td>
-				<td class="liczba">{{ r.laczna_masa|floatformat:"-1" }}</td>
-				<td class="liczba">{{ r.wartosc|floatformat:2 }}</td>
+				<td class="liczba" data-etykieta="Razem" data-jednostka="kg">{{ r.laczna_masa|floatformat:"-1" }}</td>
+				<td class="liczba" data-etykieta="Wartość orient." data-jednostka="zł">{{ r.wartosc|floatformat:2 }}</td>
 				<td>{% include "admin/panel/_stan.html" with stan=r.stan %}</td>
 				<td class="polecenia">
 					{% if polecenia and r.mozna_zmienic %}
