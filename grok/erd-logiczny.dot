@@ -1,0 +1,82 @@
+digraph {
+    graph [
+    splines=ortho,
+    rankdir=TB,
+    nodesep=0.72,
+    ranksep=0.78,
+    pad=0.4,
+    esep=18,
+    dpi=140,
+    bgcolor="white",
+    fontname="DejaVu Sans",
+    labeljust=l,
+    labelloc=b
+  ];
+  node [shape=box, fontname="DejaVu Sans", fontsize=11];
+  edge [fontname="DejaVu Sans", fontsize=9, penwidth=1.55, arrowsize=0.85];
+
+  auth_group [label="auth_group\l\lid : INT  PK\lname : VARCHAR(150)  UK\l", shape=box, style=filled, fillcolor="#D6EAF8", color="#1F4E79", penwidth=1.6, group="c0"];
+  aug [label="auth_user_groups\l\lid : BIGINT  PK\luser_id : INT  FK\lgroup_id : INT  FK\l", shape=box, style=filled, fillcolor="#D6EAF8", color="#1F4E79", penwidth=1.6, group="c1"];
+  auth_user [label="auth_user\l\lid : INT  PK\lpassword : VARCHAR(128)\llast_login : DATETIME(6)\lis_superuser : BOOL\lusername : VARCHAR(150)  UK\lfirst_name : VARCHAR(150)\llast_name : VARCHAR(150)\lemail : VARCHAR(254)\lis_staff : BOOL\lis_active : BOOL\ldate_joined : DATETIME(6)\l", shape=box, style=filled, fillcolor="#D6EAF8", color="#1F4E79", penwidth=1.6, group="c2"];
+  profil [label="profil_klienta\l\luzytkownik_id : INT  PK FK\ltelefon : VARCHAR(20)\lidentyfikator_karty : VARCHAR(64)  UK\lregulamin_zaakceptowano : DATETIME(6)\lzanonimizowano : DATETIME(6)\l", shape=box, style=filled, fillcolor="#D6EAF8", color="#1F4E79", penwidth=1.6, group="c3"];
+  produkt [label="produkt\l\lid : BIGINT  PK\lnazwa : VARCHAR(60)\lodmiana : VARCHAR(60)\lstandardowa_ilosc_kg : DECIMAL(7,2)\lilosc_na_lade_kg : DECIMAL(7,2)\lw_ofercie : BOOL\l", shape=box, style=filled, fillcolor="#E8F5E9", color="#2E7D32", penwidth=1.6, group="c2"];
+  cena [label="cena_produktu\l\lid : BIGINT  PK\lprodukt_id : BIGINT  FK\lcena_za_kg : DECIMAL(7,2)\lobowiazuje_od : DATE\l", shape=box, style=filled, fillcolor="#E8F5E9", color="#2E7D32", penwidth=1.6, group="c1"];
+  plan [label="plan_dostawy\l\lid : BIGINT  PK\lprodukt_id : BIGINT  FK\ldzien : DATE\lilosc_kg : DECIMAL(7,2)\l", shape=box, style=filled, fillcolor="#E8F5E9", color="#2E7D32", penwidth=1.6, group="c0"];
+  dostawa [label="dostawa\l\lid : BIGINT  PK\ldzien : DATE  UK\lzarejestrowano : DATETIME(6)\lzarejestrowal_id : INT  FK\l", shape=box, style=filled, fillcolor="#F3E5F5", color="#6A1B9A", penwidth=1.6, group="c0"];
+  poz_d [label="pozycja_dostawy\l\lid : BIGINT  PK\ldostawa_id : BIGINT  FK\lprodukt_id : BIGINT  FK\lilosc_kg : DECIMAL(7,2)\l", shape=box, style=filled, fillcolor="#F3E5F5", color="#6A1B9A", penwidth=1.6, group="c0"];
+  ubytek [label="ubytek\l\lid : BIGINT  PK\lprodukt_id : BIGINT  FK\lmasa_kg : DECIMAL(7,2)\ldata_czas : DATETIME(6)\lzarejestrowal_id : INT  FK\l", shape=box, style=filled, fillcolor="#F3E5F5", color="#6A1B9A", penwidth=1.6, group="c1"];
+  korekta [label="korekta_stanu\l\lid : BIGINT  PK\lprodukt_id : BIGINT  FK\lroznica_kg : DECIMAL(7,2)\lprzyczyna : VARCHAR(200)\ldata_czas : DATETIME(6)\lzarejestrowal_id : INT  FK\l", shape=box, style=filled, fillcolor="#F3E5F5", color="#6A1B9A", penwidth=1.6, group="c1"];
+  rezerwacja [label="rezerwacja\l\lid : BIGINT  PK\lklient_id : INT  FK\ldzien_odbioru : DATE\lstan : VARCHAR(12)\lzlozono : DATETIME(6)\lzmieniono : DATETIME(6)\loplata_za_nieodebranie : DECIMAL(7,2)\laktywny_klient_id : INT  wyliczana\l", shape=box, style=filled, fillcolor="#FFF3E0", color="#E65100", penwidth=1.6, group="c3"];
+  poz_r [label="pozycja_rezerwacji\l\lid : BIGINT  PK\lrezerwacja_id : BIGINT  FK\lprodukt_id : BIGINT  FK\lilosc_kg : DECIMAL(4,1)\lmasa_odwazona_kg : DECIMAL(6,2)\l", shape=box, style=filled, fillcolor="#FFF3E0", color="#E65100", penwidth=1.6, group="c2"];
+  sprzedaz [label="sprzedaz\l\lid : BIGINT  PK\ldata_czas : DATETIME(6)\lsprzedawca_id : INT  FK\lrezerwacja_id : BIGINT  FK UK\l", shape=box, style=filled, fillcolor="#FDECEA", color="#C62828", penwidth=1.6, group="c3"];
+  poz_s [label="pozycja_sprzedazy\l\lid : BIGINT  PK\lsprzedaz_id : BIGINT  FK\lprodukt_id : BIGINT  FK\lmasa_kg : DECIMAL(6,2)\lcena_za_kg : DECIMAL(7,2)\l", shape=box, style=filled, fillcolor="#FDECEA", color="#C62828", penwidth=1.6, group="c3"];
+  rozliczenie [label="rozliczenie_zaleglosci\l\lid : BIGINT  PK\lklient_id : INT  FK\lrodzaj : VARCHAR(10)\lkwota : DECIMAL(8,2)\lskuteczne : BOOL\ldata_czas : DATETIME(6)\lzarejestrowal_id : INT  FK\l", shape=box, style=filled, fillcolor="#FDECEA", color="#C62828", penwidth=1.6, group="c2"];
+
+  // siatka: wiersze
+  { rank=same; auth_group; aug; auth_user; profil; }
+  { rank=same; plan; cena; produkt; rezerwacja; }
+  { rank=same; poz_d; ubytek; poz_r; sprzedaz; }
+  { rank=same; dostawa; korekta; rozliczenie; poz_s; }
+
+  // porządek w wierszu
+  auth_group -> aug -> auth_user -> profil [style=invis, weight=30, arrowhead=none, arrowtail=none, dir=none];
+  plan -> cena -> produkt -> rezerwacja [style=invis, weight=30, arrowhead=none, arrowtail=none, dir=none];
+  poz_d -> ubytek -> poz_r -> sprzedaz [style=invis, weight=30, arrowhead=none, arrowtail=none, dir=none];
+  dostawa -> korekta -> rozliczenie -> poz_s [style=invis, weight=30, arrowhead=none, arrowtail=none, dir=none];
+  auth_group -> plan -> poz_d -> dostawa [style=invis, weight=12, arrowhead=none, arrowtail=none, dir=none];
+  aug -> cena -> ubytek -> korekta [style=invis, weight=12, arrowhead=none, arrowtail=none, dir=none];
+  auth_user -> produkt -> poz_r -> rozliczenie [style=invis, weight=12, arrowhead=none, arrowtail=none, dir=none];
+  profil -> rezerwacja -> sprzedaz -> poz_s [style=invis, weight=12, arrowhead=none, arrowtail=none, dir=none];
+
+  auth_group -> aug [arrowtail=teetee, arrowhead=crowodot, color="#1F4E79", dir=both];
+  aug -> auth_user [arrowtail=crowodot, arrowhead=teetee, color="#1F4E79", dir=both];
+  auth_user -> profil [arrowtail=teetee, arrowhead=odottee, color="#1F4E79", dir=both];
+  profil -> rezerwacja [arrowtail=teetee, arrowhead=crowodot, color="#E65100", dir=both];
+  profil -> rozliczenie [arrowtail=teetee, arrowhead=crowodot, color="#C62828", dir=both];
+  cena -> produkt [arrowtail=crowtee, arrowhead=teetee, color="#2E7D32", dir=both];
+  plan -> produkt [arrowtail=crowodot, arrowhead=teetee, color="#2E7D32", dir=both];
+  produkt -> poz_d [arrowtail=teetee, arrowhead=crowodot, color="#2E7D32", dir=both];
+  produkt -> ubytek [arrowtail=teetee, arrowhead=crowodot, color="#2E7D32", dir=both];
+  produkt -> korekta [arrowtail=teetee, arrowhead=crowodot, color="#2E7D32", dir=both, constraint=false];
+  produkt -> poz_r [arrowtail=teetee, arrowhead=crowodot, color="#2E7D32", dir=both];
+  produkt -> poz_s [arrowtail=teetee, arrowhead=crowodot, color="#2E7D32", dir=both, tailport="e", headport="w"];
+  poz_d -> dostawa [arrowtail=crowtee, arrowhead=teetee, color="#6A1B9A", dir=both];
+  rezerwacja -> poz_r [arrowtail=teetee, arrowhead=crowtee, color="#E65100", dir=both];
+  rezerwacja -> sprzedaz [arrowtail=odottee, arrowhead=odottee, color="#C62828", dir=both];
+  sprzedaz -> poz_s [arrowtail=teetee, arrowhead=crowodot, color="#C62828", dir=both];
+  auth_user -> dostawa [arrowtail=teetee, arrowhead=crowodot, color="#546E7A", dir=both, constraint=false];
+  auth_user -> ubytek [arrowtail=teetee, arrowhead=crowodot, color="#546E7A", dir=both, constraint=false];
+  auth_user -> korekta [arrowtail=teetee, arrowhead=crowodot, color="#546E7A", dir=both, constraint=false];
+  auth_user -> sprzedaz [arrowtail=teetee, arrowhead=crowodot, color="#546E7A", dir=both, constraint=false];
+  auth_user -> rozliczenie [arrowtail=teetee, arrowhead=crowodot, color="#546E7A", dir=both, constraint=false];
+
+  legend [
+    label=<
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#B0BEC5" BGCOLOR="#FAFAFA">
+        <TR><TD ALIGN="LEFT"><B>Legenda</B><BR ALIGN="LEFT"/><FONT COLOR="#1F4E79"><B>■</B></FONT> konto i rola<BR ALIGN="LEFT"/><FONT COLOR="#2E7D32"><B>■</B></FONT> produkt<BR ALIGN="LEFT"/><FONT COLOR="#6A1B9A"><B>■</B></FONT> dostawa, ubytek i korekta stanu<BR ALIGN="LEFT"/><FONT COLOR="#E65100"><B>■</B></FONT> rezerwacja<BR ALIGN="LEFT"/><FONT COLOR="#C62828"><B>■</B></FONT> sprzedaż i zaległość<BR ALIGN="LEFT"/><FONT COLOR="#546E7A"><B>■</B></FONT> kto zarejestrował<BR ALIGN="LEFT"/>|| dokładnie jeden &nbsp; o zero lub jeden &nbsp; łapka wiele</TD></TR>
+      </TABLE>
+    >
+  ];
+  rozliczenie -> legend [style=invis, weight=1, arrowhead=none, arrowtail=none, dir=none];
+
+}

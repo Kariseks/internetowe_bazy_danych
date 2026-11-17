@@ -202,7 +202,7 @@ class PanelKlientaTests(TestCase):
 
 
 class PrzypomnieniaTests(TestCase):
-    """PU31 na atrapach: dziś 101 i 103 są złożone, 102 przygotowana, 104 odebrana."""
+    """PU32 na atrapach: dziś 101 i 103 są złożone, 102 przygotowana, 104 odebrana."""
 
     def uruchom(self):
         wyjscie, bledy = StringIO(), StringIO()

@@ -5,7 +5,7 @@ from rezerwacje import services
 
 
 class Command(BaseCommand):
-    help = 'PU31: uruchamiane przez cron o 6:00. Wysyła przypomnienia o odbiorze rezerwacji z bieżącego dnia.'
+    help = 'PU32: uruchamiane przez cron o 6:00. Wysyła przypomnienia o odbiorze rezerwacji z bieżącego dnia.'
 
     def handle(self, *args, **options):
         wyslane, nieudane = services.wyslij_przypomnienia(timezone.localdate())

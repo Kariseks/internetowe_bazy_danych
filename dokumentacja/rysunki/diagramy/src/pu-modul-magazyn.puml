@@ -21,6 +21,7 @@ rectangle "Moduł Magazyn i sprzedaż" {
   usecase "PU24\nZarządzaj produktami" as PU24
   usecase "PU25\nZmień cenę produktu" as PU25
   usecase "PU29\nWyświetl zestawienia" as PU29
+  usecase "PU30\nSkoryguj stan produktu" as PU30
 }
 
 Wlasciciel --|> Sprzedawca
@@ -32,4 +33,6 @@ Sprzedawca -- PU18
 Wlasciciel -- PU24
 Wlasciciel -- PU25
 Wlasciciel -- PU29
+Wlasciciel -- PU30
+PU30 .> PU17 : <<extend>>
 @enduml

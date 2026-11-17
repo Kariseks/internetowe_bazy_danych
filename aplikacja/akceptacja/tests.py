@@ -641,7 +641,7 @@ class NiedostepnySerwerPoczty(BaseEmailBackend):
 
 
 class OznaczNieodebraneTests(Akceptacja):
-    """PU30 Oznacz nieodebrane rezerwacje. Na D: Anna 20 kg jabłek po 4,00 zł, Ola przygotowana, Ewa odebrana."""
+    """PU31 Oznacz nieodebrane rezerwacje. Na D: Anna 20 kg jabłek po 4,00 zł, Ola przygotowana, Ewa odebrana."""
 
     def setUp(self):
         super().setUp()

@@ -129,7 +129,7 @@ def anuluj_rezerwacje(uzytkownik, rezerwacja_id):
 
 
 def oznacz_nieodebrane(dzien):
-    """PU30, o 18:00 (polecenie oznacz_nieodebrane). Złożone i przygotowane rezerwacje z tego dnia: stan nieodebrana,
+    """PU31, o 18:00 (polecenie oznacz_nieodebrane). Złożone i przygotowane rezerwacje z tego dnia: stan nieodebrana,
     opłata 10% wartości z zarezerwowanych ilości i cen z tego dnia, zaokrąglona do 1 gr, dopisana do zaległości.
 
     Potem powiadomienia.oplata dla każdej. Błąd wysyłki wiadomości nie cofa zapisu.
@@ -138,7 +138,7 @@ def oznacz_nieodebrane(dzien):
 
 
 def do_przypomnienia(dzien):
-    """PU31 kroki 1–2. Złożone i przygotowane rezerwacje z tego dnia, pola jak w rezerwacje_na_dzien oraz oplata:
+    """PU32 kroki 1–2. Złożone i przygotowane rezerwacje z tego dnia, pola jak w rezerwacje_na_dzien oraz oplata:
     10% wartości z zarezerwowanych ilości i cen z tego dnia, zaokrąglona do 1 gr, czyli kwota, którą
     oznacz_nieodebrane naliczy o 18:00. Tylko odczyt.
     """
@@ -146,7 +146,7 @@ def do_przypomnienia(dzien):
 
 
 def wyslij_przypomnienia(dzien):
-    """PU31, o 6:00 (polecenie wyslij_przypomnienia). Błąd wysyłki jednej wiadomości nie zatrzymuje pozostałych.
+    """PU32, o 6:00 (polecenie wyslij_przypomnienia). Błąd wysyłki jednej wiadomości nie zatrzymuje pozostałych.
 
     Zwraca (wysłane, nieudane): liczbę wysłanych wiadomości i listę rezerwacji, do których wysłanie się nie powiodło.
     """

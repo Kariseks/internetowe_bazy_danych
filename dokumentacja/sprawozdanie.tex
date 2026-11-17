@@ -264,26 +264,26 @@ W~odpowiedzi na problemy z~p.~\ref{sec:problemy} proponowany system wprowadza do
 
 System umożliwia klientom rezerwację towaru przez stronę internetową sklepu i~osobisty odbiór w~wybranym dniu. Dzięki rezerwacjom właściciel zna część popytu przed złożeniem zamówienia u~dostawcy i~nie musi utrzymywać zapasu na nieprzewidziane duże zakupy. System nie obejmuje dowozu do domu, a~za zarezerwowany towar klient płaci przy odbiorze, tak jak przy zwykłym zakupie.
 
-Rezerwację składa się na jeden z~siedmiu kolejnych dni, począwszy od dnia następnego; najczęściej klienci rezerwują towar na następny dzień. Rezerwacja obejmuje wyłącznie towar, który znajdzie się w~sklepie w~dniu odbioru. Ponieważ towar przychodzi raz dziennie, ilość dostępną do rezerwacji wyznacza plan dostawy, czyli ilość każdego produktu, którą właściciel zamierza zamówić na dany dzień. Domyślnie plan dostawy równa się standardowej dziennej ilości produktu, a~właściciel może go zwiększyć, gdy rezerwacje zbliżają się do planu, lub zmniejszyć, ale nie poniżej ilości już zarezerwowanej. Do rezerwacji na dany dzień pozostaje ilość z~planu dostawy pomniejszona o~ilość zarezerwowaną wcześniej na ten dzień. Jeśli plan dostawy ziemniaków na sobotę wynosi 100~kg, a~klienci zarezerwowali już 90~kg, kolejny klient może zarezerwować najwyżej 10~kg ziemniaków. Towar pozostały z~poprzedniego dnia trafia wyłącznie do sprzedaży przy ladzie, więc klient z~rezerwacją odbiera towar ze świeżej dostawy.
+Rezerwację składa się na jeden z~siedmiu kolejnych dni, począwszy od dnia następnego; najczęściej klienci rezerwują towar na następny dzień. Rezerwacja obejmuje wyłącznie towar, który znajdzie się w~sklepie w~dniu odbioru. Ponieważ towar przychodzi raz dziennie, ilość dostępną do rezerwacji wyznacza plan dostawy, czyli ilość każdego produktu, którą właściciel zamierza zamówić na dany dzień. Domyślnie plan dostawy równa się standardowej dziennej ilości produktu. Część planu właściciel przeznacza na sprzedaż przy ladzie, ustalając dla każdego produktu ilość na ladę, a~rezerwować można tylko resztę. Do rezerwacji na dany dzień pozostaje więc plan dostawy pomniejszony o~ilość na ladę i~o~ilość zarezerwowaną wcześniej na ten dzień. Jeśli plan dostawy ziemniaków na sobotę wynosi 100~kg, na ladę przeznaczono 60~kg, a~klienci zarezerwowali już 30~kg, kolejny klient może zarezerwować najwyżej 10~kg ziemniaków. Bez tej granicy rezerwacje mogłyby objąć cały zamówiony towar, a~klienci kupujący przy ladzie nie dostaliby nic. Właściciel może zwiększyć plan, gdy rezerwacje wyczerpują pulę, albo go zmniejszyć, ale nie poniżej sumy ilości na ladę i~ilości już zarezerwowanej. Towar pozostały z~poprzedniego dnia trafia wyłącznie do sprzedaży przy ladzie, więc klient z~rezerwacją odbiera towar ze świeżej dostawy. W~dniu odbioru towaru zarezerwowanego, a~jeszcze niewydanego, nie sprzedaje się przy ladzie: system pozwala sprzedać tylko stan produktu pomniejszony o~ilości z~niewydanych rezerwacji na ten dzień.
 
 Przyjmowanie rezerwacji na dany dzień kończy się o~18:00 dnia poprzedniego. O~tej godzinie właściciel składa zamówienie u~dostawcy w~ilościach z~planu dostawy, więc zamówienie obejmuje cały towar zarezerwowany na następny dzień. Do tej samej godziny klient może bezpłatnie anulować rezerwację. Klient może mieć jedną rezerwację na dany dzień, a~łączna masa jej pozycji nie może przekroczyć 20~kg, co odpowiada jednej skrzynce.
 
-Zarezerwowany towar klient odbiera w~dniu, na który złożył rezerwację, najpóźniej do zamknięcia sklepu o~18:00. Sprzedawca kompletuje, waży i~pakuje rezerwacje na dany dzień poza godzinami największego ruchu, a~przy odbiorze pobiera zapłatę za odważoną masę według ceny obowiązującej w~dniu odbioru. Rezerwacja, której klient nie odebrał do 18:00, staje się nieodebrana, a~jej towar następnego dnia trafia do sprzedaży przy ladzie. Za nieodebranie rezerwacji klient ponosi opłatę w~wysokości 10\% wartości rezerwacji, którą właściciel nazywa zadatkiem; przy rezerwacji o~wartości 80~zł opłata wynosi 8~zł. Wartość rezerwacji liczy się z~zarezerwowanych ilości i~cen z~dnia odbioru.
+Zarezerwowany towar klient odbiera w~dniu, na który złożył rezerwację, najpóźniej do zamknięcia sklepu o~18:00. Sprzedawca kompletuje, waży i~pakuje rezerwacje na dany dzień poza godzinami największego ruchu, a~przy odbiorze pobiera zapłatę za odważoną masę według ceny obowiązującej w~dniu odbioru. Rezerwacja, której klient nie odebrał do 18:00, staje się nieodebrana, a~jej towar następnego dnia trafia do sprzedaży przy ladzie. Za nieodebranie rezerwacji klient ponosi opłatę w~wysokości 10\% wartości rezerwacji; przy rezerwacji o~wartości 80~zł opłata wynosi 8~zł. Wartość rezerwacji liczy się z~zarezerwowanych ilości i~cen z~dnia odbioru. Właściciel nazywa tę opłatę zadatkiem, ale w~regulaminie sklepu i~w~systemie nosi ona nazwę opłaty za nieodebranie rezerwacji. Zadatek w~rozumieniu art.~394 Kodeksu cywilnego wręcza się przy zawarciu umowy, a~ta opłata powstaje dopiero wtedy, gdy klient nie odbierze towaru.
 
-Opłaty za nieodebranie nie pobiera się z~góry. Przy rejestracji klient podaje kartę płatniczą w~formularzu operatora płatności, a~system przechowuje tylko identyfikator karty nadany przez operatora, bez numeru karty. Po nieodebraniu rezerwacji system nalicza opłatę i~dopisuje ją do zaległości klienta. Właściciel raz w~miesiącu obciąża karty klientów kwotą zaległości za pośrednictwem operatora płatności, poza systemem, i~odnotowuje w~systemie wynik obciążenia. Zaległość można też zapłacić w~sklepie, a~wpłatę odnotowuje sprzedawca. Gdy suma zaległości klienta przekracza 100~zł, system nie przyjmuje od niego nowych rezerwacji, choć rezerwacje złożone wcześniej pozostają ważne. Blokada ustaje samoczynnie, gdy po wpłacie albo skutecznym obciążeniu karty zaległość spadnie do 100~zł lub mniej.
+Opłaty za nieodebranie nie pobiera się z~góry. Przy rejestracji klient akceptuje regulamin sklepu, który opisuje tę opłatę i~zgodę na późniejsze obciążenie karty, a~następnie podaje kartę płatniczą w~formularzu operatora płatności, a~system przechowuje tylko identyfikator karty nadany przez operatora, bez numeru karty. Po nieodebraniu rezerwacji system nalicza opłatę i~dopisuje ją do zaległości klienta. Właściciel raz w~miesiącu obciąża karty klientów kwotą zaległości za pośrednictwem operatora płatności, poza systemem, i~odnotowuje w~systemie wynik obciążenia. Zaległość można też zapłacić w~sklepie, a~wpłatę odnotowuje sprzedawca. Gdy suma zaległości klienta przekracza 100~zł, system nie przyjmuje od niego nowych rezerwacji, choć rezerwacje złożone wcześniej pozostają ważne. Blokada ustaje samoczynnie, gdy po wpłacie albo skutecznym obciążeniu karty zaległość spadnie do 100~zł lub mniej.
 
-Oprócz rezerwacji system prowadzi ewidencję sklepu. Publiczny katalog pokazuje asortyment, aktualne ceny i~ilości dostępne do rezerwacji. Osoba otwierająca sklep wprowadza do systemu ilości faktycznie dostarczone, a~system porównuje je z~planem dostawy na dany dzień. Sprzedaż przy ladzie rejestruje się z~podziałem na produkty, dzięki czemu system zna bieżący stan towaru. Plan dostawy, stan i~historia sprzedaży są dostępne dla całego personelu, więc zamówienie może przygotować także sprzedawca.
+Oprócz rezerwacji system prowadzi ewidencję sklepu. Publiczny katalog pokazuje asortyment, aktualne ceny i~ilości dostępne do rezerwacji. Osoba otwierająca sklep wprowadza do systemu ilości faktycznie dostarczone, a~system porównuje je z~planem dostawy na dany dzień. Sprzedaż przy ladzie rejestruje się z~podziałem na produkty, dzięki czemu system zna bieżący stan towaru. Pomyłki w~ewidencji, np. sprzedaż 25~kg zamiast 2,5~kg, właściciel wyrównuje korektą stanu po przeliczeniu towaru na półkach i~na zapleczu. Plan dostawy, stan i~historia sprzedaży są dostępne dla całego personelu, więc zamówienie może przygotować także sprzedawca.
 
 W~systemie wyróżnia się pięć ról:
 \begin{description}[style=nextline,leftmargin=1.2cm]
 	\item[Klient-obserwator] Osoba bez konta. Przegląda asortyment, ceny za kilogram i~ilości dostępne do rezerwacji na najbliższe siedem dni. Aby zarezerwować towar, zakłada konto: podaje imię, nazwisko, adres e-mail i~numer telefonu oraz rejestruje kartę płatniczą.
 	\item[Klient] Osoba z~kontem. W~panelu klienta składa rezerwacje, przegląda je i~anuluje, a~także sprawdza swoją zaległość i~to, czy może składać nowe rezerwacje. Panel klienta jest oddzielony od panelu personelu.
 	\item[Sprzedawca] Obsługuje ladę: rejestruje sprzedaż, wydaje rezerwacje i~odnotowuje wpłaty zaległości. Gdy otwiera sklep, rejestruje przyjęcie dostawy, a~pod nieobecność właściciela składa zamówienie u~dostawcy na podstawie planu dostawy. Korzysta z~panelu administratora.
-	\item[Właściciel] Prowadzi asortyment i~ceny, ustala plan dostawy, składa zamówienie u~dostawcy, rejestruje przyjęcie dostawy, zakłada konta sprzedawców i~rozlicza zaległości klientów. Może też wykonywać wszystkie czynności sprzedawcy. Korzysta z~panelu administratora.
+	\item[Właściciel] Prowadzi asortyment i~ceny, ustala plan dostawy, składa zamówienie u~dostawcy, rejestruje przyjęcie dostawy, koryguje stan towaru po jego przeliczeniu, zakłada konta sprzedawców i~rozlicza zaległości klientów. Może też wykonywać wszystkie czynności sprzedawcy. Korzysta z~panelu administratora.
 	\item[Dostawca] Nie ma konta w~systemie. Otrzymuje zamówienie przygotowane na podstawie planu dostawy, a~przywieziony przez niego towar personel rejestruje w~systemie jako dostawę.
 \end{description}
 
-Każdy produkt w~systemie ma nazwę, w~razie potrzeby z~odmianą, np. dwie odmiany ziemniaków, cenę za kilogram oraz standardową dzienną ilość, od której zaczyna się plan dostawy. Ceny zmienia właściciel, a~system zapisuje datę, od której nowa cena obowiązuje, oraz cenę przy każdej sprzedaży. Bieżący stan produktu w~kilogramach system wyznacza z~zarejestrowanych dostaw i~sprzedaży.
+Każdy produkt w~systemie ma nazwę, w~razie potrzeby z~odmianą, np. dwie odmiany ziemniaków, cenę za kilogram, standardową dzienną ilość, od której zaczyna się plan dostawy, oraz ilość na ladę. Ceny zmienia właściciel, a~system zapisuje datę, od której nowa cena obowiązuje, oraz cenę przy każdej sprzedaży. Bieżący stan produktu w~kilogramach system wyznacza z~zarejestrowanych dostaw, sprzedaży, ubytków i~korekt stanu.
 
 Rezerwacja należy do jednego klienta i~dotyczy jednego dnia odbioru. Składa się z~pozycji, z~których każda wskazuje produkt i~zarezerwowaną ilość w~kilogramach. Po złożeniu rezerwacja jest złożona i~do 18:00 dnia poprzedniego klient może ją anulować, co zwalnia jej ilości w~planie dostawy. Gdy sprzedawca skompletuje i~zważy towar, rezerwacja staje się przygotowana do odbioru, a~przy każdej pozycji zapisuje się odważoną masę. Po wydaniu towaru i~zapłacie rezerwacja jest odebrana, a~jeśli klient nie odbierze jej do 18:00 w~dniu odbioru, staje się nieodebrana i~system nalicza opłatę za nieodebranie. Stany anulowana, odebrana i~nieodebrana są końcowe.
 
@@ -377,12 +377,12 @@ Uwaga: System nie obejmuje dowozu towaru do klienta ani płatności online za to
 
 Projekt obejmuje analizę pracy sklepu, projekt systemu i~bazy danych, implementację w~języku Python z~użyciem Django i~bazy MySQL, testy oraz wdrożenie na komputerze w~sklepie wraz z~instrukcją instalacji i~podręcznikiem użytkownika. Prace prowadzi się w~pięciu etapach wytycznych, a~ich terminy podano w~harmonogramie.
 
-Funkcje systemu dzielą się na pięć obszarów. Katalog i~konta obejmują publiczny przegląd oferty, rejestrację klienta z~kartą płatniczą oraz logowanie. Rezerwacje i~plan dostawy obejmują składanie, zmianę i~anulowanie rezerwacji, pulę ilości wyznaczaną przez plan dostawy oraz kompletowanie i~wydawanie rezerwacji. Ewidencja obejmuje przyjęcie dostawy z~porównaniem z~planem, sprzedaż przy ladzie, ubytki towaru i~bieżący stan. Rozliczenia obejmują opłaty za nieodebranie rezerwacji, zaległości klientów i~blokadę nowych rezerwacji. Administracja obejmuje asortyment, ceny i~konta personelu. Szczegółowe wymagania podano w~p.~\ref{sec:wf} i~p.~\ref{sec:wn}, a~kolejność ich realizacji w~wersjach systemu w~p.~\ref{sec:wersje}.
+Funkcje systemu dzielą się na pięć obszarów. Katalog i~konta obejmują publiczny przegląd oferty, rejestrację klienta z~kartą płatniczą oraz logowanie. Rezerwacje i~plan dostawy obejmują składanie, zmianę i~anulowanie rezerwacji, pulę ilości wyznaczaną przez plan dostawy oraz kompletowanie i~wydawanie rezerwacji. Ewidencja obejmuje przyjęcie dostawy z~porównaniem z~planem, sprzedaż przy ladzie, ubytki towaru, korekty stanu i~bieżący stan. Rozliczenia obejmują opłaty za nieodebranie rezerwacji, zaległości klientów i~blokadę nowych rezerwacji. Administracja obejmuje asortyment, ceny, konta personelu oraz anonimizację kont klientów na ich żądanie. Szczegółowe wymagania podano w~p.~\ref{sec:wf} i~p.~\ref{sec:wn}, a~kolejność ich realizacji w~wersjach systemu w~p.~\ref{sec:wersje}.
 
 \subsection{Wymagania funkcjonalne}
 \label{sec:wf}
 
-Wymagania funkcjonalne ponumerowano WF1, WF2 itd. w~całym podrozdziale; numery te przywołują opisy przypadków użycia i~testy.
+Wymagania funkcjonalne (WF) ponumerowano kolejno w~całym podrozdziale, od WF1; numery te przywołują opisy przypadków użycia i~testy.
 
 \subsubsection{Konta użytkowników}
 
@@ -391,7 +391,7 @@ Wymagania funkcjonalne ponumerowano WF1, WF2 itd. w~całym podrozdziale; numery 
 	\item \label{wf:role} W~systemie przewidziano trzy role użytkowników zalogowanych: klient, sprzedawca i~właściciel. Każde konto ma dokładnie jedną rolę.
 	\item \label{wf:konto-wlasciciela} Konto właściciela zakłada się przy instalacji systemu. W~systemie musi istnieć co najmniej jedno aktywne konto właściciela.
 	\item \label{wf:konta-sprzedawcow} Konta sprzedawców zakłada, dezaktywuje i~ponownie aktywuje właściciel. Konta personelu nie usuwa się, aby zachować powiązanie z~zarejestrowanymi dostawami i~sprzedażą. Konto sprzedawcy zawiera tylko dane potrzebne systemowi: login, imię, nazwisko, adres e-mail, hasło w~postaci skrótu, rolę i~informację, czy konto jest aktywne. System nie przechowuje innych danych personelu, np. numeru PESEL, adresu ani telefonu.
-	\item \label{wf:rejestracja} Konto klienta zakłada sam klient-obserwator. Podaje imię, nazwisko, adres e-mail i~numer telefonu, ustala hasło oraz rejestruje kartę płatniczą w~formularzu operatora płatności. Konto bez zarejestrowanej karty nie może składać rezerwacji.
+	\item \label{wf:rejestracja} Konto klienta zakłada sam klient-obserwator. Podaje imię, nazwisko, adres e-mail i~numer telefonu, ustala hasło, akceptuje regulamin sklepu po zapoznaniu się z~informacją o~przetwarzaniu danych osobowych (\ref{wn:rodo}) oraz rejestruje kartę płatniczą w~formularzu operatora płatności. System zapisuje chwilę akceptacji regulaminu. Konto bez zarejestrowanej karty nie może składać rezerwacji.
 	\item \label{wf:karta} System przechowuje z~danych karty wyłącznie identyfikator nadany przez operatora płatności. Numer karty nie trafia do systemu.
 	\item \label{wf:dezaktywacja-klienta} Właściciel może dezaktywować konto klienta. Dezaktywacja nie usuwa rezerwacji ani zaległości klienta.
 \end{enumerate}
@@ -411,7 +411,7 @@ Wymagania funkcjonalne ponumerowano WF1, WF2 itd. w~całym podrozdziale; numery 
 Zalogowany użytkownik z~rolą sprzedawcy ma dostęp do następujących funkcji:
 
 \begin{enumerate}[resume*=wf]
-	\item \label{wf:sprzedaz} Rejestracja sprzedaży przy ladzie: produkty i~masy w~kilogramach. Cenę pozycji system pobiera z~ceny obowiązującej w~chwili sprzedaży. Sprzedaż nie może obniżyć stanu produktu poniżej zera.
+	\item \label{wf:sprzedaz} Rejestracja sprzedaży przy ladzie: produkty i~masy w~kilogramach. Cenę pozycji system pobiera z~ceny obowiązującej w~chwili sprzedaży. Masa produktu nie może przekroczyć jego stanu pomniejszonego o~ilości z~niewydanych rezerwacji na bieżący dzień, czyli rezerwacji złożonych i~przygotowanych do odbioru.
 	\item \label{wf:dostawa} Rejestracja przyjęcia dostawy na dany dzień: ilości faktycznie dostarczonych produktów. System pokazuje różnice względem planu dostawy na ten dzień.
 	\item \label{wf:ubytek} Rejestracja ubytku towaru, który stracił świeżość i~został wyrzucony, z~podaniem produktu i~masy. Ubytek obniża stan produktu.
 	\item \label{wf:stan} Przegląd bieżącego stanu produktów, planu dostawy na najbliższe siedem dni i~historii sprzedaży.
@@ -420,7 +420,7 @@ Zalogowany użytkownik z~rolą sprzedawcy ma dostęp do następujących funkcji:
 	\item \label{wf:przygotowanie} Oznaczenie rezerwacji jako przygotowanej do odbioru, z~wpisaniem odważonej masy każdej pozycji.
 	\item \label{wf:wydanie} Wydanie rezerwacji klientowi. System wylicza kwotę do zapłaty z~odważonych mas i~cen obowiązujących w~dniu odbioru, rejestruje wydanie jako sprzedaż i~oznacza rezerwację jako odebraną.
 	\item \label{wf:wyszukanie} Wyszukanie klienta po nazwisku, adresie e-mail lub numerze telefonu oraz podgląd jego rezerwacji i~zaległości.
-	\item \label{wf:wplata} Odnotowanie wpłaty zaległości dokonanej przez klienta w~sklepie.
+	\item \label{wf:wplata} Odnotowanie wpłaty zaległości, którą klient zapłacił w~sklepie.
 \end{enumerate}
 
 \subsubsection{Funkcje dostępne dla właściciela}
@@ -428,12 +428,14 @@ Zalogowany użytkownik z~rolą sprzedawcy ma dostęp do następujących funkcji:
 Zalogowany użytkownik z~rolą właściciela ma dostęp do wszystkich funkcji sprzedawcy oraz do następujących:
 
 \begin{enumerate}[resume*=wf]
-	\item \label{wf:produkty} Dodawanie i~edycja produktów: nazwa, odmiana, cena za kilogram i~standardowa dzienna ilość. Produkt, którego sklep przestaje sprzedawać, wycofuje się z~oferty bez usuwania go z~historii.
+	\item \label{wf:produkty} Dodawanie i~edycja produktów: nazwa, odmiana, cena za kilogram, standardowa dzienna ilość, czyli domyślny plan dostawy, oraz ilość na ladę, czyli część planu, której nie można zarezerwować. Ilość na ladę nie przekracza standardowej dziennej ilości. Produkt, którego sklep przestaje sprzedawać, wycofuje się z~oferty bez usuwania go z~historii.
 	\item \label{wf:cena} Zmiana ceny produktu. System zapisuje datę, od której nowa cena obowiązuje, i~przechowuje ceny wcześniejsze.
-	\item \label{wf:plan-dostawy} Ustalanie planu dostawy dla każdego produktu na każdy z~najbliższych siedmiu dni. Domyślnie plan równa się standardowej dziennej ilości produktu. Właściciel może go zwiększyć albo zmniejszyć, ale nie poniżej ilości już zarezerwowanej na ten dzień.
+	\item \label{wf:plan-dostawy} Ustalanie planu dostawy dla każdego produktu na każdy z~najbliższych siedmiu dni. Domyślnie plan równa się standardowej dziennej ilości produktu. Właściciel może go zwiększyć albo zmniejszyć, ale nie poniżej sumy ilości na ladę i~ilości już zarezerwowanej na ten dzień. Ilość dostępna do rezerwacji to plan pomniejszony o~ilość na ladę i~ilość zarezerwowaną.
 	\item \label{wf:konta-personelu} Zakładanie, dezaktywacja i~ponowna aktywacja kont sprzedawców oraz dezaktywacja kont klientów.
+	\item \label{wf:anonimizacja} Anonimizacja konta klienta na jego żądanie. System usuwa imię, nazwisko, adres e-mail, numer telefonu i~identyfikator karty oraz dezaktywuje konto, a~rezerwacje, sprzedaż i~rozliczenia klienta zostają w~ewidencji bez danych osobowych. Anonimizacja jest możliwa, gdy klient nie ma zaległości ani niezakończonych rezerwacji.
 	\item \label{wf:obciazenie} Przegląd klientów z~zaległością i~odnotowanie wyniku comiesięcznego obciążenia karty: obciążenie skuteczne zmniejsza zaległość o~pobraną kwotę, a~nieudane jej nie zmienia.
 	\item \label{wf:zestawienia} Zestawienia za wybrany okres: sprzedaż i~ubytki według produktów, różnice między planem a~przyjętą dostawą oraz liczba i~wartość rezerwacji nieodebranych.
+	\item \label{wf:korekta} Korekta stanu produktu po przeliczeniu towaru. Właściciel wpisuje masę produktu zważoną na półkach i~na zapleczu oraz przyczynę rozbieżności, a~system zapisuje różnicę między tą masą a~stanem wyliczonym z~ewidencji. Korekta może stan zwiększyć albo zmniejszyć, ale nie poniżej zera.
 \end{enumerate}
 
 \subsubsection{Funkcje dostępne dla klienta}
@@ -475,11 +477,11 @@ Użytkownik niezalogowany, czyli klient-obserwator, ma dostęp do następującyc
 Rezerwacja przechodzi przez etapy opisane poniżej, a~jej stany odpowiadają opisowi z~p.~\ref{sec:system}. Do etapu złożenia stosuje się wszystkie warunki z~pierwszego punktu jednocześnie.
 
 \begin{enumerate}[resume*=wf]
-	\item \label{wf:proc-zlozenie} Złożenie rezerwacji przez klienta. System przyjmuje rezerwację tylko wtedy, gdy: klient ma zarejestrowaną kartę i~jego zaległość nie przekracza 100~zł; nie ma on innej niezakończonej rezerwacji na ten dzień; rezerwację składa się przed 18:00 w~dniu poprzedzającym dzień odbioru; łączna masa pozycji nie przekracza 20~kg; ilość każdego produktu nie przekracza ilości dostępnej do rezerwacji, czyli planu dostawy pomniejszonego o~ilość zarezerwowaną na ten dzień. Sprawdzenie ilości i~zapis rezerwacji wykonuje się w~jednej transakcji. Po zapisie rezerwacja jest złożona.
+	\item \label{wf:proc-zlozenie} Złożenie rezerwacji przez klienta. System przyjmuje rezerwację tylko wtedy, gdy: klient ma zarejestrowaną kartę i~jego zaległość nie przekracza 100~zł; nie ma on innej niezakończonej rezerwacji na ten dzień; rezerwację składa się przed 18:00 w~dniu poprzedzającym dzień odbioru; łączna masa pozycji nie przekracza 20~kg; ilość każdego produktu nie przekracza ilości dostępnej do rezerwacji, czyli planu dostawy pomniejszonego o~ilość na ladę i~ilość zarezerwowaną na ten dzień. Sprawdzenie ilości i~zapis rezerwacji wykonuje się w~jednej transakcji. Po zapisie rezerwacja jest złożona.
 	\item \label{wf:proc-zamkniecie} Zamknięcie przyjmowania rezerwacji na dany dzień o~18:00 dnia poprzedniego. Od tej chwili klient nie może złożyć, zmienić ani anulować rezerwacji na ten dzień, a~zestawienie zamówienia (\ref{wf:zestawienie-zamowienia}) obejmuje wszystkie rezerwacje.
 	\item \label{wf:proc-przygotowanie} Przygotowanie rezerwacji przez sprzedawcę w~dniu odbioru, po przyjęciu dostawy (\ref{wf:przygotowanie}).
 	\item \label{wf:proc-wydanie} Wydanie rezerwacji przy ladzie do 18:00 w~dniu odbioru (\ref{wf:wydanie}). Zapłata za towar odbywa się poza systemem.
-	\item \label{wf:proc-nieodebrana} Oznaczenie jako nieodebranej każdej rezerwacji złożonej lub przygotowanej, której nie wydano do 18:00 w~dniu odbioru. System nalicza wtedy opłatę za nieodebranie równą 10\% wartości rezerwacji, liczonej z~zarezerwowanych ilości i~cen obowiązujących w~dniu odbioru, zaokrągloną do 1~gr, i~dopisuje ją do zaległości klienta.
+	\item \label{wf:proc-nieodebrana} Oznaczenie jako nieodebranej każdej rezerwacji złożonej lub przygotowanej, której nie wydano do 18:00 w~dniu odbioru. System nalicza wtedy opłatę za nieodebranie równą 10\% wartości rezerwacji, liczonej z~zarezerwowanych ilości i~cen obowiązujących w~dniu odbioru, zaokrągloną do 1~gr, i~dopisuje ją do zaległości klienta. Jeśli o~18:00 komputer był wyłączony, system oznacza takie rezerwacje z~wcześniejszych dni przy najbliższym uruchomieniu.
 	\item \label{wf:proc-blokada} Blokada nowych rezerwacji klienta, gdy suma jego zaległości przekracza 100~zł. Rezerwacje złożone wcześniej pozostają ważne. Blokada ustaje samoczynnie, gdy po wpłacie w~sklepie (\ref{wf:wplata}) lub skutecznym obciążeniu karty (\ref{wf:obciazenie}) zaległość spadnie do 100~zł lub mniej.
 	\item \label{wf:powiadomienia} Powiadomienia e-mail do klienta: potwierdzenie założenia konta, potwierdzenie złożenia, zmiany i~anulowania rezerwacji z~dniem odbioru i~listą pozycji oraz informacja o~naliczeniu opłaty za nieodebranie i~o~blokadzie nowych rezerwacji.
 	\item \label{wf:przypomnienie} Przypomnienie e-mail wysyłane klientowi o~6:00 w~dniu odbioru rezerwacji, z~godziną zamknięcia sklepu i~wysokością opłaty za nieodebranie.
@@ -489,11 +491,11 @@ Rezerwacja przechodzi przez etapy opisane poniżej, a~jej stany odpowiadają opi
 \label{sec:wn}
 % Komputer w sklepie, bez hostingu (notatka §1); współbieżne zapisy w MySQL/InnoDB (uwaga 1, Q3); osobny panel klienta (uwaga 3).
 
-Wymagania niefunkcjonalne ponumerowano WN1, WN2 itd. Wartości liczbowe odnoszą się do parametrów z~tab.~\ref{tab:parametry}.
+Wymagania niefunkcjonalne (WN) ponumerowano kolejno, od WN1. Wartości liczbowe odnoszą się do parametrów z~tab.~\ref{tab:parametry}.
 
 \begin{enumerate}[label=WN\arabic*.,ref=WN\arabic*,leftmargin=1.6cm]
 	\item Aplikacja webowa z~graficznym interfejsem w~języku polskim. Panel klienta jest oddzielony od panelu administratora (Django Admin), z~którego korzysta wyłącznie personel.
-	\item Baza danych MySQL Community Server w~wersji 8.4 LTS z~silnikiem InnoDB i~kodowaniem \texttt{utf8mb4}. Aplikacja w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, połączona z~bazą przez sterownik \texttt{mysqlclient}. Wszystkie narzędzia mają bezpłatne licencje open source, także do użytku komercyjnego. Uzasadnienie wyboru i~licencje podano w~p.~\ref{sec:wykonalnosc}.
+	\item Baza danych MySQL Community Server w~wersji 8.4 LTS z~silnikiem InnoDB i~kodowaniem \texttt{utf8mb4}. Aplikacja w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, połączona z~bazą przez sterownik \texttt{mysqlclient}. Oprogramowanie, na którym działa system, ma bezpłatne licencje open source, które dopuszczają użycie w~działalności sklepu. Uzasadnienie wyboru i~licencje podano w~p.~\ref{sec:wykonalnosc}.
 	\item \label{wn:django} System w~możliwie największym stopniu korzysta z~wbudowanych mechanizmów Django: uwierzytelniania z~grupami użytkowników jako rolami (\texttt{django.\allowbreak contrib.\allowbreak auth}), panelu administratora (\texttt{django.\allowbreak contrib.\allowbreak admin}), formularzy z~walidacją, ORM z~migracjami, sesji, ochrony CSRF, widoków resetu hasła i~wysyłki poczty. Dane klienta spoza modelu użytkownika Django, czyli telefon, identyfikator karty i~zaległość, przechowuje się w~osobnym modelu powiązanym z~kontem.
 	\item \label{wn:wdrozenie} Aplikacja Django działa jako serwer na jednym komputerze w~sklepie, bez zewnętrznego hostingu, a~klienci i~personel łączą się z~nim przez przeglądarkę. Katalog i~panel klienta są dostępne z~internetu przez połączenie szyfrowane (HTTPS), a~panel administratora tylko z~sieci lokalnej sklepu.
 	\item Ponieważ rezerwacje przyjmuje się także wieczorem i~w~nocy, komputer z~systemem pracuje całą dobę.
@@ -502,12 +504,15 @@ Wymagania niefunkcjonalne ponumerowano WN1, WN2 itd. Wartości liczbowe odnoszą
 	\item Baza mieści dane z~co najmniej pięciu lat pracy sklepu, czyli przy wartościach docelowych z~tab.~\ref{tab:parametry} około 2~mln wierszy.
 	\item \label{wn:czas} Masy przechowuje się jako liczby dziesiętne z~dokładnością do 0,01~kg, a~kwoty z~dokładnością do 1~gr. Terminy, w~tym godzinę 18:00, liczy się według czasu lokalnego (strefa Europe/Warsaw).
 	\item \label{wn:poczta} Wiadomości e-mail system wysyła przez serwer SMTP skrzynki pocztowej sklepu. W~środowisku programistycznym i~podczas testów wiadomości wypisuje się na konsolę zamiast je wysyłać.
-	\item Hasła przechowuje się wyłącznie w~postaci skrótów, mechanizmem Django. Formularze są chronione przed atakami CSRF. Dane osobowe klientów widzi tylko personel i~sam klient.
+	\item \label{wn:bezpieczenstwo} Hasła przechowuje się wyłącznie w~postaci skrótów, mechanizmem Django. Formularze są chronione przed atakami CSRF. Ciasteczka sesji i~CSRF przeglądarka wysyła tylko przez HTTPS, a~nagłówek HSTS nakazuje jej łączyć się ze sklepem wyłącznie w~ten sposób. Serwer Nginx ogranicza liczbę żądań do formularzy logowania i~resetu hasła z~jednego adresu IP, co utrudnia zgadywanie haseł z~internetu. Dane osobowe klientów widzi tylko personel i~sam klient.
+	\item \label{wn:rodo} Dane osobowe klientów przetwarza się zgodnie z~rozporządzeniem RODO, a~ich administratorem jest właściciel sklepu. Przed założeniem konta klient otrzymuje informację o~celu i~podstawie przetwarzania danych, okresie ich przechowywania i~swoich prawach. Prawo do usunięcia danych realizuje anonimizacja konta (\ref{wf:anonimizacja}), ponieważ dane ewidencji sprzedaży i~rozliczeń muszą pozostać kompletne.
+	% TODO: okres przechowywania danych klienta i treść regulaminu — ustala Karol z właścicielem sklepu.
+	\item \label{wn:dostepnosc} Panel klienta spełnia wytyczne WCAG~2.1 na poziomie AA. Wszystkie funkcje są dostępne z~klawiatury, pola formularzy mają etykiety, kontrast tekstu wynosi co najmniej 4,5:1, a~strona pozostaje czytelna bez arkusza stylów i~bez JavaScriptu. Zgodność sprawdza się automatycznie narzędziem Lighthouse oraz ręcznie, wykonując przypadki użycia klienta samą klawiaturą.
 	\item \label{wn:kopia} Kopię zapasową bazy wykonuje się codziennie po zamknięciu sklepu i~przechowuje poza komputerem z~systemem. Odtworzenie bazy z~kopii trwa nie dłużej niż 1~h.
 	\item \label{wn:przegladarki} Panel administratora działa w~przeglądarkach Chrome, Firefox i~Edge w~wersjach aktualnych w~dniu wdrożenia, na ekranie o~szerokości co najmniej 1280~px. Panel klienta działa w~tych samych przeglądarkach na komputerze, a~w~wersji rozszerzonej także na ekranach telefonów od 360~px szerokości.
 \end{enumerate}
 
-\subsection{Funkcjonalności implementowane i~testowane na zaliczenie}
+\subsection{Funkcje realizowane i~testowane na zaliczenie}
 \label{sec:wersje}
 % Wersje minimalna, standardowa, rozszerzona (Q8). Wzór: Sklep hydrauliczny 2.4.
 
@@ -515,11 +520,11 @@ Wymagania z~p.~\ref{sec:wf} podzielono na trzy wersje. Każda kolejna obejmuje f
 
 \subsubsection{Wersja minimalna}
 
-Wersja minimalna obejmuje konta i~uwierzytelnianie wszystkich ról (\ref{wf:uzytkownicy}--\ref{wf:dezaktywowane}, \ref{wf:konta-personelu}, \ref{wf:wylogowanie}--\ref{wf:dane-konta}), w~tym reset hasła przez e-mail (\ref{wf:reset-hasla}), panel administratora dla personelu i~osobny panel klienta. Właściciel prowadzi asortyment, ceny i~plan dostawy (\ref{wf:produkty}--\ref{wf:plan-dostawy}). Klient-obserwator przegląda katalog z~ilościami dostępnymi do rezerwacji i~zakłada konto (\ref{wf:katalog}--\ref{wf:zalogowanie}). Klient składa, przegląda i~anuluje rezerwacje (\ref{wf:rez-zlozenie}, \ref{wf:rez-anulowanie}, \ref{wf:rez-przeglad}) z~zachowaniem wszystkich warunków \ref{wf:proc-zlozenie} i~zamknięcia o~18:00 (\ref{wf:proc-zamkniecie}). Sprzedawca przegląda rezerwacje na dany dzień i~je wydaje (\ref{wf:lista-rezerwacji}, \ref{wf:wydanie}), a~rezerwacje niewydane do 18:00 system oznacza jako nieodebrane z~naliczeniem opłaty (\ref{wf:proc-nieodebrana}). Klient może zarejestrować kartę także po założeniu konta (\ref{wf:karta-ponowna}). Rejestrację karty w~tej wersji symuluje się: formularz zastępujący formularz operatora zwraca testowy identyfikator karty.
+Wersja minimalna obejmuje konta i~uwierzytelnianie wszystkich ról (\ref{wf:uzytkownicy}--\ref{wf:dezaktywowane}, \ref{wf:konta-personelu}, \ref{wf:wylogowanie}--\ref{wf:dane-konta}), w~tym reset hasła przez e-mail (\ref{wf:reset-hasla}), panel administratora dla personelu i~osobny panel klienta. Właściciel prowadzi asortyment, ceny i~plan dostawy (\ref{wf:produkty}--\ref{wf:plan-dostawy}). Klient-obserwator przegląda katalog z~ilościami dostępnymi do rezerwacji i~zakłada konto (\ref{wf:katalog}--\ref{wf:zalogowanie}). Klient składa, przegląda i~anuluje rezerwacje (\ref{wf:rez-zlozenie}, \ref{wf:rez-anulowanie}, \ref{wf:rez-przeglad}) z~zachowaniem wszystkich warunków \ref{wf:proc-zlozenie} i~zamknięcia o~18:00 (\ref{wf:proc-zamkniecie}). Sprzedawca przegląda rezerwacje na dany dzień i~je wydaje (\ref{wf:lista-rezerwacji}, \ref{wf:wydanie}), a~rezerwacje niewydane do 18:00 system oznacza jako nieodebrane z~naliczeniem opłaty (\ref{wf:proc-nieodebrana}). Klient może zarejestrować kartę także po założeniu konta (\ref{wf:karta-ponowna}). Już ta wersja obejmuje akceptację regulaminu i~informację o~przetwarzaniu danych (\ref{wn:rodo}), ponieważ bez nich nie można zbierać danych klientów. Rejestrację karty w~tej wersji symuluje się: formularz zastępujący formularz operatora zwraca testowy identyfikator karty.
 
 \subsubsection{Wersja standardowa}
 
-Wersja standardowa dodaje ewidencję sklepu: sprzedaż przy ladzie, przyjęcie dostawy z~porównaniem z~planem, ubytki, stan i~historię sprzedaży oraz zestawienie zamówienia (\ref{wf:sprzedaz}--\ref{wf:zestawienie-zamowienia}). Rezerwacja otrzymuje stan przygotowanej do odbioru z~odważonymi masami (\ref{wf:przygotowanie}), a~klient może zmienić rezerwację do 18:00 dnia poprzedniego (\ref{wf:rez-zmiana}). Dochodzą rozliczenia: podgląd zaległości przez klienta, blokada nowych rezerwacji, wpłata w~sklepie i~odnotowanie wyniku obciążenia karty (\ref{wf:zaleglosc}, \ref{wf:proc-blokada}, \ref{wf:wplata}, \ref{wf:obciazenie}), a~także wyszukiwanie klienta przez personel (\ref{wf:wyszukanie}) i~powiadomienia e-mail o~koncie, rezerwacjach i~opłatach (\ref{wf:powiadomienia}).
+Wersja standardowa dodaje ewidencję sklepu: sprzedaż przy ladzie, przyjęcie dostawy z~porównaniem z~planem, ubytki, stan i~historię sprzedaży, zestawienie zamówienia (\ref{wf:sprzedaz}--\ref{wf:zestawienie-zamowienia}) oraz korektę stanu (\ref{wf:korekta}). Właściciel może też anonimizować konta klientów (\ref{wf:anonimizacja}). Rezerwacja otrzymuje stan przygotowanej do odbioru z~odważonymi masami (\ref{wf:przygotowanie}), a~klient może zmienić rezerwację do 18:00 dnia poprzedniego (\ref{wf:rez-zmiana}). Dochodzą rozliczenia: podgląd zaległości przez klienta, blokada nowych rezerwacji, wpłata w~sklepie i~odnotowanie wyniku obciążenia karty (\ref{wf:zaleglosc}, \ref{wf:proc-blokada}, \ref{wf:wplata}, \ref{wf:obciazenie}), a~także wyszukiwanie klienta przez personel (\ref{wf:wyszukanie}) i~powiadomienia e-mail o~koncie, rezerwacjach i~opłatach (\ref{wf:powiadomienia}).
 
 \subsubsection{Wersja rozszerzona}
 
@@ -581,7 +586,7 @@ Czynniki krytyczne sukcesu to warunki, bez których system nie spełni celu z~p.
 		Czynnik & Sposób sprawdzenia & Skutek niespełnienia \\
 		\midrule
 		Ilość zarezerwowana nie przekracza planu dostawy & Test dwóch jednoczesnych rezerwacji ostatniej dostępnej ilości: przyjęta zostaje tylko jedna & Klient z~rezerwacją nie dostaje towaru \\
-		Stan towaru zgadza się z~ewidencją i~nie schodzi poniżej zera & Stan produktu równa się sumie dostaw pomniejszonej o~sprzedaż i~ubytki; próba sprzedaży ponad stan jest odrzucana & Właściciel zamawia na podstawie błędnych danych \\
+		Stan towaru zgadza się z~ewidencją i~nie schodzi poniżej zera & Stan produktu równa się sumie dostaw pomniejszonej o~sprzedaż i~ubytki, z~uwzględnieniem korekt; sprzedaż ponad stan albo z~towaru zarezerwowanego na dziś jest odrzucana & Właściciel zamawia na podstawie błędnych danych \\
 		Terminy liczone według czasu lokalnego & Po 18:00 rezerwacje na następny dzień są zamknięte, a~niewydane rezerwacje z~danego dnia oznaczone jako nieodebrane & Błędnie naliczone opłaty, spory z~klientami \\
 		Rejestracja sprzedaży nie wydłuża obsługi przy ladzie & Zarejestrowanie zakupu trzech produktów trwa nie dłużej niż 30~s & Sprzedawcy przestają rejestrować sprzedaż, ewidencja traci sens \\
 		Wersja minimalna działa na komputerze w~sklepie w~terminie & Instalacja według instrukcji z~rozdz.~\ref{ch:wdrozenie} do 30.11.2026 & Brak systemu do odbioru i~prezentacji \\
@@ -603,7 +608,7 @@ System jest wykonalny technicznie w~przyjętym czasie, ponieważ opiera się na 
 % latex-project.org (LPPL); pliki licencji czcionek w aplikacja/static/panel/fonts (SIL OFL 1.1).
 % stripe (biblioteka Pythona): plik LICENSE w pakiecie 16.1.0, MIT, sprawdzone 08.11.2026.
 
-Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~dane przechowuje w~bazie MySQL Community Server 8.4 LTS z~silnikiem InnoDB. Wytyczne zalecają Python i~MySQL (pkt~7). Na konsultacji 19.10.2026 zespół przedstawił bazę SQLite, a~prowadzący ostrzegł, że SQLite źle obsługuje jednoczesne zapisy wielu użytkowników; dlatego wybrano MySQL. Wersje oznaczone jako LTS mają długi okres wsparcia, który obejmuje cały czas realizacji i~pierwsze lata pracy sklepu. Django łączy się z~bazą przez sterownik \texttt{mysqlclient}. Wszystkie narzędzia mają bezpłatne licencje (tab.~\ref{tab:technologie}), więc ich koszt wynosi 0~zł (p.~\ref{sec:koszt}).
+Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~dane przechowuje w~bazie MySQL Community Server 8.4 LTS z~silnikiem InnoDB. Wytyczne zalecają Python i~MySQL (pkt~7). Na konsultacji 19.10.2026 zespół przedstawił bazę SQLite, a~prowadzący ostrzegł, że SQLite źle obsługuje jednoczesne zapisy wielu użytkowników; dlatego wybrano MySQL. Wersje oznaczone jako LTS mają długi okres wsparcia, który obejmuje cały czas realizacji i~pierwsze lata pracy sklepu. Django łączy się z~bazą przez sterownik \texttt{mysqlclient}. Wszystkie narzędzia są bezpłatne (tab.~\ref{tab:technologie}), więc ich koszt wynosi 0~zł (p.~\ref{sec:koszt}). Oprogramowanie uruchamiane w~sklepie ma licencje open source. Visual Paradigm Community Edition jest bezpłatny tylko do użytku niekomercyjnego, ale służy wyłącznie do wykonania diagramów w~ramach kursu i~nie jest instalowany w~sklepie.
 
 \begin{table}[H]
 	\centering
@@ -635,7 +640,7 @@ Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~da
 
 System działa na komputerze typu mini PC wymienionym w~kosztorysie (tab.~\ref{tab:koszt}), z~energooszczędnym czterordzeniowym procesorem, np. Intel N100, 16~GB pamięci RAM i~dyskiem SSD 512~GB. Komputer pracuje pod kontrolą systemu Ubuntu Server 24.04 LTS, który jest bezpłatny i~ma wsparcie do 2029~r. Przy obciążeniu z~tab.~\ref{tab:parametry} taki komputer ma duży zapas mocy, a~pobiera około 15~W.
 
-Żądania z~przeglądarek przyjmuje serwer Nginx. Obsługuje on połączenie HTTPS, udostępnia pliki statyczne i~przekazuje pozostałe żądania do serwera aplikacji Gunicorn, który uruchamia Django przez interfejs WSGI. Certyfikat HTTPS dla domeny sklepu wystawia bezpłatnie urząd Let's Encrypt, a~program Certbot odnawia go samoczynnie przed wygaśnięciem. Router sklepu przekierowuje na komputer porty 80 i~443, a~jeśli dostawca internetu przydziela zmienny adres IP, adres domeny aktualizuje się przez dynamiczny DNS. Żądania do panelu administratora Nginx przepuszcza tylko z~adresów sieci lokalnej sklepu (\ref{wn:wdrozenie}). MySQL, Gunicorn i~Nginx działają jako usługi systemu uruchamiane przy starcie komputera. Zadania o~ustalonych godzinach uruchamia systemowy harmonogram \texttt{cron}: o~18:00 polecenie Django oznaczające rezerwacje nieodebrane (\ref{pu:nieodebrane}), o~6:00 wysyłkę przypomnień (\ref{pu:przypomnienie}) i~po zamknięciu sklepu kopię bazy programem \texttt{mysqldump} na dysk zewnętrzny (\ref{wn:kopia}).
+Żądania z~przeglądarek przyjmuje serwer Nginx. Obsługuje on połączenie HTTPS, udostępnia pliki statyczne i~przekazuje pozostałe żądania do serwera aplikacji Gunicorn, który uruchamia Django przez interfejs WSGI. Certyfikat HTTPS dla domeny sklepu wystawia bezpłatnie urząd Let's Encrypt, a~program Certbot odnawia go samoczynnie przed wygaśnięciem. Router sklepu przekierowuje na komputer porty 80 i~443, a~jeśli dostawca internetu przydziela zmienny adres IP, adres domeny aktualizuje się przez dynamiczny DNS. Żądania do panelu administratora Nginx przepuszcza tylko z~adresów sieci lokalnej sklepu (\ref{wn:wdrozenie}). MySQL, Gunicorn i~Nginx działają jako usługi systemu uruchamiane przy starcie komputera. Zadania o~ustalonych godzinach uruchamia systemowy harmonogram \texttt{cron}: o~18:00 polecenie Django oznaczające rezerwacje nieodebrane (\ref{pu:nieodebrane}), o~6:00 wysyłkę przypomnień (\ref{pu:przypomnienie}) i~po zamknięciu sklepu kopię bazy programem \texttt{mysqldump} na dysk zewnętrzny (\ref{wn:kopia}). Polecenie oznaczające rezerwacje nieodebrane \texttt{cron} uruchamia też przy starcie komputera, aby objąć dni, w~których o~18:00 komputer był wyłączony, np. po awarii zasilania dłuższej niż czas pracy zasilacza awaryjnego.
 
 Z~technik modelowania wymienionych w~wytycznych wybrano UML i~diagram związków encji (ERD). Diagramy UML przypadków użycia, czynności, klas i~stanów oraz ERD wykonuje się w~Visual Paradigm Community Edition, z~którego grupa korzystała na kursie Inżynieria oprogramowania. ERD rysuje się w~notacji Crow's Foot (,,kurza stopka''), w~której liczność związku oznacza się zakończeniem linii, tak jak w~modelach bazy danych przykładowego raportu ,,Sklep hydrauliczny''. Diagramy hierarchii i~następstwa funkcji (DHF, DNF) oraz definicje funkcji elementarnych (DFE) pominięto, ponieważ strukturę funkcjonalną systemu opisują przypadki użycia (rozdz.~\ref{ch:diagramy-pu} i~\ref{ch:opis-pu}), a~strukturę informacyjną model bazy danych (rozdz.~\ref{ch:model-bd}).
 
@@ -645,7 +650,9 @@ Z~technik modelowania wymienionych w~wytycznych wybrano UML i~diagram związków
 
 Jednocześnie z~systemu korzystają najwyżej 2~osoby personelu i~20~klientów (tab.~\ref{tab:parametry}). Silnik InnoDB blokuje przy zapisie pojedyncze wiersze, a~nie całą bazę, więc sprzedaż zapisywana przy ladzie nie czeka na rezerwację składaną w~tym czasie przez klienta. Odczyty, np. przegląd katalogu, nie czekają na zapisy, ponieważ InnoDB udostępnia im spójny obraz danych z~chwili rozpoczęcia zapytania.
 
-Konflikt może wystąpić wtedy, gdy dwóch klientów rezerwuje ten sam produkt na ten sam dzień, zwłaszcza tuż przed 18:00. Złożenie rezerwacji wykonuje się w~jednej transakcji (\texttt{transaction.atomic}): system blokuje wiersze planu dostawy wybranych produktów na dany dzień (\texttt{select\_for\_update}, w~SQL \texttt{SELECT ... FOR UPDATE}), sprawdza ilość dostępną do rezerwacji i~zapisuje pozycje. Druga transakcja czeka na zwolnienie blokady i~sprawdza dostępność już po zapisie pierwszej, więc suma rezerwacji nie przekracza planu dostawy. Tak samo przy sprzedaży i~ubytku blokuje się wiersz produktu, aby jego stan nie zszedł poniżej zera.
+Konflikt może wystąpić wtedy, gdy dwóch klientów rezerwuje ten sam produkt na ten sam dzień, zwłaszcza tuż przed 18:00. Złożenie rezerwacji wykonuje się w~jednej transakcji (\texttt{transaction.atomic}): system blokuje wiersze planu dostawy wybranych produktów na dany dzień (\texttt{select\_for\_update}, w~SQL \texttt{SELECT ... FOR UPDATE}), sprawdza ilość dostępną do rezerwacji i~zapisuje pozycje. Druga transakcja czeka na zwolnienie blokady i~sprawdza dostępność już po zapisie pierwszej, więc suma rezerwacji nie przekracza planu dostawy. Tak samo przy sprzedaży, ubytku i~korekcie stanu blokuje się wiersz produktu, aby jego stan nie zszedł poniżej zera, a~sprzedaż przy ladzie nie objęła towaru z~niewydanych rezerwacji na bieżący dzień.
+
+Drugi możliwy konflikt dotyczy jednej rezerwacji: sprzedawca wydaje ją tuż przed 18:00, a~w~tym czasie startuje polecenie oznaczające rezerwacje nieodebrane. Obie operacje blokują wiersz rezerwacji i~sprawdzają jej stan dopiero po uzyskaniu blokady. Rezerwacja zostaje więc albo odebrana, albo nieodebrana z~opłatą, nigdy oba naraz.
 
 Transakcje są krótkie: obejmują kilka odczytów i~zapisów, bez oczekiwania na użytkownika. Jeśli transakcja przekroczy czas oczekiwania na blokadę albo baza wykryje zakleszczenie, system wycofuje ją i~prosi użytkownika o~ponowienie operacji. Przy obciążeniu z~tab.~\ref{tab:parametry} takie sytuacje są rzadkie.
 
@@ -689,7 +696,8 @@ Koszt obejmuje pracę zespołu, sprzęt potrzebny w~sklepie i~koszty utrzymania 
 	\end{tabularx}
 \end{table}
 
-Koszt wytworzenia systemu wynosi 8\,400~zł, a~z~wyposażeniem sklepu 11\,050~zł. Najwięcej kosztuje implementacja, która zajmuje 43\% godzin. Jeśli w~sklepie jest komputer, który może pracować całą dobę, koszt wdrożenia zmniejsza się o~2\,000~zł. Prowizji operatora płatności od obciążeń kart nie wliczono, ponieważ ponosi ją sklep przy rozliczaniu opłat za nieodebranie, a~nie przy wytwarzaniu systemu.
+Koszt wytworzenia systemu wynosi 8\,400~zł, a~z~wyposażeniem sklepu 11\,050~zł. Najwięcej kosztuje implementacja, która zajmuje 43\% godzin. Jeśli w~sklepie jest komputer, który może pracować całą dobę, koszt wdrożenia zmniejsza się o~2\,000~zł. Prowizji operatora płatności od obciążeń kart nie wliczono, ponieważ ponosi ją sklep przy rozliczaniu opłat za nieodebranie, a~nie przy wytwarzaniu systemu. Kosztorys nie obejmuje też pracy przy utrzymaniu systemu po wdrożeniu: instalowania aktualizacji Ubuntu, Django i~MySQL oraz sprawdzania kopii zapasowych.
+% TODO: liczba godzin utrzymania rocznie i kto je wykonuje (właściciel czy zespół) — decyzja Karola.
 
 \subsection{Plan projektu}
 \label{sec:plan}
@@ -829,7 +837,7 @@ Aktorami systemu są role z~p.~\ref{sec:system} oraz systemy zewnętrzne, które
 		Użytkownik zalogowany & Aktor abstrakcyjny, uogólnienie klienta i~sprzedawcy. Wylogowuje się, zmienia hasło i~przegląda dane swojego konta. \\
 		Klient & Użytkownik z~kontem klienta. Przegląda katalog, składa, zmienia, anuluje i~przegląda swoje rezerwacje, sprawdza zaległość i~rejestruje kartę płatniczą. Korzysta z~panelu klienta. \\
 		Sprzedawca & Członek personelu obsługujący ladę: rejestruje dostawy, sprzedaż i~ubytki, przygotowuje i~wydaje rezerwacje, odnotowuje wpłaty zaległości. Korzysta z~panelu administratora. \\
-		Właściciel & Specjalizacja sprzedawcy: ma wszystkie jego przypadki użycia, a~ponadto prowadzi produkty i~ceny, ustala plan dostawy, zarządza kontami i~rozlicza obciążenia kart. \\
+		Właściciel & Specjalizacja sprzedawcy: ma wszystkie jego przypadki użycia, a~ponadto prowadzi produkty i~ceny, ustala plan dostawy, koryguje stan produktów, zarządza kontami i~rozlicza obciążenia kart. \\
 		Czas & Zegar systemowy. O~ustalonych godzinach uruchamia przypadki użycia bez udziału użytkownika: oznaczenie rezerwacji nieodebranych o~18:00 i~wysyłkę przypomnień o~6:00. \\
 		Operator płatności & System zewnętrzny. Rejestruje kartę płatniczą klienta i~zwraca jej identyfikator (\ref{wf:karta}, \ref{wf:karta-ponowna}). \\
 		Serwer poczty e-mail & System zewnętrzny. Doręcza klientom wiadomości wysyłane przez system (\ref{wf:powiadomienia}, \ref{wf:reset-hasla}). \\
@@ -892,9 +900,10 @@ Dla czytelności przypadki użycia podzielono na cztery moduły: Konta użytkown
 	\pu{pu:produkty} & Zarządzaj produktami & Magazyn i~sprzedaż & \ref{wf:produkty} \\
 	\pu{pu:cena} & Zmień cenę produktu & Magazyn i~sprzedaż & \ref{wf:cena} \\
 	\pu{pu:plan} & Ustal plan dostawy & Rezerwacje & \ref{wf:plan-dostawy} \\
-	\pu{pu:konta} & Zarządzaj kontami & Konta użytkowników & \ref{wf:konta-sprzedawcow}, \ref{wf:dezaktywacja-klienta}, \ref{wf:konta-personelu} \\
+	\pu{pu:konta} & Zarządzaj kontami & Konta użytkowników & \ref{wf:konta-sprzedawcow}, \ref{wf:dezaktywacja-klienta}, \ref{wf:konta-personelu}, \ref{wf:anonimizacja} \\
 	\pu{pu:obciazenie} & Odnotuj wynik obciążenia karty & Rozliczenia & \ref{wf:obciazenie}, \ref{wf:proc-blokada} \\
 	\pu{pu:zestawienia} & Wyświetl zestawienia & Magazyn i~sprzedaż & \ref{wf:zestawienia} \\
+	\pu{pu:korekta} & Skoryguj stan produktu & Magazyn i~sprzedaż & \ref{wf:korekta} \\
 	\midrule
 	\multicolumn{4}{@{}l}{\textit{Czas}} \\
 	\pu{pu:nieodebrane} & Oznacz nieodebrane rezerwacje & Rezerwacje & \ref{wf:proc-nieodebrana}, \ref{wf:proc-blokada}, \ref{wf:powiadomienia} \\
@@ -908,6 +917,7 @@ Między przypadkami użycia występują następujące związki:
 	\item \ref{pu:wydanie} ,,Wydaj rezerwację'' \guillemotleft include\guillemotright{} \ref{pu:wyszukanie} ,,Wyszukaj klienta'' oraz \ref{pu:sprzedaz} ,,Zarejestruj sprzedaż'', ponieważ wydanie zaczyna się od odszukania klienta i~kończy zapisem sprzedaży;
 	\item \ref{pu:zmiana} ,,Zmień rezerwację'' i~\ref{pu:anulowanie} ,,Anuluj rezerwację'' \guillemotleft extend\guillemotright{} \ref{pu:moje} ,,Przeglądaj swoje rezerwacje'';
 	\item \ref{pu:przygotowanie} ,,Przygotuj rezerwację do odbioru'' \guillemotleft extend\guillemotright{} \ref{pu:lista} ,,Przeglądaj rezerwacje na dzień'';
+	\item \ref{pu:korekta} ,,Skoryguj stan produktu'' \guillemotleft extend\guillemotright{} \ref{pu:stan} ,,Przeglądaj stan i~plan dostawy'';
 	\item \ref{pu:wplata} ,,Odnotuj wpłatę zaległości'' \guillemotleft extend\guillemotright{} \ref{pu:wyszukanie} ,,Wyszukaj klienta'';
 	\item \ref{pu:reset} ,,Zresetuj hasło'' \guillemotleft extend\guillemotright{} \ref{pu:logowanie} ,,Zaloguj się'';
 	\item \ref{pu:konto} ,,Załóż konto klienta'' \guillemotleft extend\guillemotright{} \ref{pu:katalog} ,,Przeglądaj katalog'';
@@ -920,7 +930,7 @@ Diagramy przypadków użycia dla modułów przedstawiono na rys.~\ref{rys:pu-kon
 
 {\renewcommand{\rysunekwysokosc}{0.5\textheight}\diagramvp{rys:pu-rezerwacje}{Diagram przypadków użycia dla modułu Rezerwacje}{pu-modul-rezerwacje}{\ref{pu:katalog}, \ref{pu:zlozenie}--\ref{pu:moje}, \ref{pu:lista}--\ref{pu:wydanie}, \ref{pu:plan}, \ref{pu:nieodebrane}, \ref{pu:przypomnienie}; aktorzy: Klient-obserwator, Klient, Sprzedawca, Właściciel, Czas, Serwer poczty e-mail}}
 
-\diagramvp{rys:pu-magazyn}{Diagram przypadków użycia dla modułu Magazyn i~sprzedaż}{pu-modul-magazyn}{\ref{pu:dostawa}--\ref{pu:zamowienie}, \ref{pu:produkty}, \ref{pu:cena}, \ref{pu:zestawienia}; aktorzy: Sprzedawca, Właściciel}
+\diagramvp{rys:pu-magazyn}{Diagram przypadków użycia dla modułu Magazyn i~sprzedaż}{pu-modul-magazyn}{\ref{pu:dostawa}--\ref{pu:zamowienie}, \ref{pu:produkty}, \ref{pu:cena}, \ref{pu:zestawienia}, \ref{pu:korekta}; aktorzy: Sprzedawca, Właściciel}
 
 \diagramvp{rys:pu-rozliczenia}{Diagram przypadków użycia dla modułu Rozliczenia}{pu-modul-rozliczenia}{\ref{pu:zaleglosc}, \ref{pu:wyszukanie}, \ref{pu:wplata}, \ref{pu:obciazenie}; aktorzy: Klient, Sprzedawca, Właściciel}
 
@@ -951,10 +961,10 @@ Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każ
 	\item \textbf{Warunki początkowe:} użytkownik nie jest zalogowany.
 	\item \textbf{Przebieg podstawowy:}
 	\begin{enumerate}
-		\item System wyświetla formularz z~polami: imię, nazwisko, adres e-mail, numer telefonu, hasło i~powtórzenie hasła.
-		\item Użytkownik wypełnia formularz i~zatwierdza go.
-		\item System sprawdza, czy adres e-mail nie należy do innego konta i~czy hasło spełnia reguły z~\ref{wf:logowanie}.
-		\item System zapisuje konto z~rolą klienta; loginem jest adres e-mail.
+		\item System wyświetla formularz z~polami: imię, nazwisko, adres e-mail, numer telefonu, hasło i~powtórzenie hasła, informację o~przetwarzaniu danych osobowych oraz pole akceptacji regulaminu z~odnośnikiem do jego treści.
+		\item Użytkownik wypełnia formularz, akceptuje regulamin i~zatwierdza formularz.
+		\item System sprawdza, czy adres e-mail nie należy do innego konta, czy hasło spełnia reguły z~\ref{wf:logowanie} i~czy regulamin został zaakceptowany.
+		\item System zapisuje konto z~rolą klienta i~chwilą akceptacji regulaminu; loginem jest adres e-mail.
 		\item System przekierowuje użytkownika do formularza rejestracji karty operatora płatności.
 		\item Użytkownik podaje dane karty w~formularzu operatora.
 		\item Operator płatności zwraca identyfikator karty, a~system zapisuje go przy koncie.
@@ -963,13 +973,13 @@ Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każ
 	\end{enumerate}
 	\item \textbf{Przebiegi alternatywne:}
 	\begin{enumerate}[label=A\arabic*.]
-		\item W~kroku 3 adres e-mail należy już do innego konta albo hasło nie spełnia reguł. System wyświetla komunikat przy błędnym polu i~wraca do kroku 2 z~zachowanymi danymi, bez hasła.
+		\item W~kroku 3 adres e-mail należy już do innego konta, hasło nie spełnia reguł albo regulamin nie został zaakceptowany. System wyświetla komunikat przy błędnym polu i~wraca do kroku 2 z~zachowanymi danymi, bez hasła.
 		\item W~kroku 6 lub 7 rejestracja karty nie powiodła się albo użytkownik ją przerwał. Konto pozostaje zapisane bez karty, a~system informuje, że do czasu zarejestrowania karty nie można składać rezerwacji (\ref{wf:rejestracja}). Kartę klient rejestruje później w~danych konta (\ref{pu:karta}).
 	\end{enumerate}
 	\item \textbf{Warunki końcowe:} istnieje konto klienta z~identyfikatorem karty, a~klient otrzymał wiadomość e-mail z~potwierdzeniem.
 \end{itemize}
 
-\ekran{rys:ekran-pu02-konto}{Ekran zakładania konta klienta}{pu02-zalozenie-konta}{Zawartość ekranu: pola imię, nazwisko, adres e-mail, numer telefonu, hasło i~powtórzenie hasła, wymagania dotyczące hasła, przycisk ,,Załóż konto. Opis: p.~\ref{sec:pu-konto}, kroki 1--3 i~A1.}
+\ekran{rys:ekran-pu02-konto}{Ekran zakładania konta klienta}{pu02-zalozenie-konta}{Zawartość ekranu: pola imię, nazwisko, adres e-mail, numer telefonu, hasło i~powtórzenie hasła, wymagania dotyczące hasła, informacja o~przetwarzaniu danych, pole akceptacji regulaminu, przycisk ,,Załóż konto''. Opis: p.~\ref{sec:pu-konto}, kroki 1--3 i~A1.}
 % W wersji minimalnej i standardowej formularz operatora jest symulowany (2.5).
 
 \subsubsection{PU ,,Zaloguj się''}
@@ -996,7 +1006,7 @@ Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każ
 	\item \textbf{Warunki końcowe:} użytkownik jest zalogowany i~widzi panel swojej roli.
 \end{itemize}
 
-\ekran{rys:ekran-pu03-logowanie}{Ekran logowania do panelu klienta}{pu03-logowanie}{Zawartość ekranu: pola login i~hasło, przycisk ,,Zaloguj się, odnośniki ,,Nie pamiętam hasła i~,,Załóż konto, miejsce na komunikat o~niepowodzeniu. Opis: p.~\ref{sec:pu-logowanie}, kroki 1--2 i~A1--A2.}
+\ekran{rys:ekran-pu03-logowanie}{Ekran logowania do panelu klienta}{pu03-logowanie}{Zawartość ekranu: pola login i~hasło, przycisk ,,Zaloguj się'', odnośniki ,,Nie pamiętam hasła'' i~,,Załóż konto'', miejsce na komunikat o~niepowodzeniu. Opis: p.~\ref{sec:pu-logowanie}, kroki 1--2 i~A1--A2.}
 
 \subsubsection{PU ,,Zresetuj hasło''}
 \label{sec:pu-reset}
@@ -1027,9 +1037,9 @@ Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każ
 	\item \textbf{Warunki końcowe:} konto ma nowe hasło, a~link nie działa. Użytkownik nie jest zalogowany.
 \end{itemize}
 
-\ekran{rys:ekran-pu04-reset}{Ekran resetu hasła}{pu04-reset-hasla}{Zawartość ekranu: pole adres e-mail, przycisk ,,Wyślij link, komunikat o~wysłaniu wiadomości. Opis: p.~\ref{sec:pu-reset}, kroki 1--3.}
+\ekran{rys:ekran-pu04-reset}{Ekran resetu hasła}{pu04-reset-hasla}{Zawartość ekranu: pole adres e-mail, przycisk ,,Wyślij link'', komunikat o~wysłaniu wiadomości. Opis: p.~\ref{sec:pu-reset}, kroki 1--3.}
 
-\ekran{rys:ekran-pu04-nowe-haslo}{Ekran ustawienia nowego hasła}{pu04-nowe-haslo}{Zawartość ekranu: pola nowe hasło i~powtórzenie hasła, wymagania dotyczące hasła, przycisk ,,Zmień hasło. Opis: p.~\ref{sec:pu-reset}, kroki 5--8.}
+\ekran{rys:ekran-pu04-nowe-haslo}{Ekran ustawienia nowego hasła}{pu04-nowe-haslo}{Zawartość ekranu: pola nowe hasło i~powtórzenie hasła, wymagania dotyczące hasła, przycisk ,,Zmień hasło''. Opis: p.~\ref{sec:pu-reset}, kroki 5--8.}
 
 \subsection{Przypadki użycia dla klienta}
 \label{sec:pu-klient}
@@ -1066,7 +1076,7 @@ Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każ
 	\item \textbf{Warunki końcowe:} rezerwacja jest złożona, ilość dostępna do rezerwacji każdego produktu na ten dzień zmniejszyła się o~zarezerwowaną ilość, a~klient otrzymał potwierdzenie e-mail.
 \end{itemize}
 
-\ekran{rys:ekran-pu08-rezerwacja}{Ekran składania rezerwacji}{pu08-rezerwacja}{Zawartość ekranu: dzień odbioru; tabela produktów z~nazwą i~odmianą, ceną za kilogram, ilością dostępną do rezerwacji i~polem ilości; łączna masa z~limitem 20~kg, orientacyjna wartość, przycisk ,,Zarezerwuj. Opis: p.~\ref{sec:pu-zlozenie}, kroki 2--5 i~A3.}
+\ekran{rys:ekran-pu08-rezerwacja}{Ekran składania rezerwacji}{pu08-rezerwacja}{Zawartość ekranu: dzień odbioru; tabela produktów z~nazwą i~odmianą, ceną za kilogram, ilością dostępną do rezerwacji i~polem ilości; łączna masa z~limitem 20~kg, orientacyjna wartość, przycisk ,,Zarezerwuj''. Opis: p.~\ref{sec:pu-zlozenie}, kroki 2--5 i~A3.}
 
 \subsubsection{PU ,,Anuluj rezerwację''}
 \label{sec:pu-anulowanie}
@@ -1094,9 +1104,9 @@ Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każ
 	\item \textbf{Warunki końcowe:} rezerwacja jest anulowana bez opłaty, a~jej ilości są znów dostępne do rezerwacji.
 \end{itemize}
 
-\ekran{rys:ekran-pu11-moje-rezerwacje}{Ekran listy rezerwacji klienta}{pu11-moje-rezerwacje}{Zawartość ekranu: rezerwacje bieżące i~zakończone z~dniem odbioru, stanem i~orientacyjną wartością, polecenia ,,Zmień i~,,Anuluj przy rezerwacjach złożonych przed terminem. Opis: p.~\ref{sec:pu-anulowanie}, zdarzenie inicjujące i~krok 6.}
+\ekran{rys:ekran-pu11-moje-rezerwacje}{Ekran listy rezerwacji klienta}{pu11-moje-rezerwacje}{Zawartość ekranu: rezerwacje bieżące i~zakończone z~dniem odbioru, stanem i~orientacyjną wartością, polecenia ,,Zmień'' i~,,Anuluj'' przy rezerwacjach złożonych przed terminem. Opis: p.~\ref{sec:pu-anulowanie}, zdarzenie inicjujące i~krok 6.}
 
-\ekran{rys:ekran-pu10-anulowanie}{Ekran potwierdzenia anulowania rezerwacji}{pu10-anulowanie}{Zawartość ekranu: dzień odbioru, pozycje z~ilościami, informacja o~terminie bezpłatnego anulowania, przyciski ,,Anuluj rezerwację i~,,Wróć. Opis: p.~\ref{sec:pu-anulowanie}, kroki 1--2.}
+\ekran{rys:ekran-pu10-anulowanie}{Ekran potwierdzenia anulowania rezerwacji}{pu10-anulowanie}{Zawartość ekranu: dzień odbioru, pozycje z~ilościami, informacja o~terminie bezpłatnego anulowania, przyciski ,,Anuluj rezerwację'' i~,,Wróć''. Opis: p.~\ref{sec:pu-anulowanie}, kroki 1--2.}
 
 \subsubsection{PU ,,Zarejestruj kartę płatniczą''}
 \label{sec:pu-karta}
@@ -1123,7 +1133,7 @@ Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każ
 	\item \textbf{Warunki końcowe:} konto ma zarejestrowaną kartę z~nowym identyfikatorem, a~kolejne obciążenia zaległości dotyczą tej karty.
 \end{itemize}
 
-\ekran{rys:ekran-pu13-karta}{Ekran rejestracji karty płatniczej w~danych konta}{pu13-rejestracja-karty}{Zawartość ekranu: dane konta, informacja ,,karta zarejestrowana albo ,,brak karty, przycisk ,,Zarejestruj kartę albo ,,Zmień kartę, miejsce na komunikat o~wyniku. Opis: p.~\ref{sec:pu-karta}, kroki 1--2 i~6.}
+\ekran{rys:ekran-pu13-karta}{Ekran rejestracji karty płatniczej w~danych konta}{pu13-rejestracja-karty}{Zawartość ekranu: dane konta, informacja ,,karta zarejestrowana'' albo ,,brak karty'', przycisk ,,Zarejestruj kartę'' albo ,,Zmień kartę'', miejsce na komunikat o~wyniku. Opis: p.~\ref{sec:pu-karta}, kroki 1--2 i~6.}
 
 \subsection{Przypadki użycia dla sprzedawcy}
 \label{sec:pu-sprzedawca}
@@ -1154,7 +1164,7 @@ Przypadki użycia sprzedawcy realizuje również właściciel (tab.~\ref{tab:akt
 	\item \textbf{Warunki końcowe:} dostawa jest zapisana, a~stan produktów zwiększył się o~dostarczone ilości.
 \end{itemize}
 
-\ekran{rys:ekran-pu14-dostawa}{Ekran przyjęcia dostawy}{pu14-przyjecie-dostawy}{Zawartość ekranu: dzień dostawy; tabela produktów z~ilością planowaną, polem ilości dostarczonej i~różnicą, wyróżnienie produktów dostarczonych w~ilości mniejszej od zarezerwowanej, przycisk ,,Zapisz dostawę. Opis: p.~\ref{sec:pu-dostawa}, kroki 1--4 i~A2.}
+\ekran{rys:ekran-pu14-dostawa}{Ekran przyjęcia dostawy}{pu14-przyjecie-dostawy}{Zawartość ekranu: dzień dostawy; tabela produktów z~ilością planowaną, polem ilości dostarczonej i~różnicą, wyróżnienie produktów dostarczonych w~ilości mniejszej od zarezerwowanej, przycisk ,,Zapisz dostawę''. Opis: p.~\ref{sec:pu-dostawa}, kroki 1--4 i~A2.}
 
 \subsubsection{PU ,,Zarejestruj sprzedaż''}
 \label{sec:pu-sprzedaz}
@@ -1172,18 +1182,18 @@ Przypadki użycia sprzedawcy realizuje również właściciel (tab.~\ref{tab:akt
 		\item System pokazuje cenę obowiązującą w~chwili sprzedaży, wartość pozycji i~sumę sprzedaży.
 		\item Kroki 2--3 powtarza się dla kolejnych produktów.
 		\item Sprzedawca zatwierdza sprzedaż.
-		\item System w~jednej transakcji blokuje wiersze sprzedawanych produktów, sprawdza, czy żaden nie spadnie poniżej zera, zapisuje sprzedaż z~cenami pozycji i~zmniejsza stany.
+		\item System w~jednej transakcji blokuje wiersze sprzedawanych produktów i~sprawdza, czy masa każdego z~nich nie przekracza ilości dostępnej przy ladzie, czyli stanu pomniejszonego o~ilości z~niewydanych rezerwacji na bieżący dzień. Następnie zapisuje sprzedaż z~cenami pozycji i~zmniejsza stany.
 		\item System wyświetla kwotę do zapłaty. Klient płaci poza systemem.
 	\end{enumerate}
 	\item \textbf{Przebiegi alternatywne:}
 	\begin{enumerate}[label=A\arabic*.]
-		\item W~kroku 6 masa produktu przekracza jego stan. System wycofuje transakcję, wyświetla bieżący stan produktu i~wraca do kroku 2 z~zachowanymi pozycjami.
+		\item W~kroku 6 masa produktu przekracza ilość dostępną przy ladzie. System wycofuje transakcję, wyświetla stan produktu i~ilość zarezerwowaną na dziś, po czym wraca do kroku 2 z~zachowanymi pozycjami.
 		\item Przed krokiem 5 klient rezygnuje z~zakupu. Sprzedawca porzuca formularz, a~system niczego nie zapisuje.
 	\end{enumerate}
 	\item \textbf{Warunki końcowe:} sprzedaż jest zapisana z~cenami z~chwili sprzedaży, a~stany produktów zmniejszyły się o~sprzedane masy.
 \end{itemize}
 
-\ekran{rys:ekran-pu15-sprzedaz}{Ekran rejestracji sprzedaży}{pu15-sprzedaz}{Zawartość ekranu: wybór produktu i~pole masy; lista pozycji z~produktem, masą, ceną za kilogram i~wartością; suma do zapłaty, przycisk ,,Zatwierdź sprzedaż. Opis: p.~\ref{sec:pu-sprzedaz}, kroki 1--7.}
+\ekran{rys:ekran-pu15-sprzedaz}{Ekran rejestracji sprzedaży}{pu15-sprzedaz}{Zawartość ekranu: wybór produktu i~pole masy; lista pozycji z~produktem, masą, ceną za kilogram i~wartością; suma do zapłaty, przycisk ,,Zatwierdź sprzedaż''. Opis: p.~\ref{sec:pu-sprzedaz}, kroki 1--7.}
 
 \subsubsection{PU ,,Przygotuj rezerwację do odbioru''}
 \label{sec:pu-przygotowanie}
@@ -1209,9 +1219,9 @@ Przypadki użycia sprzedawcy realizuje również właściciel (tab.~\ref{tab:akt
 	\item \textbf{Warunki końcowe:} rezerwacja jest przygotowana do odbioru, a~przy każdej pozycji zapisano odważoną masę.
 \end{itemize}
 
-\ekran{rys:ekran-pu19-lista}{Ekran listy rezerwacji na dzień}{pu19-rezerwacje-na-dzien}{Zawartość ekranu: wybór dnia; rezerwacje z~klientem, pozycjami i~stanem, polecenia ,,Przygotuj i~,,Wydaj. Opis: p.~\ref{sec:pu-przygotowanie}, zdarzenie inicjujące i~krok 5.}
+\ekran{rys:ekran-pu19-lista}{Ekran listy rezerwacji na dzień}{pu19-rezerwacje-na-dzien}{Zawartość ekranu: wybór dnia; rezerwacje z~klientem, pozycjami i~stanem, polecenia ,,Przygotuj'' i~,,Wydaj''. Opis: p.~\ref{sec:pu-przygotowanie}, zdarzenie inicjujące i~krok 5.}
 
-\ekran{rys:ekran-pu20-przygotowanie}{Ekran przygotowania rezerwacji do odbioru}{pu20-przygotowanie-rezerwacji}{Zawartość ekranu: klient i~dzień odbioru; pozycje z~zarezerwowaną ilością i~polem odważonej masy, przycisk ,,Przygotowana. Opis: p.~\ref{sec:pu-przygotowanie}, kroki 1--4 i~A1.}
+\ekran{rys:ekran-pu20-przygotowanie}{Ekran przygotowania rezerwacji do odbioru}{pu20-przygotowanie-rezerwacji}{Zawartość ekranu: klient i~dzień odbioru; pozycje z~zarezerwowaną ilością i~polem odważonej masy, przycisk ,,Przygotowana''. Opis: p.~\ref{sec:pu-przygotowanie}, kroki 1--4 i~A1.}
 
 \subsubsection{PU ,,Wydaj rezerwację''}
 \label{sec:pu-wydanie}
@@ -1229,18 +1239,19 @@ Przypadki użycia sprzedawcy realizuje również właściciel (tab.~\ref{tab:akt
 		\item Sprzedawca wybiera polecenie ,,Wydaj''.
 		\item System wyświetla pozycje z~odważonymi masami, cenami obowiązującymi w~dniu odbioru i~kwotą do zapłaty.
 		\item Klient płaci poza systemem, a~sprzedawca potwierdza wydanie.
-		\item System w~jednej transakcji rejestruje wydanie jako sprzedaż, zmniejsza stany produktów i~zmienia stan rezerwacji na odebrana.
+		\item System w~jednej transakcji blokuje wiersz rezerwacji, sprawdza, czy jest ona nadal złożona lub przygotowana, rejestruje wydanie jako sprzedaż, zmniejsza stany produktów i~zmienia stan rezerwacji na odebrana.
 	\end{enumerate}
 	\item \textbf{Przebiegi alternatywne:}
 	\begin{enumerate}[label=A\arabic*.]
 		\item W~kroku 2 rezerwacja jest złożona, ale nieprzygotowana. Sprzedawca waży towar przy kliencie i~wpisuje odważone masy, tak jak w~\ref{pu:przygotowanie}, po czym przechodzi do kroku 4.
 		\item W~kroku 2 klient ma zaległość. System wyświetla jej kwotę, a~sprzedawca może odnotować wpłatę (\ref{pu:wplata}) przed wydaniem albo po nim.
 		\item W~kroku 5 klient odmawia zapłaty. Sprzedawca nie potwierdza wydania, a~rezerwacja pozostaje w~dotychczasowym stanie.
+		\item W~kroku 6 minęła 18:00 i~rezerwacja jest już oznaczona jako nieodebrana (\ref{pu:nieodebrane}). System wycofuje transakcję i~wyświetla komunikat; towar można sprzedać klientowi jako zwykłą sprzedaż (\ref{pu:sprzedaz}).
 	\end{enumerate}
 	\item \textbf{Warunki końcowe:} rezerwacja jest odebrana, a~wydany towar zapisano jako sprzedaż.
 \end{itemize}
 
-\ekran{rys:ekran-pu21-wydanie}{Ekran wydania rezerwacji}{pu21-wydanie-rezerwacji}{Zawartość ekranu: klient i~jego zaległość; pozycje z~odważoną masą, ceną z~dnia odbioru i~wartością; kwota do zapłaty, przycisk ,,Wydaj, polecenie odnotowania wpłaty zaległości. Opis: p.~\ref{sec:pu-wydanie}, kroki 2--6 i~A1--A2.}
+\ekran{rys:ekran-pu21-wydanie}{Ekran wydania rezerwacji}{pu21-wydanie-rezerwacji}{Zawartość ekranu: klient i~jego zaległość; pozycje z~odważoną masą, ceną z~dnia odbioru i~wartością; kwota do zapłaty, przycisk ,,Wydaj'', polecenie odnotowania wpłaty zaległości. Opis: p.~\ref{sec:pu-wydanie}, kroki 2--6 i~A1--A2.}
 
 \subsection{Przypadki użycia dla właściciela}
 \label{sec:pu-wlasciciel}
@@ -1256,20 +1267,20 @@ Przypadki użycia sprzedawcy realizuje również właściciel (tab.~\ref{tab:akt
 	\item \textbf{Warunki początkowe:} właściciel jest zalogowany.
 	\item \textbf{Przebieg podstawowy:}
 	\begin{enumerate}
-		\item System wyświetla dla każdego produktu w~ofercie i~każdego z~siedmiu kolejnych dni plan dostawy, ilość zarezerwowaną i~ilość dostępną do rezerwacji. Plan dnia, którego właściciel jeszcze nie zmieniał, równa się standardowej dziennej ilości produktu.
+		\item System wyświetla dla każdego produktu w~ofercie i~każdego z~siedmiu kolejnych dni plan dostawy, ilość na ladę, ilość zarezerwowaną i~ilość dostępną do rezerwacji. Plan dnia, którego właściciel jeszcze nie zmieniał, równa się standardowej dziennej ilości produktu.
 		\item Właściciel zmienia plan wybranego produktu na wybrany dzień i~zatwierdza zmianę.
-		\item System w~jednej transakcji blokuje wiersz planu, sprawdza, czy nowy plan nie jest mniejszy od ilości zarezerwowanej, i~zapisuje go.
+		\item System w~jednej transakcji blokuje wiersz planu, sprawdza, czy nowy plan nie jest mniejszy od sumy ilości na ladę i~ilości zarezerwowanej, i~zapisuje go.
 		\item System wyświetla nową ilość dostępną do rezerwacji, którą od tej chwili pokazuje też katalog.
 	\end{enumerate}
 	\item \textbf{Przebiegi alternatywne:}
 	\begin{enumerate}[label=A\arabic*.]
-		\item W~kroku 3 nowy plan jest mniejszy od ilości zarezerwowanej. System wyświetla ilość zarezerwowaną i~nie zapisuje zmiany.
+		\item W~kroku 3 nowy plan jest mniejszy od sumy ilości na ladę i~ilości zarezerwowanej. System wyświetla obie ilości i~nie zapisuje zmiany.
 		\item W~kroku 2 właściciel wybrał dzień, dla którego przyjmowanie rezerwacji już się zakończyło. System nie pozwala zmienić planu, ponieważ zamówienie u~dostawcy na ten dzień zostało złożone.
 	\end{enumerate}
-	\item \textbf{Warunki końcowe:} plan dostawy jest zapisany, a~ilość dostępna do rezerwacji równa się planowi pomniejszonemu o~ilość zarezerwowaną.
+	\item \textbf{Warunki końcowe:} plan dostawy jest zapisany, a~ilość dostępna do rezerwacji równa się planowi pomniejszonemu o~ilość na ladę i~ilość zarezerwowaną.
 \end{itemize}
 
-\ekran{rys:ekran-pu26-plan}{Ekran planu dostawy}{pu26-plan-dostawy}{Zawartość ekranu: tabela produktów na siedem kolejnych dni z~planem, ilością zarezerwowaną i~dostępną; pole zmiany planu, oznaczenie dni zamkniętych, miejsce na komunikat. Opis: p.~\ref{sec:pu-plan}, kroki 1--4 i~A1--A2.}
+\ekran{rys:ekran-pu26-plan}{Ekran planu dostawy}{pu26-plan-dostawy}{Zawartość ekranu: tabela produktów na siedem kolejnych dni z~planem, ilością na ladę, ilością zarezerwowaną i~dostępną; pole zmiany planu, oznaczenie dni zamkniętych, miejsce na komunikat. Opis: p.~\ref{sec:pu-plan}, kroki 1--4 i~A1--A2.}
 
 \subsection{Przypadki użycia uruchamiane przez czas}
 \label{sec:pu-czas}
@@ -1282,13 +1293,13 @@ Przypadki użycia sprzedawcy realizuje również właściciel (tab.~\ref{tab:akt
 	\item \textbf{Przypadek użycia:} \ref{pu:nieodebrane}.
 	\item \textbf{Aktor:} czas; uczestniczy serwer poczty e-mail.
 	\item \textbf{Wymagania:} \ref{wf:proc-nieodebrana}, \ref{wf:proc-blokada}, \ref{wf:powiadomienia}.
-	\item \textbf{Zdarzenie inicjujące:} godzina 18:00, czyli zamknięcie sklepu.
-	\item \textbf{Warunki początkowe:} na bieżący dzień istnieją rezerwacje złożone lub przygotowane do odbioru.
+	\item \textbf{Zdarzenie inicjujące:} godzina 18:00, czyli zamknięcie sklepu, albo uruchomienie komputera.
+	\item \textbf{Warunki początkowe:} minęła godzina 18:00 bieżącego dnia albo system uruchomiono po przerwie w~pracy.
 	\item \textbf{Przebieg podstawowy:}
 	\begin{enumerate}
-		\item System wybiera rezerwacje złożone i~przygotowane do odbioru z~dniem odbioru równym bieżącemu dniowi.
+		\item System wybiera rezerwacje złożone i~przygotowane do odbioru, których termin odbioru minął: z~dniem odbioru wcześniejszym niż bieżący dzień albo równym mu, jeśli jest już po 18:00. Blokuje wiersze tych rezerwacji (p.~\ref{sec:wspolbieznosc}).
 		\item Dla każdej z~nich system zmienia stan na nieodebrana.
-		\item System liczy wartość rezerwacji z~zarezerwowanych ilości i~cen obowiązujących w~bieżącym dniu, a~opłatę za nieodebranie jako 10\% tej wartości, zaokrągloną do 1~gr; przy wartości 80~zł opłata wynosi 8~zł.
+		\item System liczy wartość rezerwacji z~zarezerwowanych ilości i~cen obowiązujących w~dniu odbioru, a~opłatę za nieodebranie jako 10\% tej wartości, zaokrągloną do 1~gr; przy wartości 80~zł opłata wynosi 8~zł.
 		\item System dopisuje opłatę do zaległości klienta.
 		\item Jeśli zaległość klienta przekroczyła 100~zł, system blokuje mu składanie nowych rezerwacji.
 		\item System wysyła klientowi wiadomość e-mail o~naliczonej opłacie, a~przy blokadzie także o~niej.
@@ -1298,7 +1309,7 @@ Przypadki użycia sprzedawcy realizuje również właściciel (tab.~\ref{tab:akt
 		\item W~kroku 1 nie ma takich rezerwacji. Przypadek użycia kończy się bez zmian.
 		\item W~kroku 6 wysłanie wiadomości nie powiodło się. Stan rezerwacji i~opłata pozostają zapisane, a~klient widzi opłatę w~panelu klienta (\ref{pu:zaleglosc}).
 	\end{enumerate}
-	\item \textbf{Warunki końcowe:} żadna rezerwacja z~bieżącego dnia nie jest już złożona ani przygotowana, a~opłaty za nieodebrane rezerwacje powiększyły zaległości klientów.
+	\item \textbf{Warunki końcowe:} żadna rezerwacja, której termin odbioru minął, nie jest już złożona ani przygotowana, a~opłaty za nieodebrane rezerwacje powiększyły zaległości klientów.
 \end{itemize}
 
 \subsection{Diagramy czynności wybranych przypadków użycia}
@@ -1354,6 +1365,7 @@ Encje wyznaczono z~opisu świata rzeczywistego (p.~\ref{sec:system}) i~wymagań 
 		Dostawa (\texttt{dostawa}) & \texttt{dzien} & przyjęcie towaru danego dnia \\
 		Pozycja dostawy (\texttt{pozycja\_\allowbreak{}dostawy}) & (\texttt{dostawa\_\allowbreak{}id}, \texttt{produkt\_\allowbreak{}id}) & dostarczona ilość produktu \\
 		Ubytek (\texttt{ubytek}) & -- & wyrzucona masa produktu \\
+		Korekta stanu (\texttt{korekta\_\allowbreak{}stanu}) & -- & różnica między masą zważoną przy przeliczeniu towaru a~stanem z~ewidencji \\
 		Rezerwacja (\texttt{rezerwacja}) & (\texttt{aktywny\_\allowbreak{}klient\_\allowbreak{}id}, \texttt{dzien\_\allowbreak{}odbioru}) & rezerwacja klienta na dzień odbioru \\
 		Pozycja rezerwacji (\texttt{pozycja\_\allowbreak{}rezerwacji}) & (\texttt{rezerwacja\_\allowbreak{}id}, \texttt{produkt\_\allowbreak{}id}) & zarezerwowana ilość produktu \\
 		Sprzedaż (\texttt{sprzedaz}) & \texttt{rezerwacja\_\allowbreak{}id} & sprzedaż przy ladzie lub wydanie rezerwacji \\
@@ -1381,6 +1393,7 @@ Związki między encjami i~ich liczności zestawiono w~tab.~\ref{tab:zwiazki}. L
 		Dostawa & Pozycja dostawy & 1 : 1..* & produkty w~dostawie \\
 		Produkt & Pozycja dostawy & 1 : 0..* & \\
 		Produkt & Ubytek & 1 : 0..* & \\
+		Produkt & Korekta stanu & 1 : 0..* & \\
 		Profil klienta & Rezerwacja & 1 : 0..* & rezerwacje klienta \\
 		Rezerwacja & Pozycja rezerwacji & 1 : 1..* & produkty w~rezerwacji \\
 		Produkt & Pozycja rezerwacji & 1 : 0..* & \\
@@ -1388,12 +1401,12 @@ Związki między encjami i~ich liczności zestawiono w~tab.~\ref{tab:zwiazki}. L
 		Sprzedaż & Pozycja sprzedaży & 1 : 0..* & sprzedane produkty; wydanie rezerwacji odważonej na 0~kg nie ma pozycji \\
 		Produkt & Pozycja sprzedaży & 1 : 0..* & \\
 		Profil klienta & Rozliczenie zaległości & 1 : 0..* & wpłaty i~obciążenia karty \\
-		Konto & Dostawa, Ubytek, Sprzedaż, Rozliczenie zaległości & 1 : 0..* & członek personelu, który zarejestrował operację \\
+		Konto & Dostawa, Ubytek, Korekta stanu, Sprzedaż, Rozliczenie zaległości & 1 : 0..* & członek personelu, który zarejestrował operację \\
 		\bottomrule
 	\end{tabularx}
 \end{table}
 
-Plan dostawy nie ma klucza obcego do rezerwacji. Ilość zarezerwowaną produktu na dzień system wylicza jako sumę pozycji rezerwacji z~tym produktem i~dniem odbioru, z~pominięciem rezerwacji anulowanych, a~ilość dostępną do rezerwacji jako plan pomniejszony o~tę sumę.
+Plan dostawy nie ma klucza obcego do rezerwacji. Ilość zarezerwowaną produktu na dzień system wylicza jako sumę pozycji rezerwacji z~tym produktem i~dniem odbioru, z~pominięciem rezerwacji anulowanych, a~ilość dostępną do rezerwacji jako plan pomniejszony o~ilość na ladę z~tabeli produktu i~o~tę sumę.
 
 \subsection{Model konceptualny (ERD)}
 \label{sec:erd-konceptualny}
@@ -1409,25 +1422,26 @@ Model logiczny (rys.~\ref{rys:erd-logiczny}) zawiera tabele z~atrybutami, typami
 
 \diagramvp{rys:erd-logiczny}{Model logiczny bazy danych (ERD, notacja Crow's Foot)}{erd-logiczny}{diagram wykonany w~Visual Paradigm na podstawie \texttt{baza/schema.sql} (instrukcja w~\texttt{baza/README.md}); tabele z~atrybutami, typami, PK, FK i~liczności}
 
-Model jest w~trzeciej postaci normalnej:
+Model jest w~trzeciej postaci normalnej. Postaci normalne sprawdzono względem wszystkich kluczy kandydujących, a~nie tylko sztucznych kluczy \texttt{id}, ponieważ sztuczny klucz jednokolumnowy sam w~sobie nie gwarantuje 2NF ani 3NF:
 \begin{itemize}
+	\sloppy
 	\item \textbf{1NF.} Każdy atrybut przechowuje jedną wartość. Pozycje dostaw, rezerwacji i~sprzedaży są osobnymi wierszami, a~nie listą w~jednym polu. Nazwę i~odmianę produktu przechowuje się w~osobnych atrybutach.
-	\item \textbf{2NF.} Klucze główne są jednokolumnowe, więc żaden atrybut nie zależy od części klucza. W~tabelach pozycji klucz naturalny, np. (\texttt{rezerwacja\_\allowbreak{}id}, \texttt{produkt\_\allowbreak{}id}), jest ograniczeniem unikalności, a~ilość zależy od całej pary.
-	\item \textbf{3NF.} Atrybuty spoza klucza nie zależą od innych atrybutów spoza klucza. Dane klienta przechowuje tylko konto i~profil klienta, a~nie rezerwacja. Cena produktu nie jest atrybutem produktu, lecz osobnej tabeli z~datą obowiązywania. Ilości planowanej nie kopiuje się do pozycji dostawy, bo wynika z~planu dostawy na ten dzień.
+	\item \textbf{2NF.} Tabele pozycji mają złożone klucze kandydujące, np. (\texttt{rezerwacja\_\allowbreak{}id}, \texttt{produkt\_\allowbreak{}id}) w~\texttt{pozycja\_\allowbreak{}rezerwacji}. Ilość i~masa odważona zależą od całej pary: ta sama rezerwacja ma różne ilości różnych produktów, a~ten sam produkt różne ilości w~różnych rezerwacjach. Atrybuty zależne od samego produktu, np. nazwa i~cena, oraz od samej rezerwacji, np. dzień odbioru i~stan, przechowują tabele \texttt{produkt}, \texttt{cena\_\allowbreak{}produktu} i~\texttt{rezerwacja}. Tak samo zbudowano klucz planu dostawy, czyli produkt i~dzień, oraz klucz ceny produktu, czyli produkt i~dzień, od którego cena obowiązuje.
+	\item \textbf{3NF.} Żaden atrybut spoza klucza nie zależy od innego atrybutu spoza klucza. Dane klienta przechowuje tylko konto i~profil klienta, a~nie rezerwacja, bo zależą od klienta, a~nie od rezerwacji. Cena produktu nie jest atrybutem produktu, lecz osobnej tabeli z~datą obowiązywania, bo zależy od pary produkt i~dzień. Ilości planowanej nie kopiuje się do pozycji dostawy, bo zależy od produktu i~dnia, które wyznacza plan dostawy.
 \end{itemize}
 
 Kilka atrybutów pozornie powiela inne dane, ale wynika z~reguł sklepu. Cena w~pozycji sprzedaży jest ceną z~chwili sprzedaży i~nie zmienia się po zmianie ceny produktu (\ref{wf:sprzedaz}). Opłata za nieodebranie jest zapisywana, ponieważ liczy się ją raz, o~18:00 w~dniu odbioru, z~ówczesnych cen (\ref{wf:proc-nieodebrana}). Atrybut \texttt{aktywny\_\allowbreak{}klient\_\allowbreak{}id} rezerwacji jest wyliczany przez bazę ze stanu i~klienta; służy tylko do wymuszenia jednej niezakończonej rezerwacji klienta na dzień, ponieważ MySQL nie obsługuje indeksów unikalnych z~warunkiem.
 
-Stanu produktu i~zaległości klienta nie przechowuje się, aby nie mogły rozejść się z~ewidencją. Stan produktu to suma dostarczonych ilości pomniejszona o~sumę sprzedanych mas i~ubytków, a~zaległość to suma opłat za nieodebranie pomniejszona o~sumę skutecznych rozliczeń. Przy sprzedaży i~ubytku aplikacja blokuje wiersz produktu (p.~\ref{sec:wspolbieznosc}), aby dwie jednoczesne operacje nie obniżyły stanu poniżej zera. Jeśli przy danych z~kilku lat liczenie tych sum okaże się zbyt wolne (\ref{wn:wspolbieznosc}), można dodać do produktu i~profilu klienta atrybuty z~bieżącą wartością, aktualizowane w~tych samych transakcjach.
+Stanu produktu i~zaległości klienta nie przechowuje się, aby nie mogły rozejść się z~ewidencją. Stan produktu to suma dostarczonych ilości pomniejszona o~sumę sprzedanych mas i~ubytków, powiększona o~sumę korekt stanu (dodatnich i~ujemnych), a~zaległość to suma opłat za nieodebranie pomniejszona o~sumę skutecznych rozliczeń. Przy sprzedaży, ubytku i~korekcie stanu aplikacja blokuje wiersz produktu (p.~\ref{sec:wspolbieznosc}), aby dwie jednoczesne operacje nie obniżyły stanu poniżej zera. Jeśli przy danych z~kilku lat liczenie tych sum okaże się zbyt wolne (\ref{wn:wspolbieznosc}), można dodać do produktu i~profilu klienta atrybuty z~bieżącą wartością, aktualizowane w~tych samych transakcjach.
 
-Reguł, których nie da się zapisać jako ograniczenia jednej tabeli, pilnuje aplikacja w~transakcji: łączna masa rezerwacji do 20~kg, ilość dostępna do rezerwacji, plan nie mniejszy od ilości zarezerwowanej, termin 18:00 i~jedna rola na konto.
+Reguł, których nie da się zapisać jako ograniczenia jednej tabeli, pilnuje aplikacja w~transakcji: łączna masa rezerwacji do 20~kg, ilość dostępna do rezerwacji, plan nie mniejszy od sumy ilości na ladę i~ilości zarezerwowanej, sprzedaż nie większa od stanu pomniejszonego o~niewydane rezerwacje na dany dzień, termin 18:00 i~jedna rola na konto.
 
 \subsection{Diagram klas modeli ORM}
 \label{sec:diagram-klas}
 
 Diagram klas (rys.~\ref{rys:diagram-klas}) przedstawia klasy modeli Django odpowiadające tabelom z~p.~\ref{sec:slownik}, z~atrybutami, typami pól Django i~asocjacjami odpowiadającymi kluczom obcym. Klasa \texttt{User} pochodzi z~modułu \texttt{django.\allowbreak contrib.\allowbreak auth}. Stany rezerwacji przedstawia się jako typ wyliczeniowy.
 
-\diagramvp{rys:diagram-klas}{Diagram klas modeli ORM}{klasy-modele-orm}{klasy modeli Django (\texttt{Produkt}, \texttt{CenaProduktu}, \texttt{PlanDostawy}, \texttt{Dostawa}, \texttt{PozycjaDostawy}, \texttt{Ubytek}, \texttt{ProfilKlienta}, \texttt{Rezerwacja}, \texttt{PozycjaRezerwacji}, \texttt{Sprzedaz}, \texttt{PozycjaSprzedazy}, \texttt{RozliczenieZaleglosci}) oraz \texttt{User} i~\texttt{Group} z~Django; po implementacji odtworzyć z~kodu}
+\diagramvp{rys:diagram-klas}{Diagram klas modeli ORM}{klasy-modele-orm}{klasy modeli Django (\texttt{Produkt}, \texttt{CenaProduktu}, \texttt{PlanDostawy}, \texttt{Dostawa}, \texttt{PozycjaDostawy}, \texttt{Ubytek}, \texttt{KorektaStanu}, \texttt{ProfilKlienta}, \texttt{Rezerwacja}, \texttt{PozycjaRezerwacji}, \texttt{Sprzedaz}, \texttt{PozycjaSprzedazy}, \texttt{RozliczenieZaleglosci}) oraz \texttt{User} i~\texttt{Group} z~Django; po implementacji odtworzyć z~kodu}
 
 \subsection{Słownik danych (definicje obiektów)}
 \label{sec:slownik}
@@ -1456,7 +1470,7 @@ Słownik danych (tab.~\ref{tab:slownik}) definiuje wszystkie tabele i~atrybuty m
 	\texttt{username} & \texttt{VARCHAR(150)} & UNIQUE & login; u~klienta adres e-mail \\
 	\texttt{first\_\allowbreak{}name} & \texttt{VARCHAR(150)} & NOT NULL & imię \\
 	\texttt{last\_\allowbreak{}name} & \texttt{VARCHAR(150)} & NOT NULL & nazwisko \\
-	\texttt{email} & \texttt{VARCHAR(254)} & NOT NULL & adres e-mail; unikalność sprawdza formularz \\
+	\texttt{email} & \texttt{VARCHAR(254)} & NOT NULL & adres e-mail; u~klienta unikalny, bo równy unikalnemu loginowi, u~personelu unikalność sprawdza formularz \\
 	\texttt{is\_\allowbreak{}staff} & \texttt{BOOL} & NOT NULL & dostęp do panelu administratora (personel) \\
 	\texttt{is\_\allowbreak{}active} & \texttt{BOOL} & NOT NULL & konto aktywne; fałsz po dezaktywacji \\
 	\texttt{date\_\allowbreak{}joined} & \texttt{DATETIME(6)} & NOT NULL & chwila założenia konta \\
@@ -1476,7 +1490,9 @@ Słownik danych (tab.~\ref{tab:slownik}) definiuje wszystkie tabele i~atrybuty m
 	\midrule
 	\texttt{uzytkownik\_\allowbreak{}id} & \texttt{INT} & PK, FK auth\_user & konto klienta (związek 1:1) \\
 	\texttt{telefon} & \texttt{VARCHAR(20)} & NOT NULL, indeks & numer telefonu \\
-	\texttt{identyfikator\_\allowbreak{}karty} & \texttt{VARCHAR(64)} & NULL, UNIQUE & identyfikator karty nadany przez operatora płatności; pusty, dopóki karty nie zarejestrowano \\
+	\texttt{identyfikator\_\allowbreak{}karty} & \texttt{VARCHAR(64)} & NULL, UNIQUE & identyfikator karty nadany przez operatora płatności; pusty, dopóki karty nie zarejestrowano, i~po anonimizacji \\
+	\texttt{regulamin\_\allowbreak{}zaakceptowano} & \texttt{DATETIME(6)} & NOT NULL & chwila akceptacji regulaminu przy zakładaniu konta \\
+	\texttt{zanonimizowano} & \texttt{DATETIME(6)} & NULL & chwila anonimizacji konta; pusta, dopóki konto zawiera dane osobowe \\
 	\midrule
 	\multicolumn{4}{@{}l}{\texttt{produkt} --- produkt w~asortymencie} \\
 	\midrule
@@ -1484,6 +1500,7 @@ Słownik danych (tab.~\ref{tab:slownik}) definiuje wszystkie tabele i~atrybuty m
 	\texttt{nazwa} & \texttt{VARCHAR(60)} & NOT NULL & nazwa, np. ziemniaki \\
 	\texttt{odmiana} & \texttt{VARCHAR(60)} & NOT NULL, domyślnie pusta & odmiana; para (nazwa, odmiana) unikalna \\
 	\texttt{standardowa\_\allowbreak{}ilosc\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $\geq 0$ & standardowa dzienna ilość, domyślny plan dostawy \\
+	\texttt{ilosc\_\allowbreak{}na\_\allowbreak{}lade\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $\geq 0$ i~$\leq$ standardowej ilości & część planu przeznaczona na sprzedaż przy ladzie, wyłączona z~rezerwacji \\
 	\texttt{w\_\allowbreak{}ofercie} & \texttt{BOOL} & NOT NULL, domyślnie prawda & fałsz po wycofaniu produktu z~oferty \\
 	\midrule
 	\multicolumn{4}{@{}l}{\texttt{cena\_\allowbreak{}produktu} --- cena produktu obowiązująca od danego dnia} \\
@@ -1498,7 +1515,7 @@ Słownik danych (tab.~\ref{tab:slownik}) definiuje wszystkie tabele i~atrybuty m
 	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator planu \\
 	\texttt{produkt\_\allowbreak{}id} & \texttt{BIGINT} & FK produkt & produkt \\
 	\texttt{dzien} & \texttt{DATE} & NOT NULL & dzień dostawy; para (produkt\_id, dzien) unikalna \\
-	\texttt{ilosc\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $\geq 0$ & planowana ilość; nie mniejsza od ilości zarezerwowanej (sprawdza aplikacja) \\
+	\texttt{ilosc\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $\geq 0$ & planowana ilość; nie mniejsza od sumy ilości na ladę i~ilości zarezerwowanej (sprawdza aplikacja) \\
 	\midrule
 	\multicolumn{4}{@{}l}{\texttt{dostawa} --- przyjęta dostawa z~danego dnia} \\
 	\midrule
@@ -1521,6 +1538,15 @@ Słownik danych (tab.~\ref{tab:slownik}) definiuje wszystkie tabele i~atrybuty m
 	\texttt{masa\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $> 0$ & masa ubytku \\
 	\texttt{data\_\allowbreak{}czas} & \texttt{DATETIME(6)} & NOT NULL, indeks & chwila rejestracji \\
 	\texttt{zarejestrowal\_\allowbreak{}id} & \texttt{INT} & FK auth\_user & członek personelu, który zarejestrował ubytek \\
+	\midrule
+	\multicolumn{4}{@{}l}{\texttt{korekta\_\allowbreak{}stanu} --- wyrównanie stanu produktu po przeliczeniu towaru} \\
+	\midrule
+	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator korekty \\
+	\texttt{produkt\_\allowbreak{}id} & \texttt{BIGINT} & FK produkt & produkt \\
+	\texttt{roznica\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $\neq 0$ & masa zważona minus stan z~ewidencji; dodatnia zwiększa stan, ujemna go zmniejsza \\
+	\texttt{przyczyna} & \texttt{VARCHAR(200)} & NOT NULL & przyczyna rozbieżności, np. pomyłka przy rejestracji sprzedaży \\
+	\texttt{data\_\allowbreak{}czas} & \texttt{DATETIME(6)} & NOT NULL, indeks & chwila rejestracji \\
+	\texttt{zarejestrowal\_\allowbreak{}id} & \texttt{INT} & FK auth\_user & właściciel, który zarejestrował korektę \\
 	\midrule
 	\multicolumn{4}{@{}l}{\texttt{rezerwacja} --- rezerwacja klienta na dzień odbioru} \\
 	\midrule
@@ -1764,11 +1790,11 @@ Szablony stron leżą w~katalogu \texttt{templates/admin/panel/}. Wszystkie dzie
 \label{sec:testy-akceptacyjne}
 % Wzór formy: instrukcja IO „Testowanie akceptacyjne realizacji przypadków użycia” (stan przed → operacja PU → stan po).
 
-Test akceptacyjny sprawdza, czy przypadek użycia działa zgodnie ze swoim opisem z~rozdz.~\ref{ch:opis-pu} na poziomie całej aplikacji, a~nie pojedynczej funkcji. Każdy test ustala stan danych przed wykonaniem przypadku użycia, wykonuje go z~określonymi danymi wejściowymi i~porównuje stan danych po wykonaniu z~oczekiwanym. Plan obejmuje 37~testów dla 12~przypadków użycia opisanych scenariuszami: przebieg podstawowy i~przebiegi alternatywne każdego z~nich (tab.~\ref{tab:testy-akceptacyjne}).
+Test akceptacyjny sprawdza, czy przypadek użycia działa zgodnie ze swoim opisem z~rozdz.~\ref{ch:opis-pu} na poziomie całej aplikacji, a~nie pojedynczej funkcji. Każdy test ustala stan danych przed wykonaniem przypadku użycia, wykonuje go z~określonymi danymi wejściowymi i~porównuje stan danych po wykonaniu z~oczekiwanym. Plan obejmuje 40~testów dla 12~przypadków użycia opisanych scenariuszami: przebieg podstawowy i~przebiegi alternatywne każdego z~nich (tab.~\ref{tab:testy-akceptacyjne}).
 
 Testy zapisano jako testy Django w~pakiecie \texttt{akceptacja}. Klient testowy Django (\texttt{django.test.Client}) wysyła żądania do widoków tak jak przeglądarka, więc każde żądanie przechodzi przez widok, funkcje logiki w~\texttt{services.py} i~modele ORM aż do bazy danych. Stan początkowy test tworzy funkcjami zapisu z~\texttt{services.py}, a~stan po wykonaniu przypadku użycia odczytuje funkcjami odczytu z~tego samego modułu. Testy TA14 i~TA16 korzystają z~dwóch połączeń z~bazą naraz. Godzinę, od której zależy zamknięcie przyjmowania rezerwacji o~18:00, test ustawia na stałe, a~wiadomości e-mail zbiera zamiast wysyłać je do serwera poczty. Przypadek \ref{pu:nieodebrane} test uruchamia tym samym poleceniem Django, które w~sklepie uruchamia \texttt{cron}. Test TA14 sprawdza też pierwszy czynnik sukcesu z~tab.~\ref{tab:csf}: dwie jednoczesne rezerwacje nie przekraczają planu dostawy.
 
-Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapisuje (\ref{pu:anulowanie} A1, \ref{pu:sprzedaz} A2, \ref{pu:wydanie} A3), oraz \ref{pu:logowanie} A2, który przechodzi do \ref{pu:reset} z~osobnymi testami. W~tabeli D oznacza bieżący dzień, a~D+1 dzień następny. Ilości, ceny i~adresy są danymi testowymi.
+Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapisuje (\ref{pu:anulowanie} A1, \ref{pu:sprzedaz} A2, \ref{pu:wydanie} A3), oraz \ref{pu:logowanie} A2, który przechodzi do \ref{pu:reset} z~osobnymi testami. W~tabeli D oznacza bieżący dzień, D+1 dzień następny, a~D$-$1 poprzedni. Ilości, ceny i~adresy są danymi testowymi.
 % TODO: wyniki testów akceptacyjnych (zaliczony / niezaliczony) po zaimplementowaniu logiki
 
 {\small
@@ -1785,8 +1811,8 @@ Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapi
 	\endhead
 	\bottomrule
 	\endfoot
-	TA1 & \ref{pu:konto}, podst. & Brak konta z~adresem anna@example.com. & Rejestracja z~poprawnymi danymi, zatwierdzenie karty w~formularzu operatora. & Konto z~rolą klient, loginem równym adresowi i~identyfikatorem karty; jedna wiadomość e-mail; formularz logowania. \\
-	TA2 & A1 & Konto z~adresem anna@example.com istnieje. & Rejestracja z~tym adresem; osobno z~hasłem 12345678. & Komunikat przy błędnym polu, pole hasła puste; liczba kont bez zmian. \\
+	TA1 & \ref{pu:konto}, podst. & Brak konta z~adresem anna@example.com. & Rejestracja z~poprawnymi danymi, zatwierdzenie karty w~formularzu operatora. & Konto z~rolą klient, loginem równym adresowi, identyfikatorem karty i~chwilą akceptacji regulaminu; jedna wiadomość e-mail; formularz logowania. \\
+	TA2 & A1 & Konto z~adresem anna@example.com istnieje. & Rejestracja z~tym adresem; osobno z~hasłem 12345678; osobno bez akceptacji regulaminu. & Komunikat przy błędnym polu, pole hasła puste; liczba kont bez zmian. \\
 	TA3 & A2 & Brak konta. & Rejestracja z~poprawnymi danymi, przerwanie rejestracji karty. & Konto bez karty; komunikat, że bez karty nie można składać rezerwacji. \\
 	\midrule
 	TA4 & \ref{pu:logowanie}, podst. & Aktywne konta klienta i~sprzedawcy. & Logowanie klienta w~panelu klienta, a~sprzedawcy w~panelu administratora. & Każdy jest zalogowany i~widzi panel swojej roli. \\
@@ -1797,15 +1823,15 @@ Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapi
 	TA8 & A2 & Link z~TA6 już użyty; drugi link starszy niż 3~dni. & Otwarcie każdego z~linków. & Komunikat o~nieważnym linku; hasło bez zmian. \\
 	TA9 & A3 & Aktywne konto, ważny link. & Nowe hasło 12345678; osobno różne hasło i~powtórzenie. & Komunikat przy polu; hasło bez zmian, link nadal ważny. \\
 	\midrule
-	TA10 & \ref{pu:zlozenie}, podst. & Klient z~kartą, bez zaległości. Plan ziemniaków na D+2: 100~kg, zarezerwowano 90~kg. & Rezerwacja 8~kg ziemniaków na D+2. & Rezerwacja złożona z~jedną pozycją; dostępne do rezerwacji 2~kg; jedna wiadomość e-mail. \\
+	TA10 & \ref{pu:zlozenie}, podst. & Klient z~kartą, bez zaległości. Plan ziemniaków na D+2: 100~kg, na ladę 60~kg, zarezerwowano 30~kg. & Rezerwacja 8~kg ziemniaków na D+2. & Rezerwacja złożona z~jedną pozycją; dostępne do rezerwacji 2~kg; jedna wiadomość e-mail. \\
 	TA11 & A1 & Jak w~TA10, ale klient bez karty; osobno klient z~zaległością 100,01~zł i~100,00~zł. & Wybranie polecenia ,,Zarezerwuj'' przy D+2. & Bez karty: komunikat z~odnośnikiem do rejestracji karty. Przy 100,01~zł: komunikat z~kwotą. Brak nowej rezerwacji. Przy 100,00~zł: formularz rezerwacji. \\
 	TA12 & A2 & Klient ma złożoną rezerwację na D+2. & Wybranie polecenia ,,Zarezerwuj'' przy D+2. & Wyświetlona istniejąca rezerwacja z~poleceniem zmiany; liczba rezerwacji bez zmian. \\
 	TA13 & A3 & Jak w~TA10; plan marchwi na D+2 wystarcza. & Rezerwacja 11~kg ziemniaków; osobno 10~kg ziemniaków i~11~kg marchwi. & Komunikat z~ilością dostępną 10~kg albo o~limicie 20~kg; wpisane ilości zachowane; brak nowej rezerwacji. \\
-	TA14 & A3 & Jak w~TA10; drugi klient z~kartą. & Obaj klienci jednocześnie rezerwują po 10~kg ziemniaków na D+2. & Przyjęta dokładnie jedna rezerwacja; zarezerwowano 100~kg. \\
+	TA14 & A3 & Jak w~TA10; drugi klient z~kartą. & Obaj klienci jednocześnie rezerwują po 10~kg ziemniaków na D+2. & Przyjęta dokładnie jedna rezerwacja; zarezerwowano 40~kg. \\
 	TA15 & A4 & Jak w~TA10, ale plan na D+1; godzina 18:00 dnia D. & Wybranie ,,Zarezerwuj'' przy D+1; osobno zatwierdzenie formularza otwartego przed 18:00. & Komunikat o~zakończeniu przyjmowania rezerwacji; brak nowej rezerwacji. \\
 	TA16 & A5 & Jak w~TA10; wiersz planu ziemniaków na D+2 zablokowany przez inną transakcję dłużej niż czas oczekiwania na blokadę. & Rezerwacja 8~kg ziemniaków na D+2. & Komunikat z~prośbą o~ponowne zatwierdzenie; wpisane ilości zachowane; brak nowej rezerwacji. \\
 	\midrule
-	TA17 & \ref{pu:anulowanie}, podst. & Złożona rezerwacja 8~kg ziemniaków na D+2; na D+2 zarezerwowano łącznie 98~kg. & Anulowanie i~potwierdzenie. & Stan anulowana; zarezerwowano 90~kg; jedna wiadomość e-mail. \\
+	TA17 & \ref{pu:anulowanie}, podst. & Złożona rezerwacja 8~kg ziemniaków na D+2; na D+2 zarezerwowano łącznie 38~kg. & Anulowanie i~potwierdzenie. & Stan anulowana; zarezerwowano 30~kg; jedna wiadomość e-mail. \\
 	TA18 & A2 & Złożona rezerwacja na D+1; godzina 18:00 dnia D. & Otwarcie strony anulowania tej rezerwacji. & Komunikat o~braku możliwości anulowania i~o~opłacie; stan złożona; na liście rezerwacji brak polecenia ,,Anuluj''. \\
 	\midrule
 	TA19 & \ref{pu:karta}, podst. & Klient bez karty; osobno klient z~kartą. & Rejestracja karty i~zatwierdzenie w~formularzu operatora. & Zapisany identyfikator karty, u~drugiego klienta nowy w~miejsce poprzedniego; komunikat, że konto może składać rezerwacje. \\
@@ -1813,26 +1839,29 @@ Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapi
 	\midrule
 	TA21 & \ref{pu:dostawa}, podst. & Brak dostawy na D. Plan ziemniaków na D 100~kg, stan ziemniaków 5~kg. & Wpisanie 98~kg ziemniaków i~planowanych ilości pozostałych produktów. & Dostawa zapisana; stan ziemniaków 103~kg; różnica dla ziemniaków $-2$~kg. \\
 	TA22 & A1 & Jak w~TA21. & Ilość ziemniaków $-1$~kg; osobno 2,345~kg. & Komunikat przy polu; brak dostawy; stany bez zmian. \\
-	TA23 & A2 & Jak w~TA21; na D zarezerwowano 90~kg ziemniaków. & Wpisanie 85~kg ziemniaków. & Dostawa zapisana; ziemniaki wyróżnione jako dostarczone w~ilości mniejszej niż zarezerwowana. \\
+	TA23 & A2 & Jak w~TA21; na D zarezerwowano 40~kg ziemniaków. & Wpisanie 35~kg ziemniaków. & Dostawa zapisana; ziemniaki wyróżnione jako dostarczone w~ilości mniejszej niż zarezerwowana. \\
 	\midrule
 	TA24 & \ref{pu:sprzedaz}, podst. & Stan ziemniaków 10~kg, cena 3,20~zł/kg. & Sprzedaż 2,5~kg ziemniaków. & Sprzedaż z~ceną pozycji 3,20~zł/kg; stan ziemniaków 7,5~kg; kwota do zapłaty 8,00~zł. \\
 	TA25 & A1 & Jak w~TA24. & Sprzedaż 12~kg ziemniaków i~1~kg marchwi. & Komunikat ze stanem ziemniaków 10~kg; pozycje zachowane; liczba sprzedaży i~stany bez zmian. \\
+	TA26 & A1 & Jak w~TA24; złożona rezerwacja 8~kg ziemniaków na D. & Sprzedaż 3~kg ziemniaków; osobno 2~kg. & Przy 3~kg komunikat ze stanem 10~kg i~ilością zarezerwowaną 8~kg, brak sprzedaży. Przy 2~kg sprzedaż zapisana, stan 8~kg. \\
 	\midrule
-	TA26 & \ref{pu:przygotowanie}, podst. & Dostawa na D przyjęta. Złożona rezerwacja na D: 8~kg ziemniaków, 2~kg marchwi. & Wpisanie mas 8,05~kg i~1,95~kg. & Stan przygotowana do odbioru; masy zapisane przy pozycjach. \\
-	TA27 & A1 & Jak w~TA26. & Wpisanie mas 8,05~kg i~0~kg. & Stan przygotowana do odbioru; masa marchwi 0~kg. \\
+	TA27 & \ref{pu:przygotowanie}, podst. & Dostawa na D przyjęta. Złożona rezerwacja na D: 8~kg ziemniaków, 2~kg marchwi. & Wpisanie mas 8,05~kg i~1,95~kg. & Stan przygotowana do odbioru; masy zapisane przy pozycjach. \\
+	TA28 & A1 & Jak w~TA27. & Wpisanie mas 8,05~kg i~0~kg. & Stan przygotowana do odbioru; masa marchwi 0~kg. \\
 	\midrule
-	TA28 & \ref{pu:wydanie}, podst. & Rezerwacja z~TA26 przygotowana. Ceny na D: ziemniaki 3,20~zł/kg, marchew 4,00~zł/kg; stany 50~kg i~20~kg; przed 18:00. & Wyszukanie klienta, wydanie, potwierdzenie. & Kwota do zapłaty 33,56~zł; sprzedaż powiązana z~rezerwacją; stany 41,95~kg i~18,05~kg; stan rezerwacji odebrana. \\
-	TA29 & A1 & Rezerwacja z~TA26, nieprzygotowana; ceny jak w~TA28. & Wydanie z~wpisaniem mas 8,05~kg i~0~kg. & Kwota do zapłaty 25,76~zł; stan rezerwacji odebrana. \\
-	TA30 & A2 & Jak w~TA28; zaległość klienta 9,00~zł. & Wyszukanie klienta. & Rezerwacja wyświetlona razem z~zaległością 9,00~zł i~formularzem wpłaty; wydanie możliwe. \\
+	TA29 & \ref{pu:wydanie}, podst. & Rezerwacja z~TA27 przygotowana. Ceny na D: ziemniaki 3,20~zł/kg, marchew 4,00~zł/kg; stany 50~kg i~20~kg; przed 18:00. & Wyszukanie klienta, wydanie, potwierdzenie. & Kwota do zapłaty 33,56~zł; sprzedaż powiązana z~rezerwacją; stany 41,95~kg i~18,05~kg; stan rezerwacji odebrana. \\
+	TA30 & A1 & Rezerwacja z~TA27, nieprzygotowana; ceny jak w~TA29. & Wydanie z~wpisaniem mas 8,05~kg i~0~kg. & Kwota do zapłaty 25,76~zł; stan rezerwacji odebrana. \\
+	TA31 & A2 & Jak w~TA29; zaległość klienta 9,00~zł. & Wyszukanie klienta. & Rezerwacja wyświetlona razem z~zaległością 9,00~zł i~formularzem wpłaty; wydanie możliwe. \\
+	TA32 & A4 & Rezerwacja z~TA27 przygotowana; ekran wydania otwarty przed 18:00, polecenie z~\ref{pu:nieodebrane} wykonane o~18:00. & Potwierdzenie wydania po 18:00. & Komunikat o~nieodebranej rezerwacji; brak sprzedaży; stan nieodebrana, opłata naliczona raz. \\
 	\midrule
-	TA31 & \ref{pu:plan}, podst. & Plan ziemniaków na D+3 100~kg, zarezerwowano 90~kg. & Zmiana planu na 110~kg. & Plan 110~kg; dostępne do rezerwacji 20~kg w~planie i~w~katalogu. \\
-	TA32 & A1 & Jak w~TA31. & Zmiana planu na 80~kg. & Komunikat z~ilością zarezerwowaną 90~kg; plan 100~kg. \\
-	TA33 & A2 & Godzina 18:00 dnia D. & Zmiana planu na D+1, także wysłana spoza formularza. & Brak pola dla D+1; zmiana odrzucona, plan bez zmian. \\
+	TA33 & \ref{pu:plan}, podst. & Plan ziemniaków na D+3 100~kg, na ladę 60~kg, zarezerwowano 30~kg. & Zmiana planu na 110~kg. & Plan 110~kg; dostępne do rezerwacji 20~kg w~planie i~w~katalogu. \\
+	TA34 & A1 & Jak w~TA33. & Zmiana planu na 80~kg. & Komunikat z~ilością na ladę 60~kg i~zarezerwowaną 30~kg; plan 100~kg. \\
+	TA35 & A2 & Godzina 18:00 dnia D. & Zmiana planu na D+1, także wysłana spoza formularza. & Brak pola dla D+1; zmiana odrzucona, plan bez zmian. \\
 	\midrule
-	TA34 & \ref{pu:nieodebrane}, podst. & Na D: złożona rezerwacja 20~kg jabłek po 4,00~zł/kg (zaległość klienta 0~zł), rezerwacja przygotowana innego klienta i~rezerwacja odebrana. & Uruchomienie polecenia o~18:00. & Obie niewydane rezerwacje nieodebrane; opłata za rezerwację jabłek 8,00~zł, zaległość 8,00~zł; rezerwacja odebrana bez zmian; wiadomość o~opłacie do obu klientów. \\
-	TA35 & podst. & Jak w~TA34, ale zaległość klienta 95,00~zł. & Uruchomienie polecenia o~18:00. & Zaległość 103,00~zł; klient nie może składać nowych rezerwacji; wiadomość z~informacją o~blokadzie. \\
-	TA36 & A1 & Brak niewydanych rezerwacji na D. & Uruchomienie polecenia o~18:00. & Brak zmian w~danych; żadna wiadomość nie zostaje wysłana. \\
-	TA37 & A2 & Jak w~TA34; serwer poczty niedostępny. & Uruchomienie polecenia o~18:00. & Stan nieodebrana i~opłata zapisane mimo błędu wysyłki. \\
+	TA36 & \ref{pu:nieodebrane}, podst. & Na D: złożona rezerwacja 20~kg jabłek po 4,00~zł/kg (zaległość klienta 0~zł), rezerwacja przygotowana innego klienta i~rezerwacja odebrana. & Uruchomienie polecenia o~18:00. & Obie niewydane rezerwacje nieodebrane; opłata za rezerwację jabłek 8,00~zł, zaległość 8,00~zł; rezerwacja odebrana bez zmian; wiadomość o~opłacie do obu klientów. \\
+	TA37 & podst. & Jak w~TA36, ale zaległość klienta 95,00~zł. & Uruchomienie polecenia o~18:00. & Zaległość 103,00~zł; klient nie może składać nowych rezerwacji; wiadomość z~informacją o~blokadzie. \\
+	TA38 & A1 & Brak niewydanych rezerwacji na D. & Uruchomienie polecenia o~18:00. & Brak zmian w~danych; żadna wiadomość nie zostaje wysłana. \\
+	TA39 & A2 & Jak w~TA36; serwer poczty niedostępny. & Uruchomienie polecenia o~18:00. & Stan nieodebrana i~opłata zapisane mimo błędu wysyłki. \\
+	TA40 & podst. & Złożona rezerwacja na D$-$1; o~18:00 dnia D$-$1 polecenie nie zostało uruchomione. & Uruchomienie polecenia o~10:00 dnia D, jak przy starcie komputera. & Rezerwacja z~D$-$1 nieodebrana z~opłatą według cen z~D$-$1; rezerwacje na D bez zmian. \\
 \end{longtable}
 }
 
@@ -1967,13 +1996,16 @@ Odbiór przeprowadza się na komputerze w~sklepie po instalacji według rozdz.~\
 	3 & Dostęp & Panel klienta otwiera się z~sieci komórkowej przez HTTPS bez ostrzeżenia o~certyfikacie. Adres \texttt{/admin/} jest z~tej sieci niedostępny, a~z~sieci sklepu dostępny. & \ref{wn:wdrozenie} & \\
 	4 & Konta i~dane & Istnieją aktywne konta właściciela i~sprzedawców, każde loguje się w~panelu administratora. Katalog pokazuje produkty z~cenami i~ilościami. & rozdz.~\ref{ch:wdrozenie} & \\
 	5 & Dzień pracy & Testowy klient rezerwuje towar na następny dzień, a~zamówienie u~dostawcy go uwzględnia. Następnego dnia personel przyjmuje dostawę, przygotowuje i~wydaje rezerwację. Stan produktów równa się dostawie pomniejszonej o~sprzedaż. & tab.~\ref{tab:csf} & \\
-	6 & Godzina 18:00 & O~18:00 czasu lokalnego zapisy na następny dzień się zamykają, a~niewydana rezerwacja testowa zostaje oznaczona jako nieodebrana z~opłatą 10\%. & \ref{wn:czas}, tab.~\ref{tab:csf} & \\
+	6 & Godzina 18:00 & O~18:00 czasu lokalnego zapisy na następny dzień się zamykają, a~niewydana rezerwacja testowa zostaje oznaczona jako nieodebrana z~opłatą 10\%. Gdy komputer jest wyłączony o~18:00, rezerwację oznacza polecenie uruchomione przy jego starcie. & \ref{wn:czas}, tab.~\ref{tab:csf} & \\
 	7 & Poczta & Potwierdzenie założenia konta, potwierdzenie rezerwacji, informacja o~opłacie i~link resetu hasła docierają na zewnętrzną skrzynkę przez serwer SMTP sklepu. & \ref{wn:poczta} & \\
-	8 & Czas odpowiedzi & Katalog i~zapis rezerwacji trwają nie dłużej niż 2~s przy obciążeniu z~\ref{wn:wspolbieznosc}. & \ref{wn:wydajnosc} & \\
+	8 & Czas odpowiedzi & Katalog i~zapis rezerwacji trwają nie dłużej niż 2~s przy obciążeniu z~\ref{wn:wspolbieznosc}, zmierzonym narzędziem do testów obciążenia, np. Locust, które symuluje 2~osoby personelu i~20~klientów. & \ref{wn:wydajnosc} & \\
 	9 & Sprzedaż przy ladzie & Zarejestrowanie zakupu trzech produktów trwa nie dłużej niż 30~s. & tab.~\ref{tab:csf} & \\
 	10 & Przeglądarki & Oba panele działają w~Chrome, Firefox i~Edge, panel administratora na ekranie o~szerokości 1280~px. & \ref{wn:przegladarki} & \\
 	11 & Kopia zapasowa & Kopia z~poprzedniego dnia jest na dysku zewnętrznym. Odtworzona na innym komputerze w~czasie nie dłuższym niż 1~h zawiera rezerwacje i~zaległości klientów. & \ref{wn:kopia}, tab.~\ref{tab:csf} & \\
 	12 & Podręcznik & Sprzedawca i~właściciel wykonują czynności swojej roli z~p.~\ref{sec:przewodnik} bez pomocy zespołu. & p.~\ref{sec:przewodnik} & \\
+	13 & Bezpieczeństwo & Ciasteczka sesji mają atrybut \texttt{Secure}, odpowiedź zawiera nagłówek HSTS, a~seria błędnych logowań z~jednego adresu IP zostaje ograniczona przez Nginx. & \ref{wn:bezpieczenstwo} & \\
+	14 & Dostępność & Lighthouse nie zgłasza błędów dostępności na stronach panelu klienta, a~złożenie i~anulowanie rezerwacji udaje się samą klawiaturą. & \ref{wn:dostepnosc} & \\
+	15 & Dane osobowe & Formularz zakładania konta pokazuje informację o~przetwarzaniu danych i~wymaga akceptacji regulaminu; anonimizacja konta testowego usuwa jego dane osobowe, a~jego sprzedaż zostaje w~historii. & \ref{wn:rodo} & \\
 \end{longtable}
 }
 

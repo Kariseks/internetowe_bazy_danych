@@ -29,10 +29,10 @@ def rezerwacja(rezerwacja, zdarzenie):
 
 
 def oplata(rezerwacja):
-    """PU30: opłata już naliczona, klient z zaległością po jej doliczeniu."""
+    """PU31: opłata już naliczona, klient z zaległością po jej doliczeniu."""
     _wyslij('Warzywniak: opłata za nieodebraną rezerwację', 'oplata', rezerwacja.klient.uzytkownik, rezerwacja=rezerwacja)
 
 
 def przypomnienie(rezerwacja, oplata):
-    """PU31, o 6:00 w dniu odbioru. oplata: kwota, którą klient zapłaci, jeśli nie odbierze."""
+    """PU32, o 6:00 w dniu odbioru. oplata: kwota, którą klient zapłaci, jeśli nie odbierze."""
     _wyslij('Warzywniak: odbiór rezerwacji dziś', 'przypomnienie', rezerwacja.klient.uzytkownik, rezerwacja=rezerwacja, oplata=oplata)

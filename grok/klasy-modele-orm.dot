@@ -1,0 +1,90 @@
+digraph {
+    graph [
+    splines=ortho,
+    rankdir=TB,
+    nodesep=0.72,
+    ranksep=0.78,
+    pad=0.4,
+    esep=18,
+    dpi=140,
+    bgcolor="white",
+    fontname="DejaVu Sans",
+    labeljust=l,
+    labelloc=b
+  ];
+  node [shape=box, fontname="DejaVu Sans", fontsize=11];
+  edge [fontname="DejaVu Sans", fontsize=9, penwidth=1.55, arrowsize=0.85];
+
+  Group [label="Group\lDjango\l\lid : AutoField  PK\lname : CharField  UK\l", shape=box, style=filled, fillcolor="#D6EAF8", color="#1F4E79", penwidth=1.6, group="c1"];
+  User [label="User\lDjango\l\lid : AutoField  PK\lusername : CharField  UK\lemail : EmailField\lfirst_name : CharField\llast_name : CharField\lis_staff : BooleanField\lis_active : BooleanField\l", shape=box, style=filled, fillcolor="#D6EAF8", color="#1F4E79", penwidth=1.6, group="c2"];
+  Profil [label="ProfilKlienta\l\luzytkownik : OneToOneField  PK\ltelefon : CharField\lidentyfikator_karty : CharField\lregulamin_zaakceptowano : DateTimeField\lzanonimizowano : DateTimeField\l", shape=box, style=filled, fillcolor="#D6EAF8", color="#1F4E79", penwidth=1.6, group="c3"];
+  Produkt [label="Produkt\l\lid : BigAutoField  PK\lnazwa : CharField\lodmiana : CharField\lstandardowa_ilosc_kg : DecimalField\lilosc_na_lade_kg : DecimalField\lw_ofercie : BooleanField\l", shape=box, style=filled, fillcolor="#E8F5E9", color="#2E7D32", penwidth=1.6, group="c2"];
+  Cena [label="CenaProduktu\l\lid : BigAutoField  PK\lprodukt : ForeignKey\lcena_za_kg : DecimalField\lobowiazuje_od : DateField\l", shape=box, style=filled, fillcolor="#E8F5E9", color="#2E7D32", penwidth=1.6, group="c1"];
+  Plan [label="PlanDostawy\l\lid : BigAutoField  PK\lprodukt : ForeignKey\ldzien : DateField\lilosc_kg : DecimalField\l", shape=box, style=filled, fillcolor="#E8F5E9", color="#2E7D32", penwidth=1.6, group="c0"];
+  Dostawa [label="Dostawa\l\lid : BigAutoField  PK\ldzien : DateField  UK\lzarejestrowano : DateTimeField\lzarejestrowal : ForeignKey\l", shape=box, style=filled, fillcolor="#F3E5F5", color="#6A1B9A", penwidth=1.6, group="c0"];
+  PozD [label="PozycjaDostawy\l\lid : BigAutoField  PK\ldostawa : ForeignKey\lprodukt : ForeignKey\lilosc_kg : DecimalField\l", shape=box, style=filled, fillcolor="#F3E5F5", color="#6A1B9A", penwidth=1.6, group="c0"];
+  Ubytek [label="Ubytek\l\lid : BigAutoField  PK\lprodukt : ForeignKey\lmasa_kg : DecimalField\lzarejestrowal : ForeignKey\l", shape=box, style=filled, fillcolor="#F3E5F5", color="#6A1B9A", penwidth=1.6, group="c1"];
+  Korekta [label="KorektaStanu\l\lid : BigAutoField  PK\lprodukt : ForeignKey\lroznica_kg : DecimalField\lprzyczyna : CharField\lzarejestrowal : ForeignKey\l", shape=box, style=filled, fillcolor="#F3E5F5", color="#6A1B9A", penwidth=1.6, group="c1"];
+  Rezerwacja [label="Rezerwacja\l\lid : BigAutoField  PK\lklient : ForeignKey\ldzien_odbioru : DateField\lstan : StanRezerwacji\loplata_za_nieodebranie : DecimalField\l", shape=box, style=filled, fillcolor="#FFF3E0", color="#E65100", penwidth=1.6, group="c3"];
+  Stan [label="StanRezerwacji\lenum\l\lzlozona\lprzygotowana\lodebrana\lanulowana\lnieodebrana\l", shape=box, style=filled, fillcolor="#FFF3E0", color="#E65100", penwidth=1.6, group="c4"];
+  PozR [label="PozycjaRezerwacji\l\lid : BigAutoField  PK\lrezerwacja : ForeignKey\lprodukt : ForeignKey\lilosc_kg : DecimalField\lmasa_odwazona_kg : DecimalField\l", shape=box, style=filled, fillcolor="#FFF3E0", color="#E65100", penwidth=1.6, group="c2"];
+  Sprzedaz [label="Sprzedaz\l\lid : BigAutoField  PK\ldata_czas : DateTimeField\lsprzedawca : ForeignKey\lrezerwacja : ForeignKey\l", shape=box, style=filled, fillcolor="#FDECEA", color="#C62828", penwidth=1.6, group="c3"];
+  PozS [label="PozycjaSprzedazy\l\lid : BigAutoField  PK\lsprzedaz : ForeignKey\lprodukt : ForeignKey\lmasa_kg : DecimalField\lcena_za_kg : DecimalField\l", shape=box, style=filled, fillcolor="#FDECEA", color="#C62828", penwidth=1.6, group="c3"];
+  Rozl [label="RozliczenieZaleglosci\l\lid : BigAutoField  PK\lklient : ForeignKey\lrodzaj : CharField\lkwota : DecimalField\lskuteczne : BooleanField\lzarejestrowal : ForeignKey\l", shape=box, style=filled, fillcolor="#FDECEA", color="#C62828", penwidth=1.6, group="c2"];
+  gap0 [shape=point, style=invis, width=0.2, label="", group="c0"];
+
+  // siatka: wiersze
+  { rank=same; gap0; Group; User; Profil; }
+  { rank=same; Plan; Cena; Produkt; Rezerwacja; Stan; }
+  { rank=same; PozD; Ubytek; PozR; Sprzedaz; }
+  { rank=same; Dostawa; Korekta; Rozl; PozS; }
+
+  // porządek w wierszu
+  gap0 -> Group -> User -> Profil [style=invis, weight=30, arrowhead=none, arrowtail=none, dir=none];
+  Plan -> Cena -> Produkt -> Rezerwacja -> Stan [style=invis, weight=30, arrowhead=none, arrowtail=none, dir=none];
+  PozD -> Ubytek -> PozR -> Sprzedaz [style=invis, weight=30, arrowhead=none, arrowtail=none, dir=none];
+  Dostawa -> Korekta -> Rozl -> PozS [style=invis, weight=30, arrowhead=none, arrowtail=none, dir=none];
+  gap0 -> Plan -> PozD -> Dostawa [style=invis, weight=12, arrowhead=none, arrowtail=none, dir=none];
+  Group -> Cena -> Ubytek -> Korekta [style=invis, weight=12, arrowhead=none, arrowtail=none, dir=none];
+  User -> Produkt -> PozR -> Rozl [style=invis, weight=12, arrowhead=none, arrowtail=none, dir=none];
+  Profil -> Rezerwacja -> Sprzedaz -> PozS [style=invis, weight=12, arrowhead=none, arrowtail=none, dir=none];
+
+  Group -> User [dir=none, color="#1F4E79", taillabel="0..*", headlabel="0..*", fontcolor="#1F4E79", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  User -> Profil [dir=none, color="#1F4E79", taillabel="1", headlabel="0..1", fontcolor="#1F4E79", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Cena -> Produkt [dir=none, color="#2E7D32", taillabel="1..*", headlabel="1", fontcolor="#2E7D32", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Plan -> Produkt [dir=none, color="#2E7D32", taillabel="0..*", headlabel="1", fontcolor="#2E7D32", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Produkt -> PozD [dir=none, color="#2E7D32", taillabel="1", headlabel="0..*", fontcolor="#2E7D32", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Produkt -> Ubytek [dir=none, color="#2E7D32", taillabel="1", headlabel="0..*", fontcolor="#2E7D32", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Produkt -> Korekta [dir=none, color="#2E7D32", taillabel="1", headlabel="0..*", fontcolor="#2E7D32", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0, constraint=false];
+  Produkt -> PozR [dir=none, color="#2E7D32", taillabel="1", headlabel="0..*", fontcolor="#2E7D32", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Produkt -> PozS [dir=none, color="#2E7D32", taillabel="1", headlabel="0..*", fontcolor="#2E7D32", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0, tailport=e, headport=w];
+  PozD -> Dostawa [dir=none, color="#6A1B9A", taillabel="1..*", headlabel="1", fontcolor="#6A1B9A", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Profil -> Rezerwacja [dir=none, color="#E65100", taillabel="1", headlabel="0..*", fontcolor="#E65100", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Rezerwacja -> PozR [dir=none, color="#E65100", taillabel="1", headlabel="1..*", fontcolor="#E65100", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Rezerwacja -> Stan [dir=none, color="#E65100", taillabel="", headlabel="", fontcolor="#E65100", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Rezerwacja -> Sprzedaz [dir=none, color="#C62828", taillabel="0..1", headlabel="0..1", fontcolor="#C62828", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Sprzedaz -> PozS [dir=none, color="#C62828", taillabel="1", headlabel="0..*", fontcolor="#C62828", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  Profil -> Rozl [dir=none, color="#C62828", taillabel="1", headlabel="0..*", fontcolor="#C62828", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0];
+  User -> Dostawa [dir=none, color="#546E7A", taillabel="1", headlabel="0..*", fontcolor="#546E7A", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0, constraint=false];
+  User -> Ubytek [dir=none, color="#546E7A", taillabel="1", headlabel="0..*", fontcolor="#546E7A", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0, constraint=false];
+  User -> Korekta [dir=none, color="#546E7A", taillabel="1", headlabel="0..*", fontcolor="#546E7A", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0, constraint=false];
+  User -> Sprzedaz [dir=none, color="#546E7A", taillabel="1", headlabel="0..*", fontcolor="#546E7A", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0, constraint=false];
+  User -> Rozl [dir=none, color="#546E7A", taillabel="1", headlabel="0..*", fontcolor="#546E7A", fontsize=11, penwidth=1.55, labeldistance=2.6, labelangle=0, constraint=false];
+
+  legend [
+    label=<
+      <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#B0BEC5" BGCOLOR="#FAFAFA">
+        <TR><TD ALIGN="LEFT"><B>Legenda</B><BR ALIGN="LEFT"/>
+          <FONT COLOR="#1F4E79"><B>■</B></FONT> konto
+          &nbsp; <FONT COLOR="#2E7D32"><B>■</B></FONT> produkt
+          &nbsp; <FONT COLOR="#6A1B9A"><B>■</B></FONT> dostawa, ubytek i korekta
+          &nbsp; <FONT COLOR="#E65100"><B>■</B></FONT> rezerwacja
+          &nbsp; <FONT COLOR="#C62828"><B>■</B></FONT> sprzedaż i zaległość
+          &nbsp; <FONT COLOR="#546E7A"><B>■</B></FONT> kto zarejestrował
+        </TD></TR>
+      </TABLE>
+    >
+  ];
+  Rozl -> legend [style=invis, weight=1, dir=none];
+
+}

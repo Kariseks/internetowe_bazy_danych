@@ -16,6 +16,7 @@ USE warzywniak_model;
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS rozliczenie_zaleglosci;
+DROP TABLE IF EXISTS korekta_stanu;
 DROP TABLE IF EXISTS ubytek;
 DROP TABLE IF EXISTS pozycja_sprzedazy;
 DROP TABLE IF EXISTS sprzedaz;
@@ -36,8 +37,10 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Konta i role (django.contrib.auth)
 -- ---------------------------------------------------------------------
 
--- Konto użytkownika: personel i klienci. Unikalność adresu e-mail (WF login)
--- sprawdzają formularze aplikacji, bo tabela Django nie ma na nim ograniczenia.
+-- Konto użytkownika: personel i klienci. U klienta adres e-mail jest loginem, więc jest
+-- unikalny dzięki uq_auth_user_username; u personelu unikalność sprawdzają formularze aplikacji.
+-- Anonimizacja klienta (WF anonimizacja, RODO) czyści first_name, last_name i email
+-- oraz zastępuje username wartością bez danych osobowych.
 CREATE TABLE auth_user (
 	id           INT          NOT NULL AUTO_INCREMENT,
 	password     VARCHAR(128) NOT NULL,
@@ -74,10 +77,13 @@ CREATE TABLE auth_user_groups (
 ) ENGINE = InnoDB;
 
 -- Dane klienta spoza auth_user (WN3). Klucz główny = klucz obcy konta (związek 1:1).
+-- regulamin_zaakceptowano: chwila akceptacji regulaminu (WN RODO); zanonimizowano: chwila anonimizacji.
 CREATE TABLE profil_klienta (
-	uzytkownik_id       INT         NOT NULL,
-	telefon             VARCHAR(20) NOT NULL,
-	identyfikator_karty VARCHAR(64) NULL,
+	uzytkownik_id           INT         NOT NULL,
+	telefon                 VARCHAR(20) NOT NULL,
+	identyfikator_karty     VARCHAR(64) NULL,
+	regulamin_zaakceptowano DATETIME(6) NOT NULL,
+	zanonimizowano          DATETIME(6) NULL,
 	CONSTRAINT pk_profil_klienta PRIMARY KEY (uzytkownik_id),
 	CONSTRAINT uq_profil_karta UNIQUE (identyfikator_karty),
 	CONSTRAINT fk_profil_uzytkownik FOREIGN KEY (uzytkownik_id) REFERENCES auth_user (id),
@@ -93,10 +99,12 @@ CREATE TABLE produkt (
 	nazwa                VARCHAR(60)  NOT NULL,
 	odmiana              VARCHAR(60)  NOT NULL DEFAULT '',
 	standardowa_ilosc_kg DECIMAL(7,2) NOT NULL,
+	ilosc_na_lade_kg     DECIMAL(7,2) NOT NULL DEFAULT 0,
 	w_ofercie            BOOL         NOT NULL DEFAULT TRUE,
 	CONSTRAINT pk_produkt PRIMARY KEY (id),
 	CONSTRAINT uq_produkt_nazwa_odmiana UNIQUE (nazwa, odmiana),
-	CONSTRAINT ck_produkt_standardowa CHECK (standardowa_ilosc_kg >= 0)
+	CONSTRAINT ck_produkt_standardowa CHECK (standardowa_ilosc_kg >= 0),
+	CONSTRAINT ck_produkt_na_lade CHECK (ilosc_na_lade_kg >= 0 AND ilosc_na_lade_kg <= standardowa_ilosc_kg)
 ) ENGINE = InnoDB;
 
 -- Historia cen: cena obowiązuje od podanego dnia do dnia przed kolejną zmianą.
@@ -111,8 +119,10 @@ CREATE TABLE cena_produktu (
 	CONSTRAINT ck_cena_dodatnia CHECK (cena_za_kg > 0)
 ) ENGINE = InnoDB;
 
--- Plan dostawy produktu na dzień = pula rezerwacji. Wiersz powstaje przy pierwszej
--- zmianie planu albo pierwszej rezerwacji; do tego czasu plan = standardowa_ilosc_kg.
+-- Plan dostawy produktu na dzień. Do rezerwacji pozostaje plan − produkt.ilosc_na_lade_kg
+-- − ilość zarezerwowana; plan nie może spaść poniżej sumy dwóch ostatnich (sprawdza aplikacja).
+-- Wiersz powstaje przy pierwszej zmianie planu albo pierwszej rezerwacji; do tego czasu
+-- plan = standardowa_ilosc_kg.
 -- Wiersz blokuje się (SELECT ... FOR UPDATE) przy składaniu rezerwacji (p. 3.3.2).
 CREATE TABLE plan_dostawy (
 	id         BIGINT       NOT NULL AUTO_INCREMENT,
@@ -163,6 +173,22 @@ CREATE TABLE ubytek (
 	CONSTRAINT fk_ubytek_uzytkownik FOREIGN KEY (zarejestrowal_id) REFERENCES auth_user (id),
 	CONSTRAINT ck_ubytek_masa CHECK (masa_kg > 0),
 	INDEX ix_ubytek_data (data_czas)
+) ENGINE = InnoDB;
+
+-- Korekta stanu po przeliczeniu towaru (WF korekta): roznica_kg = masa zważona − stan z ewidencji.
+-- Stan produktu = dostawy − sprzedaż − ubytki + korekty; aplikacja pilnuje, by nie spadł poniżej zera.
+CREATE TABLE korekta_stanu (
+	id               BIGINT       NOT NULL AUTO_INCREMENT,
+	produkt_id       BIGINT       NOT NULL,
+	roznica_kg       DECIMAL(7,2) NOT NULL,
+	przyczyna        VARCHAR(200) NOT NULL,
+	data_czas        DATETIME(6)  NOT NULL,
+	zarejestrowal_id INT          NOT NULL,
+	CONSTRAINT pk_korekta_stanu PRIMARY KEY (id),
+	CONSTRAINT fk_korekta_produkt FOREIGN KEY (produkt_id) REFERENCES produkt (id),
+	CONSTRAINT fk_korekta_uzytkownik FOREIGN KEY (zarejestrowal_id) REFERENCES auth_user (id),
+	CONSTRAINT ck_korekta_roznica CHECK (roznica_kg <> 0),
+	INDEX ix_korekta_data (data_czas)
 ) ENGINE = InnoDB;
 
 -- ---------------------------------------------------------------------

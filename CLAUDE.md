@@ -14,7 +14,7 @@ Główna instrukcja dla Claude Code w tym repozytorium. Jedno źródło prawdy d
 
 ## Zasady Karola (bezwzględne)
 
-1. **Nie rób `git commit`, `git push`, PR ani zmian historii** (`reset`, `rebase`, `stash drop`, `checkout -- <plik>`). Commituje Karol. Dozwolone są tylko edycje plików w working tree; brudne drzewo jest normalne.
+1. **Nie rób `git push`, PR ani zmian historii** (`reset`, `rebase`, `stash drop`, `checkout -- <plik>`). `git commit` tylko wtedy, gdy Karol wprost o to poprosi w bieżącym poleceniu (zasady w „Repozytorium i praca w grupie”); bez takiej prośby commituje Karol. Poza tym dozwolone są tylko edycje plików w working tree; brudne drzewo jest normalne.
 2. **Zapytaj przed usunięciem** lub przeniesieniem dowolnego pliku.
 3. **Nie wymyślaj faktów**: cen, liczb, pomiarów, wyników testów, wersji, decyzji, danych o grupie. Brak danych → `% TODO: <czego brakuje, kto dostarcza>` w TeX-u i pytanie do Karola.
 4. Odpowiadaj po polsku. Tekst sprawozdania: polski, forma bezosobowa, twarde spacje (`w~`, `i~`, `z~`…) — szczegóły w skillu `styl-sprawozdania`.
@@ -65,8 +65,11 @@ Pełna lista pytań z uzasadnieniem: `docs/plan-sprawozdania.md` §5. Tu tylko s
 | — | Odpowiedzi Karola do rozdz. 2 | **04.11.2026:** (1) dostęp przez serwer aplikacji Django, jak najwięcej wbudowanych mechanizmów Django (nowe WN3); (2) reset hasła e-mailem (widoki Django, WF reset hasła — wersja minimalna) i wysyłka e-mail: powiadomienia o koncie, rezerwacjach i opłatach (std), przypomnienie w dniu odbioru (rozsz.); SMTP (nowe WN); serwer poczty dopisany do otoczenia w 1.4; (3) wersje jak Q10; (4) dane personelu tylko z modelu `User` Django: login, imię, nazwisko, e-mail, skrót hasła, rola (grupa), aktywność — bez PESEL, adresu, telefonu (WF4). Otwarte: czy symulowaną rejestrację karty potwierdzić z prowadzącym (zostaje jak jest). |
 | Q11 | Nazewnictwo modeli PL/EN, sposób liczenia stanu | **Zaproponowane przez agenta 04.11.2026, do akceptacji (pkt 80–81):** nazwy polskie bez znaków diakrytycznych (`Meta.db_table`), stan produktu i zaległość liczone, nie przechowywane. Tekst w 6.1 i 6.4, DDL w `baza/schema.sql`. |
 | — | Rozdział 6 i `baza/` | **Napisane 04.11.2026 na prośbę Karola:** 6.1 code-first, 6.2 encje (`tab:encje`) i związki (`tab:zwiazki`), 6.3–6.5 miejsca na ERD i diagram klas, 6.4 normalizacja, 6.6 słownik danych (`tab:slownik`, 74 atrybuty generowane z tej samej listy co DDL), 6.7 graf stanów; `baza/schema.sql` i `baza/README.md`. Uzupełnienia agenta: pkt 80–86. |
+| — | Poprawki merytoryczne po przeglądzie | **Zrobione 17.11.2026 na prośbę Karola („ogień”, akceptacja przeglądu):** (1) pula rezerwacji = plan − ilość na ladę (`produkt.ilosc_na_lade_kg`) − zarezerwowane; plan ≥ lada + zarezerwowane; (2) sprzedaż ≤ stan − niewydane rezerwacje na dziś; (3) korekta stanu po przeliczeniu towaru: `wf:korekta`, PU30 „Skoryguj stan produktu” («extend» PU17), tabela `korekta_stanu`; PU „Oznacz nieodebrane” i „Wyślij przypomnienie” to teraz PU31 i PU32 (diagramy PlantUML i komentarze w kodzie poprawione); (4) oznaczanie nieodebranych obejmuje zaległe dni, polecenie także przy starcie komputera, blokada wiersza rezerwacji, PU21 A4; (5) RODO: `wn:rodo`, regulamin przy rejestracji (`profil_klienta.regulamin_zaakceptowano`), `wf:anonimizacja` (`zanonimizowano`); „zadatek” → opłata za nieodebranie (art. 394 KC); (6) `wn:bezpieczenstwo` (Secure cookies, HSTS, limit żądań w Nginx), `wn:dostepnosc` (WCAG 2.1 AA, Lighthouse); (7) normalizacja względem kluczy kandydujących, licencje VP CE, kosztorys bez utrzymania (`% TODO`), checklista 13–15; plan TA: 40 testów (numery od TA26 przesunięte — kod `akceptacja/tests.py` do dostosowania). ERD i diagram klas wygenerowane z `grok/render_diagramy.py` (Graphviz). **Otwarte:** raport podaje Visual Paradigm, a diagramy powstały w PlantUML i Graphviz — decyzja Karola. |
 | Q12 | Nowy szkielet sprawozdania i przebudowa `PLAN.md` | **Szkielet zrobiony 04.11.2026** (wiersze „Przebudowa struktury” i „Druga przebudowa struktury” wyżej). Otwarte: przebudowa kolejki `PLAN.md` z przypisaniem osób. Dalszych zmian nagłówków nie rób bez prośby Karola. |
 | Q14 | Literatura i spis rysunków | otwarte |
+| — | Poprawki dostępności panelu klienta | **Pobrane 17.11.2026** (commit `6f0843e` z konta `Salad109`, fast-forward): widoczny fokus `:focus-visible` w panelu klienta, przycisk menu i zasłona z atrybutem `hidden` (widoczne tylko przez CSS `.menu-js`), `<h1>` na stronie logowania panelu administratora, cena pod nazwą w katalogu z `hidden`. Realizuje część `wn:dostepnosc`. **Otwarte:** wyniki Lighthouse i testów klawiaturą do raportu (checklista odbioru pkt 14) — tylko z faktycznych uruchomień. |
+| — | Plik poprawek Karola | **Uwzględniony 17.11.2026:** `do_poprawy_karol.md` (poza git) to lista zadań Karola; zasady w „Plik poprawek Karola”. |
 
 Przy nowej decyzji: zmień wiersz tutaj i oznacz pytanie w §5 planu jako rozstrzygnięte.
 
@@ -225,6 +228,8 @@ Wszystkie rysunki w `dokumentacja/rysunki/`, format PNG, nazwy małymi literami,
 | `dokumentacja/figury/` | dawny katalog rysunków (makro `\figura`) |
 | `dokumentacja/rysunki/diagramy/`, `dokumentacja/rysunki/ekrany/` | rysunki wg schematu nazw (sekcja „Rysunki — schemat nazw plików”) |
 | `baza/schema.sql`, `baza/README.md` | DDL modelu bazy (MySQL 8.4) i instrukcja ERD w Visual Paradigm |
+| `zasady.md` | zasady pisania sprawozdania: dla kogo, poziom, styl, zakazane zwroty AI, skróty, zapisy robocze, przykłady przed/po, polecenia `grep` do kontroli |
+| `do_poprawy_karol.md` | prywatna lista zadań Karola (Braki, Błędy, Weryfikacja, eksperymenty dostępności); w `.gitignore`, nie trafia do repozytorium; zasady w „Plik poprawek Karola” |
 | `docs/plan-sprawozdania.md` | wzorzec SH, szkielet sprawozdania i tabela pokrycia wytycznych v4 (§1), plan per sekcja (§2), kolejność prac (§3), minimum Django (§4), pytania Q1–Q14 (§5), plan aplikacji i opis systemu (§6), kolejność omawiania etapu 1 (§7) |
 | `docs/indeks-zrodel.md` | wszystkie źródła z faktami i stronami PDF (część A) oraz podpunkt raportu → gdzie szukać (część B), lista braków do uzupełnienia przez Karola |
 | `materialy/IDB_wytyczne_v4.pdf` | wytyczne prowadzącego — źródło nadrzędne |
@@ -261,7 +266,37 @@ Po każdej edycji sprawdź w `sprawozdanie.log`: brak błędów (`grep -n '^!' s
 - Minimum weryfikacji: `python manage.py check`, `python manage.py test`. Wyniki do raportu tylko z faktycznych uruchomień.
 - Docelowy podział aplikacji i kolejność budowy: `docs/plan-sprawozdania.md` §4 i §6.
 
+## Dostępność panelu klienta (`wn:dostepnosc`)
+
+Wymaganie: WCAG 2.1 AA (obejmuje kryteria WCAG 2.0 z notatki Karola), sprawdzane Lighthouse i ręcznie. Przy każdej zmianie szablonów lub CSS panelu klienta (`aplikacja/templates/`, `aplikacja/static/sklep/`):
+
+- Fokus zawsze widoczny: globalny `:focus-visible` w `sklep.css` zostaje; nie usuwa się `outline` bez zamiennika o kontraście ≥ 3:1.
+- Wszystko działa z klawiatury: Tab w logicznej kolejności, Enter i spacja na przyciskach, Esc zamyka menu na telefonie (`menu.js`).
+- Strona czytelna bez CSS i bez JavaScriptu: elementy potrzebne tylko przy JS lub tylko w układzie telefonu mają atrybut `hidden`, a pokazuje je CSS (np. `.menu-js .burger`). Tekst tylko dla czytników ekranu — klasa `.ukryte`, nie `hidden`.
+- Jeden `<h1>` na stronie (także strona logowania panelu administratora), etykieta `<label>` przy każdym polu, nagłówki tabel z `scope`, kontrast tekstu ≥ 4,5:1.
+- Kontrola: Lighthouse (kategoria Accessibility) na stronach panelu klienta, przejście PU klienta samą klawiaturą, podgląd bez stylów, czytnik ekranu (np. Orca lub NVDA). Do raportu (checklista odbioru pkt 14, rozdz. testów) tylko wyniki faktycznych uruchomień z datą, przeglądarką, wersją Lighthouse, adresem strony i wynikiem; brak → `% TODO`.
+
+## Repozytorium i praca w grupie
+
+Repozytorium `origin` (GitHub) współdzieli cała grupa; kod aplikacji przychodzi m.in. z konta `Salad109`.
+
+- **Przed pracą i na prośbę „fetch”:** `git fetch origin`, potem osobno: co przyszło z `origin` (`git log --oneline HEAD..origin/main`, `git diff --stat HEAD origin/main`) i co zmieniła lokalna sesja (`git status -sb`, `git diff --cached --stat`, `git diff --stat`). Pokaż Karolowi oba zestawy i to, czy pliki się pokrywają.
+- **Włączanie zmian z `origin`:** tylko `git merge --ff-only origin/main`, gdy lokalne zmiany nie dotykają tych samych plików. Gdy pliki się pokrywają albo historia się rozeszła — stop i pytanie do Karola; bez `rebase`, `reset`, `stash`.
+- **Po pobraniu** sprawdź, czy zmiany kolegów zgadzają się z raportem (WF, WN, PU, scenariusze, podręcznik) i z dziennikiem decyzji; rozbieżności zgłoś, nie poprawiaj kodu kolegów bez prośby. Pobrane zmiany odnotuj w dzienniku decyzji (data, skrót commita, co zmienia).
+- **Commit (tylko na wyraźną prośbę Karola):** najpierw włącz zmiany z `origin`, potem commit na wierzchu. Tytuł po polsku, krótki, jak w historii (np. „Poprawki dostępności”), w treści punkty z tym, co zmieniono; stopka atrybucji z przypomnienia systemowego. Commituj tylko pliki już dodane przez Karola do indeksu albo wskazane w prośbie; nieśledzone pliki (np. `grok/*.png`) i `do_poprawy_karol.md` nie wchodzą bez zgody. `git commit` jest zablokowany w `.claude/settings.json` — jeśli blokada zadziała, podaj Karolowi gotowe polecenie do uruchomienia przez `! git commit -F <plik>`; blokady nie obchodzi się.
+- `git push` zawsze robi Karol.
+
+## Plik poprawek Karola (`do_poprawy_karol.md`)
+
+- Lista zadań Karola, poza git. Czytaj ją przy prośbach o poprawki, weryfikację, testy, dostępność i przy „status”; nie edytuj jej bez prośby. Po wykonaniu punktu powiedz Karolowi, który punkt jest zrobiony.
+- Punkty to zadania, nie fakty: do raportu nie przepisuje się ich treści ani wyników, których nikt nie uruchomił.
+- Pomysły spoza zakresu z `CLAUDE.md` (wersje językowe PL/EN/DE, osobna „formalna” wersja strony) realizuje się dopiero po wyraźnej decyzji Karola, wpisanej do dziennika.
+- Sekcja „Weryfikacja” pkt 5 jest realizowana przez `zasady.md` i jego polecenia `grep`.
+
 ## Importowane zawsze
+
+Zasady pisania sprawozdania (czytelnik, poziom, zwroty typowe dla AI, skróty, zapisy robocze, kontrola przed oddaniem) — obowiązują przy każdym tekście do `sprawozdanie.tex`, przed skillami:
+@zasady.md
 
 Ustalenia z konsultacji 19.10.2026:
 @materialy/notatki/notatka_ze_spotkania_19_10_26.md
