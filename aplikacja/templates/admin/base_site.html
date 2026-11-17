@@ -7,7 +7,8 @@
 
 {% block header %}
 <header id="header" class="bok">
-	<a class="marka" href="{% url 'admin:index' %}">Warzywniak</a>
+	{% if request.resolver_match.url_name == 'login' %}<h1 class="marka-h1"><a class="marka" href="{% url 'admin:index' %}">Warzywniak</a></h1>
+	{% else %}<a class="marka" href="{% url 'admin:index' %}">Warzywniak</a>{% endif %}
 	{% if has_permission %}
 		{% include "admin/panel/_nawigacja.html" %}
 		<div class="bok-konto">

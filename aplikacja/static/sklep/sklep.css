@@ -24,6 +24,8 @@ body { margin: 0; background: var(--kapusta); color: var(--tusz); font: 1rem/1.5
 h1, .marka { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700; }
 a { color: var(--lisc); }
 a:hover { color: var(--jarmuz); }
+:focus-visible { outline: 3px solid var(--marchew); outline-offset: 2px; }
+.naglowek :focus-visible { outline-color: var(--limonka); }
 
 .naglowek { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.5rem; padding: 0.85rem clamp(1rem, 4vw, 2.25rem); background: var(--jarmuz); color: #fff; }
 .naglowek a, .naglowek button { color: #fff; }
@@ -40,7 +42,7 @@ main { max-width: 64rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
 .pole { margin-bottom: 1rem; }
 .pole label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
 .pole input { width: 100%; padding: 0.55rem 0.7rem; border: 1px solid var(--ramka); border-radius: 6px; background: #fff; color: inherit; font: inherit; }
-.pole input:focus { outline: 3px solid var(--limonka); border-color: var(--lisc); }
+.pole input:focus { border-color: var(--lisc); }
 .podpowiedz { margin-top: 0.4rem; color: var(--cichy); font-size: 0.85rem; }
 .podpowiedz ul { margin: 0; padding-left: 1.1rem; }
 
@@ -105,7 +107,7 @@ h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
 .karta .przycisk + .przycisk { margin-top: 0.6rem; }
 
 .pole-ilosci input { width: 6.5rem; padding: 0.4rem 0.55rem; border: 1px solid var(--ramka); border-radius: 6px; font: inherit; text-align: right; }
-.pole-ilosci input:focus { outline: 3px solid var(--limonka); border-color: var(--lisc); }
+.pole-ilosci input:focus { border-color: var(--lisc); }
 .podsumowanie { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 2rem; padding: 1rem 0.8rem; border-top: 1px solid var(--linia); }
 .podsumowanie p { margin: 0; }
 .podsumowanie .przycisk { width: auto; margin-left: auto; padding-inline: 2rem; }
@@ -124,8 +126,6 @@ h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
 .saldo p { margin: 0 0 0.75rem; }
 .saldo .kwota { font: 700 2.2rem/1.1 "Bricolage Grotesque", system-ui, sans-serif; }
 .saldo .podpowiedz { margin: 0; }
-
-.cena-pod-nazwa { display: none; }
 
 /* Telefony (WN przeglądarki, wersja rozszerzona): od 360 px szerokości. */
 @media (max-width: 40rem) {

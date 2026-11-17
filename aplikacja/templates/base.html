@@ -13,8 +13,8 @@
 		<a class="marka" href="{% url 'katalog' %}">Warzywniak</a>
 		{% if user.is_authenticated %}
 			{# Menu boczne na telefonie (menu.js); bez JavaScriptu odnośniki zostają w nagłówku. #}
-			<div class="zaslona"></div>
-			<button class="burger" type="button" aria-controls="menu" aria-expanded="false"><span class="ukryte">Menu</span><span class="kreski" aria-hidden="true"></span></button>
+			<div class="zaslona" hidden></div>
+			<button class="burger" type="button" hidden aria-controls="menu" aria-expanded="false"><span class="ukryte">Menu</span><span class="kreski" aria-hidden="true"></span></button>
 		{% endif %}
 		{% with t=request.resolver_match.url_name %}
 		<nav id="menu" aria-label="Menu">
