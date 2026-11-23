@@ -2,6 +2,8 @@ from decimal import Decimal
 from types import SimpleNamespace as obiekt
 from unittest.mock import patch
 
+from akceptacja.dane_paneli import DanePaneli
+
 import stripe
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -40,7 +42,7 @@ class RoleTests(TestCase):
         self.assertFalse(jest_wlascicielem(konto('s', 'sprzedawca')))
 
 
-class DostepDoPaneluTests(TestCase):
+class DostepDoPaneluTests(DanePaneli, TestCase):
     def test_sprzedawca(self):
         self.client.force_login(konto('s', 'sprzedawca'))
         for adres in STRONY_PERSONELU:
@@ -101,7 +103,10 @@ ADRES = 'anna@example.com'
 
 
 def nowy_klient():
-    return get_user_model().objects.create_user(ADRES, ADRES, HASLO)
+    from .models import ProfilKlienta
+    user = get_user_model().objects.create_user(ADRES, ADRES, HASLO)
+    ProfilKlienta.objects.create(uzytkownik=user, identyfikator_karty='test_karta', telefon='501 200 300')
+    return user
 
 
 class LogowanieTests(TestCase):
@@ -223,7 +228,7 @@ class ResetHaslaTests(TestCase):
 class RejestracjaTests(TestCase):
     def dane(self, **pola):
         return {'imie': 'Anna', 'nazwisko': 'Kowalska', 'email': 'Anna@Example.com', 'telefon': '501 200 300',
-                'haslo': 'Warzywa-2026!', 'haslo2': 'Warzywa-2026!', **pola}
+                'haslo': 'Warzywa-2026!', 'haslo2': 'Warzywa-2026!', 'regulamin': 'on', **pola}
 
     @patch('konta.services.zaloz_klienta')
     def test_konto_i_przejscie_do_karty(self, zapis):
@@ -246,8 +251,9 @@ class RejestracjaTests(TestCase):
             self.assertNotContains(odpowiedz, 'Warzywa-2026!')
         zapis.assert_not_called()
 
-    def test_zapis_bez_logiki(self):
-        self.assertContains(self.client.post(reverse('rejestracja'), self.dane(), follow=True), 'nic nie zapisano')
+    def test_rejestracja_wymaga_zgody(self):
+        odpowiedz = self.client.post(reverse('rejestracja'), self.dane(regulamin=''))
+        self.assertIn('regulamin', odpowiedz.context['form'].errors)
 
     def test_zalogowany_wraca_do_katalogu(self):
         self.client.force_login(nowy_klient())
@@ -364,17 +370,6 @@ class KartaStripeTests(TestCase):
         odpowiedz = self.client.post(reverse('karta'), {'wynik': 'zatwierdz'}, follow=True)
         self.assertRedirects(odpowiedz, reverse('karta'))
         self.assertContains(odpowiedz, 'Operator płatności nie odpowiada')
-
-    @patch('konta.operator.zapisana_karta', return_value='pm_nowa')
-    @patch('konta.operator.rozpocznij')
-    def test_zapis_bez_logiki_nie_zapetla_sie(self, rozpocznij, zapisana, zapis):
-        zapis.side_effect = NotImplementedError('zapisz_karte')
-        self.client.force_login(nowy_klient())
-        self.wyslij_do_operatora(rozpocznij)
-        odpowiedz = self.client.get(POWROT, {'sesja': 'cs_test_1'}, follow=True)
-        self.assertRedirects(odpowiedz, reverse('karta'))
-        self.assertContains(odpowiedz, 'nic nie zapisano')
-
 
 @override_settings(STRIPE_SECRET_KEY='sk_test_atrapa')
 @patch('konta.operator._stripe')

@@ -1,17 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Nowe hasło – Warzywniak{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Nowe hasło – Warzywniak" %}{% endblock %}
 {% block content %}
 <div class="karta">
-	<h1>Nowe hasło</h1>
+	<h1>{% translate "Nowe hasło" %}</h1>
 	{% if validlink %}
 	<form method="post">
 		{% csrf_token %}
 		{% include "konta/_pola.html" %}
-		<button class="przycisk" type="submit">Zmień hasło</button>
+		<button class="przycisk" type="submit">{% translate "Zmień hasło" %}</button>
 	</form>
 	{% else %}
-	<p>Ten link wygasł albo został już użyty.</p>
-	<a class="przycisk" href="{% url 'haslo_reset' %}">Wyślij nowy link</a>
+	<p>{% translate "Ten link wygasł albo został już użyty." %}</p>
+	<a class="przycisk" href="{% url 'haslo_reset' %}">{% translate "Wyślij nowy link" %}</a>
 	{% endif %}
 </div>
 {% endblock %}

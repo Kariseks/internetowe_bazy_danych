@@ -1,6 +1,6 @@
-{% autoescape off %}Dziś odbierasz rezerwację w Warzywniaku. Sklep jest czynny do 18:00.
+{% load i18n %}{% autoescape off %}{% translate "Dziś odbierasz rezerwację w Warzywniaku. Sklep jest czynny do 18:00." %}
 
-Pozycje:
+{% translate "Pozycje:" %}
 {% include "powiadomienia/_pozycje.txt" %}
-Jeśli rezerwacja nie zostanie odebrana do 18:00, sklep naliczy opłatę {{ oplata|floatformat:2 }} zł.
+{% blocktranslate with oplata=oplata|floatformat:2 %}Jeśli rezerwacja nie zostanie odebrana do 18:00, sklep naliczy opłatę {{ oplata }} zł.{% endblocktranslate %}
 {% endautoescape %}

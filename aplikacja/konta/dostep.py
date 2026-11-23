@@ -3,8 +3,6 @@ from functools import wraps
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
-from config.panel import obsluz_brak_logiki
-
 
 def tylko_klient(widok):
     """Panel klienta: niezalogowany trafia na logowanie, personel dostaje 403 (pracuje w panelu administratora)."""
@@ -17,4 +15,4 @@ def tylko_klient(widok):
 
 
 def widok_klienta(widok):
-    return tylko_klient(obsluz_brak_logiki(widok))
+    return tylko_klient(widok)

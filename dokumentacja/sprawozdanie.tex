@@ -31,6 +31,8 @@
 \usepackage{multirow}
 \usepackage{longtable}
 \usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
 \usepackage{float}
 \usepackage{caption}
 \usepackage{subcaption}
@@ -48,22 +50,16 @@
 		\caption{#2}
 	\end{figure}}
 
-% Rysunek z pliku albo, gdy pliku jeszcze nie ma, ramka TODO z oczekiwaną ścieżką (względem dokumentacja/).
-% #1 etykieta, #2 podpis, #3 ścieżka pliku, #4 zawartość rysunku. Schemat nazw plików: CLAUDE.md.
-% Maksymalna wysokość rysunku; duże diagramy nadpisują ją lokalnie: {\renewcommand{\rysunekwysokosc}{…}\diagramvp{…}}.
+% Diagramy wektorowe i zrzuty ekranu. Brak źródła daje błąd kompilacji.
 \newcommand{\rysunekwysokosc}{0.4\textheight}
 \newcommand{\rysunekplik}[4]{%
-	\begin{figure}[H]
-		\centering
-		\IfFileExists{#3}{%
-			\includegraphics[width=0.9\textwidth,height=\rysunekwysokosc,keepaspectratio]{#3}}{%
-			\fbox{\parbox[c][3.4cm][c]{0.85\textwidth}{\centering\small TODO: brak pliku\\\footnotesize\texttt{dokumentacja/#3}\\[0.4em]\footnotesize\raggedright #4}}}
-		\caption{#2}
-		\label{#1}
-	\end{figure}}
-% Diagram z Visual Paradigm: rysunki/diagramy/<nazwa>.png.
-\newcommand{\diagramvp}[4]{\rysunekplik{#1}{#2}{rysunki/diagramy/#3.png}{#4}}
-% Ekran aplikacji (makieta albo zrzut): rysunki/ekrany/<nazwa>.png.
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.96\textwidth,height=\rysunekwysokosc,keepaspectratio]{#3}
+    \caption{#2}
+    \label{#1}
+  \end{figure}}
+\newcommand{\diagramvp}[4]{\rysunekplik{#1}{#2}{rysunki/diagramy/#3}{#4}}
 \newcommand{\ekran}[4]{\rysunekplik{#1}{#2}{rysunki/ekrany/#3.png}{#4}}
 
 % Numeracja przypadków użycia w tab:pu: \pu{etykieta} wypisuje PUn i ustawia etykietę.
@@ -198,9 +194,14 @@
 \section*{Specyfikacja projektu}
 \addcontentsline{toc}{section}{Specyfikacja projektu}
 \label{sec:specyfikacja}
-% TODO: wypełnić na końcu prac, gdy znane są wersje (Q10) i baza (Q3). Wzór: Sklep hydrauliczny,
-% „Specyfikacja projektu” (s. 7--8 PDF): cel w 2--3 zdaniach, wykorzystane technologie i narzędzia,
-% główne funkcjonalności aplikacji, uwagi dodatkowe. Bez nowych faktów — tylko streszczenie rozdz. 1--2 i 7.
+
+Warzywniak przyjmuje dostawę raz dziennie. Klient składa rezerwację przed zamówieniem towaru przez właściciela i~odbiera zakupy przy ladzie. Właściciel widzi, ile kilogramów danego produktu przeznaczono już na odbiór i~ile pozostanie dla pozostałych klientów. Za towar klient płaci przy odbiorze.
+
+Klient-obserwator sprawdza ofertę bez konta. Po rejestracji klient wybiera dzień odbioru, podaje ilości i~śledzi stan swojej rezerwacji. Personel korzysta z~osobnego panelu do przyjmowania dostaw, ważenia paczek, wydawania rezerwacji i~prowadzenia ewidencji sprzedaży. Właściciel ustala ceny, wielkość dostaw oraz dostęp pracowników.
+
+Aplikacja działa w~przeglądarce, a~formularze obsługuje serwer Django. Docelowa baza MySQL z~silnikiem InnoDB przechowuje dokumenty dostaw, rezerwacje, sprzedaż i~rozliczenia. Własność rezerwacji, termin przyjęcia i~pula na wybrany dzień są sprawdzane po stronie serwera. Migracje tworzą tabele na podstawie klas modeli. Przebieg pracy klienta i~personelu zilustrowano w~rozdz.~\ref{ch:opis-pu}, a~reguły powiązania danych w~rozdz.~\ref{ch:model-bd}.
+
+Zakres obejmuje jeden sklep, jednego dostawcę i~produkty sprzedawane na wagę. Dane ilościowe w~opisie sytuacji wyjściowej służą do zaplanowania obciążenia i~próby odbioru. Skuteczność ograniczenia strat wymaga pomiaru po uruchomieniu sklepu.
 
 
 \clearpage
@@ -214,7 +215,7 @@
 \subsection{Obecny sposób działania sklepu}
 \label{sec:opis}
 
-Projekt dotyczy systemu wspomagającego prowadzenie warzywniaka na osiedlu mieszkaniowym we Wrocławiu. Sklep prowadzi Jan Nowak jako osoba fizyczna prowadząca działalność gospodarczą, a~jego klientami są głównie mieszkańcy kilku sąsiednich bloków. Sklep jest czynny codziennie w~godzinach 6:00--18:00. W~tym punkcie opisano, jak sklep działa obecnie, bez systemu informatycznego. Zmiany, które wprowadza system, opisano w~p.~\ref{sec:system}.
+Projekt dotyczy systemu wspomagającego prowadzenie warzywniaka na osiedlu mieszkaniowym we Wrocławiu. W~scenariuszu projektu sklep prowadzi Jan Nowak w~ramach jednoosobowej działalności gospodarczej, a~klientami sklepu są głównie mieszkańcy kilku sąsiednich bloków. Sklep jest czynny codziennie w~godzinach 6:00--18:00.
 
 Asortyment obejmuje podstawowe warzywa i~owoce z~upraw krajowych, takie jak ziemniaki, marchew, cebula, kapusta, buraki, jabłka i~gruszki. Oferta nie zmienia się w~ciągu roku. Wszystkie produkty sprzedaje się na wagę, a~cenę podaje się za kilogram; sklep nie prowadzi sprzedaży na sztuki. Ceny są wypisane ręcznie na tabliczkach przy skrzynkach, a~po zmianie ceny sprzedawca poprawia tabliczkę. Sklep nie ma strony internetowej ani innego kanału informacji dla klientów, więc asortyment, ceny i~dostępność towaru można poznać tylko na miejscu.
 
@@ -237,7 +238,7 @@ Opisany w~p.~\ref{sec:opis} sposób pracy sklepu prowadzi do ośmiu problemów, 
 	\textbf{Zamawianie towaru na wyczucie.} Właściciel składa zamówienie na następny dzień o~18:00, nie wiedząc, ilu klientów zrobi duże zakupy. Ilości dobiera z~doświadczenia, więc w~jednych dniach towaru zostaje za dużo, a~w~innych popularne produkty kończą się po południu, po kilku dużych zakupach rano. Po wprowadzeniu systemu zamówienie obejmuje plan dostawy, w~którym rezerwacje na następny dzień są już znane, ponieważ ich przyjmowanie kończy się o~18:00, w~chwili składania zamówienia.
 
 	\item \label{prob:straty}
-	\textbf{Nadwyżka i~psucie się towaru.} Aby obsłużyć nieprzewidziane duże zakupy, właściciel zamawia dziennie około 700~kg towaru, czyli około 200~kg więcej niż typowa sprzedaż przy ladzie (500~kg). W~dniach bez dużych zakupów nadwyżka zostaje w~sklepie, a~resztki z~poprzedniego dnia sprzedają się gorzej niż świeży towar. Szacuje się, że około 40~kg towaru dziennie traci świeżość i~trafia do wyrzucenia, co daje około 14,6~t rocznie. Gdy duże zakupy przechodzą do rezerwacji, nadwyżka nie jest potrzebna: w~tab.~\ref{tab:parametry} typowa dostawa wynosi 650~kg, z~czego 500~kg przypada na sprzedaż przy ladzie, a~120~kg na rezerwacje znane przed złożeniem zamówienia.
+	\textbf{Nadwyżka i~psucie się towaru.} Aby obsłużyć nieprzewidziane duże zakupy, właściciel zamawia dziennie około 700~kg towaru, czyli około 200~kg więcej niż typowa sprzedaż przy ladzie (500~kg). W~dniach bez dużych zakupów nadwyżka zostaje w~sklepie, a~resztki z~poprzedniego dnia sprzedają się gorzej niż świeży towar. Szacuje się, że około 40~kg towaru dziennie traci świeżość i~trafia do wyrzucenia, co daje około 14,6~t rocznie. W~wariancie planistycznym część dużych zakupów jest znana z~wyprzedzeniem. Dlatego w~tab.~\ref{tab:parametry} typowa dostawa wynosi 650~kg, z~czego 500~kg przypada na sprzedaż przy ladzie, a~120~kg na rezerwacje znane przed złożeniem zamówienia.
 
 	\item \label{prob:ewidencja}
 	\textbf{Brak ewidencji stanu i~sprzedaży.} Stan towaru właściciel ocenia na oko, a~sklep nie zapisuje, ile poszczególnych produktów sprzedano danego dnia. Bez takich danych nie można ustalić standardowych dziennych ilości produktów ani zmierzyć strat, więc właściciel nie wie, czy zmiana zamówień zmniejszyła nadwyżkę. Ceny istnieją tylko na tabliczkach, więc nie wiadomo, od kiedy obowiązuje dana cena, a~na koniec dnia brakuje danych do inwentaryzacji i~do porównania utargu z~ilością sprzedanego towaru. System rejestruje dostawy i~sprzedaż każdego produktu wraz z~ceną, co daje bieżący stan, historię sprzedaży do ustalania planu dostawy oraz ilość towaru, który nie został sprzedany.
@@ -262,13 +263,13 @@ Problemy P1--P3 i~P6 wynikają z~braku informacji o~dużych zakupach przed zło�
 
 W~odpowiedzi na problemy z~p.~\ref{sec:problemy} proponowany system wprowadza do pracy sklepu dwie zmiany: rezerwacje powiązane z~planem dostawy oraz ewidencję dostaw, sprzedaży i~stanu. Pozostałe zasady pracy, takie jak godziny otwarcia, jedna dostawa dziennie i~sprzedaż przy ladzie, nie zmieniają się.
 
-System umożliwia klientom rezerwację towaru przez stronę internetową sklepu i~osobisty odbiór w~wybranym dniu. Dzięki rezerwacjom właściciel zna część popytu przed złożeniem zamówienia u~dostawcy i~nie musi utrzymywać zapasu na nieprzewidziane duże zakupy. System nie obejmuje dowozu do domu, a~za zarezerwowany towar klient płaci przy odbiorze, tak jak przy zwykłym zakupie.
+System umożliwia klientom rezerwację towaru przez stronę internetową sklepu i~osobisty odbiór w~wybranym dniu. Dzięki rezerwacjom właściciel zna część popytu przed złożeniem zamówienia u~dostawcy i~może odpowiednio zmniejszyć zapas na nieprzewidziane duże zakupy. System nie obejmuje dowozu do domu, a~za zarezerwowany towar klient płaci przy odbiorze, tak jak przy zwykłym zakupie.
 
 Rezerwację składa się na jeden z~siedmiu kolejnych dni, począwszy od dnia następnego; najczęściej klienci rezerwują towar na następny dzień. Rezerwacja obejmuje wyłącznie towar, który znajdzie się w~sklepie w~dniu odbioru. Ponieważ towar przychodzi raz dziennie, ilość dostępną do rezerwacji wyznacza plan dostawy, czyli ilość każdego produktu, którą właściciel zamierza zamówić na dany dzień. Domyślnie plan dostawy równa się standardowej dziennej ilości produktu. Część planu właściciel przeznacza na sprzedaż przy ladzie, ustalając dla każdego produktu ilość na ladę, a~rezerwować można tylko resztę. Do rezerwacji na dany dzień pozostaje więc plan dostawy pomniejszony o~ilość na ladę i~o~ilość zarezerwowaną wcześniej na ten dzień. Jeśli plan dostawy ziemniaków na sobotę wynosi 100~kg, na ladę przeznaczono 60~kg, a~klienci zarezerwowali już 30~kg, kolejny klient może zarezerwować najwyżej 10~kg ziemniaków. Bez tej granicy rezerwacje mogłyby objąć cały zamówiony towar, a~klienci kupujący przy ladzie nie dostaliby nic. Właściciel może zwiększyć plan, gdy rezerwacje wyczerpują pulę, albo go zmniejszyć, ale nie poniżej sumy ilości na ladę i~ilości już zarezerwowanej. Towar pozostały z~poprzedniego dnia trafia wyłącznie do sprzedaży przy ladzie, więc klient z~rezerwacją odbiera towar ze świeżej dostawy. W~dniu odbioru towaru zarezerwowanego, a~jeszcze niewydanego, nie sprzedaje się przy ladzie: system pozwala sprzedać tylko stan produktu pomniejszony o~ilości z~niewydanych rezerwacji na ten dzień.
 
 Przyjmowanie rezerwacji na dany dzień kończy się o~18:00 dnia poprzedniego. O~tej godzinie właściciel składa zamówienie u~dostawcy w~ilościach z~planu dostawy, więc zamówienie obejmuje cały towar zarezerwowany na następny dzień. Do tej samej godziny klient może bezpłatnie anulować rezerwację. Klient może mieć jedną rezerwację na dany dzień, a~łączna masa jej pozycji nie może przekroczyć 20~kg, co odpowiada jednej skrzynce.
 
-Zarezerwowany towar klient odbiera w~dniu, na który złożył rezerwację, najpóźniej do zamknięcia sklepu o~18:00. Sprzedawca kompletuje, waży i~pakuje rezerwacje na dany dzień poza godzinami największego ruchu, a~przy odbiorze pobiera zapłatę za odważoną masę według ceny obowiązującej w~dniu odbioru. Rezerwacja, której klient nie odebrał do 18:00, staje się nieodebrana, a~jej towar następnego dnia trafia do sprzedaży przy ladzie. Za nieodebranie rezerwacji klient ponosi opłatę w~wysokości 10\% wartości rezerwacji; przy rezerwacji o~wartości 80~zł opłata wynosi 8~zł. Wartość rezerwacji liczy się z~zarezerwowanych ilości i~cen z~dnia odbioru. Właściciel nazywa tę opłatę zadatkiem, ale w~regulaminie sklepu i~w~systemie nosi ona nazwę opłaty za nieodebranie rezerwacji. Zadatek w~rozumieniu art.~394 Kodeksu cywilnego wręcza się przy zawarciu umowy, a~ta opłata powstaje dopiero wtedy, gdy klient nie odbierze towaru.
+Zarezerwowany towar klient odbiera w~dniu, na który złożył rezerwację, najpóźniej do zamknięcia sklepu o~18:00. Sprzedawca kompletuje, waży i~pakuje rezerwacje na dany dzień poza godzinami największego ruchu, a~przy odbiorze pobiera zapłatę za odważoną masę według ceny obowiązującej w~dniu odbioru. Rezerwacja, której klient nie odebrał do 18:00, staje się nieodebrana, a~jej towar następnego dnia trafia do sprzedaży przy ladzie. Za nieodebranie rezerwacji klient ponosi opłatę w~wysokości 10\% wartości rezerwacji; przy rezerwacji o~wartości 80~zł opłata wynosi 8~zł. Wartość rezerwacji liczy się z~zarezerwowanych ilości i~cen z~dnia odbioru.
 
 Opłaty za nieodebranie nie pobiera się z~góry. Przy rejestracji klient akceptuje regulamin sklepu, który opisuje tę opłatę i~zgodę na późniejsze obciążenie karty, a~następnie podaje kartę płatniczą w~formularzu operatora płatności, a~system przechowuje tylko identyfikator karty nadany przez operatora, bez numeru karty. Po nieodebraniu rezerwacji system nalicza opłatę i~dopisuje ją do zaległości klienta. Właściciel raz w~miesiącu obciąża karty klientów kwotą zaległości za pośrednictwem operatora płatności, poza systemem, i~odnotowuje w~systemie wynik obciążenia. Zaległość można też zapłacić w~sklepie, a~wpłatę odnotowuje sprzedawca. Gdy suma zaległości klienta przekracza 100~zł, system nie przyjmuje od niego nowych rezerwacji, choć rezerwacje złożone wcześniej pozostają ważne. Blokada ustaje samoczynnie, gdy po wpłacie albo skutecznym obciążeniu karty zaległość spadnie do 100~zł lub mniej.
 
@@ -322,7 +323,7 @@ Poza systemem pozostaje zapłata za towar. Klient płaci przy ladzie gotówką a
 \subsection{Parametry skalowalne}
 \label{sec:parametry}
 
-Parametry w~tab.~\ref{tab:parametry} oszacowano dla typowego warzywniaka osiedlowego obsługującego mieszkańców kilku bloków. Wartości początkowe dotyczą pierwszych miesięcy działania systemu, a~docelowe stanu po roku, gdy rezerwacje staną się powszechne wśród stałych klientów. Oferta obejmuje początkowo 32 produkty, m.in. ziemniaki (dwie odmiany), marchew, pietruszkę korzeń, seler, buraki, cebulę białą i~czerwoną, czosnek, pora, kapustę białą i~czerwoną, ogórki, pomidory, paprykę, jabłka w~czterech odmianach i~gruszki.
+Parametry w~tab.~\ref{tab:parametry} oszacowano dla typowego warzywniaka osiedlowego obsługującego mieszkańców kilku bloków. Wartości początkowe dotyczą pierwszych miesięcy działania systemu, a~docelowe stanu po roku, przy założonym wzroście liczby rezerwacji. Do szacowania obciążenia przyjęto początkową ofertę 32 produktów, m.in. ziemniaki (dwie odmiany), marchew, pietruszkę korzeń, seler, buraki, cebulę białą i~czerwoną, czosnek, pora, kapustę białą i~czerwoną, ogórki, pomidory, paprykę, jabłka w~czterech odmianach i~gruszki.
 
 \begin{table}[H]
 	\centering
@@ -350,7 +351,7 @@ Parametry w~tab.~\ref{tab:parametry} oszacowano dla typowego warzywniaka osiedlo
 	\end{tabular}
 \end{table}
 
-Parametry są ze sobą spójne. W~typowym dniu sprzedaż przy ladzie wynosi około 500~kg (200 klientów po 2,5~kg), a~rezerwacje 120~kg, co mieści się w~dostawie 650~kg. W~dniu z~największą liczbą rezerwacji 40 rezerwacji po 20~kg daje 800~kg, a~razem ze sprzedażą przy ladzie 1300~kg, czyli mniej niż największa dostawa 1500~kg, ograniczona ładownością samochodu dostawcy. Docelowo w~takim dniu 45~rezerwacji po 20~kg i~sprzedaż przy ladzie około 550~kg dają 1450~kg. Wartości roczne wynikają z~wartości dziennych pomnożonych przez 365 dni pracy sklepu. Przy średnio trzech pozycjach na transakcję i~rezerwację baza przyrasta początkowo o~około 330~tys. wierszy rocznie.
+W~typowym dniu sprzedaż przy ladzie wynosi około 500~kg (200 klientów po 2,5~kg), a~rezerwacje 120~kg, co mieści się w~dostawie 650~kg. W~dniu z~największą liczbą rezerwacji 40 rezerwacji po 20~kg daje 800~kg, a~razem ze sprzedażą przy ladzie 1300~kg, czyli mniej niż największa dostawa 1500~kg, ograniczona ładownością samochodu dostawcy. Docelowo w~takim dniu 45~rezerwacji po 20~kg i~sprzedaż przy ladzie około 550~kg dają 1450~kg. Wartości roczne wynikają z~wartości dziennych pomnożonych przez 365 dni pracy sklepu. Przy średnio trzech pozycjach na transakcję i~rezerwację baza przyrasta początkowo o~około 330~tys. wierszy rocznie.
 
 \clearpage
 % =====================================================================
@@ -375,7 +376,7 @@ Uwaga: System nie obejmuje dowozu towaru do klienta ani płatności online za to
 \label{sec:zakres}
 % Wytyczne v4 pkt 4d; notatka 19.10 §1 (rezerwacje ilości, odbiór osobisty, bez dowozu i płatności online).
 
-Projekt obejmuje analizę pracy sklepu, projekt systemu i~bazy danych, implementację w~języku Python z~użyciem Django i~bazy MySQL, testy oraz wdrożenie na komputerze w~sklepie wraz z~instrukcją instalacji i~podręcznikiem użytkownika. Prace prowadzi się w~pięciu etapach wytycznych, a~ich terminy podano w~harmonogramie.
+Projekt obejmuje analizę pracy sklepu, model funkcjonalny i~informacyjny systemu, implementację w~języku Python z~użyciem Django i~bazy MySQL, testy oraz wdrożenie na komputerze w~sklepie wraz z~instrukcją instalacji i~podręcznikiem użytkownika. Prace prowadzi się w~pięciu etapach wytycznych, a~ich terminy podano w~harmonogramie.
 
 Funkcje systemu dzielą się na pięć obszarów. Katalog i~konta obejmują publiczny przegląd oferty, rejestrację klienta z~kartą płatniczą oraz logowanie. Rezerwacje i~plan dostawy obejmują składanie, zmianę i~anulowanie rezerwacji, pulę ilości wyznaczaną przez plan dostawy oraz kompletowanie i~wydawanie rezerwacji. Ewidencja obejmuje przyjęcie dostawy z~porównaniem z~planem, sprzedaż przy ladzie, ubytki towaru, korekty stanu i~bieżący stan. Rozliczenia obejmują opłaty za nieodebranie rezerwacji, zaległości klientów i~blokadę nowych rezerwacji. Administracja obejmuje asortyment, ceny, konta personelu oraz anonimizację kont klientów na ich żądanie. Szczegółowe wymagania podano w~p.~\ref{sec:wf} i~p.~\ref{sec:wn}, a~kolejność ich realizacji w~wersjach systemu w~p.~\ref{sec:wersje}.
 
@@ -494,7 +495,7 @@ Rezerwacja przechodzi przez etapy opisane poniżej, a~jej stany odpowiadają opi
 Wymagania niefunkcjonalne (WN) ponumerowano kolejno, od WN1. Wartości liczbowe odnoszą się do parametrów z~tab.~\ref{tab:parametry}.
 
 \begin{enumerate}[label=WN\arabic*.,ref=WN\arabic*,leftmargin=1.6cm]
-	\item Aplikacja webowa z~graficznym interfejsem w~języku polskim. Panel klienta jest oddzielony od panelu administratora (Django Admin), z~którego korzysta wyłącznie personel.
+	\item Aplikacja webowa z~graficznym interfejsem w~języku polskim i~angielskim. Panel klienta jest oddzielony od panelu administratora (Django Admin), z~którego korzysta wyłącznie personel.
 	\item Baza danych MySQL Community Server w~wersji 8.4 LTS z~silnikiem InnoDB i~kodowaniem \texttt{utf8mb4}. Aplikacja w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, połączona z~bazą przez sterownik \texttt{mysqlclient}. Oprogramowanie, na którym działa system, ma bezpłatne licencje open source, które dopuszczają użycie w~działalności sklepu. Uzasadnienie wyboru i~licencje podano w~p.~\ref{sec:wykonalnosc}.
 	\item \label{wn:django} System w~możliwie największym stopniu korzysta z~wbudowanych mechanizmów Django: uwierzytelniania z~grupami użytkowników jako rolami (\texttt{django.\allowbreak contrib.\allowbreak auth}), panelu administratora (\texttt{django.\allowbreak contrib.\allowbreak admin}), formularzy z~walidacją, ORM z~migracjami, sesji, ochrony CSRF, widoków resetu hasła i~wysyłki poczty. Dane klienta spoza modelu użytkownika Django, czyli telefon, identyfikator karty i~zaległość, przechowuje się w~osobnym modelu powiązanym z~kontem.
 	\item \label{wn:wdrozenie} Aplikacja Django działa jako serwer na jednym komputerze w~sklepie, bez zewnętrznego hostingu, a~klienci i~personel łączą się z~nim przez przeglądarkę. Katalog i~panel klienta są dostępne z~internetu przez połączenie szyfrowane (HTTPS), a~panel administratora tylko z~sieci lokalnej sklepu.
@@ -503,13 +504,13 @@ Wymagania niefunkcjonalne (WN) ponumerowano kolejno, od WN1. Wartości liczbowe 
 	\item \label{wn:wydajnosc} Przy obciążeniu z~\ref{wn:wspolbieznosc} wyświetlenie katalogu i~zapisanie rezerwacji trwa nie dłużej niż 2~s.
 	\item Baza mieści dane z~co najmniej pięciu lat pracy sklepu, czyli przy wartościach docelowych z~tab.~\ref{tab:parametry} około 2~mln wierszy.
 	\item \label{wn:czas} Masy przechowuje się jako liczby dziesiętne z~dokładnością do 0,01~kg, a~kwoty z~dokładnością do 1~gr. Terminy, w~tym godzinę 18:00, liczy się według czasu lokalnego (strefa Europe/Warsaw).
-	\item \label{wn:poczta} Wiadomości e-mail system wysyła przez serwer SMTP skrzynki pocztowej sklepu. W~środowisku programistycznym i~podczas testów wiadomości wypisuje się na konsolę zamiast je wysyłać.
+	\item \label{wn:poczta} Wiadomości e-mail system wysyła przez serwer SMTP skrzynki pocztowej sklepu. W~środowisku programistycznym wiadomości są domyślnie kierowane na konsolę. Testy przechwytują je w~pamięci.
 	\item \label{wn:bezpieczenstwo} Hasła przechowuje się wyłącznie w~postaci skrótów, mechanizmem Django. Formularze są chronione przed atakami CSRF. Ciasteczka sesji i~CSRF przeglądarka wysyła tylko przez HTTPS, a~nagłówek HSTS nakazuje jej łączyć się ze sklepem wyłącznie w~ten sposób. Serwer Nginx ogranicza liczbę żądań do formularzy logowania i~resetu hasła z~jednego adresu IP, co utrudnia zgadywanie haseł z~internetu. Dane osobowe klientów widzi tylko personel i~sam klient.
 	\item \label{wn:rodo} Dane osobowe klientów przetwarza się zgodnie z~rozporządzeniem RODO, a~ich administratorem jest właściciel sklepu. Przed założeniem konta klient otrzymuje informację o~celu i~podstawie przetwarzania danych, okresie ich przechowywania i~swoich prawach. Prawo do usunięcia danych realizuje anonimizacja konta (\ref{wf:anonimizacja}), ponieważ dane ewidencji sprzedaży i~rozliczeń muszą pozostać kompletne.
-	% TODO: okres przechowywania danych klienta i treść regulaminu — ustala Karol z właścicielem sklepu.
-	\item \label{wn:dostepnosc} Panel klienta spełnia wytyczne WCAG~2.1 na poziomie AA. Wszystkie funkcje są dostępne z~klawiatury, pola formularzy mają etykiety, kontrast tekstu wynosi co najmniej 4,5:1, a~strona pozostaje czytelna bez arkusza stylów i~bez JavaScriptu. Zgodność sprawdza się automatycznie narzędziem Lighthouse oraz ręcznie, wykonując przypadki użycia klienta samą klawiaturą.
+	\item \label{wn:dostepnosc} Dla panelu klienta przyjęto kryteria WCAG~2.1 na poziomie AA~\cite{wcag}. Odbiór obejmuje wykonanie rezerwacji klawiaturą, odczyt etykiet i~błędów formularza, sprawdzenie widoczności fokusu i~kontrastu tekstu zwykłego co najmniej 4,5:1. Po wyłączeniu CSS i~JavaScriptu katalog, formularze i~polecenia nawigacyjne nadal mają być dostępne. Ocenę ręczną uzupełnia automatyczny audyt stron.
 	\item \label{wn:kopia} Kopię zapasową bazy wykonuje się codziennie po zamknięciu sklepu i~przechowuje poza komputerem z~systemem. Odtworzenie bazy z~kopii trwa nie dłużej niż 1~h.
-	\item \label{wn:przegladarki} Panel administratora działa w~przeglądarkach Chrome, Firefox i~Edge w~wersjach aktualnych w~dniu wdrożenia, na ekranie o~szerokości co najmniej 1280~px. Panel klienta działa w~tych samych przeglądarkach na komputerze, a~w~wersji rozszerzonej także na ekranach telefonów od 360~px szerokości.
+	\item \label{wn:przegladarki} Panel personelu jest przeznaczony do pracy w~Chrome, Firefox i~Edge na ekranie o~szerokości co najmniej 1280~px. Panel klienta powinien działać również na ekranach o~szerokości od 360~px.
+	\item Interfejs udostępnia polską i~angielską wersję językową. Zmiana języka ma obejmować nawigację, formularze, komunikaty walidacji i~zmianę statusu rezerwacji.
 \end{enumerate}
 
 \subsection{Funkcje realizowane i~testowane na zaliczenie}
@@ -538,38 +539,85 @@ Wersja rozszerzona dodaje zestawienia dla właściciela za wybrany okres (\ref{w
 % Elementy wytycznych v4 spoza wzoru SH: pkt 4b (SWOT, CSF), 4d (wykonalność, koszt), 4c (plan), 4a (grupa), 4e (harmonogram);
 % notatka 19.10 uwagi 1, 4, 5, 6 i „Ustalenia”. Po celu i wymaganiach, bo ocena, koszt i plan dotyczą tego zakresu.
 
-\subsection{Analiza SWOT}
+\subsection{Analiza SWOT i~TOWS}
 \label{sec:swot}
-% Poprawki prowadzącego (notatka uwaga 5): krótki czas wdrożenia = słaba strona; błędy techniczne = zagrożenie;
-% bez „brak kodu na etapie analizy”.
 
-Analizę SWOT przeprowadzono dla projektu realizowanego przez grupę w~ramach kursu, a~nie dla samego sklepu. Mocne i~słabe strony dotyczą zespołu i~przyjętego rozwiązania, a~szanse i~zagrożenia czynników zewnętrznych. Zgodnie z~uwagami prowadzącego z~konsultacji 19.10.2026 krótki czas na wdrożenie zaliczono do słabych stron, a~nieprzewidziane błędy techniczne do zagrożeń (tab.~\ref{tab:swot}).
+Przedmiotem oceny jest wdrożenie systemu rezerwacji w~jednym warzywniaku. Za granicę analizy przyjęto decyzje zespołu dotyczące zakresu, architektury i~podziału pracy. Zachowania klientów, warunki w~sklepie i~działanie zewnętrznych usług należą do otoczenia. Rozróżnienie czynników i~kierunków zależności odpowiada slajdom 29--35 wykładu~\cite{wyklad}. Przy sumowaniu ocen zastosowano układ obu przykładów omawianych na zajęciach~\cite{przyklady-swot}.
 
-\begin{table}[H]
-	\centering
-	\caption{Analiza SWOT projektu}
-	\label{tab:swot}
-	\small
-	\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
-		\toprule
-		\textbf{Mocne strony} & \textbf{Słabe strony} \\
-		\midrule
-		Wąski zakres: jeden sklep, jeden dostawca, sprzedaż na wagę, bez dowozu i~płatności online za towar. & Krótki czas na implementację i~wdrożenie: 13~dni między oddaniem projektu (17.11) a~terminem wdrożenia (30.11). \\
-		Wbudowane mechanizmy Django (konta, panel administratora, formularze, migracje, reset hasła) ograniczają ilość własnego kodu. & Brak doświadczenia zespołu z~uruchamianiem aplikacji na komputerze klienta, z~serwerem MySQL i~z~połączeniem HTTPS. \\
-		Reguły rezerwacji i~rozliczeń ustalono na etapie analizy i~zapisano jako numerowane wymagania (p.~\ref{sec:wf}). & Zmiana bazy z~SQLite na MySQL po konsultacji wymaga instalacji i~konfiguracji serwera bazy danych. \\
-		Grupa zna narzędzie Visual Paradigm z~kursu Inżynieria oprogramowania, a~wszystkie narzędzia są bezpłatne. & Dokumentację i~kod przygotowuje się równolegle przez te same trzy osoby. \\
-		\midrule
-		\textbf{Szanse} & \textbf{Zagrożenia} \\
-		\midrule
-		Rezerwacje znane przed zamówieniem u~dostawcy pozwalają zmniejszyć nadwyżkę towaru (\ref{prob:straty}). & Nieprzewidziane błędy techniczne w~trakcie kodowania. \\
-		Katalog z~ilościami dostępnymi do rezerwacji przyciąga klientów, którzy dziś nie znają oferty przed wizytą (\ref{prob:informacja}). & Awaria lub wyłączenie komputera w~sklepie przerywa przyjmowanie rezerwacji. \\
-		Historia sprzedaży i~ubytków daje właścicielowi dane do ustalania standardowych ilości produktów. & Klienci mogą nie korzystać z~rezerwacji albo ich nie odbierać, mimo opłaty za nieodebranie. \\
-		System można później rozszerzyć o~dowóz, płatności online lub kolejne punkty sprzedaży. & Zmiana wymagań w~trakcie realizacji, np. po kolejnej konsultacji, i~rozrost zakresu. \\
-		\bottomrule
-	\end{tabularx}
-\end{table}
+W~tab.~\ref{tab:swot} w~każdej grupie rozdzielono wagę 1,00 pomiędzy trzy czynniki. Najwyższe wagi otrzymały warunki decydujące o~obsłużeniu pierwszej dostawy i~dotrzymaniu terminu wdrożenia. Wagi i~oceny są osądem projektowym opartym na scenariuszu sklepu i~uwagach z~konsultacji. Nie są wynikami pomiarów sprzedaży ani częstości awarii.
 
-Z~tab.~\ref{tab:swot} wynika, że główne ryzyko projektu leży w~czasie między oddaniem projektu a~wdrożeniem. Dlatego prosta działająca wersja aplikacji powstaje równolegle z~fazą projektową, zgodnie z~ustaleniami z~konsultacji, a~wersja minimalna (p.~\ref{sec:wersje}) obejmuje tylko funkcje potrzebne do rezerwacji.
+{\small
+\begin{longtable}{@{}l r L{12.3cm}@{}}
+\caption{Czynniki SWOT projektu i~ich względna ważność w~grupie}\label{tab:swot}\\
+\toprule Kod & Waga & Czynnik \\ \midrule
+\endfirsthead
+\toprule Kod & Waga & Czynnik \\ \midrule
+\endhead
+\bottomrule\endfoot
+\multicolumn{3}{@{}l}{\textbf{Mocne strony}} \\
+S1 & 0,40 & Jeden sklep, jedna dostawa dziennie i~sprzedaż na wagę ograniczają liczbę wariantów do obsłużenia. \\
+S2 & 0,35 & Wspólny plan i~reguły rezerwacji wiążą zamówienie u~dostawcy z~ilościami zadeklarowanymi przez klientów. \\
+S3 & 0,25 & Zespół wykorzystuje mechanizmy Django do obsługi kont, formularzy, uprawnień i~migracji. \\
+\multicolumn{3}{@{}l}{\textbf{Słabe strony}} \\
+W1 & 0,45 & Na implementację i~wdrożenie przewidziano 13~dni między terminami 17~i~30~listopada. \\
+W2 & 0,35 & Pojedynczy komputer skupia obsługę katalogu, rezerwacji i~ewidencji sklepu. \\
+W3 & 0,20 & Te same trzy osoby przygotowują kod, dokumentację oraz demonstrację. \\
+\multicolumn{3}{@{}l}{\textbf{Szanse}} \\
+O1 & 0,45 & Klienci kupujący większe ilości mogą zgłosić zapotrzebowanie przed wieczornym zamówieniem u~dostawcy. \\
+O2 & 0,30 & Właściciel i~sprzedawcy mogą porównać działanie systemu z~przebiegiem dostawy i~odbioru w~sklepie. \\
+O3 & 0,25 & Dostępna dokumentacja Django i~MySQL opisuje konfigurację, testowanie i~odtwarzanie danych. \\
+\multicolumn{3}{@{}l}{\textbf{Zagrożenia}} \\
+T1 & 0,40 & Nieprzewidziane błędy techniczne zależności mogą ujawnić się dopiero w~trakcie kodowania i~integracji. \\
+T2 & 0,35 & Przerwa w~dostawie prądu lub łączności może wystąpić przed zamknięciem zapisów. \\
+T3 & 0,25 & Klient może nie odebrać przygotowanej paczki z~łatwo psującym się towarem. \\
+\end{longtable}}
+
+W~kierunku SWOT zadano kolejno cztery pytania. Czy mocna strona pomaga wykorzystać szansę albo ograniczyć zagrożenie? Czy słaba strona utrudnia wykorzystanie szansy albo zwiększa skutki zagrożenia? W~kierunku TOWS oceniono oddzielnie, czy szansa wzmacnia mocną stronę lub osłabia słabą oraz czy zagrożenie ogranicza mocną stronę lub potęguje słabą. Przykładowo S2 pomaga wykorzystać O1, ponieważ wieczorny plan uwzględnia ilości już przyrzeczone klientom. Dokumentacja techniczna (O3) pomaga skrócić przygotowanie wdrożenia (W1). W~przeciwnym kierunku presja czasu utrudnia zapoznanie się z~tą dokumentacją.
+
+W~tab.~\ref{tab:macierze} czynnik w~wierszu oddziałuje na czynnik w~kolumnie. Wartości 0, 1 i~2 oznaczają odpowiednio brak rozpoznanej zależności, wpływ pośredni i~wpływ bezpośredni. Dla każdego kierunku obliczono sumę interakcji $I$ oraz sumę ważoną $V$. Jeśli $a_{ij}$ oznacza ocenę, a~$w_i$ i~$w_j$ wagi z~tab.~\ref{tab:swot}, to
+\[
+ I=2\sum_{i,j}a_{ij},\qquad V=\sum_{i,j}a_{ij}(w_i+w_j).
+\]
+Wzorem materiałów ćwiczeniowych $I$ obejmuje sumy wierszy i~kolumn. Na przykład komórka S2--O1 z~oceną 2 wnosi do $V$ wartość $2(0{,}35+0{,}45)=1{,}60$. Wyniki dla obu kierunków dodano w~tab.~\ref{tab:strategia}.
+
+\begin{table}[H]\centering\small
+\caption{Oceny powiązań w~ośmiu macierzach. Kierunki SWOT po lewej i~TOWS po prawej}\label{tab:macierze}
+\begin{tabular}{@{}lrrr@{\hspace{1.5cm}}lrrr@{}}
+\toprule
+\textbf{S$\to$O} & O1 & O2 & O3 & \textbf{O$\to$S} & S1 & S2 & S3 \\ \midrule
+S1 & 2 & 1 & 1 & O1 & 1 & 2 & 0 \\
+S2 & 2 & 2 & 0 & O2 & 2 & 2 & 1 \\
+S3 & 0 & 1 & 2 & O3 & 1 & 0 & 2 \\
+\addlinespace
+\textbf{S$\to$T} & T1 & T2 & T3 & \textbf{T$\to$S} & S1 & S2 & S3 \\ \midrule
+S1 & 1 & 0 & 1 & T1 & 1 & 0 & 2 \\
+S2 & 0 & 1 & 2 & T2 & 1 & 2 & 0 \\
+S3 & 2 & 0 & 0 & T3 & 1 & 2 & 0 \\
+\addlinespace
+\textbf{W$\to$O} & O1 & O2 & O3 & \textbf{O$\to$W} & W1 & W2 & W3 \\ \midrule
+W1 & 2 & 1 & 2 & O1 & 1 & 0 & 0 \\
+W2 & 1 & 1 & 0 & O2 & 1 & 0 & 1 \\
+W3 & 1 & 1 & 1 & O3 & 2 & 1 & 1 \\
+\addlinespace
+\textbf{W$\to$T} & T1 & T2 & T3 & \textbf{T$\to$W} & W1 & W2 & W3 \\ \midrule
+W1 & 2 & 2 & 1 & T1 & 2 & 1 & 2 \\
+W2 & 1 & 2 & 0 & T2 & 1 & 2 & 1 \\
+W3 & 1 & 1 & 0 & T3 & 1 & 1 & 0 \\
+\addlinespace
+\bottomrule\end{tabular}\end{table}
+
+\begin{table}[H]\centering\small
+\caption{Porównanie strategii na podstawie obu kierunków analizy}\label{tab:strategia}
+\begin{tabular}{@{}l l rr rr rr@{}}
+\toprule & & \multicolumn{2}{c}{SWOT} & \multicolumn{2}{c}{TOWS} & \multicolumn{2}{c}{Razem} \\
+Para & Strategia & $I$ & $V$ & $I$ & $V$ & $I$ & $V$ \\ \midrule
+S--O & agresywna & 22 & 7,50 & 22 & 7,35 & 44 & 14,85 \\
+S--T & konserwatywna & 14 & 4,65 & 18 & 6,10 & 32 & 10,75 \\
+W--O & konkurencyjna & 20 & 7,00 & 14 & 4,60 & 34 & 11,60 \\
+W--T & defensywna & 20 & 7,30 & 22 & 7,70 & 42 & 15,00 \\
+\bottomrule\end{tabular}\end{table}
+
+Najwyższą sumę ważoną uzyskała strategia defensywna W--T (15,00). W~harmonogramie wdrożenia pierwszeństwo mają zatem sprawdzenie zapisu i~wydania jednej rezerwacji od początku do końca, próba odtworzenia bazy i~sprawdzenie obsługi rezerwacji po przerwie w~zasilaniu. Rozszerzenia mogą poczekać do zakończenia tych prób. Strategia agresywna S--O uzyskała 14,85 i~ma więcej interakcji bez ważenia (44 wobec 42). Wybór jest wrażliwy na oceny: obniżenie wpływu W1 na T1 z~2 do~1 zmniejszyłoby wynik W--T o~0,85. Po próbie wdrożenia należy ponownie ocenić tę zależność na podstawie napotkanych problemów.
 
 \subsection{Czynniki krytyczne sukcesu (CSF)}
 \label{sec:csf}
@@ -608,7 +656,7 @@ System jest wykonalny technicznie w~przyjętym czasie, ponieważ opiera się na 
 % latex-project.org (LPPL); pliki licencji czcionek w aplikacja/static/panel/fonts (SIL OFL 1.1).
 % stripe (biblioteka Pythona): plik LICENSE w pakiecie 16.1.0, MIT, sprawdzone 08.11.2026.
 
-Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~dane przechowuje w~bazie MySQL Community Server 8.4 LTS z~silnikiem InnoDB. Wytyczne zalecają Python i~MySQL (pkt~7). Na konsultacji 19.10.2026 zespół przedstawił bazę SQLite, a~prowadzący ostrzegł, że SQLite źle obsługuje jednoczesne zapisy wielu użytkowników; dlatego wybrano MySQL. Wersje oznaczone jako LTS mają długi okres wsparcia, który obejmuje cały czas realizacji i~pierwsze lata pracy sklepu. Django łączy się z~bazą przez sterownik \texttt{mysqlclient}. Wszystkie narzędzia są bezpłatne (tab.~\ref{tab:technologie}), więc ich koszt wynosi 0~zł (p.~\ref{sec:koszt}). Oprogramowanie uruchamiane w~sklepie ma licencje open source. Visual Paradigm Community Edition jest bezpłatny tylko do użytku niekomercyjnego, ale służy wyłącznie do wykonania diagramów w~ramach kursu i~nie jest instalowany w~sklepie.
+Dla serwera przyjęto Python 3.12, Django 5.2~LTS i~MySQL Community Server 8.4 z~silnikiem InnoDB. Sterownik \texttt{mysqlclient} łączy ORM Django z~serwerem bazy. Podczas konsultacji 19.10.2026 zwrócono uwagę na jednoczesne zapisy klientów. Transakcje i~blokady wierszy w~InnoDB pozwalają osobno kontrolować dostęp do każdego rezerwowanego produktu~\cite{mysql-blokady}. Narzędzia wymienione w~tab.~\ref{tab:technologie} mają zerowy koszt licencyjny w~zakresie projektu.
 
 \begin{table}[H]
 	\centering
@@ -620,9 +668,9 @@ Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~da
 		Technologia & Wersja & Licencja & Zastosowanie \\
 		\midrule
 		Python & 3.12 & PSF License & język aplikacji \\
-		Django & 5.2 LTS & BSD-3-Clause & framework: widoki, szablony, ORM, panel administratora, konta \\
+		Django & 5.2.19 (LTS) & BSD-3-Clause & framework: widoki, szablony, ORM, panel administratora, konta \\
 		MySQL Community Server & 8.4 LTS & GPLv2 & baza danych (InnoDB, \texttt{utf8mb4}) \\
-		\texttt{mysqlclient} & zgodna z~Django 5.2 & GPL-2.0 lub nowsza & sterownik bazy dla Django \\
+		\texttt{mysqlclient} & 2.3.0 & GPL-2.0 lub nowsza & sterownik bazy dla Django \\
 		\texttt{python-dotenv} & 1.2.4 & BSD-3-Clause & wczytywanie ustawień i~haseł z~pliku \texttt{.env} spoza repozytorium \\
 		\texttt{stripe} & 16.1.0 & MIT & połączenie z~testowym środowiskiem operatora płatności Stripe przy rejestracji karty \\
 		Ubuntu Server & 24.04 LTS & bezpłatny, licencje open source & system operacyjny komputera w~sklepie \\
@@ -630,7 +678,7 @@ Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~da
 		Nginx & z~repozytorium Ubuntu 24.04 & BSD-2-Clause & serwer HTTPS, pliki statyczne, ograniczenie panelu administratora do sieci lokalnej \\
 		Certbot & z~repozytorium Ubuntu 24.04 & Apache-2.0 & certyfikat Let's Encrypt i~jego odnawianie \\
 		Bricolage Grotesque, Hanken Grotesk & Fontsource 5 & SIL OFL 1.1 & czcionki panelu administratora, dołączone do aplikacji \\
-		Visual Paradigm & Community Edition & bezpłatna do użytku niekomercyjnego & diagramy UML i~ERD \\
+		Graphviz & narzędzie \texttt{dot} & EPL & układ grafów modelu danych \\
 		Git & aktualna & GPLv2 & repozytorium kodu i~dokumentacji \\
 		LaTeX & TeX Live & LPPL & skład dokumentacji \\
 		\bottomrule
@@ -638,29 +686,29 @@ Aplikację tworzy się w~języku Python 3.12 z~frameworkiem Django 5.2 LTS, a~da
 \end{table}
 % Q6: sprzęt, system i serwery zaproponowane przez agenta 04.11.2026 na prośbę Karola — do akceptacji (CLAUDE.md).
 
-System działa na komputerze typu mini PC wymienionym w~kosztorysie (tab.~\ref{tab:koszt}), z~energooszczędnym czterordzeniowym procesorem, np. Intel N100, 16~GB pamięci RAM i~dyskiem SSD 512~GB. Komputer pracuje pod kontrolą systemu Ubuntu Server 24.04 LTS, który jest bezpłatny i~ma wsparcie do 2029~r. Przy obciążeniu z~tab.~\ref{tab:parametry} taki komputer ma duży zapas mocy, a~pobiera około 15~W.
+Do instalacji w~sklepie przewidziano komputer typu mini PC z~kosztorysu (tab.~\ref{tab:koszt}), system Ubuntu Server 24.04 LTS, 16~GB pamięci RAM i~dysk SSD 512~GB. Przyjęte zużycie energii 15~W jest założeniem kosztorysowym. Wydajność komputera pod docelowym obciążeniem podlega pomiarowi przy odbiorze.
 
-Żądania z~przeglądarek przyjmuje serwer Nginx. Obsługuje on połączenie HTTPS, udostępnia pliki statyczne i~przekazuje pozostałe żądania do serwera aplikacji Gunicorn, który uruchamia Django przez interfejs WSGI. Certyfikat HTTPS dla domeny sklepu wystawia bezpłatnie urząd Let's Encrypt, a~program Certbot odnawia go samoczynnie przed wygaśnięciem. Router sklepu przekierowuje na komputer porty 80 i~443, a~jeśli dostawca internetu przydziela zmienny adres IP, adres domeny aktualizuje się przez dynamiczny DNS. Żądania do panelu administratora Nginx przepuszcza tylko z~adresów sieci lokalnej sklepu (\ref{wn:wdrozenie}). MySQL, Gunicorn i~Nginx działają jako usługi systemu uruchamiane przy starcie komputera. Zadania o~ustalonych godzinach uruchamia systemowy harmonogram \texttt{cron}: o~18:00 polecenie Django oznaczające rezerwacje nieodebrane (\ref{pu:nieodebrane}), o~6:00 wysyłkę przypomnień (\ref{pu:przypomnienie}) i~po zamknięciu sklepu kopię bazy programem \texttt{mysqldump} na dysk zewnętrzny (\ref{wn:kopia}). Polecenie oznaczające rezerwacje nieodebrane \texttt{cron} uruchamia też przy starcie komputera, aby objąć dni, w~których o~18:00 komputer był wyłączony, np. po awarii zasilania dłuższej niż czas pracy zasilacza awaryjnego.
+W~docelowej topologii żądania z~przeglądarek przyjmuje serwer Nginx. Obsługuje on połączenie HTTPS, udostępnia pliki statyczne i~przekazuje pozostałe żądania do serwera aplikacji Gunicorn, który uruchamia Django przez interfejs WSGI. Certyfikat HTTPS dla domeny sklepu wystawia bezpłatnie urząd Let's Encrypt, a~program Certbot odnawia go samoczynnie przed wygaśnięciem. Router sklepu przekierowuje na komputer porty 80 i~443, a~jeśli dostawca internetu przydziela zmienny adres IP, adres domeny aktualizuje się przez dynamiczny DNS. Żądania do panelu administratora Nginx przepuszcza tylko z~adresów sieci lokalnej sklepu (\ref{wn:wdrozenie}). MySQL, Gunicorn i~Nginx działają jako usługi systemu uruchamiane przy starcie komputera. Zadania o~ustalonych godzinach uruchamia systemowy harmonogram \texttt{cron}: o~18:00 polecenie Django oznaczające rezerwacje nieodebrane (\ref{pu:nieodebrane}), o~6:00 wysyłkę przypomnień (\ref{pu:przypomnienie}) i~po zamknięciu sklepu kopię bazy programem \texttt{mysqldump} na dysk zewnętrzny (\ref{wn:kopia}). Polecenie oznaczające rezerwacje nieodebrane \texttt{cron} uruchamia też przy starcie komputera, aby objąć dni, w~których o~18:00 komputer był wyłączony, np. po awarii zasilania dłuższej niż czas pracy zasilacza awaryjnego.
 
-Z~technik modelowania wymienionych w~wytycznych wybrano UML i~diagram związków encji (ERD). Diagramy UML przypadków użycia, czynności, klas i~stanów oraz ERD wykonuje się w~Visual Paradigm Community Edition, z~którego grupa korzystała na kursie Inżynieria oprogramowania. ERD rysuje się w~notacji Crow's Foot (,,kurza stopka''), w~której liczność związku oznacza się zakończeniem linii, tak jak w~modelach bazy danych przykładowego raportu ,,Sklep hydrauliczny''. Diagramy hierarchii i~następstwa funkcji (DHF, DNF) oraz definicje funkcji elementarnych (DFE) pominięto, ponieważ strukturę funkcjonalną systemu opisują przypadki użycia (rozdz.~\ref{ch:diagramy-pu} i~\ref{ch:opis-pu}), a~strukturę informacyjną model bazy danych (rozdz.~\ref{ch:model-bd}).
+Przebieg operacji przedstawiają diagramy przypadków użycia, czynności i~stanów (rozdz.~\ref{ch:diagramy-pu}, \ref{ch:opis-pu} i~\ref{ch:model-bd}). Źródła diagramów przypadków użycia i~czynności są zapisane w~PlantUML. Model relacyjny oraz odpowiadające mu klasy Django opisano w~rozdz.~\ref{ch:model-bd}.
 
 \subsubsection{Współbieżne zapisy w~bazie MySQL (InnoDB)}
 \label{sec:wspolbieznosc}
 % Notatka uwaga 1; Q3 (04.11.2026, Karol): MySQL.
 
-Jednocześnie z~systemu korzystają najwyżej 2~osoby personelu i~20~klientów (tab.~\ref{tab:parametry}). Silnik InnoDB blokuje przy zapisie pojedyncze wiersze, a~nie całą bazę, więc sprzedaż zapisywana przy ladzie nie czeka na rezerwację składaną w~tym czasie przez klienta. Odczyty, np. przegląd katalogu, nie czekają na zapisy, ponieważ InnoDB udostępnia im spójny obraz danych z~chwili rozpoczęcia zapytania.
+Przyjęte obciążenie to 2~osoby personelu i~20~klientów jednocześnie (tab.~\ref{tab:parametry}). Przy dwóch zapisach odwołujących się do tej samej puli klient musi otrzymać wynik sprawdzenia dostępności po uwzględnieniu poprzedniego zapisu. InnoDB umożliwia utrzymywanie blokady zmienianych wierszy do końca transakcji~\cite{mysql-blokady}.
 
-Konflikt może wystąpić wtedy, gdy dwóch klientów rezerwuje ten sam produkt na ten sam dzień, zwłaszcza tuż przed 18:00. Złożenie rezerwacji wykonuje się w~jednej transakcji (\texttt{transaction.atomic}): system blokuje wiersze planu dostawy wybranych produktów na dany dzień (\texttt{select\_for\_update}, w~SQL \texttt{SELECT ... FOR UPDATE}), sprawdza ilość dostępną do rezerwacji i~zapisuje pozycje. Druga transakcja czeka na zwolnienie blokady i~sprawdza dostępność już po zapisie pierwszej, więc suma rezerwacji nie przekracza planu dostawy. Tak samo przy sprzedaży, ubytku i~korekcie stanu blokuje się wiersz produktu, aby jego stan nie zszedł poniżej zera, a~sprzedaż przy ladzie nie objęła towaru z~niewydanych rezerwacji na bieżący dzień.
+Konflikt może wystąpić wtedy, gdy dwóch klientów rezerwuje ten sam produkt na ten sam dzień, zwłaszcza tuż przed 18:00. Złożenie rezerwacji wykonuje się w~jednej transakcji (\texttt{transaction.atomic}): system blokuje profil klienta i~wiersze wybranych produktów (\texttt{select\_for\_update}, w~SQL \texttt{SELECT ... FOR UPDATE}), sprawdza ilość dostępną do rezerwacji i~zapisuje pozycje. Druga transakcja czeka na zwolnienie blokady i~sprawdza dostępność już po zapisie pierwszej, więc suma rezerwacji nie przekracza planu dostawy. Tak samo przy sprzedaży, ubytku i~korekcie stanu blokuje się wiersz produktu, aby jego stan nie zszedł poniżej zera, a~sprzedaż przy ladzie nie objęła towaru z~niewydanych rezerwacji na bieżący dzień.
 
 Drugi możliwy konflikt dotyczy jednej rezerwacji: sprzedawca wydaje ją tuż przed 18:00, a~w~tym czasie startuje polecenie oznaczające rezerwacje nieodebrane. Obie operacje blokują wiersz rezerwacji i~sprawdzają jej stan dopiero po uzyskaniu blokady. Rezerwacja zostaje więc albo odebrana, albo nieodebrana z~opłatą, nigdy oba naraz.
 
-Transakcje są krótkie: obejmują kilka odczytów i~zapisów, bez oczekiwania na użytkownika. Jeśli transakcja przekroczy czas oczekiwania na blokadę albo baza wykryje zakleszczenie, system wycofuje ją i~prosi użytkownika o~ponowienie operacji. Przy obciążeniu z~tab.~\ref{tab:parametry} takie sytuacje są rzadkie.
+Transakcja obejmuje ponowne odczytanie dostępności i~zapis dokumentu. W~przypadku błędu nie powinien pozostać nagłówek bez pozycji ani pozycje bez nagłówka. Mechanizm \texttt{transaction.atomic} zapewnia wspólne zatwierdzenie bądź wycofanie operacji objętych blokiem~\cite{django-transakcje}. Próby dwóch zapisów i~przekroczenia czasu oczekiwania opisano w~p.~\ref{sec:testy-akceptacyjne}.
 
 \subsection{Koszt wytworzenia systemu (kosztorys)}
 \label{sec:koszt}
 % Q9: stawka, godziny i sprzęt zaproponowane przez agenta 04.11.2026, zatwierdzone przez Karola.
 
-Koszt obejmuje pracę zespołu, sprzęt potrzebny w~sklepie i~koszty utrzymania (tab.~\ref{tab:koszt}). Pracę wyceniono stawką 40~zł za godzinę, przyjętą jako typowa stawka studenta zatrudnionego jako programista bez doświadczenia zawodowego. Liczbę godzin oszacowano dla trzech osób w~pięciu etapach projektu. Narzędzia nie generują kosztu, ponieważ mają bezpłatne licencje (tab.~\ref{tab:technologie}). System działa na komputerze w~sklepie, więc nie ma opłat za hosting.
+Koszt obejmuje pracę zespołu, sprzęt potrzebny w~sklepie i~koszty utrzymania (tab.~\ref{tab:koszt}). Pracę wyceniono stawką kalkulacyjną 40~zł za godzinę. Liczbę godzin oszacowano dla trzech osób w~pięciu etapach projektu. Narzędzia nie generują kosztu, ponieważ mają bezpłatne licencje (tab.~\ref{tab:technologie}). System działa na komputerze w~sklepie, więc nie ma opłat za hosting.
 
 \begin{table}[H]
 	\centering
@@ -697,7 +745,6 @@ Koszt obejmuje pracę zespołu, sprzęt potrzebny w~sklepie i~koszty utrzymania 
 \end{table}
 
 Koszt wytworzenia systemu wynosi 8\,400~zł, a~z~wyposażeniem sklepu 11\,050~zł. Najwięcej kosztuje implementacja, która zajmuje 43\% godzin. Jeśli w~sklepie jest komputer, który może pracować całą dobę, koszt wdrożenia zmniejsza się o~2\,000~zł. Prowizji operatora płatności od obciążeń kart nie wliczono, ponieważ ponosi ją sklep przy rozliczaniu opłat za nieodebranie, a~nie przy wytwarzaniu systemu. Kosztorys nie obejmuje też pracy przy utrzymaniu systemu po wdrożeniu: instalowania aktualizacji Ubuntu, Django i~MySQL oraz sprawdzania kopii zapasowych.
-% TODO: liczba godzin utrzymania rocznie i kto je wykonuje (właściciel czy zespół) — decyzja Karola.
 
 \subsection{Plan projektu}
 \label{sec:plan}
@@ -1060,7 +1107,7 @@ Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każ
 		\item Klient wpisuje ilości wybranych produktów w~kilogramach, z~dokładnością do 0,1~kg.
 		\item System pokazuje łączną masę i~orientacyjną wartość rezerwacji według cen bieżących.
 		\item Klient zatwierdza rezerwację.
-		\item System w~jednej transakcji blokuje wiersze planu dostawy wybranych produktów na ten dzień (p.~\ref{sec:wspolbieznosc}) i~sprawdza, czy łączna masa nie przekracza 20~kg, ilość każdego produktu nie przekracza ilości dostępnej do rezerwacji, a~godzina jest wcześniejsza niż 18:00 w~dniu poprzedzającym dzień odbioru.
+		\item System w~jednej transakcji blokuje profil klienta i~wiersze wybranych produktów (p.~\ref{sec:wspolbieznosc}) i~sprawdza, czy łączna masa nie przekracza 20~kg, ilość każdego produktu nie przekracza ilości dostępnej do rezerwacji, a~godzina jest wcześniejsza niż 18:00 w~dniu poprzedzającym dzień odbioru.
 		\item System zapisuje rezerwację z~pozycjami w~stanie złożona.
 		\item System wysyła klientowi wiadomość e-mail z~dniem odbioru i~listą pozycji.
 		\item System wyświetla rezerwację na liście rezerwacji klienta.
@@ -1269,7 +1316,7 @@ Przypadki użycia sprzedawcy realizuje również właściciel (tab.~\ref{tab:akt
 	\begin{enumerate}
 		\item System wyświetla dla każdego produktu w~ofercie i~każdego z~siedmiu kolejnych dni plan dostawy, ilość na ladę, ilość zarezerwowaną i~ilość dostępną do rezerwacji. Plan dnia, którego właściciel jeszcze nie zmieniał, równa się standardowej dziennej ilości produktu.
 		\item Właściciel zmienia plan wybranego produktu na wybrany dzień i~zatwierdza zmianę.
-		\item System w~jednej transakcji blokuje wiersz planu, sprawdza, czy nowy plan nie jest mniejszy od sumy ilości na ladę i~ilości zarezerwowanej, i~zapisuje go.
+		\item System w~jednej transakcji blokuje wiersz produktu, sprawdza, czy nowy plan nie jest mniejszy od sumy ilości na ladę i~ilości zarezerwowanej, i~zapisuje go.
 		\item System wyświetla nową ilość dostępną do rezerwacji, którą od tej chwili pokazuje też katalog.
 	\end{enumerate}
 	\item \textbf{Przebiegi alternatywne:}
@@ -1600,17 +1647,16 @@ Słownik danych (tab.~\ref{tab:slownik}) definiuje wszystkie tabele i~atrybuty m
 
 Stan rezerwacji przechowuje atrybut \texttt{stan} tabeli \texttt{rezerwacja}. Graf stanów (rys.~\ref{rys:graf-stanow}) przedstawia stany z~p.~\ref{sec:system} i~przypadki użycia, które je zmieniają.
 
-\diagramvp{rys:graf-stanow}{Graf stanów rezerwacji}{stany-rezerwacja}{diagram maszyny stanów UML: stan początkowy $\rightarrow$ złożona; złożona $\rightarrow$ anulowana, przygotowana do odbioru, odebrana, nieodebrana; przygotowana do odbioru $\rightarrow$ odebrana, nieodebrana; anulowana, odebrana i~nieodebrana $\rightarrow$ stan końcowy}
+\diagramvp{rys:graf-stanow}{Graf stanów rezerwacji}{stany-rezerwacja}{diagram maszyny stanów UML: stan początkowy $\rightarrow$ złożona; złożona $\rightarrow$ anulowana, przygotowana do odbioru, nieodebrana; przygotowana do odbioru $\rightarrow$ odebrana, nieodebrana; anulowana, odebrana i~nieodebrana $\rightarrow$ stan końcowy}
 
 \begin{enumerate}
 	\item \textbf{Złożona} (\texttt{zlozona}). Stan początkowy po złożeniu rezerwacji (\ref{pu:zlozenie}). Zmiana pozycji (\ref{pu:zmiana}) nie zmienia stanu. Z~tego stanu rezerwacja przechodzi:
 	\begin{itemize}
 		\item do stanu anulowana, gdy klient anuluje ją przed 18:00 w~dniu poprzedzającym dzień odbioru (\ref{pu:anulowanie});
 		\item do stanu przygotowana do odbioru, gdy sprzedawca w~dniu odbioru wpisze odważone masy (\ref{pu:przygotowanie});
-		\item do stanu odebrana, gdy sprzedawca wyda nieprzygotowaną rezerwację, ważąc towar przy kliencie (\ref{pu:wydanie}, A1);
 		\item do stanu nieodebrana, gdy nie wydano jej do 18:00 w~dniu odbioru (\ref{pu:nieodebrane}).
 	\end{itemize}
-	\item \textbf{Przygotowana do odbioru} (\texttt{przygotowana}). Towar jest skompletowany i~zważony. Rezerwacja przechodzi do stanu odebrana po wydaniu (\ref{pu:wydanie}) albo do stanu nieodebrana o~18:00 w~dniu odbioru (\ref{pu:nieodebrane}).
+	\item \textbf{Przygotowana do odbioru} (\texttt{przygotowana}). Towar jest skompletowany i~zważony. Także przy ważeniu przy kliencie sprzedawca najpierw zapisuje masy, a~dopiero potem potwierdza wydanie. Rezerwacja przechodzi do stanu odebrana po wydaniu (\ref{pu:wydanie}) albo do stanu nieodebrana o~18:00 w~dniu odbioru (\ref{pu:nieodebrane}).
 	\item \textbf{Odebrana} (\texttt{odebrana}). Stan końcowy. Wydanie zapisano jako sprzedaż powiązaną z~rezerwacją.
 	\item \textbf{Anulowana} (\texttt{anulowana}). Stan końcowy. Ilości rezerwacji nie liczą się do ilości zarezerwowanej, a~klient może złożyć nową rezerwację na ten dzień, jeśli przyjmowanie rezerwacji trwa.
 	\item \textbf{Nieodebrana} (\texttt{nieodebrana}). Stan końcowy. Rezerwacja ma naliczoną opłatę za nieodebranie, która powiększa zaległość klienta.
@@ -1625,23 +1671,47 @@ Stan rezerwacji przechowuje atrybut \texttt{stan} tabeli \texttt{rezerwacja}. Gr
 % Wzór: Sklep hydrauliczny rozdz. 6 (technologie, struktura systemu z warstwami, moduły, model danych, bezpieczeństwo).
 
 \subsection{Technologie}
-% Wersje z requirements.txt i licencje (notatka uwaga 6).
+
+Wersje zależności Pythona określa plik \texttt{aplikacja/requirements.txt}. Django obsługuje sesje, uprawnienia, formularze i~komunikację z~bazą. Pakiet \texttt{python-dotenv} wczytuje konfigurację środowiska, a~biblioteka \texttt{stripe} obsługuje rejestrację karty w~środowisku testowym operatora. Za towar klient płaci sprzedawcy na miejscu.
 
 
 \subsection{Środowisko programistyczne i~repozytorium kodu}
-% Notatka „Ustalenia”: konfiguracja środowiska i prosta działająca wersja równolegle z dokumentacją. Link do repozytorium (RE 5.3).
+
+Katalog \texttt{aplikacja/} zawiera plik \texttt{manage.py}, konfigurację projektu i~cztery aplikacje Django. Definicję kontenera MySQL zapisano w~\texttt{compose.yaml}. Repozytorium zawiera wzór konfiguracji \texttt{.env.example}. Lokalny plik \texttt{.env} z~hasłami pozostaje na komputerze administratora. Źródła raportu i~materiały graficzne znajdują się w~katalogu \texttt{dokumentacja/}.
 
 
 \subsection{Architektura trójwarstwowa}
 \label{sec:architektura}
-% Wytyczne v4 pkt 9. Warstwy: dane (modele ORM + baza), logika (widoki), prezentacja (szablony). Wzór: SH 6.1.2 „Struktura systemu”.
 
+Żądanie klienta składającego rezerwację przechodzi przez trzy warstwy. Widok odczytuje dzień odbioru, tworzy formularz i~po udanym zapisie kieruje klienta do jego rezerwacji. Warstwa logiki sprawdza warunki rezerwacji i~ilości dostępne w~planie. Warstwa danych odwzorowuje nagłówek i~pozycje na wiersze tabel powiązane kluczami obcymi. Błąd ilości powinien wrócić do formularza przed zatwierdzeniem transakcji.
+
+
+Na rys.~\ref{rys:architektura} pokazano ten przebieg na tle granicy między przeglądarką a~serwerem. Odpowiedź HTTP zawiera dokument HTML wygenerowany z~szablonu i~wyniku operacji.
+\begin{figure}[H]\centering
+\begin{tikzpicture}[
+  node distance=4mm,
+  warstwa/.style={draw=teal!60!black,fill=teal!4,rounded corners=2pt,align=left,text width=11.5cm,inner sep=6pt,font=\small},
+  lacze/.style={-{Stealth[length=1.8mm]},draw=teal!70!black,thick}
+]
+\node[warstwa] (klient) {\textbf{Przeglądarka klienta}\\Formularz ilości w~kilogramach i~wybrany dzień odbioru.};
+\node[warstwa,below=of klient] (widok) {\textbf{Warstwa prezentacji}\\Widok Django odczytuje żądanie, wiąże pola formularza i~wybiera szablon odpowiedzi.};
+\node[warstwa,below=of widok] (usluga) {\textbf{Warstwa logiki}\\Usługa rezerwacji sprawdza termin, uprawnienia klienta i~dostępność produktów.};
+\node[warstwa,below=of usluga] (baza) {\textbf{Warstwa danych}\\ORM odwzorowuje rezerwację oraz pozycje na tabele. Baza zatwierdza transakcję.};
+\draw[lacze] (klient)--(widok);
+\draw[lacze] (widok)--(usluga);
+\draw[lacze] (usluga)--(baza);
+\end{tikzpicture}
+\caption{Droga żądania zapisu rezerwacji przez warstwy aplikacji}\label{rys:architektura}
+\end{figure}
 
 \subsection{Oddzielenie kodu od HTML -- szablony Django}
-% Wytyczne v4 pkt 9 (oddzielenie kodu od statycznego HTML przez szablony).
+
+Szablon bazowy określa język dokumentu, nagłówek, nawigację i~miejsce na komunikaty. Szablony poszczególnych stron wypełniają blok treści, korzystając z~wartości przekazanych przez widok. Formularz rezerwacji przesyła ilości do serwera. JavaScript może wyświetlić sumę przed zatwierdzeniem, lecz o~przyjęciu rezerwacji rozstrzyga kontrola po stronie serwera. Dzięki temu zamknięcie zapisów działa również wtedy, gdy klient wysyła wcześniej otwarty formularz.
 
 
 \subsection{Moduły funkcjonalne}
+
+Moduł \texttt{konta} obsługuje klienta od rejestracji do zmiany danych. \texttt{rezerwacje} wiąże produkty z~dniem odbioru i~prowadzi rezerwację do wydania lub oznaczenia jako nieodebranej. \texttt{magazyn} prowadzi asortyment, cennik, dostawy i~sprzedaż. W~\texttt{rozliczenia} personel sprawdza saldo klienta i~odnotowuje wpłatę albo wynik obciążenia karty. Przyjęcie pieniędzy i~rejestracja wyniku w~ewidencji stanowią odrębne czynności.
 
 
 \subsection{Panel klienta i~panel administratora}
@@ -1656,10 +1726,13 @@ Dane w~panelu klienta są ograniczone do zalogowanego konta. Widoki pobierają r
 
 
 \subsection{Model fizyczny bazy danych}
-% SQL z manage.py sqlmigrate (wzór DDL: Restauracja 5.2); lista modeli jak SH 6.1.4 „Model danych”.
+
+Tabele aplikacji powstają po wykonaniu migracji Django. Ograniczenia unikalności chronią m.in. parę produktu i~dnia dostawy oraz związek między wydaną rezerwacją a~sprzedażą. Rezerwacja i~sprzedaż mają osobne pozycje. Dla towaru sprzedawanego na wagę pozwala to zachować masę zamówioną, a~po zważeniu zapisać rzeczywistą masę i~cenę wydania. Słownik danych i~schemat odczytany z~bazy znajdują się w~rozdz.~\ref{ch:model-bd}.
 
 
 \subsection{Bezpieczeństwo}
+
+Dostęp do widoku klienta wymaga uwierzytelnienia i~sprawdzenia roli konta. Przy pobieraniu rezerwacji serwer uwzględnia właściciela rekordu. Formularze zmieniające dane przesyłają token CSRF. Django zapisuje skrót hasła, a~reset hasła wykorzystuje odnośnik z~tokenem. Numer karty jest wprowadzany wyłącznie u~operatora. W~lokalnej symulacji klient potwierdza zapis testowego identyfikatora.
 
 
 
@@ -1670,6 +1743,8 @@ Dane w~panelu klienta są ograniczone do zalogowanego konta. Widoki pobierają r
 % Wzór: Sklep hydrauliczny rozdz. 7 (pakiety i klasy z jednym zdaniem opisu).
 
 \subsection{Aplikacje Django i~modele}
+
+Klasy modeli określają pola oraz zależności od innych tabel. Moduły \texttt{services.py} udostępniają operacje potrzebne obu panelom, np. złożenie, przygotowanie i~wydanie rezerwacji. Dzięki temu sprzedaż przy ladzie i~wydanie paczki mogą korzystać z~tej samej ewidencji produktów. Podział klas i~klucze obce opisano w~p.~\ref{sec:slownik}.
 
 
 \subsection{Widoki i~szablony panelu klienta}
@@ -1767,13 +1842,19 @@ Szablony stron leżą w~katalogu \texttt{templates/admin/panel/}. Wszystkie dzie
 
 \subsection{Pozostałe pliki}
 
+Projekt \texttt{config} ustala bazę danych, strefę czasu, ścieżki statyczne i~główną tablicę adresów URL. Z~pliku \texttt{config/wsgi.py} serwer aplikacji pobiera obiekt obsługujący żądania. Zadania wysyłki przypomnień i~oznaczenia rezerwacji nieodebranych są poleceniami Django w~katalogu \texttt{rezerwacje/management/commands/}; można je uruchamiać z~tego samego środowiska co aplikację.
+
 
 
 \clearpage
 % =====================================================================
 \section{Opis wybranego fragmentu kodu źródłowego}
 \label{ch:kod}
-% Wzór: Sklep hydrauliczny rozdz. 8 (operacje transakcyjne na zamówieniu).
+Wpłata klienta i~odnotowanie wyniku obciążenia karty korzystają z~tej samej funkcji zapisu w~module \texttt{rozliczenia.services} (listing~\ref{lst:wplata}). Obie operacje mogą dotyczyć tego samego klienta. Jeśli na jego koncie pozostało 12~zł opłat, a~na dwóch stanowiskach próbuje się zarejestrować wpłatę po 10~zł, tylko pierwszy zapis powinien się powieść.
+
+\lstinputlisting[language=Python,firstline=46,lastline=60,caption={Rejestracja rozliczenia po ponownym sprawdzeniu salda klienta},label={lst:wplata}]{../aplikacja/rozliczenia/services.py}
+
+Blokada wiersza profilu obejmuje odczyt salda oraz zapis rozliczenia. W~MySQL druga operacja oczekuje na zwolnienie wiersza i~sprawdza pozostałe 2~zł. Kwota 10~zł przekracza tę wartość, więc zgłoszenie wyjątku przerywa zapis. Pole \texttt{skuteczne} rozróżnia potwierdzoną wpłatę i~nieudaną próbę obciążenia. W~obliczeniu salda uwzględnia się tylko skuteczne rozliczenia.
 
 
 \clearpage
@@ -1785,6 +1866,8 @@ Szablony stron leżą w~katalogu \texttt{templates/admin/panel/}. Wszystkie dzie
 
 \subsection{Testy jednostkowe}
 
+Testy pogrupowano według aplikacji Django. Rozróżniają one błędy formularzy, zachowanie widoków przy różnych rolach i~wyniki operacji wykonywanych na danych. Na przykład dostępność katalogu sprawdza żądanie bez zalogowanej sesji, a~przesłanie niepoprawnego formularza powinno zwrócić opis błędu bez zmiany danych. Test klienta HTTP, który korzysta również z~sesji i~bazy, jest próbą integracyjną. Nie zastępuje sprawdzenia obsługi klawiaturą w~przeglądarce.
+
 
 \subsection{Testy akceptacyjne przypadków użycia}
 \label{sec:testy-akceptacyjne}
@@ -1795,7 +1878,6 @@ Test akceptacyjny sprawdza, czy przypadek użycia działa zgodnie ze swoim opise
 Testy zapisano jako testy Django w~pakiecie \texttt{akceptacja}. Klient testowy Django (\texttt{django.test.Client}) wysyła żądania do widoków tak jak przeglądarka, więc każde żądanie przechodzi przez widok, funkcje logiki w~\texttt{services.py} i~modele ORM aż do bazy danych. Stan początkowy test tworzy funkcjami zapisu z~\texttt{services.py}, a~stan po wykonaniu przypadku użycia odczytuje funkcjami odczytu z~tego samego modułu. Testy TA14 i~TA16 korzystają z~dwóch połączeń z~bazą naraz. Godzinę, od której zależy zamknięcie przyjmowania rezerwacji o~18:00, test ustawia na stałe, a~wiadomości e-mail zbiera zamiast wysyłać je do serwera poczty. Przypadek \ref{pu:nieodebrane} test uruchamia tym samym poleceniem Django, które w~sklepie uruchamia \texttt{cron}. Test TA14 sprawdza też pierwszy czynnik sukcesu z~tab.~\ref{tab:csf}: dwie jednoczesne rezerwacje nie przekraczają planu dostawy.
 
 Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapisuje (\ref{pu:anulowanie} A1, \ref{pu:sprzedaz} A2, \ref{pu:wydanie} A3), oraz \ref{pu:logowanie} A2, który przechodzi do \ref{pu:reset} z~osobnymi testami. W~tabeli D oznacza bieżący dzień, D+1 dzień następny, a~D$-$1 poprzedni. Ilości, ceny i~adresy są danymi testowymi.
-% TODO: wyniki testów akceptacyjnych (zaliczony / niezaliczony) po zaimplementowaniu logiki
 
 {\small
 \begin{longtable}{@{}L{0.9cm}L{1.5cm}L{3.8cm}L{3.6cm}L{4.5cm}@{}}
@@ -1829,7 +1911,7 @@ Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapi
 	TA13 & A3 & Jak w~TA10; plan marchwi na D+2 wystarcza. & Rezerwacja 11~kg ziemniaków; osobno 10~kg ziemniaków i~11~kg marchwi. & Komunikat z~ilością dostępną 10~kg albo o~limicie 20~kg; wpisane ilości zachowane; brak nowej rezerwacji. \\
 	TA14 & A3 & Jak w~TA10; drugi klient z~kartą. & Obaj klienci jednocześnie rezerwują po 10~kg ziemniaków na D+2. & Przyjęta dokładnie jedna rezerwacja; zarezerwowano 40~kg. \\
 	TA15 & A4 & Jak w~TA10, ale plan na D+1; godzina 18:00 dnia D. & Wybranie ,,Zarezerwuj'' przy D+1; osobno zatwierdzenie formularza otwartego przed 18:00. & Komunikat o~zakończeniu przyjmowania rezerwacji; brak nowej rezerwacji. \\
-	TA16 & A5 & Jak w~TA10; wiersz planu ziemniaków na D+2 zablokowany przez inną transakcję dłużej niż czas oczekiwania na blokadę. & Rezerwacja 8~kg ziemniaków na D+2. & Komunikat z~prośbą o~ponowne zatwierdzenie; wpisane ilości zachowane; brak nowej rezerwacji. \\
+	TA16 & A5 & Jak w~TA10; wiersz produktu zablokowany przez inną transakcję dłużej niż czas oczekiwania na blokadę. & Rezerwacja 8~kg ziemniaków na D+2. & Komunikat z~prośbą o~ponowne zatwierdzenie; wpisane ilości zachowane; brak nowej rezerwacji. \\
 	\midrule
 	TA17 & \ref{pu:anulowanie}, podst. & Złożona rezerwacja 8~kg ziemniaków na D+2; na D+2 zarezerwowano łącznie 38~kg. & Anulowanie i~potwierdzenie. & Stan anulowana; zarezerwowano 30~kg; jedna wiadomość e-mail. \\
 	TA18 & A2 & Złożona rezerwacja na D+1; godzina 18:00 dnia D. & Otwarcie strony anulowania tej rezerwacji. & Komunikat o~braku możliwości anulowania i~o~opłacie; stan złożona; na liście rezerwacji brak polecenia ,,Anuluj''. \\
@@ -1867,6 +1949,10 @@ Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapi
 
 \subsection{Zmienione i~niezrealizowane koncepcje, napotkane problemy}
 
+Pierwotna propozycja przewidywała SQLite na komputerze sklepu. Docelowo wybrano MySQL ze względu na wymaganie jednoczesnej sprzedaży i~rezerwowania asortymentu. Rozdzielono pulę rezerwacji na przyszły dzień od ewidencji towaru już przyjętego. Na przykład odłożenie 5~kg na jutro zmniejsza pulę jutrzejszych rezerwacji, lecz nie pomniejsza dzisiejszego stanu przy ladzie.
+
+Rejestracja metody płatności w~środowisku testowym operatora służy sprawdzeniu formularza i~powrotu do sklepu. Rozliczenie rzeczywistej płatności oraz wydruk paragonu pozostają czynnościami poza aplikacją. Parametry przyłącza, doręczanie wiadomości przez serwer sklepu i~czas odtworzenia danych po awarii wymagają próby na stanowisku docelowym (tab.~\ref{tab:checklista}).
+
 
 
 \clearpage
@@ -1879,27 +1965,49 @@ Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapi
 \subsection{Uruchomienie aplikacji}
 
 \subsubsection{Środowisko uruchomieniowe w~sklepie}
-% Wg 3.3.1 (Q6, do akceptacji): mini PC, Ubuntu Server 24.04 LTS, MySQL 8.4, Gunicorn + Nginx, HTTPS Let's Encrypt (Certbot), cron.
+
+Komputer z~Ubuntu Server 24.04 wymaga Pythona 3.12 ze środowiskiem wirtualnym, narzędzia Docker Compose i~sterownika MySQL. Do zbudowania \texttt{mysqlclient} w~Ubuntu służą pakiety \texttt{build-essential}, \texttt{pkg-config}, \texttt{python3-dev} i~\texttt{default-\allowbreak{}libmysqlclient-\allowbreak{}dev}. Baza powinna nasłuchiwać tylko na interfejsie lokalnym. Publicznym punktem wejścia dla klientów jest Nginx skonfigurowany dla domeny sklepu.
 
 
 \subsubsection{Instrukcja instalacji na komputerze w~sklepie}
 
+Z~katalogu projektu należy przejść do \texttt{aplikacja}. Poniższe polecenia tworzą odrębne środowisko i~instalują zależności:
+\begin{lstlisting}[language=bash]
+python3.12 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env
+chmod 600 .env
+\end{lstlisting}
+W~pliku \texttt{.env} administrator ustawia losowy \texttt{DJANGO\_SECRET\_KEY}, osobne hasła kont MySQL, dane połączenia i~dozwolone nazwy hostów. W~konfiguracji sklepu wyłącza tryb diagnostyczny i~ustawia domenę sklepu. Baza i~aplikacja muszą odczytać te same dane dostępowe. Pierwsze uruchomienie obejmuje:
+\begin{lstlisting}[language=bash]
+docker compose up -d --wait
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py check
+\end{lstlisting}
+W~środowisku programistycznym polecenie \texttt{python manage.py runserver} uruchamia serwer na komputerze lokalnym. Przed obsługą ruchu z~internetu administrator powinien uruchomić Gunicorn z~modułem \texttt{config.wsgi:application} jako usługę, wskazać ten serwer jako adres zaplecza Nginx, zebrać pliki statyczne i~udostępnić je pod adresem \texttt{/static/}. Po zamontowaniu certyfikatu TLS sprawdza konfigurację poleceniem \texttt{python manage.py check --deploy} i~wykonuje próby z~tab.~\ref{tab:checklista}~\cite{django-wdrozenie}.
+
 
 \subsubsection{Dane początkowe i~konta}
 
+Konto utworzone przez \texttt{createsuperuser} otwiera panel właściciela. Właściciel zakłada imienne konta sprzedawców w~panelu personelu. Następnie wprowadza asortyment, ceny obowiązujące od dnia otwarcia oraz ilości potrzebne do ustalenia planu. Osoba otwierająca sklep rejestruje pierwszą dostawę. Zanim to nastąpi, sama publikacja produktu w~katalogu nie zwiększa ilości dostępnej do sprzedaży przy ladzie.
+
 
 \subsubsection{Kopia zapasowa i~odtwarzanie}
-% Wg 3.3.1 i WN kopia: mysqldump z cron po zamknięciu sklepu na dysk zewnętrzny; próba odtworzenia na innym komputerze (CSF).
+
+Po zamknięciu sklepu administrator zapisuje zrzut danych z~użyciem \texttt{mysqldump --single-transaction}, korzystając z~konta uprawnionego do odczytu bazy. Plik kopii z~datą utworzenia zapisuje na osobnym nośniku dostępnym dla administratora. Do próby odtworzenia używa nowej, pustej bazy na oddzielnym stanowisku. Importuje zrzut klientem \texttt{mysql}, porównuje liczbę rezerwacji i~sprzedaży z~dniem wykonania kopii oraz sprawdza saldo wybranego klienta. Czas od rozpoczęcia importu do poprawnej obsługi logowania zapisuje w~protokole odbioru.
 
 
 \subsubsection{Dostęp do aplikacji}
-% Wg 3.3.1: domena + Let's Encrypt, przekierowanie portów 80/443 na routerze, ewentualnie dynamiczny DNS; /admin/ tylko z LAN (Nginx).
+
+Katalog znajduje się pod adresem głównym, a~panel personelu pod \texttt{/admin/}. W~konfiguracji sklepowej Nginx powinien dopuszczać ten drugi adres wyłącznie z~sieci lokalnej. Instalacja programistyczna sprawdza role użytkowników w~Django. Weryfikacja ograniczenia sieciowego wymaga oddzielnych prób z~sieci sklepu i~spoza niej.
 
 
 \subsection{Przewodnik po rolach użytkowników}
 \label{sec:przewodnik}
 
-Aplikacja ma dwa panele, a~rola konta wyznacza, z~którego korzysta użytkownik. Panel klienta z~katalogiem otwiera się pod adresem sklepu z~dowolnej sieci, a~panel administratora pod tym samym adresem z~końcówką \texttt{/admin/}, wyłącznie z~sieci lokalnej sklepu (\ref{wn:wdrozenie}). Klient loguje się w~panelu klienta adresem e-mail, a~sprzedawca i~właściciel w~panelu administratora loginem nadanym przez właściciela. Próba zalogowania się w~panelu innej roli jest odrzucana. Poniżej opisano dla każdej roli, gdzie w~aplikacji znajdują się jej funkcje i~o~czym trzeba pamiętać przy pracy. Przebieg krok po kroku podają opisy przypadków użycia w~rozdz.~\ref{ch:opis-pu}, a~ekrany pokazane tam na rysunkach są tu tylko przywoływane.
+Aplikacja ma dwa panele, a~rola konta wyznacza, z~którego korzysta użytkownik. W~docelowej instalacji panel klienta z~katalogiem otwiera się pod adresem sklepu z~dowolnej sieci, a~panel administratora pod tym samym adresem z~końcówką \texttt{/admin/}, wyłącznie z~sieci lokalnej sklepu (\ref{wn:wdrozenie}). Klient loguje się w~panelu klienta adresem e-mail, a~sprzedawca i~właściciel w~panelu administratora loginem nadanym przez właściciela. Próba zalogowania się w~panelu innej roli jest odrzucana. Poniżej opisano dla każdej roli, gdzie w~aplikacji znajdują się jej funkcje i~o~czym trzeba pamiętać przy pracy. Przebieg krok po kroku podają opisy przypadków użycia w~rozdz.~\ref{ch:opis-pu}, a~ekrany pokazane tam na rysunkach są tu tylko przywoływane.
 
 \subsubsection{Klient-obserwator}
 
@@ -1971,15 +2079,14 @@ Strona ,,Konta'' (\ref{pu:konta}, rys.~\ref{rys:ekran-pu27-konta}) zawiera listy
 
 Strona ,,Zestawienia'' (\ref{pu:zestawienia}) podaje dla wybranego okresu sprzedaż i~ubytki według produktów, różnice między planem a~dostawą oraz liczbę i~wartość rezerwacji nieodebranych. Na ich podstawie właściciel ustala standardowe ilości produktów i~sprawdza, ile towaru traci świeżość.
 
-\subsection{Checklista odbioru}
+\subsection{Lista kontrolna odbioru}
 \label{sec:checklista}
 
-Odbiór przeprowadza się na komputerze w~sklepie po instalacji według rozdz.~\ref{ch:wdrozenie}, wspólnie z~właścicielem. Punkty z~tab.~\ref{tab:checklista} sprawdzają to, czego testy z~rozdz.~\ref{ch:testy} nie obejmują, bo wymaga docelowego komputera, sieci i~serwera poczty: wymagania niefunkcjonalne, czynniki sukcesu z~tab.~\ref{tab:csf} i~pełny dzień pracy sklepu. Aplikację uznaje się za odebraną, gdy wszystkie punkty są spełnione.
-% TODO: wyniki odbioru (kolumna „Wynik”) po instalacji w sklepie
+Odbiór przeprowadza się na komputerze w~sklepie po instalacji według rozdz.~\ref{ch:wdrozenie}, wspólnie z~właścicielem. Punkty z~tab.~\ref{tab:checklista} sprawdzają to, czego testy z~rozdz.~\ref{ch:testy} nie obejmują, bo wymaga docelowego komputera, sieci i~serwera poczty: wymagania niefunkcjonalne, czynniki sukcesu z~tab.~\ref{tab:csf} i~pełny dzień pracy sklepu. Kolumnę wyniku wypełnia właściciel podczas próby. Odbiór w~sklepie pozostaje do przeprowadzenia.
 
 {\small
 \begin{longtable}{@{}L{0.6cm}L{2.6cm}L{7.4cm}L{2.2cm}L{1.4cm}@{}}
-	\caption{Checklista odbioru aplikacji}
+	\caption{Lista kontrolna odbioru aplikacji}
 	\label{tab:checklista}\\
 	\toprule
 	Nr & Punkt & Kryterium & Źródło & Wynik \\
@@ -2017,20 +2124,41 @@ Odbiór przeprowadza się na komputerze w~sklepie po instalacji według rozdz.~\
 % Wytyczne v4 pkt 6 (prezentacja na forum grupy lub przed prowadzącym, wraz z dokumentacją) i etap 5.
 
 \subsection{Plan prezentacji}
-% Kolejność demonstracji i podział wypowiedzi; slajdy poza raportem.
+
+Demonstracja rozpoczyna się w~publicznym katalogu. Klient wybiera dzień, sprawdza dostępność i~rezerwuje wybrany produkt. Druga osoba otwiera plan dostawy w~panelu personelu i~pokazuje, o~ile zmniejszyła się pula dla kolejnego klienta. Na przygotowanych danych z~bieżącego dnia sprzedawca rejestruje dostawę, waży zarezerwowany towar, wydaje paczkę i~sprawdza stan po sprzedaży. Na końcu zespół wskazuje w~modelu bazy nagłówek rezerwacji, pozycje i~odpowiadającą wydaniu sprzedaż.
 
 
 \subsection{Materiały przekazywane do zaliczenia}
-% Dokumentacja (ten raport), aplikacja na komputerze w sklepie, repozytorium kodu.
+
+Materiały obejmują kod Django z~migracjami i~testami, instrukcję uruchomienia, skrypt schematu SQL oraz ten raport z~diagramami i~scenariuszami. Przypadki z~tab.~\ref{tab:testy-akceptacyjne} określają dane wejściowe i~wyniki, dzięki czemu przebieg demonstracji można powtórzyć na odrębnej bazie.
 
 
 \clearpage
 % =====================================================================
 \section{Wnioski}
 \label{ch:wnioski}
-% Wzór: Sklep hydrauliczny rozdz. 10 (konkretne, numerowane).
+
+Rezerwacja dotyczy przyszłej dostawy, a~sprzedaż obciąża towar dostępny już w~sklepie. Rozdzielenie obu wielkości umożliwia potwierdzenie odbioru na następny dzień bez pomniejszania dzisiejszego stanu. Dwie masy w~ewidencji pozycji, zarezerwowana i~odważona, pozwalają później odtworzyć różnicę między zamówieniem klienta a~wydaniem.
+
+Osobne panele odpowiadają dwóm sposobom pracy. Klient sprawdza termin i~ilość, podczas gdy sprzedawca potrzebuje listy odbiorów i~mas do zważenia. Kontrola dostępu do tych samych danych musi obejmować także serwer, ponieważ sam adres obcej rezerwacji może zostać wpisany ręcznie.
+
+Ocena celu gospodarczego wymaga danych ze sklepu. Właściciel może porównać masę ubytków z~masą dostaw w~porównywalnych okresach przed wdrożeniem i~po nim, uwzględniając liczbę dni handlu. Wynik scenariusza testowego potwierdza sposób rozliczenia ilości, lecz sam nie określa spadku strat ani czasu obsługi klienta przy ladzie.
 
 
-% Literatura i spis rysunków (jak w Sklepie hydraulicznym) — decyzja Q14.
+\clearpage
+\addcontentsline{toc}{section}{Literatura i~materiały}
+\renewcommand{\refname}{Literatura i~materiały}
+\begin{thebibliography}{9}
+\bibitem{wyklad} R.~Ptak, \emph{Internetowe bazy danych. Wykład nr 1}, materiały kursowe, 2026, slajdy 29--35.
+\bibitem{przyklady-swot} \emph{Analiza SWOT kręgielni} oraz \emph{Analiza SWOT salonu fryzjerskiego}, przykłady do wykładu nr~1, tabele ważności, powiązań i~wyboru strategii.
+\bibitem{django-transakcje} Django Software Foundation, \emph{Database transactions}, dokumentacja Django 5.2. \url{https://docs.djangoproject.com/en/5.2/topics/db/transactions/}
+\bibitem{mysql-blokady} Oracle, \emph{MySQL 8.4 Reference Manual. Locking Reads}. \url{https://dev.mysql.com/doc/refman/8.4/en/innodb-locking-reads.html}
+\bibitem{wcag} W3C, \emph{Web Content Accessibility Guidelines (WCAG) 2.1}. \url{https://www.w3.org/TR/WCAG21/}
+\bibitem{django-wdrozenie} Django Software Foundation, \emph{Deployment checklist}, dokumentacja Django 5.2. \url{https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/}
+\end{thebibliography}
+
+\clearpage
+\addcontentsline{toc}{section}{Spis rysunków}
+\listoffigures
 
 \end{document}

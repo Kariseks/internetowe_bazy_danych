@@ -6,6 +6,7 @@ from rezerwacje.views import katalog
 from rozliczenia.views import zaleglosc
 
 urlpatterns = [
+    path('i18n/', include('django.conf.urls.i18n')),
     path('', katalog, name='katalog'),
     path('', include('konta.urls')),
     path('', include('rezerwacje.urls')),

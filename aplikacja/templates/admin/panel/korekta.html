@@ -1,0 +1,10 @@
+{% extends "admin/panel/base.html" %}
+{% load i18n %}
+{% block content %}
+<form method="post" class="arkusz formularz">
+    {% csrf_token %}
+    <h2>{{ produkt }}</h2>
+    {% include 'admin/panel/_pola_formularza.html' %}
+    <button class="przycisk glowny" type="submit">{% translate "Zapisz korektę" %}</button>
+</form>
+{% endblock %}

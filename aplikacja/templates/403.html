@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Brak dostępu – Warzywniak{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Brak dostępu – Warzywniak" %}{% endblock %}
 {% block content %}
 <div class="karta">
-	<h1>Brak dostępu</h1>
+	<h1>{% translate "Brak dostępu" %}</h1>
 	{% if user.is_staff %}
-		<p>Ta strona jest przeznaczona dla innej roli.</p>
-		<a class="przycisk" href="{% url 'admin:index' %}">Panel administratora</a>
+		<p>{% translate "Ta strona jest przeznaczona dla innej roli." %}</p>
+		<a class="przycisk" href="{% url 'admin:index' %}">{% translate "Panel administratora" %}</a>
 	{% else %}
-		<p>Nie masz dostępu do tej strony.</p>
-		<a class="przycisk" href="{% url 'katalog' %}">Przejdź do katalogu</a>
+		<p>{% translate "Nie masz dostępu do tej strony." %}</p>
+		<a class="przycisk" href="{% url 'katalog' %}">{% translate "Przejdź do katalogu" %}</a>
 	{% endif %}
 </div>
 {% endblock %}

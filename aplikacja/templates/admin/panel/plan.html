@@ -1,21 +1,22 @@
 {% extends "admin/panel/base.html" %}
+{% load i18n %}
 {% block content %}
-<p class="opis">{% if mozna_zmieniac %}Plan zapisuje się dla całej tabeli. Nie może być mniejszy od ilości już zarezerwowanej.{% else %}Plan zmienia właściciel.{% endif %} Po 18:00 dzień następny jest zamknięty, bo zamówienie poszło do dostawcy.</p>
+<p class="opis">{% if mozna_zmieniac %}{% translate "Plan obejmuje rezerwacje oraz ilość odłożoną na ladę." %}{% else %}{% translate "Plan zmienia właściciel." %}{% endif %} {% translate "Po 18:00 dzień następny jest zamknięty, bo zamówienie poszło do dostawcy." %}</p>
 <form method="post" class="arkusz arkusz-przewijany">
 	{% csrf_token %}
 	<table class="tabela plan">
 		<thead>
 			<tr>
-				<th>Produkt</th>
+				<th scope="col">{% translate "Produkt" %}</th>
 				{% for d in dane.dni %}
-				<th class="liczba{% if d.zamkniety %} zamkniety{% endif %}">{{ d.dzien|date:"D, j.m" }}{% if d.zamkniety %}<small>zamknięty</small>{% endif %}</th>
+				<th scope="col" class="liczba{% if d.zamkniety %} zamkniety{% endif %}">{{ d.dzien|date:"D, j.m" }}{% if d.zamkniety %}<small>{% translate "zamknięty" %}</small>{% endif %}</th>
 				{% endfor %}
 			</tr>
 		</thead>
 		<tbody>
 			{% for w in dane.wiersze %}
 			<tr>
-				<th scope="row">{{ w.produkt }}</th>
+				<th scope="row">{{ w.produkt }}<small>{% blocktranslate with ilosc_na_lade_kg=w.produkt.ilosc_na_lade_kg|floatformat:"-2" %}Na ladę: {{ ilosc_na_lade_kg }} kg{% endblocktranslate %}</small></th>
 				{% for k in w.komorki %}
 				<td class="liczba{% if k.zamkniety %} zamkniety{% endif %}">
 					{% if mozna_zmieniac and not k.zamkniety %}
@@ -24,7 +25,7 @@
 					{% else %}
 						<strong>{{ k.plan_kg|floatformat:"-2" }}</strong>
 					{% endif %}
-					<small>rez. {{ k.zarezerwowano_kg|floatformat:"-2" }}, wolne {{ k.dostepne_kg|floatformat:"-2" }}</small>
+					<small>{% blocktranslate with zarezerwowano_kg=k.zarezerwowano_kg|floatformat:"-2" dostepne_kg=k.dostepne_kg|floatformat:"-2" %}rez. {{ zarezerwowano_kg }}, wolne {{ dostepne_kg }}{% endblocktranslate %}</small>
 				</td>
 				{% endfor %}
 			</tr>
@@ -32,7 +33,7 @@
 		</tbody>
 	</table>
 	{% if mozna_zmieniac %}
-	<div class="stopka-formularza"><button class="przycisk glowny" type="submit">Zapisz plan</button></div>
+	<div class="stopka-formularza"><button class="przycisk glowny" type="submit">{% translate "Zapisz plan" %}</button></div>
 	{% endif %}
 </form>
 {% endblock %}

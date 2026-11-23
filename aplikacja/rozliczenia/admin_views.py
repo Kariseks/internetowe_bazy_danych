@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
@@ -10,7 +11,7 @@ from . import services
 
 
 class KwotaForm(forms.Form):
-    kwota = pole_masy(label='Kwota [zł]')
+    kwota = pole_masy(label=_('Kwota [zł]'))
 
 
 def klienci(request):
@@ -18,7 +19,7 @@ def klienci(request):
     return strona(
         request,
         'admin/panel/klienci.html',
-        'Klienci',
+        _('Klienci'),
         fraza=fraza,
         wyniki=services.wyszukaj_klientow(fraza),
     )
@@ -35,7 +36,7 @@ def karta(request, klient_id):
         except services.RozliczenieOdrzucone as blad:
             form.add_error('kwota', str(blad))
         else:
-            messages.success(request, 'Wpłata odnotowana.')
+            messages.success(request, _('Wpłata odnotowana.'))
             return redirect('admin:karta_klienta', klient_id)
     return strona(request, 'admin/panel/karta_klienta.html', dane.klient.uzytkownik.get_full_name(), dane=dane, form=form)
 
@@ -55,8 +56,8 @@ def zaleglosci(request):
             except services.RozliczenieOdrzucone as blad:
                 messages.error(request, str(blad))
             else:
-                messages.success(request, 'Wynik obciążenia odnotowany.')
+                messages.success(request, _('Wynik obciążenia odnotowany.'))
         else:
-            messages.error(request, 'Podaj poprawną kwotę, np. 12,40.')
+            messages.error(request, _('Podaj poprawną kwotę, np. 12,40.'))
         return redirect('admin:zaleglosci')
-    return strona(request, 'admin/panel/zaleglosci.html', 'Zaległości klientów', klienci=services.klienci_z_zaleglosci())
+    return strona(request, 'admin/panel/zaleglosci.html', _('Zaległości klientów'), klienci=services.klienci_z_zaleglosci())

@@ -1,10 +1,6 @@
 @startuml pu-modul-rozliczenia
+!include styl.iuml
 ' Render: plantuml -tpng -charset UTF-8 -o .. src/pu-modul-rozliczenia.puml
-skinparam monochrome true
-skinparam shadowing false
-skinparam dpi 200
-skinparam defaultFontName DejaVu Sans
-skinparam defaultFontSize 11
 skinparam packageStyle rectangle
 skinparam nodesep 18
 skinparam ranksep 35

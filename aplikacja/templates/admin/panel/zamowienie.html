@@ -1,15 +1,16 @@
 {% extends "admin/panel/base.html" %}
+{% load i18n %}
 {% block content %}
-<p class="opis">Lista do przekazania dostawcy na {{ jutro|date:"l, j E"|lower }}. Po 18:00 obejmuje wszystkie rezerwacje na ten dzień.</p>
+<p class="opis">{% blocktranslate with jutro=jutro|date:"l, j E"|lower %}Lista do przekazania dostawcy na {{ jutro }}. Po 18:00 obejmuje wszystkie rezerwacje na ten dzień.{% endblocktranslate %}</p>
 <div class="arkusz arkusz-waski">
 	<table class="tabela tabela-duza">
-		<thead><tr><th>Produkt</th><th class="liczba">Ilość [kg]</th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Ilość [kg]" %}</th></tr></thead>
 		<tbody>
 			{% for w in wiersze %}
 			<tr><td>{{ w.produkt }}</td><td class="liczba">{{ w.plan_kg|floatformat:"-2" }}</td></tr>
 			{% endfor %}
 		</tbody>
-		<tfoot><tr><th>Razem</th><td class="liczba">{{ razem|floatformat:"-2" }}</td></tr></tfoot>
+		<tfoot><tr><th scope="col">{% translate "Razem" %}</th><td class="liczba">{{ razem|floatformat:"-2" }}</td></tr></tfoot>
 	</table>
 </div>
 {% endblock %}

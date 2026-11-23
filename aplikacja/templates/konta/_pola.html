@@ -4,6 +4,6 @@
 	<label for="{{ pole.id_for_label }}">{{ pole.label }}</label>
 	{{ pole }}
 	{{ pole.errors }}
-	{% if pole.help_text %}<div class="podpowiedz">{{ pole.help_text|safe }}</div>{% endif %}
+	{% if pole.help_text %}<div class="podpowiedz" id="{{ pole.auto_id }}_helptext">{{ pole.help_text|safe }}</div>{% endif %}
 </div>
 {% endfor %}

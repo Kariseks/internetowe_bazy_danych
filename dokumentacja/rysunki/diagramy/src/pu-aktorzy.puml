@@ -1,9 +1,5 @@
 @startuml pu-aktorzy
-skinparam monochrome true
-skinparam shadowing false
-skinparam dpi 200
-skinparam defaultFontName DejaVu Sans
-skinparam defaultFontSize 11
+!include styl.iuml
 left to right direction
 
 actor "Klient-obserwator" as Obserwator

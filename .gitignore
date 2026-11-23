@@ -43,3 +43,7 @@ node_modules/
 
 # Pliki uzytkownika
 do_poprawy_karol.md
+
+# Lokalna baza demonstracyjna
+aplikacja/db.sqlite3*
+aplikacja/staticfiles/

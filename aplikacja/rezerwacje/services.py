@@ -1,148 +1,277 @@
-"""Reguły rezerwacji. Na razie stuby, jak w magazyn/services.py.
-
-Czas zawsze z django.utils.timezone (timezone.now(), timezone.localdate()): testy akceptacyjne go zamrażają.
-Powiadomienia wysyła się wprost po zapisie, nie przez transaction.on_commit: w TestCase transakcja nie jest
-zatwierdzana, więc testy akceptacyjne nie zobaczyłyby wiadomości.
-"""
+"""Rezerwacje, pule dostaw i obsługa odbioru."""
 import logging
 import smtplib
+from datetime import datetime, time, timedelta
 from decimal import Decimal
+from types import SimpleNamespace
 
-import atrapy
+from django.db import IntegrityError, OperationalError, transaction
+from django.db.models import Prefetch
+from django.utils import timezone
+from django.utils.translation import gettext as _
+
 from konta import powiadomienia
+from konta.models import ProfilKlienta
+from magazyn import services as magazyn
+from magazyn.models import PlanDostawy
+from rozliczenia.services import uzupelnij_saldo
+from .models import PozycjaRezerwacji, Rezerwacja
 
 log = logging.getLogger(__name__)
-
 LIMIT_KG = Decimal(20)
+AKTYWNE = ('zlozona', 'przygotowana')
 
 
 class RezerwacjaOdrzucona(Exception):
-    """Operacja niedozwolona w tym stanie albo po terminie. Panel wyświetla treść błędu."""
+    pass
 
 
 class PlanOdrzucony(Exception):
-    """PU26 A1 i A2: plan poniżej zarezerwowanej ilości albo dzień zamknięty. Panel wyświetla treść błędu."""
+    pass
+
+
+def termin(dzien):
+    return timezone.make_aware(datetime.combine(dzien - timedelta(days=1), time(18)))
+
+
+def otwarty(dzien):
+    dzis = timezone.localdate()
+    return dzis < dzien <= dzis + timedelta(days=7) and timezone.now() < termin(dzien)
+
+
+def dane_rezerwacji(zapytanie):
+    linie = PozycjaRezerwacji.objects.select_related('produkt').order_by('pk')
+    rekordy = list(zapytanie.select_related('klient__uzytkownik').prefetch_related(
+        Prefetch('pozycjarezerwacji_set', queryset=linie, to_attr='pozycje')))
+    ceny = {}
+    profile = {}
+    for r in rekordy:
+        dzien = min(timezone.localdate(), r.dzien_odbioru)
+        if dzien not in ceny:
+            ceny[dzien] = dict(magazyn.produkty(dzien).values_list('pk', 'cena_za_kg'))
+        if r.klient_id not in profile:
+            profile[r.klient_id] = uzupelnij_saldo(r.klient)
+        r.klient = profile[r.klient_id]
+        r.termin = termin(r.dzien_odbioru)
+        r.mozna_zmienic = r.stan == 'zlozona' and timezone.now() < r.termin
+        r.laczna_masa = sum(p.ilosc_kg for p in r.pozycje)
+        r.wartosc = sum(magazyn.grosze(p.ilosc_kg * ceny[dzien][p.produkt_id]) for p in r.pozycje)
+    return rekordy
 
 
 def rezerwacje_na_dzien(dzien):
-    """PU19. Pola: id, klient, dzien_odbioru, stan, zlozono, laczna_masa, pozycje.
-
-    stan: zlozona, przygotowana, odebrana, anulowana, nieodebrana.
-    klient: profil z polami uzytkownik, telefon, zaleglosc, zablokowany.
-    Pozycja: produkt, ilosc_kg, masa_odwazona_kg.
-    """
-    return atrapy.rezerwacje(dzien)
+    return dane_rezerwacji(Rezerwacja.objects.filter(dzien_odbioru=dzien).order_by('zlozono', 'pk'))
 
 
 def rezerwacja(rezerwacja_id):
-    """Pola jak w rezerwacje_na_dzien. None, gdy nie istnieje."""
-    return atrapy.rezerwacja(rezerwacja_id)
-
-
-def przygotuj_rezerwacje(rezerwacja_id, masy, kto):
-    """PU20 krok 4. masy: lista (produkt_id, masa_kg), także 0. Rzuca RezerwacjaOdrzucona."""
-    raise NotImplementedError('przygotuj_rezerwacje')
-
-
-def podsumowanie_wydania(rezerwacja_id):
-    """PU21 krok 4. Pola: rezerwacja, do_zaplaty, pozycje. None, gdy nie istnieje.
-
-    Pozycja: produkt, ilosc_kg, masa_kg, cena_za_kg (z dnia odbioru), wartosc.
-    """
-    return atrapy.wydanie(rezerwacja_id)
-
-
-def wydaj_rezerwacje(rezerwacja_id, kto):
-    """PU21 krok 6. Jedna transakcja: sprzedaż, stany, stan rezerwacji. Rzuca RezerwacjaOdrzucona."""
-    raise NotImplementedError('wydaj_rezerwacje')
-
-
-def plan_tygodnia():
-    """PU26 krok 1. Pola: dni (dzien, zamkniety), wiersze (produkt, komorki).
-
-    Komórka: dzien, zamkniety, plan_kg, zarezerwowano_kg, dostepne_kg, produkt.
-    """
-    return atrapy.plan_tygodnia()
-
-
-def ustaw_plan(produkt_id, dzien, ilosc_kg):
-    """PU26 krok 3. Blokuje wiersz planu. Rzuca PlanOdrzucony."""
-    raise NotImplementedError('ustaw_plan')
-
-
-# Panel klienta. Rezerwacje klienta mają pola jak w rezerwacje_na_dzien oraz:
-# termin (18:00 dnia poprzedniego), mozna_zmienic (złożona i przed terminem), wartosc (orientacyjna, ceny bieżące).
-
-
-def katalog():
-    """PU1. Produkty w ofercie. Pola jak w plan_tygodnia, wiersz ma też cena_za_kg (dzisiejsza)."""
-    return atrapy.katalog()
-
-
-def oferta_na_dzien(dzien, rezerwacja_id=None):
-    """PU8 krok 2, PU9. Produkty w ofercie: produkt, cena_za_kg, dostepne_kg. Pusta lista, gdy dnia nie ma w katalogu.
-
-    Przy zmianie rezerwacji (rezerwacja_id) dostepne_kg obejmuje też ilości tej rezerwacji.
-    """
-    return atrapy.oferta_na_dzien(dzien, rezerwacja_id)
-
-
-def przeszkoda(uzytkownik, dzien):
-    """PU8 krok 1. None, gdy klient może rezerwować na ten dzień. Inaczej pola: powod, rezerwacja, zaleglosc.
-
-    powod: karta (brak karty), zaleglosc (ponad 100 zł, podać kwotę), istnieje (niezakończona rezerwacja
-    na ten dzień, podać ją), zamkniete (dzień spoza katalogu albo po terminie).
-    """
-    return atrapy.przeszkoda(uzytkownik, dzien)
+    return next(iter(dane_rezerwacji(Rezerwacja.objects.filter(pk=rezerwacja_id))), None)
 
 
 def rezerwacje_klienta(uzytkownik):
-    """PU11. Wszystkie rezerwacje klienta, od najpóźniejszego dnia odbioru."""
-    return atrapy.rezerwacje_klienta(uzytkownik)
+    return dane_rezerwacji(Rezerwacja.objects.filter(klient_id=uzytkownik.pk).order_by('-dzien_odbioru', '-pk'))
 
 
 def rezerwacja_klienta(uzytkownik, rezerwacja_id):
-    """PU9, PU10. None, gdy nie istnieje albo należy do innego klienta."""
-    return atrapy.rezerwacja_klienta(uzytkownik, rezerwacja_id)
+    return next(iter(dane_rezerwacji(Rezerwacja.objects.filter(klient_id=uzytkownik.pk, pk=rezerwacja_id))), None)
+
+
+def katalog():
+    oferta = list(magazyn.produkty().filter(w_ofercie=True, cena_za_kg__isnull=False))
+    dni = []
+    wiersze = {p.pk: SimpleNamespace(produkt=p, cena_za_kg=p.cena_za_kg, komorki=[]) for p in oferta}
+    for i in range(1, 8):
+        dzien = timezone.localdate() + timedelta(days=i)
+        zamkniety = not otwarty(dzien)
+        dni.append(SimpleNamespace(dzien=dzien, zamkniety=zamkniety))
+        for komorka in magazyn.plan_na_dzien(dzien, asortyment=oferta):
+            komorka.zamkniety = zamkniety
+            wiersze[komorka.produkt.pk].komorki.append(komorka)
+    return SimpleNamespace(wiersze=list(wiersze.values()), dni=dni)
+
+
+def plan_tygodnia():
+    return katalog()
+
+
+def oferta_na_dzien(dzien, rezerwacja_id=None):
+    if not timezone.localdate() < dzien <= timezone.localdate() + timedelta(days=7):
+        return []
+    return [w for w in magazyn.plan_na_dzien(dzien, rezerwacja_id) if w.cena_za_kg is not None]
+
+
+def przeszkoda(uzytkownik, dzien):
+    wynik = SimpleNamespace(powod=None, rezerwacja=None, zaleglosc=None)
+    if not otwarty(dzien):
+        wynik.powod = 'zamkniete'
+        return wynik
+    profil = ProfilKlienta.objects.filter(pk=uzytkownik.pk).first()
+    if not profil or not profil.identyfikator_karty:
+        wynik.powod = 'karta'
+    elif uzupelnij_saldo(profil).zablokowany:
+        wynik.powod, wynik.zaleglosc = 'zaleglosc', profil.zaleglosc
+    else:
+        wynik.rezerwacja = Rezerwacja.objects.filter(klient=profil, dzien_odbioru=dzien, stan__in=AKTYWNE).first()
+        if not wynik.rezerwacja:
+            return None
+        wynik.rezerwacja = rezerwacja(wynik.rezerwacja.pk)
+        wynik.powod = 'istnieje'
+    return wynik
+
+
+def _zapisz_pozycje(uzytkownik, dzien, pozycje, rezerwacja_id=None):
+    zdarzenie = 'zmieniona' if rezerwacja_id else 'zlozona'
+    try:
+        with transaction.atomic():
+            profil = ProfilKlienta.objects.select_for_update().get(pk=uzytkownik.pk)
+            if not profil.uzytkownik.is_active:
+                raise RezerwacjaOdrzucona(_('Konto jest nieaktywne.'))
+            if rezerwacja_id:
+                r = Rezerwacja.objects.select_for_update().filter(pk=rezerwacja_id, klient=profil, stan='zlozona').first()
+                if not r:
+                    raise RezerwacjaOdrzucona(_('Nie można zmienić tej rezerwacji.'))
+                dzien = r.dzien_odbioru
+            elif przeszkoda(uzytkownik, dzien):
+                raise RezerwacjaOdrzucona(_('Sprawdź termin, kartę, saldo i rezerwacje na ten dzień.'))
+            ids = [pid for pid, masa in pozycje]
+            if not ids or len(set(ids)) != len(ids) or sum(m for pid, m in pozycje) > LIMIT_KG:
+                raise RezerwacjaOdrzucona(_('Wybierz produkty o łącznej masie do 20 kg.'))
+            magazyn.blokuj_produkty(ids)
+            if not otwarty(dzien):
+                raise RezerwacjaOdrzucona(_('Minął termin rezerwacji.'))
+            oferta = {w.produkt.pk: w for w in oferta_na_dzien(dzien, rezerwacja_id)}
+            for pid, masa in pozycje:
+                w = oferta.get(pid)
+                if not w or masa <= 0 or masa > w.dostepne_kg or masa != Decimal(masa).quantize(Decimal('0.1')):
+                    raise RezerwacjaOdrzucona(_('Dostępne: %(kg)s kg.') % {'kg': w.dostepne_kg if w else 0})
+                PlanDostawy.objects.get_or_create(produkt_id=pid, dzien=dzien,
+                                                  defaults={'ilosc_kg': w.plan_kg})
+            if rezerwacja_id:
+                PozycjaRezerwacji.objects.filter(rezerwacja=r).delete()
+                r.zmieniono = timezone.now()
+                r.save(update_fields=['zmieniono'])
+            else:
+                r = Rezerwacja.objects.create(klient=profil, dzien_odbioru=dzien, stan='zlozona',
+                                              zlozono=timezone.now(), zmieniono=timezone.now())
+            PozycjaRezerwacji.objects.bulk_create([
+                PozycjaRezerwacji(rezerwacja=r, produkt_id=pid, ilosc_kg=masa) for pid, masa in pozycje
+            ])
+    except OperationalError as blad:
+        if blad.args[0] not in (1205, 1213):
+            raise
+        raise RezerwacjaOdrzucona(_('Inny zapis trwa. Spróbuj ponownie.')) from blad
+    except IntegrityError as blad:
+        raise RezerwacjaOdrzucona(_('Nie udało się zapisać rezerwacji. Sprawdź dostępność.')) from blad
+    wynik = rezerwacja(r.pk)
+    _powiadom(powiadomienia.rezerwacja, wynik, zdarzenie)
+    return wynik
+
+
+def _powiadom(wyslij, r, *args):
+    try:
+        wyslij(r, *args)
+    except (smtplib.SMTPException, OSError):
+        log.exception('Nie wysłano wiadomości dotyczącej rezerwacji %s', r.pk)
 
 
 def zloz_rezerwacje(uzytkownik, dzien, pozycje):
-    """PU8 kroki 6–8. pozycje: lista (produkt_id, ilosc_kg) z ilością > 0. Zwraca rezerwację.
-
-    Jedna transakcja z blokadą planu dostawy (WF warunki złożenia); potem powiadomienia.rezerwacja(r, 'zlozona').
-    Rzuca RezerwacjaOdrzucona z treścią do wyświetlenia (A3: podać aktualną ilość dostępną, A4, A5).
-    """
-    raise NotImplementedError('zloz_rezerwacje')
+    return _zapisz_pozycje(uzytkownik, dzien, pozycje)
 
 
 def zmien_rezerwacje(uzytkownik, rezerwacja_id, pozycje):
-    """PU9. Jak zloz_rezerwacje, pozycje zastępują dotychczasowe; powiadomienie 'zmieniona'. Rzuca RezerwacjaOdrzucona."""
-    raise NotImplementedError('zmien_rezerwacje')
+    return _zapisz_pozycje(uzytkownik, None, pozycje, rezerwacja_id)
+
+
+def _ustaw_stan(r, stan):
+    r.stan, r.zmieniono = stan, timezone.now()
+    r.save(update_fields=['stan', 'zmieniono', 'oplata_za_nieodebranie'])
 
 
 def anuluj_rezerwacje(uzytkownik, rezerwacja_id):
-    """PU10 kroki 3–5. Tylko złożona, przed terminem; zwalnia ilości w planie, powiadomienie 'anulowana'.
+    with transaction.atomic():
+        r = Rezerwacja.objects.select_for_update().filter(pk=rezerwacja_id, klient_id=uzytkownik.pk, stan='zlozona').first()
+        if not r or not otwarty(r.dzien_odbioru):
+            raise RezerwacjaOdrzucona(_('Nie można anulować tej rezerwacji.'))
+        _ustaw_stan(r, 'anulowana')
+    _powiadom(powiadomienia.rezerwacja, rezerwacja(r.pk), 'anulowana')
 
-    Rzuca RezerwacjaOdrzucona.
-    """
-    raise NotImplementedError('anuluj_rezerwacje')
+
+@transaction.atomic
+def ustaw_plan(produkt_id, dzien, ilosc_kg):
+    produkt = magazyn.blokuj_produkty([produkt_id]).get(produkt_id)
+    if not produkt or not otwarty(dzien):
+        raise PlanOdrzucony(_('Dzień jest zamknięty.'))
+    zajete = magazyn.rezerwowane(dzien).get(produkt_id, 0)
+    if ilosc_kg < zajete + produkt.ilosc_na_lade_kg:
+        raise PlanOdrzucony(_('Zarezerwowano %(kg)s kg, na ladę przeznaczono %(lada)s kg.') %
+                            {'kg': zajete, 'lada': produkt.ilosc_na_lade_kg})
+    PlanDostawy.objects.update_or_create(produkt=produkt, dzien=dzien, defaults={'ilosc_kg': ilosc_kg})
 
 
-def oznacz_nieodebrane(dzien):
-    """PU31, o 18:00 (polecenie oznacz_nieodebrane). Złożone i przygotowane rezerwacje z tego dnia: stan nieodebrana,
-    opłata 10% wartości z zarezerwowanych ilości i cen z tego dnia, zaokrąglona do 1 gr, dopisana do zaległości.
+def _do_obslugi(rezerwacja_id, stany):
+    r = Rezerwacja.objects.select_for_update().filter(pk=rezerwacja_id, dzien_odbioru=timezone.localdate(), stan__in=stany).first()
+    if not r or timezone.localtime().hour >= 18:
+        raise RezerwacjaOdrzucona(_('Rezerwacja nie jest dostępna do obsługi.'))
+    return r
 
-    Potem powiadomienia.oplata dla każdej. Błąd wysyłki wiadomości nie cofa zapisu.
-    """
-    raise NotImplementedError('oznacz_nieodebrane')
+
+@transaction.atomic
+def przygotuj_rezerwacje(rezerwacja_id, masy, kto):
+    r = _do_obslugi(rezerwacja_id, AKTYWNE)
+    pozycje = list(PozycjaRezerwacji.objects.filter(rezerwacja=r))
+    odwazone = dict(masy)
+    if set(odwazone) != {p.produkt_id for p in pozycje} or any(m < 0 for m in odwazone.values()):
+        raise RezerwacjaOdrzucona(_('Podaj masę każdego zamówionego produktu.'))
+    magazyn.blokuj_produkty(odwazone)
+    for p in pozycje:
+        p.masa_odwazona_kg = odwazone[p.produkt_id]
+    PozycjaRezerwacji.objects.bulk_update(pozycje, ['masa_odwazona_kg'])
+    _ustaw_stan(r, 'przygotowana')
+
+
+def podsumowanie_wydania(rezerwacja_id):
+    r = rezerwacja(rezerwacja_id)
+    if r is None:
+        return None
+    ceny = dict(magazyn.produkty(r.dzien_odbioru).values_list('pk', 'cena_za_kg'))
+    for p in r.pozycje:
+        p.cena_za_kg = ceny[p.produkt_id]
+        p.masa_kg = p.masa_odwazona_kg or Decimal(0)
+        p.wartosc = magazyn.grosze(p.masa_kg * p.cena_za_kg)
+    return SimpleNamespace(rezerwacja=r, pozycje=r.pozycje, do_zaplaty=sum(p.wartosc for p in r.pozycje))
+
+
+@transaction.atomic
+def wydaj_rezerwacje(rezerwacja_id, kto):
+    r = _do_obslugi(rezerwacja_id, ['przygotowana'])
+    pozycje = list(PozycjaRezerwacji.objects.filter(rezerwacja=r, masa_odwazona_kg__gt=0).values_list('produkt_id', 'masa_odwazona_kg'))
+    try:
+        if pozycje:
+            magazyn.zarejestruj_sprzedaz(pozycje, kto, r)
+    except magazyn.BrakNaStanie as blad:
+        raise RezerwacjaOdrzucona(str(blad)) from blad
+    _ustaw_stan(r, 'odebrana')
 
 
 def do_przypomnienia(dzien):
-    """PU32 kroki 1–2. Złożone i przygotowane rezerwacje z tego dnia, pola jak w rezerwacje_na_dzien oraz oplata:
-    10% wartości z zarezerwowanych ilości i cen z tego dnia, zaokrąglona do 1 gr, czyli kwota, którą
-    oznacz_nieodebrane naliczy o 18:00. Tylko odczyt.
-    """
-    return atrapy.do_przypomnienia(dzien)
+    wynik = dane_rezerwacji(Rezerwacja.objects.filter(dzien_odbioru=dzien, stan__in=AKTYWNE).order_by('pk'))
+    for r in wynik:
+        r.oplata = magazyn.grosze(r.wartosc / 10)
+    return wynik
+
+
+def oznacz_nieodebrane(dzien):
+    teraz = timezone.localtime()
+    ostatni = teraz.date() if teraz.hour >= 18 else teraz.date() - timedelta(days=1)
+    ids = Rezerwacja.objects.filter(dzien_odbioru__lte=min(dzien, ostatni), stan__in=AKTYWNE).values_list('pk', 'klient_id')
+    for pk, klient_id in list(ids):
+        with transaction.atomic():
+            ProfilKlienta.objects.select_for_update().get(pk=klient_id)
+            r = Rezerwacja.objects.select_for_update().filter(pk=pk, stan__in=AKTYWNE).first()
+            if not r:
+                continue
+            r.oplata_za_nieodebranie = magazyn.grosze(rezerwacja(pk).wartosc / 10)
+            _ustaw_stan(r, 'nieodebrana')
+        _powiadom(powiadomienia.oplata, rezerwacja(pk))
 
 
 def wyslij_przypomnienia(dzien):

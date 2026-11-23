@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect, render
@@ -6,7 +7,7 @@ from django.utils.dateparse import parse_date
 from . import services
 from .forms import RezerwacjaForm
 
-KONCOWE = ('odebrana', 'anulowana', 'nieodebrana')
+KONCOWE = (_('odebrana'), _('anulowana'), _('nieodebrana'))
 
 
 def katalog(request):
@@ -38,7 +39,7 @@ def nowa(request, dzien):
         except services.RezerwacjaOdrzucona as blad:
             form.add_error(None, str(blad))
         else:
-            messages.success(request, 'Rezerwacja złożona. Potwierdzenie wysłaliśmy e-mailem.')
+            messages.success(request, _('Rezerwacja złożona. Potwierdzenie wysłaliśmy e-mailem.'))
             return redirect('moje_rezerwacje')
     return render(request, 'rezerwacje/rezerwacja.html', {'dzien': dzien, 'form': form})
 
@@ -50,7 +51,7 @@ def rezerwacja_do_zmiany(request, rezerwacja_id):
         raise Http404
     if rezerwacja.mozna_zmienic:
         return rezerwacja
-    messages.error(request, 'Tej rezerwacji nie można już zmienić ani anulować. Nieodebranie jej spowoduje naliczenie opłaty.')
+    messages.error(request, _('Tej rezerwacji nie można już zmienić ani anulować. Nieodebranie jej spowoduje naliczenie opłaty.'))
     return None
 
 
@@ -67,7 +68,7 @@ def zmien(request, rezerwacja_id):
         except services.RezerwacjaOdrzucona as blad:
             form.add_error(None, str(blad))
         else:
-            messages.success(request, 'Rezerwacja zmieniona. Potwierdzenie wysłaliśmy e-mailem.')
+            messages.success(request, _('Rezerwacja zmieniona. Potwierdzenie wysłaliśmy e-mailem.'))
             return redirect('moje_rezerwacje')
     return render(request, 'rezerwacje/rezerwacja.html', {'dzien': rezerwacja.dzien_odbioru, 'form': form, 'rezerwacja': rezerwacja})
 
@@ -82,6 +83,6 @@ def anuluj(request, rezerwacja_id):
         except services.RezerwacjaOdrzucona as blad:
             messages.error(request, str(blad))
         else:
-            messages.success(request, 'Rezerwacja anulowana bez opłaty.')
+            messages.success(request, _('Rezerwacja anulowana bez opłaty.'))
         return redirect('moje_rezerwacje')
     return render(request, 'rezerwacje/anulowanie.html', {'rezerwacja': rezerwacja})

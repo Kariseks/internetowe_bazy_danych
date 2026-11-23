@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.utils.formats import localize
 
@@ -25,12 +26,12 @@ class RezerwacjaForm(forms.Form):
         razem = 0
         for wiersz, ilosc in self.pozycje_z_wierszami():
             if ilosc > wiersz.dostepne_kg:
-                self.add_error(f'p{wiersz.produkt.id}', f'Dostępne: {localize(wiersz.dostepne_kg)} kg.')
+                self.add_error(f'p{wiersz.produkt.id}', _('Dostępne: %(masa)s kg.') % {'masa': localize(wiersz.dostepne_kg)})
             razem += ilosc
         if not razem:
-            raise ValidationError('Wpisz ilość co najmniej jednego produktu.')
+            raise ValidationError(_('Wpisz ilość co najmniej jednego produktu.'))
         if razem > LIMIT_KG:
-            raise ValidationError(f'Rezerwacja może mieć najwyżej {localize(LIMIT_KG)} kg, a ma {localize(razem)} kg.')
+            raise ValidationError(_('Rezerwacja może mieć najwyżej %(limit)s kg, a ma %(razem)s kg.') % {'limit': localize(LIMIT_KG), 'razem': localize(razem)})
         return dane
 
     def pozycje_z_wierszami(self):

@@ -194,7 +194,7 @@ h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
 	.menu-js .naglowek nav a:hover, .menu-js .naglowek nav button:hover { background: rgb(255 255 255 / 0.06); }
 	.menu-js .naglowek nav a[aria-current="page"] { border-left-color: var(--limonka); background: rgb(255 255 255 / 0.08); font-weight: 600; }
 	.menu-js .naglowek nav .uzytkownik { margin-top: auto; padding-top: 1rem; border-top: 1px solid rgb(255 255 255 / 0.15); font-weight: 600; }
-	.menu-js .naglowek nav .uzytkownik::before { content: "Twoje konto"; display: block; color: rgb(255 255 255 / 0.65); font-size: 0.8rem; font-weight: 400; }
+	.menu-js .naglowek nav .uzytkownik::before { content: attr(data-konto); display: block; color: rgb(255 255 255 / 0.65); font-size: 0.8rem; font-weight: 400; }
 	.menu-js .zaslona { position: fixed; inset: 0; z-index: 1; display: block; background: rgb(10 20 15 / 0.45); opacity: 0; pointer-events: none; }
 	.menu-otwarte .zaslona { opacity: 1; pointer-events: auto; }
 	.menu-otwarte body { overflow: hidden; }
@@ -207,4 +207,37 @@ h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
 
 @media (prefers-reduced-motion: reduce) {
 	.menu-animacje .naglowek nav, .menu-animacje.menu-otwarte .naglowek nav, .menu-animacje .kreski, .menu-animacje .kreski::before, .menu-animacje .kreski::after, .menu-animacje .zaslona { transition: none; }
+}
+
+:root { --kapusta: #f8f7f1; --linia: #d5dcd2; --ramka: #768b7b; }
+.naglowek { padding-inline: max(1rem, calc((100% - 75rem) / 2)); min-height: 4.5rem; }
+.naglowek nav { margin-left: auto; }
+.naglowek .marka { font-size: clamp(1.4rem, 2.6vw, 2rem); letter-spacing: -.05em; }
+main { max-width: 77rem; padding-top: clamp(1rem, 4vw, 3rem); }
+.katalog-intro { display: grid; grid-template-columns: 1.25fr 1fr; align-items: stretch; overflow: hidden; background: #e6eddb; border-radius: 1rem; }
+.katalog-intro > div { align-self: center; padding: clamp(1.25rem, 3.5vw, 3rem); }
+.katalog-intro h1 { max-width: 11ch; color: var(--jarmuz); font-size: clamp(2.5rem, 6vw, 4.6rem); line-height: .97; letter-spacing: -.06em; }
+.katalog-intro p { max-width: 36ch; margin: .9rem 0 0; font-size: 1.08rem; }
+.katalog-intro .termin { padding-top: .8rem; border-top: 1px solid #a8b99d; font-size: .93rem; }
+.katalog-intro img { width: 100%; height: 100%; min-height: 0; max-height: 20rem; object-fit: cover; }
+#dostepnosc { font: 700 clamp(1.25rem, 3vw, 1.7rem) "Bricolage Grotesque", system-ui, sans-serif; letter-spacing: -.035em; }
+.tabela.katalog thead { background: #eef2e8; }
+.katalog tbody tr:hover { background: #f4f7ef; }
+.katalog .zarezerwuj { min-height: 2rem; display: inline-flex; align-items: center; margin-top: .35rem; }
+.katalog .dzien span:not(.ukryte) { display: block; }
+.karta { border-top: .35rem solid var(--lisc); border-radius: .9rem; box-shadow: 0 .4rem 1.5rem rgb(36 51 27 / .06); }
+.zasady { margin-bottom: 1rem; }
+.zasady summary { padding-block: .4rem; color: var(--lisc); cursor: pointer; font-weight: bold; }
+.pole input[type="checkbox"] { width: 1.35rem; height: 1.35rem; }
+.pomin { position: absolute; top: .5rem; left: .5rem; z-index: 99; padding: .65rem 1rem; background: #fff; color: #143528; transform: translateY(-160%); }
+.pomin:focus { transform: none; }
+@media (max-width: 40rem) {
+    .menu-js .naglowek { flex-wrap: wrap; }
+    .menu-js .burger { order: 2; }
+    .naglowek nav { margin-left: 0; }
+    .katalog-intro { grid-template-columns: 1fr; }
+    .katalog-intro h1 { max-width: none; }
+    .katalog-intro img { height: 8rem; }
+    .naglowek .preferencje { gap: .25rem; }
+    .naglowek .preferencje button { padding-inline: .45rem; }
 }

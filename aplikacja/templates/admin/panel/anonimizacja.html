@@ -1,0 +1,12 @@
+{% extends "admin/panel/base.html" %}
+{% load i18n %}
+{% block content %}
+<form method="post" class="arkusz formularz">
+    {% csrf_token %}
+    <h2>{{ profil.uzytkownik.get_full_name }}</h2>
+    <p>{% translate "Po zatwierdzeniu konto zostanie wyłączone, a dane osobowe trwale usunięte. Historia operacji sklepu zostanie zachowana." %}</p>
+    {% include 'admin/panel/_pola_formularza.html' %}
+    <button class="przycisk glowny" type="submit">{% translate "Anonimizuj dane" %}</button>
+    <a href="{% url 'admin:konta' %}">{% translate "Wróć" %}</a>
+</form>
+{% endblock %}

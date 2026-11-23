@@ -1,19 +1,19 @@
-<div class="arkusz">
+{% load i18n %}<div class="arkusz">
 	<table class="tabela rezerwacje">
-		<thead><tr><th>Dzień odbioru</th><th>Pozycje</th><th class="liczba">Razem [kg]</th><th class="liczba">Wartość orient. [zł]</th><th>Stan</th><th><span class="ukryte">Polecenia</span></th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Dzień odbioru" %}</th><th scope="col">{% translate "Pozycje" %}</th><th scope="col" class="liczba">{% translate "Razem [kg]" %}</th><th scope="col" class="liczba">{% translate "Wartość orient. [zł]" %}</th><th scope="col">{% translate "Stan" %}</th><th scope="col"><span class="ukryte">{% translate "Polecenia" %}</span></th></tr></thead>
 		<tbody>
 			{% for r in rezerwacje %}
 			<tr>
 				<td>{{ r.dzien_odbioru|date:"D, d.m.Y" }}</td>
 				<td>{% include "admin/panel/_pozycje.html" with pozycje=r.pozycje %}</td>
-				<td class="liczba" data-etykieta="Razem" data-jednostka="kg">{{ r.laczna_masa|floatformat:"-1" }}</td>
-				<td class="liczba" data-etykieta="Wartość orient." data-jednostka="zł">{{ r.wartosc|floatformat:2 }}</td>
+				<td class="liczba" data-etykieta="{% translate "Razem" %}" data-jednostka="kg">{{ r.laczna_masa|floatformat:"-1" }}</td>
+				<td class="liczba" data-etykieta="{% translate "Wartość orient." %}" data-jednostka="{% translate "zł" %}">{{ r.wartosc|floatformat:2 }}</td>
 				<td>{% include "admin/panel/_stan.html" with stan=r.stan %}</td>
 				<td class="polecenia">
 					{% if polecenia and r.mozna_zmienic %}
-						<a class="przycisk maly" href="{% url 'zmien_rezerwacje' r.id %}">Zmień</a>
-						<a class="przycisk maly drugi" href="{% url 'anuluj_rezerwacje' r.id %}">Anuluj</a>
-						<small>do {{ r.termin|date:"H:i, d.m" }}</small>
+						<a class="przycisk maly" href="{% url 'zmien_rezerwacje' r.id %}">{% translate "Zmień" %}</a>
+						<a class="przycisk maly drugi" href="{% url 'anuluj_rezerwacje' r.id %}">{% translate "Anuluj" %}</a>
+						<small>{% blocktranslate with termin=r.termin|date:"H:i, d.m" %}do {{ termin }}{% endblocktranslate %}</small>
 					{% endif %}
 				</td>
 			</tr>

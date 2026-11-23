@@ -1,9 +1,9 @@
 from datetime import timedelta
 from functools import wraps
 
-from django.contrib import admin, messages
+from django.contrib import admin
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.utils.formats import date_format
@@ -23,18 +23,6 @@ def tylko_wlasciciel(widok):
         if not jest_wlascicielem(request.user):
             raise PermissionDenied
         return widok(request, *args, **kwargs)
-    return opakowany
-
-
-def obsluz_brak_logiki(widok, dokad=None):
-    """Tymczasowe: zapis w stubie pokazuje komunikat zamiast błędu 500, na tej samej stronie albo na stronie dokad."""
-    @wraps(widok)
-    def opakowany(request, *args, **kwargs):
-        try:
-            return widok(request, *args, **kwargs)
-        except NotImplementedError as blad:
-            messages.warning(request, f'Formularz jest poprawny, ale nic nie zapisano: {blad} nie ma jeszcze logiki.')
-            return redirect(dokad or request.get_full_path())
     return opakowany
 
 

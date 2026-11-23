@@ -1,4 +1,4 @@
-{% autoescape off %}Konto w Warzywniaku zostało założone. Logujesz się adresem {{ uzytkownik.email }}.
+{% load i18n %}{% autoescape off %}{% blocktranslate with email=uzytkownik.email %}Konto w Warzywniaku zostało założone. Logujesz się adresem {{ email }}.{% endblocktranslate %}
 
-Rezerwacje można składać po zarejestrowaniu karty płatniczej. Jeśli rejestracja karty się nie udała, zrobisz to w danych konta.
+{% translate "Rezerwacje można składać po zarejestrowaniu karty płatniczej. Jeśli rejestracja karty się nie udała, zrobisz to w danych konta." %}
 {% endautoescape %}

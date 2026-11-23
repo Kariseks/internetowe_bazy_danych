@@ -1,0 +1,26 @@
+' Wspólny styl diagramów UML w sprawozdaniu.
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 12
+skinparam defaultFontColor #172D31
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam dpi 185
+skinparam ArrowColor #365B61
+skinparam ArrowFontColor #263D42
+skinparam ArrowFontSize 10
+skinparam ActorBorderColor #284F55
+skinparam ActorBackgroundColor #D6EBE7
+skinparam RectangleBackgroundColor #FAFCFB
+skinparam RectangleBorderColor #64868A
+skinparam UsecaseBackgroundColor #E4F2EF
+skinparam UsecaseBorderColor #365F63
+skinparam StateBackgroundColor #E4F2EF
+skinparam StateBorderColor #365F63
+skinparam StateStartColor #294D50
+skinparam StateEndColor #294D50
+skinparam ActivityBackgroundColor #E4F2EF
+skinparam ActivityBorderColor #365F63
+skinparam ActivityDiamondBackgroundColor #FFF2CB
+skinparam ActivityDiamondBorderColor #735B28
+skinparam SwimlaneBorderColor #7C979A
+skinparam SwimlaneTitleBackgroundColor #DAECE8

@@ -1,23 +1,31 @@
 {% extends "base.html" %}
-{% block title %}Katalog – Warzywniak{% endblock %}
-{% block atrapa %}{% include "_atrapa.html" %}{% endblock %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% translate "Katalog – Warzywniak" %}{% endblock %}
 {% block content %}
-<h1>Katalog produktów</h1>
-<p class="wstep">Ilości, które można zarezerwować na każdy z najbliższych siedmiu dni. Rezerwacje na dany dzień przyjmujemy do 18:00 dnia poprzedniego, a odbiór jest w sklepie do 18:00.{% if not user.is_authenticated %} Do rezerwacji potrzebne jest konto.{% endif %}</p>
+<section class="katalog-intro" aria-labelledby="tytul-katalogu">
+    <div>
+        <h1 id="tytul-katalogu">{% translate "Katalog produktów" %}</h1>
+        <p>{% translate "Wybierz dzień i zarezerwuj warzywa lub owoce na odbiór w sklepie." %}</p>
+        <p class="termin">{% translate "Rezerwacje do 18:00 dnia poprzedniego. Odbiór do 18:00." %}</p>
+    </div>
+    <img src="{% static 'sklep/warzywa.webp' %}" alt="" width="820" height="547">
+</section>
+<h2 id="dostepnosc">{% translate "Dostępność na najbliższe siedem dni" %}</h2>
 <div class="arkusz przewijany">
-	<table class="tabela katalog">
+	<table class="tabela katalog" aria-labelledby="dostepnosc">
 		<thead>
 			<tr>
-				<th>Produkt</th>
-				<th class="liczba cena">Cena [zł/kg]</th>
+				<th scope="col">{% translate "Produkt" %}</th>
+				<th scope="col" class="liczba cena">{% translate "Cena [zł/kg]" %}</th>
 				{% for d in dane.dni %}
-				<th class="dzien{% if d.zamkniety %} zamkniety{% endif %}">
+				<th scope="col" class="dzien{% if d.zamkniety %} zamkniety{% endif %}">
 					{{ d.dzien|date:"D" }} <span>{{ d.dzien|date:"d.m" }}</span>
 					{% if d.zamkniety %}
-						<small>zamknięte</small>
+						<small>{% translate "zamknięte" %}</small>
 					{% elif not user.is_staff %}
 						{% url 'nowa_rezerwacja' d.dzien.isoformat as cel %}
-						<a class="zarezerwuj" href="{% if user.is_authenticated %}{{ cel }}{% else %}{% url 'logowanie' %}?next={{ cel|urlencode }}{% endif %}">Zarezerwuj</a>
+						<a class="zarezerwuj" href="{% if user.is_authenticated %}{{ cel }}{% else %}{% url 'logowanie' %}?next={{ cel|urlencode }}{% endif %}">{% translate "Zarezerwuj" %}<span class="ukryte"> · {{ d.dzien|date:"j E" }}</span></a>
 					{% endif %}
 				</th>
 				{% endfor %}
@@ -26,12 +34,14 @@
 		<tbody>
 			{% for w in dane.wiersze %}
 			<tr>
-				<th scope="row">{{ w.produkt }} <small class="cena-pod-nazwa" hidden>{{ w.cena_za_kg|floatformat:2 }} zł/kg</small></th>
+				<th scope="row">{{ w.produkt }} <small class="cena-pod-nazwa" hidden>{% blocktranslate with cena_za_kg=w.cena_za_kg|floatformat:2 %}{{ cena_za_kg }} zł/kg{% endblocktranslate %}</small></th>
 				<td class="liczba cena">{{ w.cena_za_kg|floatformat:2 }}</td>
 				{% for k in w.komorki %}
 				<td class="liczba{% if k.zamkniety %} zamkniety{% elif not k.dostepne_kg %} brak{% endif %}">{% if k.zamkniety %}–{% else %}{{ k.dostepne_kg|floatformat:"-1" }} kg{% endif %}</td>
 				{% endfor %}
 			</tr>
+			{% empty %}
+			<tr><td colspan="9">{% translate "Brak produktów w ofercie." %}</td></tr>
 			{% endfor %}
 		</tbody>
 	</table>

@@ -1,43 +1,44 @@
 {% extends "admin/panel/base.html" %}
+{% load i18n %}
 {% block content %}
 <div class="pulpit">
 	<ol class="dzien">
 		<li{% if dostawa %} class="zrobione"{% endif %}>
 			<div>
-				<h2>Przyjmij dostawę</h2>
-				<p>{% if dostawa %}Dostawa zapisana.{% else %}Towar z 4:00 czeka na zapisanie.{% endif %}</p>
+				<h2>{% translate "Przyjmij dostawę" %}</h2>
+				<p>{% if dostawa %}{% translate "Dostawa zapisana." %}{% else %}{% translate "Towar z 4:00 czeka na zapisanie." %}{% endif %}</p>
 			</div>
-			<a class="przycisk" href="{% url 'admin:dostawa' %}">{% if dostawa %}Zobacz{% else %}Przyjmij{% endif %}</a>
+			<a class="przycisk" href="{% url 'admin:dostawa' %}">{% if dostawa %}{% translate "Zobacz" %}{% else %}{% translate "Przyjmij" %}{% endif %}</a>
 		</li>
 		<li{% if not do_przygotowania %} class="zrobione"{% endif %}>
 			<div>
-				<h2>Przygotuj rezerwacje</h2>
-				<p>Do zważenia i spakowania: {{ do_przygotowania }}.</p>
+				<h2>{% translate "Przygotuj rezerwacje" %}</h2>
+				<p>{% blocktranslate with do_przygotowania=do_przygotowania %}Do zważenia i spakowania: {{ do_przygotowania }}.{% endblocktranslate %}</p>
 			</div>
-			<a class="przycisk" href="{% url 'admin:rezerwacje' %}">Otwórz listę</a>
+			<a class="przycisk" href="{% url 'admin:rezerwacje' %}">{% translate "Otwórz listę" %}</a>
 		</li>
 		<li{% if not do_odbioru %} class="zrobione"{% endif %}>
 			<div>
-				<h2>Wydawaj do 18:00</h2>
-				<p>Czeka na odbiór: {{ do_odbioru }}. Nieodebrane rezerwacje system rozliczy o 18:00.</p>
+				<h2>{% translate "Wydawaj do 18:00" %}</h2>
+				<p>{% blocktranslate with do_odbioru=do_odbioru %}Czeka na odbiór: {{ do_odbioru }}. Nieodebrane rezerwacje system rozliczy o 18:00.{% endblocktranslate %}</p>
 			</div>
-			<a class="przycisk" href="{% url 'admin:klienci' %}">Znajdź klienta</a>
+			<a class="przycisk" href="{% url 'admin:klienci' %}">{% translate "Znajdź klienta" %}</a>
 		</li>
 		<li>
 			<div>
-				<h2>Zamów towar na jutro</h2>
-				<p>O 18:00 kończą się zapisy na jutro i można dzwonić do dostawcy.</p>
+				<h2>{% translate "Zamów towar na jutro" %}</h2>
+				<p>{% translate "O 18:00 kończą się zapisy na jutro i można dzwonić do dostawcy." %}</p>
 			</div>
-			<a class="przycisk" href="{% url 'admin:zamowienie' %}">Zestawienie</a>
+			<a class="przycisk" href="{% url 'admin:zamowienie' %}">{% translate "Zestawienie" %}</a>
 		</li>
 	</ol>
 	<aside class="pulpit-bok">
-		<a class="przycisk glowny duzy" href="{% url 'admin:sprzedaz' %}">Nowa sprzedaż</a>
+		<a class="przycisk glowny duzy" href="{% url 'admin:sprzedaz' %}">{% translate "Nowa sprzedaż" %}</a>
 		<form class="szukaj" method="get" action="{% url 'admin:klienci' %}">
-			<label for="szukaj-klienta">Znajdź klienta</label>
-			<input id="szukaj-klienta" type="search" name="q" placeholder="Nazwisko, e-mail lub telefon">
+			<label for="szukaj-klienta">{% translate "Znajdź klienta" %}</label>
+			<input id="szukaj-klienta" type="search" name="q" placeholder="{% translate "Nazwisko, e-mail lub telefon" %}">
 		</form>
-		<h2>Odbiory dziś</h2>
+		<h2>{% translate "Odbiory dziś" %}</h2>
 		<ul class="odbiory">
 			{% for r in lista %}
 			<li>
@@ -45,7 +46,7 @@
 				{% include "admin/panel/_stan.html" with stan=r.stan %}
 			</li>
 			{% empty %}
-			<li>Brak rezerwacji na dziś.</li>
+			<li>{% translate "Brak rezerwacji na dziś." %}</li>
 			{% endfor %}
 		</ul>
 	</aside>

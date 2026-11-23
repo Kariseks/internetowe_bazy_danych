@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
@@ -17,7 +18,7 @@ def lista(request):
     return strona(
         request,
         'admin/panel/rezerwacje.html',
-        'Rezerwacje',
+        _('Rezerwacje'),
         rezerwacje=services.rezerwacje_na_dzien(dzien),
         dzis=timezone.localdate(),
         **nawigacja_dni(dzien),
@@ -39,12 +40,12 @@ def przygotuj(request, rezerwacja_id):
         else:
             if do_wydania:
                 return redirect('admin:wydaj', rezerwacja_id)
-            messages.success(request, 'Rezerwacja jest przygotowana do odbioru.')
+            messages.success(request, _('Rezerwacja jest przygotowana do odbioru.'))
             return redirect('admin:rezerwacje')
     return strona(
         request,
         'admin/panel/przygotowanie.html',
-        'Przygotowanie rezerwacji',
+        _('Przygotowanie rezerwacji'),
         rezerwacja=rezerwacja,
         form=form,
         do_wydania=do_wydania,
@@ -63,12 +64,12 @@ def wydaj(request, rezerwacja_id):
         except services.RezerwacjaOdrzucona as blad:
             messages.error(request, str(blad))
         else:
-            messages.success(request, 'Rezerwacja wydana.')
+            messages.success(request, _('Rezerwacja wydana.'))
             return redirect('admin:rezerwacje')
     return strona(
         request,
         'admin/panel/wydanie.html',
-        'Wydanie rezerwacji',
+        _('Wydanie rezerwacji'),
         wydanie=services.podsumowanie_wydania(rezerwacja_id),
     )
 
@@ -96,6 +97,6 @@ def plan(request):
                     odrzucone += 1
                     messages.error(request, f'{komorka.produkt}, {komorka.dzien:%d.%m}: {blad}')
             if zmiany and not odrzucone:
-                messages.success(request, 'Plan dostawy zapisany.')
+                messages.success(request, _('Plan dostawy zapisany.'))
             return redirect('admin:plan')
-    return strona(request, 'admin/panel/plan.html', 'Plan dostawy', dane=dane, form=form, mozna_zmieniac=mozna_zmieniac)
+    return strona(request, 'admin/panel/plan.html', _('Plan dostawy'), dane=dane, form=form, mozna_zmieniac=mozna_zmieniac)

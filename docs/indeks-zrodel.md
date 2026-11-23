@@ -8,6 +8,10 @@ Hierarchia: **wytyczne v4 > notatka z konsultacji > decyzje Karola (PLAN.md) > p
 
 ## Część A. Źródła
 
+### Materiały do analizy SWOT i TOWS
+
+Wykład `materialy/IBD_wyklad_2026_nr1.pdf`, slajdy 29–35, definiuje granicę czynników wewnętrznych i zewnętrznych, osiem kierunków oceny oraz cztery strategie. Przykłady `materialy/Analiza_SWOT_kregielni.docx` i `materialy/Analiza_SWOT_salonu_fryzjerskiego.docx`, rozdziały 4–6, pokazują normalizację wag w obrębie grupy, sumowanie powiązań w obu osiach i porównanie dwóch kierunków. Liczby dotyczące warzywniaka są ocenami opracowanymi dla projektu. W raporcie są w rozdziale 3.1.
+
 ### A1. Wytyczne i ustalenia projektu
 
 **`materialy/IDB_wytyczne_v4.pdf`** — wytyczne prowadzącego IBD, wer. 4.0 (2021-10-04), 1 strona. **Źródło nadrzędne.**

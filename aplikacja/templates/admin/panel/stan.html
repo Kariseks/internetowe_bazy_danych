@@ -1,14 +1,16 @@
 {% extends "admin/panel/base.html" %}
+{% load i18n %}
 {% block content %}
 <div class="arkusz">
 	<table class="tabela">
-		<thead><tr><th>Produkt</th><th class="liczba">Cena za kg</th><th class="liczba">Stan [kg]</th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Cena za kg" %}</th><th scope="col" class="liczba">{% translate "Stan [kg]" %}</th>{% if jest_wlascicielem %}<th scope="col">{% translate "Polecenia" %}</th>{% endif %}</tr></thead>
 		<tbody>
 			{% for w in wiersze %}
 			<tr{% if not w.stan_kg %} class="za-malo"{% endif %}>
 				<td>{{ w.produkt }}</td>
-				<td class="liczba">{{ w.cena_za_kg|floatformat:2 }} zł</td>
+				<td class="liczba">{% blocktranslate with cena_za_kg=w.cena_za_kg|floatformat:2 %}{{ cena_za_kg }} zł{% endblocktranslate %}</td>
 				<td class="liczba">{{ w.stan_kg|floatformat:2 }}</td>
+				{% if jest_wlascicielem %}<td><a href="{% url 'admin:korekta' w.produkt.pk %}">{% translate "Skoryguj stan" %}</a></td>{% endif %}
 			</tr>
 			{% endfor %}
 		</tbody>

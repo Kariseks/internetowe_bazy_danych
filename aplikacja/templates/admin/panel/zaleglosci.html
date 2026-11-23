@@ -1,31 +1,32 @@
 {% extends "admin/panel/base.html" %}
+{% load i18n %}
 {% block content %}
-<p class="opis">Karty obciąża się raz w miesiącu u operatora płatności, podając identyfikator karty. Tutaj zapisz wynik. Powyżej 100 zł zaległości klient nie może składać nowych rezerwacji.</p>
+<p class="opis">{% translate "Karty obciąża się raz w miesiącu u operatora płatności, podając identyfikator karty. Tutaj zapisz wynik. Powyżej 100 zł zaległości klient nie może składać nowych rezerwacji." %}</p>
 <div class="arkusz">
 	<table class="tabela">
-		<thead><tr><th>Klient</th><th class="liczba">Zaległość</th><th>Nowe rezerwacje</th><th>Identyfikator karty</th><th>Wynik obciążenia karty</th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Klient" %}</th><th scope="col" class="liczba">{% translate "Zaległość" %}</th><th scope="col">{% translate "Nowe rezerwacje" %}</th><th scope="col">{% translate "Identyfikator karty" %}</th><th scope="col">{% translate "Wynik obciążenia karty" %}</th></tr></thead>
 		<tbody>
 			{% for k in klienci %}
 			<tr>
 				<td><a href="{% url 'admin:karta_klienta' k.uzytkownik_id %}">{{ k.uzytkownik.get_full_name }}</a><small>{{ k.telefon }}</small></td>
-				<td class="liczba">{{ k.zaleglosc|floatformat:2 }} zł</td>
-				<td>{% if k.zablokowany %}<span class="stan stan-nieodebrana">zablokowane</span>{% else %}dozwolone{% endif %}</td>
-				<td>{{ k.identyfikator_karty|default:"brak karty" }}</td>
+				<td class="liczba">{% blocktranslate with zaleglosc=k.zaleglosc|floatformat:2 %}{{ zaleglosc }} zł{% endblocktranslate %}</td>
+				<td>{% if k.zablokowany %}<span class="stan stan-nieodebrana">{% translate "zablokowane" %}</span>{% else %}{% translate "dozwolone" %}{% endif %}</td>
+				<td>{{ k.identyfikator_karty|default:_("brak karty") }}</td>
 				<td>
 					<form method="post" class="w-wierszu">
 						{% csrf_token %}
 						<input type="hidden" name="klient" value="{{ k.uzytkownik_id }}">
-						<label class="ukryte" for="kwota-{{ k.uzytkownik_id }}">Kwota [zł]</label>
+						<label class="ukryte" for="kwota-{{ k.uzytkownik_id }}">{% translate "Kwota [zł]" %}</label>
 						<input id="kwota-{{ k.uzytkownik_id }}" type="text" inputmode="decimal" name="kwota" value="{{ k.zaleglosc|floatformat:2 }}">
 						{# Enter w polu kwoty nic nie wysyła: wynik trzeba wybrać przyciskiem. #}
 						<button type="submit" disabled hidden></button>
-						<button class="przycisk" type="submit" name="wynik" value="skuteczne">Pobrano</button>
-						<button class="przycisk" type="submit" name="wynik" value="nieudane">Nie pobrano</button>
+						<button class="przycisk" type="submit" name="wynik" value="skuteczne">{% translate "Pobrano" %}</button>
+						<button class="przycisk" type="submit" name="wynik" value="nieudane">{% translate "Nie pobrano" %}</button>
 					</form>
 				</td>
 			</tr>
 			{% empty %}
-			<tr><td colspan="5" class="pusto">Żaden klient nie ma zaległości.</td></tr>
+			<tr><td colspan="5" class="pusto">{% translate "Żaden klient nie ma zaległości." %}</td></tr>
 			{% endfor %}
 		</tbody>
 	</table>

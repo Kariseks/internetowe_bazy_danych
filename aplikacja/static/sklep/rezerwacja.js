@@ -4,7 +4,7 @@
 	const wartosc = document.getElementById('wartosc');
 
 	const liczba = (tekst) => Number.parseFloat(String(tekst).replace(/\s/g, '').replace(',', '.')) || 0;
-	const format = (n, miejsca) => n.toLocaleString('pl-PL', { minimumFractionDigits: miejsca, maximumFractionDigits: miejsca });
+	const format = (n, miejsca) => n.toLocaleString(document.documentElement.lang, { minimumFractionDigits: miejsca, maximumFractionDigits: miejsca });
 
 	function przelicz() {
 		let kg = 0;
@@ -15,7 +15,7 @@
 			zl += ilosc * liczba(wiersz.dataset.cena);
 		}
 		masa.textContent = `${format(kg, 1)} kg`;
-		wartosc.textContent = `${format(zl, 2)} zł`;
+		wartosc.textContent = `${format(zl, 2)} ${form.dataset.waluta}`;
 	}
 
 	form.addEventListener('input', przelicz);

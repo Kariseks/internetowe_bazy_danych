@@ -1,14 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Załóż konto – Warzywniak{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Załóż konto – Warzywniak" %}{% endblock %}
 {% block content %}
 <div class="karta">
-	<h1>Załóż konto</h1>
-	<p>Po założeniu konta zarejestrujesz kartę płatniczą. Bez niej nie można składać rezerwacji.</p>
-	<form method="post">
+	<h1>{% translate "Załóż konto" %}</h1>
+	<p>{% translate "Po założeniu konta zarejestrujesz kartę płatniczą. Bez niej nie można składać rezerwacji." %}</p>
+    <details class="zasady"><summary>{% translate "Zasady rezerwacji" %}</summary>
+        <p>{% translate "Limit jednej rezerwacji to 20 kg. Rezerwację można zmienić lub odwołać do 18:00 w dniu poprzedzającym odbiór. Zapłacisz w sklepie za odważony towar. Za nieodebraną rezerwację naliczamy 10% jej wartości. Zaległość powyżej 100 zł wstrzymuje nowe rezerwacje." %}</p>
+    </details>
+    <form method="post">
 		{% csrf_token %}
 		{% include "konta/_pola.html" %}
-		<button class="przycisk" type="submit">Załóż konto</button>
+		<button class="przycisk" type="submit">{% translate "Załóż konto" %}</button>
 	</form>
-	<p class="odnosniki"><a href="{% url 'logowanie' %}">Mam już konto</a></p>
+	<p class="odnosniki"><a href="{% url 'logowanie' %}">{% translate "Mam już konto" %}</a></p>
 </div>
 {% endblock %}

@@ -2,7 +2,7 @@
 
 Każdy test tworzy stan początkowy funkcjami zapisu z services.py, wykonuje przypadek użycia przez strony aplikacji
 (klient testowy Django) i sprawdza stan po nim funkcjami odczytu z services.py. Nie zależą więc od nazw modeli.
-Dopóki services.py ma stuby, testy kończą się błędem NotImplementedError.
+Wyniki porównuje się z trwałym stanem bazy.
 
 Zegar jest zamrożony na dniu D (patch django.utils.timezone.now), dlatego logika bierze czas z django.utils.timezone.
 """
@@ -17,7 +17,7 @@ from django.core import mail
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.management import call_command
 from django.db import connection
-from django.test import Client, TestCase, TransactionTestCase
+from django.test import Client, TestCase, TransactionTestCase, skipUnlessDBFeature
 from django.utils import timezone
 
 from konta import services as konta
@@ -148,7 +148,7 @@ class ZalozKontoTests(Akceptacja):
 
     def zaloz(self, **pola):
         dane = {'imie': 'Anna', 'nazwisko': 'Kowalska', 'email': self.ADRES, 'telefon': '501 200 300',
-                'haslo': HASLO, 'haslo2': HASLO, **pola}
+                'haslo': HASLO, 'haslo2': HASLO, 'regulamin': 'on', **pola}
         return self.client.post('/rejestracja/', dane, follow=True)
 
     def konto_klienta(self):
@@ -346,6 +346,7 @@ class ZlozRezerwacjeTests(Akceptacja):
         self.assertEqual(rezerwacje.rezerwacje_klienta(self.anna), [])
 
 
+@skipUnlessDBFeature('has_select_for_update')
 class JednoczesneRezerwacjeTests(Dane, TransactionTestCase):
     """PU8 A3 i A5: dwa połączenia z bazą naraz, dlatego bez transakcji obejmującej cały test."""
 
@@ -527,6 +528,14 @@ class SprzedazTests(Akceptacja):
         self.assertEqual((self.stan(self.ziemniaki), self.stan(self.marchew)), (Decimal(10), Decimal(20)))
 
 
+    def test_ta26_sprzedaz_respektuje_rezerwacje(self):
+        self.zarezerwuj(self.klient(), 0, (self.ziemniaki, 8))
+        self.sprzedaj((self.ziemniaki, '3'))
+        self.assertEqual(magazyn.historia_sprzedazy(D, D), [])
+        self.sprzedaj((self.ziemniaki, '2'))
+        self.assertEqual(self.stan(self.ziemniaki), 8)
+
+
 class RezerwacjaNaDzisTests(Akceptacja):
     """Rezerwacja Anny na D: 8 kg ziemniaków i 2 kg marchwi; dostawa na D: 50 kg ziemniaków, 20 kg marchwi."""
 
@@ -551,12 +560,12 @@ class RezerwacjaNaDzisTests(Akceptacja):
 class PrzygotujRezerwacjeTests(RezerwacjaNaDzisTests):
     """PU20 Przygotuj rezerwację do odbioru."""
 
-    def test_ta26_masy_i_stan(self):
+    def test_ta27_masy_i_stan(self):
         self.przygotuj('8,05', '1,95')
         self.assertEqual(rezerwacje.rezerwacja(self.rezerwacja.id).stan, 'przygotowana')
         self.assertEqual(self.masy(), {self.ziemniaki.id: Decimal('8.05'), self.marchew.id: Decimal('1.95')})
 
-    def test_ta27_masa_zero(self):
+    def test_ta28_masa_zero(self):
         self.przygotuj('8,05', '0')
         self.assertEqual(rezerwacje.rezerwacja(self.rezerwacja.id).stan, 'przygotowana')
         self.assertEqual(self.masy(), {self.ziemniaki.id: Decimal('8.05'), self.marchew.id: Decimal(0)})
@@ -568,7 +577,7 @@ class WydajRezerwacjeTests(RezerwacjaNaDzisTests):
     def wydanie(self):
         return f'/admin/rezerwacje/{self.rezerwacja.id}/wydaj/'
 
-    def test_ta28_wydanie_przygotowanej(self):
+    def test_ta29_wydanie_przygotowanej(self):
         self.przygotuj('8,05', '1,95')
         self.assertContains(self.client.get('/admin/klienci/?q=anna@example.com'), 'Testowa')
         self.assertContains(self.client.get(self.wydanie()), '33,56 zł')
@@ -578,7 +587,7 @@ class WydajRezerwacjeTests(RezerwacjaNaDzisTests):
         self.assertEqual((sprzedaz.rezerwacja_id, sprzedaz.suma), (self.rezerwacja.id, Decimal('33.56')))
         self.assertEqual((self.stan(self.ziemniaki), self.stan(self.marchew)), (Decimal('41.95'), Decimal('18.05')))
 
-    def test_ta29_wydanie_nieprzygotowanej(self):
+    def test_ta30_wydanie_nieprzygotowanej(self):
         przygotowanie = f'/admin/rezerwacje/{self.rezerwacja.id}/przygotuj/?dalej=wydaj'
         self.assertRedirects(self.client.get(self.wydanie()), przygotowanie)
         odpowiedz = self.przygotuj('8,05', '0', dalej='?dalej=wydaj')
@@ -586,13 +595,22 @@ class WydajRezerwacjeTests(RezerwacjaNaDzisTests):
         self.client.post(self.wydanie())
         self.assertEqual(rezerwacje.rezerwacja(self.rezerwacja.id).stan, 'odebrana')
 
-    def test_ta30_klient_z_zaleglosci(self):
+    def test_ta31_klient_z_zaleglosci(self):
         self.zaleglosc(self.anna, '9.00', -2)
         self.przygotuj('8,05', '1,95')
         self.assertContains(self.client.get(self.wydanie()), 'Zaległość 9,00 zł')
         self.assertContains(self.client.get(f'/admin/klienci/{self.anna.pk}/'), 'Odnotuj wpłatę')
         self.client.post(self.wydanie())
         self.assertEqual(rezerwacje.rezerwacja(self.rezerwacja.id).stan, 'odebrana')
+
+
+    def test_ta32_wydanie_po_zamknieciu(self):
+        self.przygotuj('8,00', '2,00')
+        self.ustaw_zegar(0, '18:00')
+        call_command('oznacz_nieodebrane')
+        self.client.post(self.wydanie())
+        self.assertEqual(rezerwacje.rezerwacja(self.rezerwacja.id).stan, 'nieodebrana')
+        self.assertEqual(magazyn.historia_sprzedazy(D, D), [])
 
 
 class PlanDostawyTests(Akceptacja):
@@ -617,18 +635,18 @@ class PlanDostawyTests(Akceptacja):
         wiersz = next(w for w in dane.wiersze if w.produkt.id == self.ziemniaki.id)
         return next(k for k in wiersz.komorki if k.dzien == self.dzien(dni))
 
-    def test_ta31_zmiana_planu(self):
+    def test_ta33_zmiana_planu(self):
         self.zapisz(3, '110')
         komorka = self.komorka(rezerwacje.plan_tygodnia(), 3)
         self.assertEqual((komorka.plan_kg, komorka.dostepne_kg), (Decimal(110), Decimal(20)))
         self.assertEqual(self.komorka(rezerwacje.katalog(), 3).dostepne_kg, Decimal(20))
 
-    def test_ta32_plan_ponizej_zarezerwowanego(self):
+    def test_ta34_plan_ponizej_zarezerwowanego(self):
         odpowiedz = self.zapisz(3, '80')
         self.assertIn('90', self.komunikaty(odpowiedz))
         self.assertEqual(self.komorka(rezerwacje.plan_tygodnia(), 3).plan_kg, Decimal(100))
 
-    def test_ta33_dzien_zamkniety(self):
+    def test_ta35_dzien_zamkniety(self):
         self.ustaw_zegar(0, '18:00')
         self.assertNotContains(self.client.get('/admin/plan/'), f'name="{self.pole_planu(1)}"')
         self.zapisz(1, '50')
@@ -666,7 +684,7 @@ class OznaczNieodebraneTests(Akceptacja):
     def stan_rezerwacji(self, rezerwacja):
         return rezerwacje.rezerwacja(rezerwacja.id).stan
 
-    def test_ta34_oplata_10_procent(self):
+    def test_ta36_oplata_10_procent(self):
         self.rezerwacje_na_d()
         self.o_18()
         stany = [self.stan_rezerwacji(r) for r in (self.anna_r, self.ola_r, self.ewa_r)]
@@ -675,7 +693,7 @@ class OznaczNieodebraneTests(Akceptacja):
         self.assertEqual(self.zaleglosc_klienta(self.ewa), 0)
         self.assertEqual(sorted(self.adresaci()), ['anna@example.com', 'ola@example.com'])
 
-    def test_ta35_blokada_powyzej_100_zl(self):
+    def test_ta37_blokada_powyzej_100_zl(self):
         self.zaleglosc(self.anna, '95.00', -2)
         self.rezerwacje_na_d()
         self.o_18()
@@ -686,14 +704,25 @@ class OznaczNieodebraneTests(Akceptacja):
         self.zaloguj(self.anna)
         self.assertContains(self.client.get(f'/rezerwacje/nowa/{self.dzien(2).isoformat()}/'), '103,00 zł')
 
-    def test_ta36_brak_rezerwacji(self):
+    def test_ta38_brak_rezerwacji(self):
         self.o_18()
         self.assertEqual(mail.outbox, [])
         self.assertEqual(self.zaleglosc_klienta(self.anna), 0)
 
-    def test_ta37_blad_poczty(self):
+    def test_ta39_blad_poczty(self):
         self.rezerwacje_na_d()
         with self.settings(EMAIL_BACKEND='akceptacja.tests.NiedostepnySerwerPoczty'):
             self.o_18()
         self.assertEqual(self.stan_rezerwacji(self.anna_r), 'nieodebrana')
         self.assertEqual(self.zaleglosc_klienta(self.anna), Decimal('8.00'))
+
+    def test_ta40_nadrabia_pominiety_dzien_tylko_raz(self):
+        wczoraj = self.zarezerwuj(self.anna, -1, (self.jablka, 10))
+        dzis = self.zarezerwuj(self.anna, 0, (self.jablka, 5))
+        magazyn.zmien_cene(self.jablka.pk, Decimal('9.00'), D)
+        mail.outbox.clear()
+        call_command('oznacz_nieodebrane')
+        call_command('oznacz_nieodebrane')
+        self.assertEqual(self.stan_rezerwacji(dzis), 'zlozona')
+        self.assertEqual(rezerwacje.rezerwacja(wczoraj.id).oplata_za_nieodebranie, Decimal('4.00'))
+        self.assertEqual(len(mail.outbox), 1)

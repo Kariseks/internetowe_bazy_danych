@@ -1,1 +1,1 @@
-Warzywniak: reset hasła
+{% load i18n %}{% translate "Warzywniak: reset hasła" %}

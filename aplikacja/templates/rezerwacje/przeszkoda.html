@@ -1,22 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Rezerwacja – Warzywniak{% endblock %}
-{% block atrapa %}{% include "_atrapa.html" %}{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Rezerwacja – Warzywniak" %}{% endblock %}
 {% block content %}
 <div class="karta">
-	<h1>Rezerwacja na {{ dzien|date:"l"|lower }}, {{ dzien|date:"j E" }}</h1>
+	<h1>{% blocktranslate with dzien=dzien|date:"l"|lower dzien2=dzien|date:"j E" %}Rezerwacja na {{ dzien }}, {{ dzien2 }}{% endblocktranslate %}</h1>
 	{% if przeszkoda.powod == 'karta' %}
-		<p>Do składania rezerwacji potrzebna jest zarejestrowana karta płatnicza. Z karty pobieramy opłatę, gdy rezerwacja nie zostanie odebrana.</p>
-		<a class="przycisk" href="{% url 'konto' %}">Zarejestruj kartę</a>
+		<p>{% translate "Do składania rezerwacji potrzebna jest zarejestrowana karta płatnicza. Z karty pobieramy opłatę, gdy rezerwacja nie zostanie odebrana." %}</p>
+		<a class="przycisk" href="{% url 'konto' %}">{% translate "Zarejestruj kartę" %}</a>
 	{% elif przeszkoda.powod == 'zaleglosc' %}
-		<p>Twoja zaległość wynosi {{ przeszkoda.zaleglosc|floatformat:2 }} zł. Przy zaległości powyżej 100 zł nie można składać nowych rezerwacji.</p>
-		<a class="przycisk" href="{% url 'zaleglosc' %}">Zobacz zaległość</a>
+		<p>{% blocktranslate with zaleglosc=przeszkoda.zaleglosc|floatformat:2 %}Twoja zaległość wynosi {{ zaleglosc }} zł. Przy zaległości powyżej 100 zł nie można składać nowych rezerwacji.{% endblocktranslate %}</p>
+		<a class="przycisk" href="{% url 'zaleglosc' %}">{% translate "Zobacz zaległość" %}</a>
 	{% elif przeszkoda.powod == 'istnieje' %}
-		<p>Masz już rezerwację na ten dzień:</p>
+		<p>{% translate "Masz już rezerwację na ten dzień:" %}</p>
 		{% include "admin/panel/_pozycje.html" with pozycje=przeszkoda.rezerwacja.pozycje %}
-		{% if przeszkoda.rezerwacja.mozna_zmienic %}<a class="przycisk" href="{% url 'zmien_rezerwacje' przeszkoda.rezerwacja.id %}">Zmień rezerwację</a>{% endif %}
+		{% if przeszkoda.rezerwacja.mozna_zmienic %}<a class="przycisk" href="{% url 'zmien_rezerwacje' przeszkoda.rezerwacja.id %}">{% translate "Zmień rezerwację" %}</a>{% endif %}
 	{% else %}
-		<p>Przyjmowanie rezerwacji na ten dzień zakończyło się.</p>
+		<p>{% translate "Przyjmowanie rezerwacji na ten dzień zakończyło się." %}</p>
 	{% endif %}
-	<p class="odnosniki"><a href="{% url 'katalog' %}">Wróć do katalogu</a></p>
+	<p class="odnosniki"><a href="{% url 'katalog' %}">{% translate "Wróć do katalogu" %}</a></p>
 </div>
 {% endblock %}

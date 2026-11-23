@@ -1,10 +1,11 @@
 {% extends "admin/panel/base.html" %}
+{% load i18n %}
 {% block content %}
-<p class="opis">{{ rezerwacja.klient.uzytkownik.get_full_name }}, odbiór {{ rezerwacja.dzien_odbioru|date:"l, j E"|lower }}. Jeśli towaru nie wystarczyło, wpisz masę, którą udało się skompletować, także 0.</p>
+<p class="opis">{% blocktranslate with get_full_name=rezerwacja.klient.uzytkownik.get_full_name dzien_odbioru=rezerwacja.dzien_odbioru|date:"l, j E"|lower %}{{ get_full_name }}, odbiór {{ dzien_odbioru }}. Jeśli towaru nie wystarczyło, wpisz masę, którą udało się skompletować, także 0.{% endblocktranslate %}</p>
 <form method="post" class="arkusz arkusz-waski">
 	{% csrf_token %}
 	<table class="tabela">
-		<thead><tr><th>Produkt</th><th class="liczba">Zarezerwowano [kg]</th><th class="liczba">Odważono [kg]</th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Zarezerwowano [kg]" %}</th><th scope="col" class="liczba">{% translate "Odważono [kg]" %}</th></tr></thead>
 		<tbody>
 			{% for p in rezerwacja.pozycje %}
 			<tr>
@@ -16,8 +17,8 @@
 		</tbody>
 	</table>
 	<div class="stopka-formularza">
-		<a class="przycisk" href="{% url 'admin:rezerwacje' %}">Wróć</a>
-		<button class="przycisk glowny" type="submit">{% if do_wydania %}Przejdź do wydania{% else %}Przygotowana{% endif %}</button>
+		<a class="przycisk" href="{% url 'admin:rezerwacje' %}">{% translate "Wróć" %}</a>
+		<button class="przycisk glowny" type="submit">{% if do_wydania %}{% translate "Przejdź do wydania" %}{% else %}{% translate "Przygotowana" %}{% endif %}</button>
 	</div>
 </form>
 {% endblock %}

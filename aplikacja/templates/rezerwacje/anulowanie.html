@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Anulowanie rezerwacji – Warzywniak{% endblock %}
-{% block atrapa %}{% include "_atrapa.html" %}{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Anulowanie rezerwacji – Warzywniak" %}{% endblock %}
 {% block content %}
 <div class="karta">
-	<h1>Anulować rezerwację?</h1>
-	<p>Odbiór: <strong>{{ rezerwacja.dzien_odbioru|date:"l"|lower }}, {{ rezerwacja.dzien_odbioru|date:"j E Y" }}</strong></p>
+	<h1>{% translate "Anulować rezerwację?" %}</h1>
+	<p>{% translate "Odbiór:" %} <strong>{{ rezerwacja.dzien_odbioru|date:"l"|lower }}, {{ rezerwacja.dzien_odbioru|date:"j E Y" }}</strong></p>
 	{% include "admin/panel/_pozycje.html" with pozycje=rezerwacja.pozycje %}
-	<p>Bez opłaty można anulować do {{ rezerwacja.termin|date:"H:i" }}, {{ rezerwacja.termin|date:"l"|lower }}, {{ rezerwacja.termin|date:"j E" }}. Anulowanej rezerwacji nie da się przywrócić.</p>
+	<p>{% blocktranslate with termin=rezerwacja.termin|date:"H:i" termin2=rezerwacja.termin|date:"l"|lower termin3=rezerwacja.termin|date:"j E" %}Bez opłaty można anulować do {{ termin }}, {{ termin2 }}, {{ termin3 }}. Anulowanej rezerwacji nie da się przywrócić.{% endblocktranslate %}</p>
 	<form method="post">
 		{% csrf_token %}
-		<button class="przycisk ostrzegawczy" type="submit">Anuluj rezerwację</button>
+		<button class="przycisk ostrzegawczy" type="submit">{% translate "Anuluj rezerwację" %}</button>
 	</form>
-	<p class="odnosniki"><a href="{% url 'moje_rezerwacje' %}">Wróć</a></p>
+	<p class="odnosniki"><a href="{% url 'moje_rezerwacje' %}">{% translate "Wróć" %}</a></p>
 </div>
 {% endblock %}

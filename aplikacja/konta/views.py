@@ -1,5 +1,6 @@
 import secrets
 
+from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import views as auth
@@ -15,8 +16,8 @@ NOWE_KONTO = 'nowe_konto'
 # Sesja rejestracji karty u operatora, na którą czeka karta_powrot.
 SESJA_OPERATORA = 'sesja_operatora'
 
-BEZ_KARTY = 'Nie zarejestrowano karty. Bez karty nie można składać rezerwacji.'
-OPERATOR_NIEDOSTEPNY = 'Operator płatności nie odpowiada. Karty nie zarejestrowano, spróbuj ponownie za chwilę.'
+BEZ_KARTY = _('Nie zarejestrowano karty. Bez karty nie można składać rezerwacji.')
+OPERATOR_NIEDOSTEPNY = _('Operator płatności nie odpowiada. Karty nie zarejestrowano, spróbuj ponownie za chwilę.')
 
 
 class Logowanie(auth.LoginView):
@@ -35,7 +36,7 @@ class ResetHasla(SuccessMessageMixin, auth.PasswordResetView):
     email_template_name = 'konta/reset_email.txt'
     subject_template_name = 'konta/reset_temat.txt'
     success_url = reverse_lazy('haslo_reset')
-    success_message = 'Jeśli to adres konta w sklepie, wysłaliśmy na niego link do ustawienia nowego hasła.'
+    success_message = _('Jeśli to adres konta w sklepie, wysłaliśmy na niego link do ustawienia nowego hasła.')
 
 
 class NoweHaslo(auth.PasswordResetConfirmView):
@@ -50,7 +51,7 @@ class HasloZmienione(auth.PasswordResetCompleteView):
 class ZmianaHasla(SuccessMessageMixin, auth.PasswordChangeView):
     template_name = 'konta/zmiana_hasla.html'
     success_url = reverse_lazy('konto')
-    success_message = 'Hasło zostało zmienione.'
+    success_message = _('Hasło zostało zmienione.')
 
 
 def rejestracja(request):
@@ -74,7 +75,7 @@ def konto(request):
     form = TelefonForm(request.POST or None, initial={'telefon': profil.telefon})
     if request.method == 'POST' and form.is_valid():
         services.zmien_telefon(request.user, form.cleaned_data['telefon'])
-        messages.success(request, 'Numer telefonu zmieniony.')
+        messages.success(request, _('Numer telefonu zmieniony.'))
         return redirect('konto')
     return render(request, 'konta/konto.html', {'profil': profil, 'form': form})
 
@@ -91,7 +92,7 @@ def _konto_do_karty(request):
 def _po_karcie(request, nowe):
     if nowe:
         del request.session[NOWE_KONTO]
-        messages.info(request, 'Konto założone. Zaloguj się adresem e-mail.')
+        messages.info(request, _('Konto założone. Zaloguj się adresem e-mail.'))
         return redirect('logowanie')
     return redirect('konto')
 
@@ -122,7 +123,7 @@ def karta(request):
             return redirect(adres)
         # Symulacja: operator zwraca identyfikator karty; numer karty nie trafia do systemu.
         services.zapisz_karte(konto.pk, f'test_{secrets.token_hex(4)}')
-        messages.success(request, 'Karta zarejestrowana.')
+        messages.success(request, _('Karta zarejestrowana.'))
         return _po_karcie(request, nowe)
     return render(request, 'konta/karta.html', {
         'nowe': nowe, 'operator': operator.wlaczony(), 'testowy': operator.testowy(),
@@ -151,5 +152,5 @@ def karta_powrot(request):
     services.zapisz_karte(konto.pk, karta_operatora)
     if poprzednia != karta_operatora:
         operator.odlacz(poprzednia)
-    messages.success(request, 'Karta zarejestrowana.')
+    messages.success(request, _('Karta zarejestrowana.'))
     return _po_karcie(request, nowe)

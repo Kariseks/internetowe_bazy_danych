@@ -1,6 +1,8 @@
 from decimal import Decimal
 from unittest.mock import patch
 
+from akceptacja.dane_paneli import DanePaneli, historia_klienta
+
 from django.test import TestCase
 
 import atrapy
@@ -10,7 +12,7 @@ from magazyn.tests import konto
 from . import services
 
 
-class PanelRozliczenTests(TestCase):
+class PanelRozliczenTests(DanePaneli, TestCase):
     def setUp(self):
         self.client.force_login(konto('sprzedawca', 'sprzedawca'))
 
@@ -60,9 +62,11 @@ class PanelRozliczenTests(TestCase):
         self.assertContains(odpowiedz, 'Podaj poprawną kwotę')
 
 
-class ZalegloscKlientaTests(TestCase):
+class ZalegloscKlientaTests(DanePaneli, TestCase):
     def setUp(self):
-        self.client.force_login(nowy_klient())
+        klient = nowy_klient()
+        historia_klienta(klient)
+        self.client.force_login(klient)
 
     def test_zaleglosc(self):
         odpowiedz = self.client.get('/zaleglosc/')

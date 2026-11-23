@@ -303,3 +303,8 @@ body.login { background: var(--jarmuz); }
 @media (prefers-reduced-motion: reduce) {
 	.skrzynka:active:not(:disabled) { transform: none; }
 }
+
+#header .preferencje { margin: .75rem 0; }
+#header .preferencje button { color: white; }
+#header .preferencje button:hover, #header .preferencje button[aria-pressed="true"] { color: #132e22; }
+@media (max-height: 50rem) and (min-width: 64rem) { #header.bok { overflow-y: auto; } }

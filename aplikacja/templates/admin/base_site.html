@@ -1,9 +1,10 @@
 {% extends "admin/base.html" %}
+{% load i18n %}
 {% load static %}
 
 {% block title %}{{ title }} | Warzywniak{% endblock %}
 {% block dark-mode-vars %}{% endblock %}
-{% block responsive %}{{ block.super }}<link rel="stylesheet" href="{% static 'panel/panel.css' %}">{% endblock %}
+{% block responsive %}{{ block.super }}<link rel="stylesheet" href="{% static 'panel/panel.css' %}"><link rel="stylesheet" href="{% static 'sklep/preferencje.css' %}"><script defer src="{% static 'sklep/preferencje.js' %}"></script>{% endblock %}
 
 {% block header %}
 <header id="header" class="bok">
@@ -13,8 +14,9 @@
 		{% include "admin/panel/_nawigacja.html" %}
 		<div class="bok-konto">
 			<a href="{% url 'admin:moje_konto' %}">{% firstof user.get_full_name user.get_username %}</a>
-			<form method="post" action="{% url 'admin:logout' %}">{% csrf_token %}<button type="submit">Wyloguj</button></form>
+			<form method="post" action="{% url 'admin:logout' %}">{% csrf_token %}<button type="submit">{% translate "Wyloguj" %}</button></form>
 		</div>
 	{% endif %}
+	{% include '_preferencje.html' %}
 </header>
 {% endblock %}

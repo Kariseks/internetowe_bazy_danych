@@ -1,4 +1,4 @@
-<tr class="pozycja">
+{% load i18n %}<tr class="pozycja">
 	<td>
 		{{ f.produkt }}
 		<strong class="pozycja-nazwa"></strong>
@@ -6,10 +6,10 @@
 		{{ f.produkt.errors }}
 	</td>
 	<td class="liczba">
-		<label class="ukryte" for="{{ f.masa_kg.id_for_label }}">Masa [kg]</label>
+		<label class="ukryte" for="{{ f.masa_kg.id_for_label }}">{% translate "Masa [kg]" %}</label>
 		{{ f.masa_kg }}
 		{{ f.masa_kg.errors }}
 	</td>
 	<td class="liczba pozycja-wartosc"></td>
-	<td><button type="button" class="usun" aria-label="Usuń pozycję">×</button></td>
+	<td><button type="button" class="usun" aria-label="{% translate "Usuń pozycję" %}">×</button></td>
 </tr>

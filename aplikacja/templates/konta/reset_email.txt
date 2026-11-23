@@ -1,8 +1,8 @@
-{% autoescape off %}Otrzymaliśmy prośbę o reset hasła do konta {{ user.get_username }} w Warzywniaku.
+{% load i18n %}{% autoescape off %}{% blocktranslate with get_username=user.get_username %}Otrzymaliśmy prośbę o reset hasła do konta {{ get_username }} w Warzywniaku.{% endblocktranslate %}
 
-Nowe hasło ustawisz pod tym adresem, ważnym przez 3 dni:
+{% translate "Nowe hasło ustawisz pod tym adresem, ważnym przez 3 dni:" %}
 
 {{ protocol }}://{{ domain }}{% url 'haslo_nowe' uidb64=uid token=token %}
 
-Jeśli to nie Ty, zignoruj tę wiadomość. Hasło pozostanie bez zmian.
+{% translate "Jeśli to nie Ty, zignoruj tę wiadomość. Hasło pozostanie bez zmian." %}
 {% endautoescape %}

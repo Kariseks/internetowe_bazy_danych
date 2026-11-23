@@ -1,9 +1,5 @@
 @startuml czynnosci-pu21-wydanie-rezerwacji
-skinparam monochrome true
-skinparam shadowing false
-skinparam dpi 200
-skinparam defaultFontName DejaVu Sans
-skinparam defaultFontSize 11
+!include styl.iuml
 
 |Sprzedawca|
 start

@@ -10,7 +10,7 @@
 	const skrzynki = [...form.querySelectorAll('.skrzynka')];
 
 	const liczba = (tekst) => Number.parseFloat(String(tekst).replace(/\s/g, '').replace(',', '.')) || 0;
-	const zl = (n) => `${n.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
+	const zl = (n) => `${n.toLocaleString(document.documentElement.lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${form.dataset.waluta}`;
 	const skrzynka = (id) => skrzynki.find((s) => s.dataset.id === String(id));
 	const poleProduktu = (wiersz) => wiersz.querySelector('input[name$="-produkt"]');
 	const poleMasy = (wiersz) => wiersz.querySelector('input[name$="-masa_kg"]');
@@ -32,7 +32,7 @@
 		if (!s) return;
 		wiersz.dataset.cena = s.dataset.cena;
 		wiersz.querySelector('.pozycja-nazwa').textContent = s.dataset.nazwa;
-		wiersz.querySelector('.pozycja-cena').textContent = `${zl(liczba(s.dataset.cena))} za kg`;
+		wiersz.querySelector('.pozycja-cena').textContent = `${zl(liczba(s.dataset.cena))} / kg`;
 	}
 
 	function ponumeruj() {

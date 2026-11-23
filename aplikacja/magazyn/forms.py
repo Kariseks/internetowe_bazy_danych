@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
@@ -45,9 +46,9 @@ class PozycjeSprzedazyFormSet(forms.BaseFormSet):
             return
         wybrane = [f.cleaned_data['produkt'] for f in self.forms if f.cleaned_data]
         if not wybrane:
-            raise ValidationError('Wybierz co najmniej jeden produkt.')
+            raise ValidationError(_('Wybierz co najmniej jeden produkt.'))
         if len(wybrane) != len(set(wybrane)):
-            raise ValidationError('Ten sam produkt występuje na liście dwa razy.')
+            raise ValidationError(_('Ten sam produkt występuje na liście dwa razy.'))
 
 
 SprzedazFormSet = forms.formset_factory(
@@ -58,26 +59,27 @@ SprzedazFormSet = forms.formset_factory(
 
 
 def pole_ceny():
-    return pole_masy(label='Cena za kg [zł]')
+    return pole_masy(label=_('Cena za kg [zł]'))
 
 
 def pole_dnia_ceny():
     return forms.DateField(
-        label='Obowiązuje od',
+        label=_('Obowiązuje od'),
         initial=timezone.localdate,
         widget=forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
     )
 
 
 class ProduktForm(forms.Form):
-    nazwa = forms.CharField(label='Nazwa', max_length=60)
-    odmiana = forms.CharField(label='Odmiana', max_length=60, required=False)
+    nazwa = forms.CharField(label=_('Nazwa'), max_length=60)
+    odmiana = forms.CharField(label=_('Odmiana'), max_length=60, required=False)
     standardowa_ilosc_kg = pole_masy(
         minimum='0',
-        label='Standardowa dzienna ilość [kg]',
-        help_text='Ilość zamawiana zwykle na jeden dzień.',
+        label=_('Standardowa dzienna ilość [kg]'),
+        help_text=_('Ilość zamawiana zwykle na jeden dzień.'),
     )
-    w_ofercie = forms.BooleanField(label='W ofercie', required=False, initial=True)
+    ilosc_na_lade_kg = pole_masy(minimum='0', label=_('Ilość na ladę [kg]'), initial=0)
+    w_ofercie = forms.BooleanField(label=_('W ofercie'), required=False, initial=True)
 
 
 class NowyProduktForm(ProduktForm):
@@ -90,10 +92,15 @@ class CenaForm(forms.Form):
     obowiazuje_od = pole_dnia_ceny()
 
 
+class KorektaForm(forms.Form):
+    masa_kg = pole_masy(minimum='0', label=_('Masa po przeliczeniu [kg]'))
+    przyczyna = forms.CharField(label=_('Przyczyna korekty'), max_length=200)
+
+
 class UbytekForm(forms.Form):
-    produkt = forms.TypedChoiceField(label='Produkt', coerce=int)
-    masa_kg = pole_masy(label='Masa wyrzuconego towaru [kg]')
+    produkt = forms.TypedChoiceField(label=_('Produkt'), coerce=int)
+    masa_kg = pole_masy(label=_('Masa wyrzuconego towaru [kg]'))
 
     def __init__(self, *args, produkty=(), **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['produkt'].choices = [('', 'Wybierz produkt')] + [(p.id, str(p)) for p in produkty]
+        self.fields['produkt'].choices = [('', _('Wybierz produkt'))] + [(p.id, str(p)) for p in produkty]

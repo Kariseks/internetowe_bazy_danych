@@ -1,0 +1,1370 @@
+# English translations for Warzywniak.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the Warzywniak project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Warzywniak VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-11-23 00:00+0000\n"
+"PO-Revision-Date: 2026-11-23 00:00+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#, python-format
+msgid "%(cena_za_kg)s zł"
+msgstr "PLN %(cena_za_kg)s"
+
+#, python-format
+msgid "%(cena_za_kg)s zł/kg"
+msgstr "PLN %(cena_za_kg)s/kg"
+
+#, python-format
+msgid "%(do_zaplaty)s zł"
+msgstr "PLN %(do_zaplaty)s"
+
+#, python-format
+msgid ""
+"%(get_full_name)s, odbiór %(dzien_odbioru)s. Jeśli towaru nie wystarczyło, wpisz masę, którą "
+"udało się skompletować, także 0."
+msgstr ""
+"%(get_full_name)s, collection on %(dzien_odbioru)s. If stock is short, enter the weight you could"
+" prepare, including zero."
+
+#, python-format
+msgid "%(kwota)s zł"
+msgstr "PLN %(kwota)s"
+
+#, python-format
+msgid "%(masa_kg)s kg po %(cena_za_kg)s zł"
+msgstr "%(masa_kg)s kg at PLN %(cena_za_kg)s"
+
+#, python-format
+msgid "%(oplata_za_nieodebranie)s zł"
+msgstr "PLN %(oplata_za_nieodebranie)s"
+
+#, python-format
+msgid "%(produkt)s: dostępne %(kg)s kg."
+msgstr "%(produkt)s: %(kg)s kg available."
+
+#, python-format
+msgid "%(stan_kg)s kg na stanie"
+msgstr "%(stan_kg)s kg in stock"
+
+#, python-format
+msgid "%(suma)s zł"
+msgstr "PLN %(suma)s"
+
+#, python-format
+msgid "%(wartosc)s zł"
+msgstr "PLN %(wartosc)s"
+
+#, python-format
+msgid "%(zaleglosc)s zł"
+msgstr "PLN %(zaleglosc)s"
+
+#, python-format
+msgid "- %(produkt)s: %(ilosc_kg)s kg"
+msgstr "- %(produkt)s: %(ilosc_kg)s kg"
+
+msgid "0,00 zł"
+msgstr "PLN 0.00"
+
+msgid "Adres e-mail"
+msgstr "Email address"
+
+msgid "Adres e-mail jest loginem do konta."
+msgstr "Use your email address to sign in."
+
+msgid "Akceptuję zasady rezerwacji."
+msgstr "I accept the reservation terms."
+
+msgid "Aktywować można tylko konto personelu."
+msgstr "Only staff accounts can be reactivated."
+
+msgid "Aktywuj"
+msgstr "Activate"
+
+msgid "Anonimizacja klienta"
+msgstr "Anonymise customer"
+
+msgid "Anonimizuj dane"
+msgstr "Anonymise personal data"
+
+msgid "Anulowanie rezerwacji – Warzywniak"
+msgstr "Cancel reservation – Warzywniak"
+
+msgid "Anulować rezerwację?"
+msgstr "Cancel this reservation?"
+
+msgid "Anuluj"
+msgstr "Cancel"
+
+msgid "Anuluj rezerwację"
+msgstr "Cancel reservation"
+
+#, python-format
+msgid ""
+"Bez opłaty można anulować do %(termin)s, %(termin2)s, %(termin3)s. Anulowanej rezerwacji nie da "
+"się przywrócić."
+msgstr "Cancel free of charge until %(termin)s on %(termin2)s, %(termin3)s. Cancellation is permanent."
+
+msgid "Bez zaległości."
+msgstr "No outstanding balance."
+
+msgid "Bieżące"
+msgstr "Upcoming"
+
+msgid "Brak dostępu"
+msgstr "Access denied"
+
+msgid "Brak dostępu – Warzywniak"
+msgstr "Access denied – Warzywniak"
+
+msgid "Brak karty. Bez karty nie można składać rezerwacji."
+msgstr "Register a card before placing a reservation."
+
+msgid "Brak opłat."
+msgstr "No fees."
+
+msgid "Brak produktów w ofercie."
+msgstr "No products available."
+
+msgid "Brak produktów. Dodaj pierwszy."
+msgstr "No products yet. Add the first product."
+
+msgid "Brak rezerwacji na dziś."
+msgstr "No collections today."
+
+msgid "Brak rezerwacji na ten dzień."
+msgstr "No reservations on this day."
+
+msgid "Brak sprzedaży w tym okresie."
+msgstr "No sales in this period."
+
+msgid "Brak ubytków w tym okresie."
+msgstr "No waste in this period."
+
+msgid "Brak wpłat i obciążeń."
+msgstr "No payments or charges."
+
+msgid "Brak zakończonych rezerwacji."
+msgstr "No past reservations."
+
+msgid "Cena [zł/kg]"
+msgstr "Price [PLN/kg]"
+
+msgid "Cena za kg"
+msgstr "Price per kg"
+
+msgid "Cena za kg [zł]"
+msgstr "Price per kg [PLN]"
+
+msgid "Cena zapisana."
+msgstr "Price saved."
+
+#, python-format
+msgid "Czeka na odbiór: %(do_odbioru)s. Nieodebrane rezerwacje system rozliczy o 18:00."
+msgstr "Awaiting collection: %(do_odbioru)s. Missed collection fees are due at 18:00."
+
+msgid "Dane klienta zostały zanonimizowane."
+msgstr "The customer's personal data has been anonymised."
+
+msgid "Dane produktu"
+msgstr "Product details"
+
+msgid "Data"
+msgstr "Date"
+
+msgid "Dezaktywuj"
+msgstr "Deactivate"
+
+msgid "Do"
+msgstr "To"
+
+msgid ""
+"Do składania rezerwacji potrzebna jest zarejestrowana karta płatnicza. Z karty pobieramy opłatę, "
+"gdy rezerwacja nie zostanie odebrana."
+msgstr ""
+"Register a payment card before placing a reservation. We charge a fee to this card if you miss a "
+"collection."
+
+msgid "Do zapłaty"
+msgstr "Amount due"
+
+#, python-format
+msgid "Do zważenia i spakowania: %(do_przygotowania)s."
+msgstr "To weigh and pack: %(do_przygotowania)s."
+
+msgid "Dodaj produkt"
+msgstr "Add product"
+
+msgid "Dostarczono [kg]"
+msgstr "Delivered [kg]"
+
+msgid "Dostawa na ten dzień została już zapisana lub zawiera powtórzony produkt."
+msgstr "A delivery already exists for this date or a product is listed twice."
+
+msgid "Dostawa zapisana."
+msgstr "Delivery recorded."
+
+msgid "Dostawy zgodne z planem."
+msgstr "All deliveries matched the plan."
+
+msgid "Dostępne"
+msgstr "Available"
+
+msgid "Dostępne [kg]"
+msgstr "Available [kg]"
+
+#, python-format
+msgid "Dostępne: %(kg)s kg."
+msgstr "Available: %(kg)s kg."
+
+#, python-format
+msgid "Dostępne: %(masa)s kg."
+msgstr "Available: %(masa)s kg."
+
+msgid "Dostępność na najbliższe siedem dni"
+msgstr "Availability for the next seven days"
+
+msgid "Dzień jest zamknięty."
+msgstr "Reservations are closed for this date."
+
+msgid "Dzień odbioru"
+msgstr "Collection date"
+
+msgid "Dziś odbierasz rezerwację w Warzywniaku. Sklep jest czynny do 18:00."
+msgstr "Collect your Warzywniak reservation today. The shop is open until 18:00."
+
+msgid "E-mail (login)"
+msgstr "Email (username)"
+
+msgid "Godzina"
+msgstr "Time"
+
+msgid "Hasła nie są takie same."
+msgstr "The passwords do not match."
+
+msgid "Hasło"
+msgstr "Password"
+
+msgid "Hasło zmienione"
+msgstr "Password changed"
+
+msgid "Hasło zmienione – Warzywniak"
+msgstr "Password changed – Warzywniak"
+
+msgid "Hasło zostało zmienione."
+msgstr "Password changed."
+
+msgid "Historia cen"
+msgstr "Price history"
+
+msgid "Historia sprzedaży"
+msgstr "Sales history"
+
+msgid "Identyfikator karty"
+msgstr "Card reference"
+
+msgid "Ilość [kg]"
+msgstr "Quantity [kg]"
+
+msgid "Ilość na ladę [kg]"
+msgstr "Quantity set aside for the counter [kg]"
+
+msgid "Ilość na ladę narusza zapisany plan dostawy."
+msgstr "The quantity for counter sales exceeds a delivery plan after existing reservations."
+
+msgid "Ilość zamawiana zwykle na jeden dzień."
+msgstr "The quantity usually ordered for one day."
+
+msgid "Imię"
+msgstr "First name"
+
+msgid "Imię i nazwisko"
+msgstr "Full name"
+
+msgid "Inny zapis trwa. Spróbuj ponownie."
+msgstr "Another update is in progress. Please try again."
+
+#, python-format
+msgid "Jeśli rezerwacja nie zostanie odebrana do 18:00, sklep naliczy opłatę %(oplata)s zł."
+msgstr "If the reservation is not collected by 18:00, the shop will charge a fee of PLN %(oplata)s."
+
+msgid "Jeśli to adres konta w sklepie, wysłaliśmy na niego link do ustawienia nowego hasła."
+msgstr "If this email is registered with the shop, a password reset link has been sent."
+
+msgid "Jeśli to nie Ty, zignoruj tę wiadomość. Hasło pozostanie bez zmian."
+msgstr "If you did not request this, ignore this message. Your password will stay the same."
+
+msgid "Karta"
+msgstr "Card"
+
+msgid "Karta płatnicza"
+msgstr "Payment card"
+
+msgid "Karta zarejestrowana."
+msgstr "Card registered."
+
+msgid "Karta zarejestrowana. Z niej pobieramy opłaty za nieodebrane rezerwacje."
+msgstr "Card registered. We use this card to collect fees for missed collections."
+
+msgid ""
+"Karty obciąża się raz w miesiącu u operatora płatności, podając identyfikator karty. Tutaj zapisz"
+" wynik. Powyżej 100 zł zaległości klient nie może składać nowych rezerwacji."
+msgstr ""
+"Once a month, use the card reference at the payment provider to collect outstanding balances. "
+"Record the outcome here. Customers owing more than PLN 100 cannot place new reservations."
+
+msgid ""
+"Kartę wpisuje się na stronie operatora płatności Stripe. Sklep dostaje od operatora tylko "
+"identyfikator karty, bez jej numeru, i obciąża kartę wyłącznie opłatą za rezerwację, której nie "
+"odebrano."
+msgstr ""
+"Enter your card details on Stripe's website. The shop receives a card reference and only charges "
+"a fee if you miss a collection."
+
+msgid "Katalog"
+msgstr "Catalogue"
+
+msgid "Katalog produktów"
+msgstr "Produce catalogue"
+
+msgid "Katalog – Warzywniak"
+msgstr "Catalogue – Warzywniak"
+
+msgid "Klienci"
+msgstr "Customers"
+
+msgid "Klient"
+msgstr "Customer"
+
+msgid "Klient nie ma rezerwacji."
+msgstr "This customer has no reservations."
+
+msgid "Konta"
+msgstr "Accounts"
+
+msgid "Konto"
+msgstr "Account"
+
+msgid "Konto jest już założone. Jeśli przerwiesz, kartę zarejestrujesz później w danych konta."
+msgstr "Your account has been created. If you cancel, you can register a card later from your account."
+
+msgid "Konto jest nieaktywne."
+msgstr "This account is inactive."
+
+msgid "Konto może składać rezerwacje."
+msgstr "You can place reservations."
+
+msgid "Konto sprzedawcy założone."
+msgstr "Staff account created."
+
+#, python-format
+msgid "Konto w Warzywniaku zostało założone. Logujesz się adresem %(email)s."
+msgstr "Your Warzywniak account has been created. Use %(email)s to sign in."
+
+msgid "Konto z tym adresem e-mail już istnieje."
+msgstr "An account with this email address already exists."
+
+msgid "Konto zaktualizowane."
+msgstr "Account updated."
+
+msgid "Konto założone. Zaloguj się adresem e-mail."
+msgstr "Account created. Sign in with your email address."
+
+msgid "Korekta stanu"
+msgstr "Stock adjustment"
+
+msgid "Korekta stanu zapisana."
+msgstr "Stock adjustment recorded."
+
+msgid "Kwota"
+msgstr "Amount"
+
+msgid "Kwota [zł]"
+msgstr "Amount [PLN]"
+
+msgid "Kwota musi być dodatnia i mieścić się w zaległości klienta."
+msgstr "Enter a positive amount up to the customer's outstanding balance."
+
+msgid ""
+"Limit jednej rezerwacji to 20 kg. Rezerwację można zmienić lub odwołać do 18:00 w dniu "
+"poprzedzającym odbiór. Zapłacisz w sklepie za odważony towar. Za nieodebraną rezerwację naliczamy"
+" 10% jej wartości. Zaległość powyżej 100 zł wstrzymuje nowe rezerwacje."
+msgstr ""
+"You may reserve up to 20 kg per reservation. Change or cancel by 18:00 on the day before "
+"collection. Pay in the shop for the actual weight collected. A missed collection incurs a fee of "
+"10% of the reservation value. An outstanding balance over PLN 100 blocks new reservations."
+
+#, python-format
+msgid "Lista do przekazania dostawcy na %(jutro)s. Po 18:00 obejmuje wszystkie rezerwacje na ten dzień."
+msgstr "Supplier order for %(jutro)s. After 18:00 it includes all reservations for that day."
+
+msgid "Login"
+msgstr "Username"
+
+msgid "Logowanie"
+msgstr "Sign in"
+
+msgid "Logowanie personelu"
+msgstr "Staff sign in"
+
+msgid "Logowanie – Warzywniak"
+msgstr "Sign in – Warzywniak"
+
+msgid "Mam już konto"
+msgstr "I already have an account"
+
+msgid "Masa [kg]"
+msgstr "Weight [kg]"
+
+msgid "Masa po przeliczeniu [kg]"
+msgstr "Actual stock weight [kg]"
+
+msgid "Masa wyrzuconego towaru [kg]"
+msgstr "Weight of discarded produce [kg]"
+
+msgid "Masz już rezerwację na ten dzień:"
+msgstr "You already have a reservation for this day:"
+
+msgid "Menu panelu"
+msgstr "Staff navigation"
+
+msgid "Minął termin rezerwacji."
+msgstr "The reservation deadline has passed."
+
+msgid "Moje konto"
+msgstr "My account"
+
+msgid "Moje konto – Warzywniak"
+msgstr "My account – Warzywniak"
+
+msgid "Moje rezerwacje"
+msgstr "My reservations"
+
+msgid "Moje rezerwacje – Warzywniak"
+msgstr "My reservations – Warzywniak"
+
+msgid "Możesz składać nowe rezerwacje."
+msgstr "You can place new reservations."
+
+msgid "Możesz zalogować się nowym hasłem."
+msgstr "You can sign in with your new password."
+
+#, python-format
+msgid "Na ladę: %(ilosc_na_lade_kg)s kg"
+msgstr "For the counter: %(ilosc_na_lade_kg)s kg"
+
+msgid "Najpierw zakończ rezerwacje i rozlicz zaległość."
+msgstr "Complete the outstanding reservations and settle the balance first."
+
+msgid "Następny dzień"
+msgstr "Next day"
+
+msgid "Nazwa"
+msgstr "Name"
+
+msgid "Nazwisko"
+msgstr "Surname"
+
+msgid "Nazwisko, e-mail lub telefon"
+msgstr "Surname, email or phone number"
+
+msgid "Nie ma takiej strony"
+msgstr "Page not found"
+
+msgid "Nie ma takiej strony – Warzywniak"
+msgstr "Page not found – Warzywniak"
+
+msgid "Nie masz bieżących rezerwacji."
+msgstr "You have no upcoming reservations."
+
+msgid "Nie masz dostępu do tej strony."
+msgstr "You do not have access to this page."
+
+msgid "Nie można anulować tej rezerwacji."
+msgstr "This reservation cannot be cancelled."
+
+msgid "Nie można zmienić tej rezerwacji."
+msgstr "This reservation cannot be changed."
+
+msgid "Nie pamiętam hasła"
+msgstr "Forgot password"
+
+msgid "Nie pobrano"
+msgstr "Not charged"
+
+msgid "Nie udało się zapisać rezerwacji. Sprawdź dostępność."
+msgstr "The reservation could not be saved. Check availability."
+
+msgid "Nie zarejestrowano karty. Bez karty nie można składać rezerwacji."
+msgstr "Card registration was cancelled. Register a card before placing a reservation."
+
+msgid "Nie znaleziono konta."
+msgstr "Account not found."
+
+msgid "Niepoprawny login lub hasło."
+msgstr "Incorrect username or password."
+
+#, python-format
+msgid "Nikt nie pasuje do „%(fraza)s”. Sprawdź pisownię albo szukaj po telefonie."
+msgstr "No matches for “%(fraza)s”. Check the spelling or search by phone number."
+
+msgid "Nowa cena"
+msgstr "New price"
+
+msgid "Nowa sprzedaż"
+msgstr "New sale"
+
+msgid "Nowe hasło"
+msgstr "New password"
+
+msgid "Nowe hasło ustawisz pod tym adresem, ważnym przez 3 dni:"
+msgstr "Choose a new password using this link within three days:"
+
+msgid "Nowe hasło – Warzywniak"
+msgstr "New password – Warzywniak"
+
+msgid "Nowe rezerwacje"
+msgstr "New reservations"
+
+#, python-format
+msgid "Nowe rezerwacje są wstrzymane: zaległość wynosi %(zaleglosc)s zł, a limit to 100 zł."
+msgstr "New reservations are blocked. You owe PLN %(zaleglosc)s and the limit is PLN 100."
+
+msgid "Nowy produkt"
+msgstr "New product"
+
+msgid "Nowy sprzedawca"
+msgstr "New staff member"
+
+msgid "Numer telefonu"
+msgstr "Phone number"
+
+msgid "Numer telefonu zmieniony."
+msgstr "Phone number updated."
+
+msgid "O 18:00 kończą się zapisy na jutro i można dzwonić do dostawcy."
+msgstr "Tomorrow's bookings close at 18:00. You can then call the supplier."
+
+msgid "Obciążenie karty"
+msgstr "Card charge"
+
+msgid "Obciążenie nieudane"
+msgstr "Charge failed"
+
+msgid "Obowiązuje od"
+msgstr "Effective from"
+
+msgid "Od"
+msgstr "From"
+
+msgid "Odbiory dziś"
+msgstr "Today's collections"
+
+msgid "Odbiór"
+msgstr "Collection"
+
+msgid "Odbiór dziś"
+msgstr "Collecting today"
+
+msgid "Odbiór w sklepie do 18:00. Za towar płacisz przy odbiorze, według masy po zważeniu."
+msgstr "Collect at the shop by 18:00. Pay when you collect, based on the actual weight."
+
+msgid "Odbiór:"
+msgstr "Collection:"
+
+msgid "Odmiana"
+msgstr "Variety"
+
+msgid "Odnotuj wpłatę"
+msgstr "Record payment"
+
+msgid "Odważono [kg]"
+msgstr "Packed [kg]"
+
+msgid "Oferta"
+msgstr "Availability"
+
+msgid "Operator płatności nie odpowiada. Karty nie zarejestrowano, spróbuj ponownie za chwilę."
+msgstr "The payment provider is unavailable. Please try registering your card again later."
+
+msgid "Opłata"
+msgstr "Fee"
+
+msgid "Opłata [zł]"
+msgstr "Fee [PLN]"
+
+#, python-format
+msgid "Opłata za nieodebranie: %(oplata_za_nieodebranie)s zł."
+msgstr "Missed collection fee: PLN %(oplata_za_nieodebranie)s."
+
+msgid "Opłaty za nieodebrane rezerwacje"
+msgstr "Missed collection fees"
+
+msgid "Opłaty za nieodebranie"
+msgstr "Missed collection fees"
+
+msgid "Osoba"
+msgstr "Name"
+
+#, python-format
+msgid "Otrzymaliśmy prośbę o reset hasła do konta %(get_username)s w Warzywniaku."
+msgstr "We received a password reset request for your Warzywniak account %(get_username)s."
+
+msgid "Otwórz listę"
+msgstr "Open list"
+
+msgid "Panel administratora"
+msgstr "Staff dashboard"
+
+msgid "Personel"
+msgstr "Staff"
+
+msgid "Plan [kg]"
+msgstr "Planned [kg]"
+
+msgid "Plan dostawy"
+msgstr "Delivery plan"
+
+msgid "Plan dostawy zapisany."
+msgstr "Delivery plan saved."
+
+msgid "Plan obejmuje rezerwacje oraz ilość odłożoną na ladę."
+msgstr "The plan includes reservations and the quantity set aside for the counter."
+
+msgid "Plan zmienia właściciel."
+msgstr "The owner maintains the plan."
+
+msgid "Po 18:00 dzień następny jest zamknięty, bo zamówienie poszło do dostawcy."
+msgstr "Bookings for the next day close at 18:00, when the supplier order is finalised."
+
+msgid ""
+"Po zatwierdzeniu konto zostanie wyłączone, a dane osobowe trwale usunięte. Historia operacji "
+"sklepu zostanie zachowana."
+msgstr ""
+"Confirming will deactivate this account and permanently erase the customer's personal data. The "
+"shop will retain its transaction history."
+
+msgid "Po założeniu konta zarejestrujesz kartę płatniczą. Bez niej nie można składać rezerwacji."
+msgstr "After creating your account, register a payment card to place reservations."
+
+msgid "Pobrano"
+msgstr "Charged"
+
+msgid "Podaj adres e-mail konta. Wyślemy na niego link do ustawienia nowego hasła, ważny przez 3 dni."
+msgstr "Enter your account email. We will send a password reset link that is valid for three days."
+
+msgid "Podaj dodatnią cenę i dzień bez innej zmiany ceny."
+msgstr "Enter a positive price and a date without an existing price change."
+
+msgid "Podaj masę każdego zamówionego produktu."
+msgstr "Enter the weight of each reserved product."
+
+msgid "Podaj numer telefonu, np. 501 200 300."
+msgstr "Enter a phone number, for example 501 200 300."
+
+msgid "Podaj poprawną kwotę, np. 12,40."
+msgstr "Enter a valid amount, for example 12.40."
+
+msgid "Podaj zważoną masę i przyczynę korekty."
+msgstr "Enter the measured weight and the reason for the adjustment."
+
+msgid "Pokaż"
+msgstr "Show"
+
+msgid "Polecenia"
+msgstr "Actions"
+
+msgid "Poprzedni dzień"
+msgstr "Previous day"
+
+msgid "Potwierdzam trwałe usunięcie danych osobowych."
+msgstr "I confirm the permanent removal of personal data."
+
+msgid "Powtórz hasło"
+msgstr "Confirm password"
+
+msgid "Pozycje"
+msgstr "Items"
+
+msgid "Pozycje sprzedaży"
+msgstr "Sale items"
+
+msgid "Pozycje:"
+msgstr "Items:"
+
+msgid "Produkt"
+msgstr "Product"
+
+msgid "Produkt dodany."
+msgstr "Product added."
+
+msgid "Produkt nie ma dostępnej ceny sprzedaży."
+msgstr "This product is unavailable for sale at the current price."
+
+msgid "Produkt zapisany."
+msgstr "Product saved."
+
+msgid "Produkty"
+msgstr "Products"
+
+msgid "Produkty i ceny"
+msgstr "Products and prices"
+
+msgid "Przejdź do katalogu"
+msgstr "Browse the catalogue"
+
+msgid "Przejdź do logowania"
+msgstr "Go to sign in"
+
+msgid "Przejdź do operatora"
+msgstr "Continue to payment provider"
+
+msgid "Przejdź do treści"
+msgstr "Skip to content"
+
+msgid "Przejdź do wydania"
+msgstr "Continue to handover"
+
+msgid "Przerwij"
+msgstr "Cancel"
+
+msgid "Przy ladzie"
+msgstr "At the counter"
+
+msgid "Przyczyna korekty"
+msgstr "Reason for adjustment"
+
+msgid "Przygotowana"
+msgstr "Mark as ready"
+
+msgid "Przygotowanie rezerwacji"
+msgstr "Prepare reservation"
+
+msgid "Przygotuj"
+msgstr "Prepare"
+
+msgid "Przygotuj rezerwacje"
+msgstr "Prepare reservations"
+
+msgid "Przyjmij"
+msgstr "Receive"
+
+msgid "Przyjmij dostawę"
+msgstr "Receive delivery"
+
+msgid "Przyjmowanie rezerwacji na ten dzień zakończyło się."
+msgstr "Bookings for this day have closed."
+
+msgid "Przyjęcie dostawy"
+msgstr "Receive a delivery"
+
+msgid "Pulpit"
+msgstr "Dashboard"
+
+msgid "Razem"
+msgstr "Total"
+
+msgid "Razem [kg]"
+msgstr "Total [kg]"
+
+msgid "Rejestracja karty"
+msgstr "Register a card"
+
+msgid "Rejestracja karty – Warzywniak"
+msgstr "Register a card – Warzywniak"
+
+msgid "Reset hasła"
+msgstr "Reset password"
+
+msgid "Reset hasła – Warzywniak"
+msgstr "Reset password – Warzywniak"
+
+msgid "Rezerwacja"
+msgstr "Reservation"
+
+msgid "Rezerwacja anulowana bez opłaty."
+msgstr "Reservation cancelled free of charge."
+
+msgid "Rezerwacja jest przygotowana do odbioru."
+msgstr "Reservation ready for collection."
+
+#, python-format
+msgid "Rezerwacja może mieć najwyżej %(limit)s kg, a ma %(razem)s kg."
+msgstr "The reservation limit is %(limit)s kg. Your total is %(razem)s kg."
+
+#, python-format
+msgid "Rezerwacja na %(dzien)s, %(dzien2)s"
+msgstr "Reservation for %(dzien)s, %(dzien2)s"
+
+#, python-format
+msgid "Rezerwacja na %(dzien_odbioru)s nie została odebrana do 18:00."
+msgstr "Your reservation for %(dzien_odbioru)s was not collected by 18:00."
+
+#, python-format
+msgid "Rezerwacja na %(dzien_odbioru)s została"
+msgstr "Your reservation for %(dzien_odbioru)s has been"
+
+#, python-format
+msgid "Rezerwacja na %(dzien_odbioru)s została anulowana bez opłaty."
+msgstr "Your reservation for %(dzien_odbioru)s has been cancelled free of charge."
+
+msgid "Rezerwacja nie jest dostępna do obsługi."
+msgstr "This reservation cannot be processed at this time."
+
+msgid "Rezerwacja wydana."
+msgstr "Reservation collected."
+
+msgid "Rezerwacja zmieniona. Potwierdzenie wysłaliśmy e-mailem."
+msgstr "Reservation updated. A confirmation has been sent by email."
+
+msgid "Rezerwacja złożona. Potwierdzenie wysłaliśmy e-mailem."
+msgstr "Reservation placed. A confirmation has been sent by email."
+
+msgid "Rezerwacja – Warzywniak"
+msgstr "Reservation – Warzywniak"
+
+msgid "Rezerwacje"
+msgstr "Reservations"
+
+msgid "Rezerwacje do 18:00 dnia poprzedniego. Odbiór do 18:00."
+msgstr "Reserve by 18:00 the day before. Collect by 18:00."
+
+msgid ""
+"Rezerwacje można składać po zarejestrowaniu karty płatniczej. Jeśli rejestracja karty się nie "
+"udała, zrobisz to w danych konta."
+msgstr ""
+"Register a payment card before placing reservations. If registration failed, you can try again "
+"from your account."
+
+#, python-format
+msgid "Rezerwacje nieodebrane: %(liczba)s"
+msgstr "Missed collections: %(liczba)s"
+
+#, python-format
+msgid ""
+"Rezerwację można zmienić albo anulować bez opłaty do %(termin)s. Za nieodebraną rezerwację sklep "
+"pobiera opłatę 10%% jej wartości."
+msgstr ""
+"You can change or cancel free of charge until %(termin)s. A missed collection incurs a fee of "
+"10%% of the reservation value."
+
+msgid ""
+"Rezerwację można zmienić albo anulować bez opłaty do 18:00 dnia poprzedzającego odbiór. Nową "
+"rezerwację składa się w"
+msgstr ""
+"You can change or cancel free of charge until 18:00 on the day before collection. Place a new "
+"reservation in the"
+
+msgid "Rodzaj"
+msgstr "Type"
+
+msgid "Rola"
+msgstr "Role"
+
+msgid "Różnica [kg]"
+msgstr "Difference [kg]"
+
+msgid "Różnice między planem a dostawą"
+msgstr "Planned and delivered quantities"
+
+msgid "Sklep musi mieć co najmniej jednego aktywnego właściciela."
+msgstr "The shop must have at least one active owner."
+
+msgid "Skoryguj stan"
+msgstr "Adjust stock"
+
+msgid "Sprawdź adres albo zacznij od katalogu."
+msgstr "Check the address or browse the catalogue."
+
+msgid "Sprawdź nazwę, odmianę i podane ilości produktu."
+msgstr "Check the product name, variety and quantities."
+
+msgid "Sprawdź produkt i masę dostawy."
+msgstr "Check the product and the delivery weight."
+
+msgid "Sprawdź termin, kartę, saldo i rezerwacje na ten dzień."
+msgstr "Check the deadline, registered card, balance and existing reservations for this date."
+
+msgid "Sprzedawca"
+msgstr "Shop assistant"
+
+msgid "Sprzedaż według produktów"
+msgstr "Sales by product"
+
+#, python-format
+msgid "Sprzedaż zapisana. Do zapłaty: %(suma)s zł."
+msgstr "Sale recorded. Amount due: PLN %(suma)s."
+
+msgid "Stan"
+msgstr "Status"
+
+msgid "Stan [kg]"
+msgstr "Stock [kg]"
+
+#, python-format
+msgid "Stan produktu: %(kg)s kg."
+msgstr "Stock on hand: %(kg)s kg."
+
+msgid "Stan produktów"
+msgstr "Stock levels"
+
+msgid "Standardowa dzienna ilość [kg]"
+msgstr "Standard daily quantity [kg]"
+
+msgid "Standardowa ilość [kg]"
+msgstr "Standard quantity [kg]"
+
+msgid "Symulacja formularza operatora płatności"
+msgstr "Simulated payment form"
+
+msgid "Szukaj"
+msgstr "Search"
+
+msgid "Szukaj produktu"
+msgstr "Find a product"
+
+msgid "Ta strona jest przeznaczona dla innej roli."
+msgstr "This page is for a different staff role."
+
+msgid "Tego dnia nie zapisano dostawy."
+msgstr "No delivery was recorded on this day."
+
+msgid "Tego dnia nie zapisano sprzedaży."
+msgstr "No sales were recorded on this day."
+
+msgid "Tej rezerwacji nie można już zmienić ani anulować. Nieodebranie jej spowoduje naliczenie opłaty."
+msgstr "The deadline to edit or cancel this reservation has passed. A missed collection fee will apply."
+
+msgid "Telefon"
+msgstr "Phone"
+
+msgid "Ten link wygasł albo został już użyty."
+msgstr "This link has expired or has already been used."
+
+msgid "Ten login lub adres e-mail jest już zajęty."
+msgstr "This username or email address is already in use."
+
+msgid "Ten sam produkt występuje na liście dwa razy."
+msgstr "The same product appears twice."
+
+msgid "Towar"
+msgstr "Stock"
+
+msgid "Towar z 4:00 czeka na zapisanie."
+msgstr "The 04:00 delivery is waiting to be recorded."
+
+msgid "Towar, który stracił świeżość i trafił do wyrzucenia. Ubytek obniża stan produktu."
+msgstr "Record produce discarded because it is no longer fresh. This reduces the stock level."
+
+#, python-format
+msgid ""
+"Twoja zaległość wynosi %(zaleglosc)s zł. Przy zaległości powyżej 100 zł nie można składać nowych "
+"rezerwacji."
+msgstr "Your outstanding balance is PLN %(zaleglosc)s. Balances over PLN 100 block new reservations."
+
+#, python-format
+msgid "Twoja zaległość wynosi teraz %(zaleglosc)s zł."
+msgstr "Your outstanding balance is now PLN %(zaleglosc)s."
+
+msgid "Twoje konto"
+msgstr "Your account"
+
+msgid "Ubytek towaru"
+msgstr "Record waste"
+
+msgid "Ubytek zapisany."
+msgstr "Waste recorded."
+
+msgid "Ubytki według produktów"
+msgstr "Waste by product"
+
+msgid "Usuń"
+msgstr "Remove"
+
+msgid "Usuń pozycję"
+msgstr "Remove item"
+
+msgid "W ofercie"
+msgstr "On sale"
+
+msgid ""
+"W tej wersji systemu dane karty nie są nigdzie wysyłane. Zatwierdzenie zwraca testowy "
+"identyfikator karty, tak jak zrobiłby to operator płatności. Numer karty nie trafia do systemu "
+"sklepu."
+msgstr ""
+"This version uses a test card reference. Confirm to simulate card registration. Your card number "
+"is never entered into or sent to the shop system."
+
+msgid "Wartość"
+msgstr "Value"
+
+msgid "Wartość orient."
+msgstr "Estimated value"
+
+msgid "Wartość orient. [zł]"
+msgstr "Estimated value [PLN]"
+
+msgid "Wartość orientacyjna:"
+msgstr "Estimated value:"
+
+msgid "Wartość rezerwacji [zł]"
+msgstr "Reservation value [PLN]"
+
+msgid "Warzywniak: konto założone"
+msgstr "Warzywniak: account created"
+
+msgid "Warzywniak: odbiór rezerwacji dziś"
+msgstr "Warzywniak: collect your reservation today"
+
+msgid "Warzywniak: opłata za nieodebraną rezerwację"
+msgstr "Warzywniak: missed collection fee"
+
+msgid "Warzywniak: reset hasła"
+msgstr "Warzywniak: reset your password"
+
+msgid "Warzywniak: rezerwacja anulowana"
+msgstr "Warzywniak: reservation cancelled"
+
+msgid "Warzywniak: rezerwacja zmieniona"
+msgstr "Warzywniak: reservation updated"
+
+msgid "Warzywniak: rezerwacja złożona"
+msgstr "Warzywniak: reservation placed"
+
+msgid ""
+"Wpisz ilości w kilogramach, z dokładnością do 0,1 kg. Rezerwacja może mieć najwyżej 20 kg. Za "
+"towar płacisz przy odbiorze, według masy po zważeniu i cen z dnia odbioru."
+msgstr ""
+"Enter quantities in kilograms to the nearest 0.1 kg. Each reservation can contain up to 20 kg. "
+"Pay in store for the actual weight at the prices on the day of collection."
+
+msgid "Wpisz ilość co najmniej jednego produktu."
+msgstr "Enter a quantity for at least one product."
+
+msgid "Wpisz nazwę i naciśnij Enter"
+msgstr "Type a name and press Enter"
+
+msgid "Wpłata odnotowana."
+msgstr "Payment recorded."
+
+msgid "Wpłata w sklepie"
+msgstr "In-store payment"
+
+msgid "Wpłaty i obciążenia"
+msgstr "Payments and charges"
+
+msgid "Wróć"
+msgstr "Back"
+
+msgid "Wróć bez wydania"
+msgstr "Back without handing over"
+
+msgid "Wróć do katalogu"
+msgstr "Back to catalogue"
+
+msgid "Wróć do logowania"
+msgstr "Back to sign in"
+
+msgid "Wybierz co najmniej jeden produkt."
+msgstr "Choose at least one product."
+
+msgid "Wybierz dzień"
+msgstr "Choose a day"
+
+msgid "Wybierz dzień i zarezerwuj warzywa lub owoce na odbiór w sklepie."
+msgstr "Choose a day and reserve fruit and vegetables to collect in store."
+
+msgid "Wybierz produkt"
+msgstr "Select a product"
+
+msgid "Wybierz produkt z listy."
+msgstr "Select a product from the list."
+
+msgid "Wybierz produkty do sprzedaży."
+msgstr "Choose the products to sell."
+
+msgid "Wybierz produkty o łącznej masie do 20 kg."
+msgstr "Choose products with a combined weight of up to 20 kg."
+
+msgid "Wydaj"
+msgstr "Hand over"
+
+msgid "Wydanie rezerwacji"
+msgstr "Reservation collection"
+
+msgid "Wydawaj do 18:00"
+msgstr "Hand over by 18:00"
+
+msgid "Wyloguj"
+msgstr "Sign out"
+
+msgid "Wynik obciążenia karty"
+msgstr "Card charge result"
+
+msgid "Wynik obciążenia odnotowany."
+msgstr "Charge result recorded."
+
+msgid "Wysoki kontrast"
+msgstr "High contrast"
+
+msgid "Wyślij link"
+msgstr "Send link"
+
+msgid "Wyślij nowy link"
+msgstr "Send a new link"
+
+msgid "Właściciel"
+msgstr "Owner"
+
+msgid "Zakończone"
+msgstr "Past"
+
+msgid "Zaległości klientów"
+msgstr "Customer balances"
+
+msgid "Zaległość"
+msgstr "Outstanding balance"
+
+#, python-format
+msgid "Zaległość %(zaleglosc)s zł; wpłatę odnotujesz na karcie klienta."
+msgstr "Outstanding balance: PLN %(zaleglosc)s. Record the payment on the customer profile."
+
+msgid "Zaległość można zapłacić w sklepie."
+msgstr "You can pay your balance in the shop."
+
+msgid "Zaległość można zapłacić w sklepie. Raz w miesiącu sklep pobiera ją z zarejestrowanej karty."
+msgstr ""
+"You can pay at the shop. Once a month, the shop collects outstanding balances from registered "
+"cards."
+
+msgid ""
+"Zaległość przekracza 100 zł, więc do czasu jej spłaty nie możesz składać nowych rezerwacji. "
+"Złożone wcześniej rezerwacje pozostają ważne."
+msgstr ""
+"Your balance exceeds PLN 100. Clear the balance before placing new reservations. Existing "
+"reservations remain valid."
+
+msgid "Zaległość przekracza 100 zł, więc nie możesz składać nowych rezerwacji."
+msgstr "Your outstanding balance exceeds PLN 100. Clear it before placing new reservations."
+
+msgid "Zaległość – Warzywniak"
+msgstr "Outstanding balance – Warzywniak"
+
+msgid "Zaloguj się"
+msgstr "Sign in"
+
+msgid "Zamów towar na jutro"
+msgstr "Order stock for tomorrow"
+
+msgid "Zamówienie u dostawcy"
+msgstr "Supplier order"
+
+#, python-format
+msgid ""
+"Zapisano %(zarejestrowano)s. Przy wyróżnionych produktach przyjechało mniej, niż zarezerwowali "
+"klienci, więc trzeba ich uprzedzić."
+msgstr ""
+"Recorded at %(zarejestrowano)s. The highlighted products arrived in quantities below the reserved"
+" amount. Please contact the affected customers."
+
+msgid "Zapisz cenę"
+msgstr "Save price"
+
+msgid "Zapisz dostawę"
+msgstr "Save delivery"
+
+msgid "Zapisz korektę"
+msgstr "Save adjustment"
+
+msgid "Zapisz numer"
+msgstr "Save number"
+
+msgid "Zapisz plan"
+msgstr "Save plan"
+
+msgid "Zapisz produkt"
+msgstr "Save product"
+
+msgid "Zapisz ubytek"
+msgstr "Record waste"
+
+msgid "Zapisz zmiany"
+msgstr "Save changes"
+
+msgid "Zarejestruj kartę"
+msgstr "Register a card"
+
+#, python-format
+msgid "Zarezerwowano %(kg)s kg, na ladę przeznaczono %(lada)s kg."
+msgstr "%(kg)s kg reserved and %(lada)s kg set aside for counter sales."
+
+msgid "Zarezerwowano [kg]"
+msgstr "Reserved [kg]"
+
+msgid "Zarezerwuj"
+msgstr "Reserve"
+
+msgid "Zasady rezerwacji"
+msgstr "Reservation terms"
+
+msgid "Zatwierdź kartę"
+msgstr "Confirm card"
+
+msgid "Zatwierdź sprzedaż"
+msgstr "Confirm sale"
+
+msgid "Załóż konto"
+msgstr "Create account"
+
+msgid "Załóż konto – Warzywniak"
+msgstr "Create account – Warzywniak"
+
+msgid "Zestawienia"
+msgstr "Reports"
+
+msgid "Zestawienie"
+msgstr "Order summary"
+
+msgid "Zmiana hasła"
+msgstr "Change password"
+
+msgid "Zmiana hasła – Warzywniak"
+msgstr "Change password – Warzywniak"
+
+msgid "Zmiana rezerwacji"
+msgstr "Edit reservation"
+
+msgid "Zmień"
+msgstr "Edit"
+
+msgid "Zmień hasło"
+msgstr "Change password"
+
+msgid "Zmień kartę"
+msgstr "Change card"
+
+msgid "Zmień rezerwację"
+msgstr "Edit reservation"
+
+msgid "Znajdź klienta"
+msgstr "Find a customer"
+
+msgid "Zobacz"
+msgstr "View"
+
+msgid "Zobacz zaległość"
+msgstr "View balance"
+
+msgid "aktywne"
+msgstr "active"
+
+msgid "anulowana"
+msgstr "cancelled"
+
+msgid "brak"
+msgstr "none"
+
+msgid "brak karty"
+msgstr "no card"
+
+msgid "brak na stanie"
+msgstr "out of stock"
+
+#, python-format
+msgid "do %(termin)s"
+msgstr "until %(termin)s"
+
+msgid "dozwolone"
+msgstr "allowed"
+
+msgid "katalogu"
+msgstr "catalogue"
+
+#, python-format
+msgid "na %(dzien)s, %(dzien2)s"
+msgstr "for %(dzien)s, %(dzien2)s"
+
+msgid "nie podano"
+msgstr "not provided"
+
+msgid "nieaktywne"
+msgstr "inactive"
+
+msgid "nieodebrana"
+msgstr "uncollected"
+
+msgid "odebrana"
+msgstr "collected"
+
+msgid "przygotowana"
+msgstr "ready"
+
+#, python-format
+msgid "rez. %(zarezerwowano_kg)s, wolne %(dostepne_kg)s"
+msgstr "reserved %(zarezerwowano_kg)s, available %(dostepne_kg)s"
+
+msgid "sprzedawca"
+msgstr "shop assistant"
+
+msgid "w ofercie"
+msgstr "on sale"
+
+msgid "wycofany"
+msgstr "withdrawn"
+
+msgid "właściciel"
+msgstr "owner"
+
+msgid "z 20 kg"
+msgstr "of 20 kg"
+
+msgid "zablokowane"
+msgstr "blocked"
+
+msgid "zamknięte"
+msgstr "closed"
+
+msgid "zamknięty"
+msgstr "closed"
+
+msgid "zarejestrowana"
+msgstr "registered"
+
+#, python-format
+msgid "zarezerwowano %(ilosc_kg)s kg"
+msgstr "%(ilosc_kg)s kg reserved"
+
+msgid "zmieniona"
+msgstr "updated"
+
+msgid "zł"
+msgstr "PLN"
+
+msgid "zł/kg"
+msgstr "PLN/kg"
+
+msgid "złożona"
+msgstr "placed"
+
+msgid "Łącznie:"
+msgstr "Total:"
+
+msgid ""
+"Środowisko testowe operatora: karta 4242&nbsp;4242&nbsp;4242&nbsp;4242, dowolna przyszła data "
+"ważności i dowolny kod CVC."
+msgstr "Stripe test mode: use card 4242&nbsp;4242&nbsp;4242&nbsp;4242, any future expiry date and any CVC."
+
+msgid "Żaden klient nie ma zaległości."
+msgstr "No outstanding customer balances."
+

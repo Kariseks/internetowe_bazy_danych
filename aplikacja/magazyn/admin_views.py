@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
@@ -10,6 +11,7 @@ from config.panel import dzien_z_zapytania, nawigacja_dni, strona
 from . import services
 from .forms import (
     CenaForm,
+    KorektaForm,
     IlosciForm,
     NowyProduktForm,
     ProduktForm,
@@ -29,9 +31,9 @@ def sprzedaz(request):
         except services.BrakNaStanie as blad:
             messages.error(request, str(blad))
         else:
-            messages.success(request, f'Sprzedaż zapisana. Do zapłaty: {zapisana.suma} zł.')
+            messages.success(request, _('Sprzedaż zapisana. Do zapłaty: %(suma)s zł.') % {'suma': zapisana.suma})
             return redirect('admin:sprzedaz')
-    return strona(request, 'admin/panel/sprzedaz.html', 'Nowa sprzedaż', wiersze=wiersze, formset=formset)
+    return strona(request, 'admin/panel/sprzedaz.html', _('Nowa sprzedaż'), wiersze=wiersze, formset=formset)
 
 
 def historia(request):
@@ -39,7 +41,7 @@ def historia(request):
     return strona(
         request,
         'admin/panel/historia.html',
-        'Historia sprzedaży',
+        _('Historia sprzedaży'),
         sprzedaze=services.historia_sprzedazy(dzien, dzien),
         **nawigacja_dni(dzien),
     )
@@ -60,10 +62,10 @@ def dostawa(request):
             except services.DostawaOdrzucona as blad:
                 messages.error(request, str(blad))
             else:
-                messages.success(request, 'Dostawa zapisana.')
+                messages.success(request, _('Dostawa zapisana.'))
                 return redirect('admin:dostawa')
         kontekst.update(form=form, wiersze=wiersze)
-    return strona(request, 'admin/panel/dostawa.html', 'Przyjęcie dostawy', **kontekst)
+    return strona(request, 'admin/panel/dostawa.html', _('Przyjęcie dostawy'), **kontekst)
 
 
 def ubytek(request):
@@ -75,13 +77,29 @@ def ubytek(request):
         except services.BrakNaStanie as blad:
             form.add_error('masa_kg', str(blad))
         else:
-            messages.success(request, 'Ubytek zapisany.')
+            messages.success(request, _('Ubytek zapisany.'))
             return redirect('admin:ubytek')
-    return strona(request, 'admin/panel/ubytek.html', 'Ubytek towaru', form=form)
+    return strona(request, 'admin/panel/ubytek.html', _('Ubytek towaru'), form=form)
+
+
+def korekta(request, produkt_id):
+    produkt = services.produkt(produkt_id)
+    if produkt is None:
+        raise Http404
+    form = KorektaForm(request.POST if request.method == 'POST' else None)
+    if request.method == 'POST' and form.is_valid():
+        try:
+            services.skoryguj_stan(produkt_id, **form.cleaned_data, kto=request.user)
+        except services.BrakNaStanie as blad:
+            form.add_error(None, str(blad))
+        else:
+            messages.success(request, _('Korekta stanu zapisana.'))
+            return redirect('admin:stan')
+    return strona(request, 'admin/panel/korekta.html', _('Korekta stanu'), produkt=produkt, form=form)
 
 
 def stan(request):
-    return strona(request, 'admin/panel/stan.html', 'Stan produktów', wiersze=services.stan_produktow())
+    return strona(request, 'admin/panel/stan.html', _('Stan produktów'), wiersze=services.stan_produktow())
 
 
 def zamowienie(request):
@@ -90,7 +108,7 @@ def zamowienie(request):
     return strona(
         request,
         'admin/panel/zamowienie.html',
-        'Zamówienie u dostawcy',
+        _('Zamówienie u dostawcy'),
         jutro=jutro,
         wiersze=wiersze,
         razem=sum(w.plan_kg for w in wiersze),
@@ -104,7 +122,7 @@ def zestawienia(request):
     return strona(
         request,
         'admin/panel/zestawienia.html',
-        'Zestawienia',
+        _('Zestawienia'),
         od=od,
         do=do,
         dane=services.zestawienia(od, do),
@@ -112,7 +130,7 @@ def zestawienia(request):
 
 
 def produkty(request):
-    return strona(request, 'admin/panel/produkty.html', 'Produkty i ceny', produkty=services.produkty())
+    return strona(request, 'admin/panel/produkty.html', _('Produkty i ceny'), produkty=services.produkty())
 
 
 def produkt_nowy(request):
@@ -123,9 +141,9 @@ def produkt_nowy(request):
         except services.ProduktOdrzucony as blad:
             form.add_error(None, str(blad))
         else:
-            messages.success(request, 'Produkt dodany.')
+            messages.success(request, _('Produkt dodany.'))
             return redirect('admin:produkty')
-    return strona(request, 'admin/panel/produkt_nowy.html', 'Nowy produkt', form=form)
+    return strona(request, 'admin/panel/produkt_nowy.html', _('Nowy produkt'), form=form)
 
 
 def produkt_edycja(request, produkt_id):
@@ -139,15 +157,16 @@ def produkt_edycja(request, produkt_id):
             'nazwa': produkt.nazwa,
             'odmiana': produkt.odmiana,
             'standardowa_ilosc_kg': produkt.standardowa_ilosc_kg,
+            'ilosc_na_lade_kg': produkt.ilosc_na_lade_kg,
             'w_ofercie': produkt.w_ofercie,
         },
     )
     form_ceny = CenaForm(request.POST if zmiana_ceny else None)
     if request.method == 'POST':
         aktywny, zapis, komunikat = (
-            (form_ceny, services.zmien_cene, 'Cena zapisana.')
+            (form_ceny, services.zmien_cene, _('Cena zapisana.'))
             if zmiana_ceny
-            else (form, services.zmien_produkt, 'Produkt zapisany.')
+            else (form, services.zmien_produkt, _('Produkt zapisany.'))
         )
         if aktywny.is_valid():
             try:

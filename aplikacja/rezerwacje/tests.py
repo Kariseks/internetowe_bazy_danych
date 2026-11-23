@@ -3,6 +3,8 @@ from decimal import Decimal
 from io import StringIO
 from unittest.mock import patch
 
+from akceptacja.dane_paneli import DanePaneli, historia_klienta
+
 from django.core import mail
 from django.core.management import call_command
 from django.db import connection
@@ -27,11 +29,11 @@ class SzkieletTests(TestCase):
         odpowiedz = self.client.get('/admin/')
         self.assertRedirects(odpowiedz, '/admin/login/?next=/admin/')
 
-    def test_baza_to_mysql(self):
-        self.assertEqual(connection.vendor, 'mysql')
+    def test_migracja_utworzyla_tabele(self):
+        self.assertIn('pozycja_rezerwacji', connection.introspection.table_names())
 
 
-class PanelRezerwacjiTests(TestCase):
+class PanelRezerwacjiTests(DanePaneli, TestCase):
     def setUp(self):
         self.client.force_login(konto('sprzedawca', 'sprzedawca'))
 
@@ -95,11 +97,11 @@ def za_dni(n):
     return (timezone.localdate() + timedelta(days=n)).isoformat()
 
 
-class PanelKlientaTests(TestCase):
+class PanelKlientaTests(DanePaneli, TestCase):
     def setUp(self):
         self.klient = nowy_klient()
         self.client.force_login(self.klient)
-        # Dzień bez rezerwacji klienta w atrapach (rezerwacja 401 jest za 2 dni).
+        historia_klienta(self.klient)
         self.nowa = reverse('nowa_rezerwacja', args=[za_dni(3)])
 
     def strony(self):
@@ -126,7 +128,7 @@ class PanelKlientaTests(TestCase):
         jutro = reverse('nowa_rezerwacja', args=[za_dni(1)])
         self.assertContains(self.client.get(reverse('katalog')), f'href="{self.nowa}"')
         wieczor = timezone.make_aware(datetime.combine(timezone.localdate(), time(18, 0)))
-        with patch('atrapy.teraz', return_value=wieczor):
+        with patch('django.utils.timezone.now', return_value=wieczor):
             odpowiedz = self.client.get(reverse('katalog'))
         self.assertNotContains(odpowiedz, jutro)
         self.assertContains(odpowiedz, 'zamknięte')
@@ -143,7 +145,8 @@ class PanelKlientaTests(TestCase):
             self.assertContains(self.client.post(self.nowa, pola), blad)
         zapis.assert_not_called()
         self.assertRedirects(self.client.post(self.nowa, {'p1': '12,5', 'p8': '7,5', 'p2': ''}), reverse('moje_rezerwacje'))
-        zapis.assert_called_once_with(self.klient, timezone.localdate() + timedelta(days=3), [(1, Decimal('12.5')), (8, Decimal('7.5'))])
+        self.assertEqual(zapis.call_args.args[:2], (self.klient, timezone.localdate() + timedelta(days=3)))
+        self.assertCountEqual(zapis.call_args.args[2], [(1, Decimal('12.5')), (8, Decimal('7.5'))])
 
     @patch('rezerwacje.services.zloz_rezerwacje', side_effect=services.RezerwacjaOdrzucona('Dostępne już tylko 2 kg'))
     def test_odrzucenie_zostawia_ilosci(self, _):
@@ -151,8 +154,8 @@ class PanelKlientaTests(TestCase):
         self.assertContains(odpowiedz, 'Dostępne już tylko 2 kg')
         self.assertContains(odpowiedz, 'value="5"')
 
-    def test_zapis_bez_logiki(self):
-        self.assertContains(self.client.post(self.nowa, {'p1': '5'}, follow=True), 'nic nie zapisano')
+    def test_zapis_pozycji(self):
+        self.assertContains(self.client.post(self.nowa, {'p1': '5'}, follow=True), 'Rezerwacja złożona')
 
     def test_przeszkody(self):
         istniejaca = atrapy.rezerwacja_klienta(None, 401)
@@ -201,8 +204,8 @@ class PanelKlientaTests(TestCase):
         zapis.assert_not_called()
 
 
-class PrzypomnieniaTests(TestCase):
-    """PU32 na atrapach: dziś 101 i 103 są złożone, 102 przygotowana, 104 odebrana."""
+class PrzypomnieniaTests(DanePaneli, TestCase):
+    """PU32 na danych testowych: dziś 101 i 103 są złożone, 102 przygotowana, 104 odebrana."""
 
     def uruchom(self):
         wyjscie, bledy = StringIO(), StringIO()

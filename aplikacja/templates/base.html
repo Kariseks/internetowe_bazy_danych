@@ -1,14 +1,17 @@
-{% load static %}<!doctype html>
-<html lang="pl">
+{% load static i18n %}{% get_current_language as language %}<!doctype html>
+<html lang="{{ language }}">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{% block title %}Warzywniak{% endblock %}</title>
 	{% if user.is_authenticated %}<script>document.documentElement.classList.add('menu-js')</script>{% endif %}
 	<link rel="stylesheet" href="{% static 'sklep/sklep.css' %}">
+	<link rel="stylesheet" href="{% static 'sklep/preferencje.css' %}">
+	<script src="{% static 'sklep/preferencje.js' %}" defer></script>
 	{% block skrypty %}{% endblock %}
 </head>
 <body>
+	<a class="pomin" href="#tresc">{% translate "Przejdź do treści" %}</a>
 	<header class="naglowek">
 		<a class="marka" href="{% url 'katalog' %}">Warzywniak</a>
 		{% if user.is_authenticated %}
@@ -19,26 +22,26 @@
 		{% with t=request.resolver_match.url_name %}
 		<nav id="menu" aria-label="Menu">
 			{% if user.is_staff %}
-				<a href="{% url 'admin:index' %}">Panel administratora</a>
-				<span class="uzytkownik">{% firstof user.get_full_name user.get_username %}</span>
-				<form method="post" action="{% url 'wyloguj' %}">{% csrf_token %}<button type="submit">Wyloguj</button></form>
+				<a href="{% url 'admin:index' %}">{% translate "Panel administratora" %}</a>
+				<span class="uzytkownik" data-konto="{% translate "Twoje konto" %}">{% firstof user.get_full_name user.get_username %}</span>
+				<form method="post" action="{% url 'wyloguj' %}">{% csrf_token %}<button type="submit">{% translate "Wyloguj" %}</button></form>
 			{% elif user.is_authenticated %}
-				<a href="{% url 'katalog' %}"{% if t == 'katalog' or t == 'nowa_rezerwacja' %} aria-current="page"{% endif %}>Katalog</a>
-				<a href="{% url 'moje_rezerwacje' %}"{% if t == 'moje_rezerwacje' or t == 'zmien_rezerwacje' or t == 'anuluj_rezerwacje' %} aria-current="page"{% endif %}>Moje rezerwacje</a>
-				<a href="{% url 'zaleglosc' %}"{% if t == 'zaleglosc' %} aria-current="page"{% endif %}>Zaległość</a>
-				<a class="uzytkownik" href="{% url 'konto' %}"{% if t == 'konto' or t == 'zmiana_hasla' or t == 'karta' %} aria-current="page"{% endif %}>{% firstof user.get_full_name user.get_username %}</a>
-				<form method="post" action="{% url 'wyloguj' %}">{% csrf_token %}<button type="submit">Wyloguj</button></form>
+				<a href="{% url 'katalog' %}"{% if t == 'katalog' or t == 'nowa_rezerwacja' %} aria-current="page"{% endif %}>{% translate "Katalog" %}</a>
+				<a href="{% url 'moje_rezerwacje' %}"{% if t == 'moje_rezerwacje' or t == 'zmien_rezerwacje' or t == 'anuluj_rezerwacje' %} aria-current="page"{% endif %}>{% translate "Moje rezerwacje" %}</a>
+				<a href="{% url 'zaleglosc' %}"{% if t == 'zaleglosc' %} aria-current="page"{% endif %}>{% translate "Zaległość" %}</a>
+				<a class="uzytkownik" data-konto="{% translate "Twoje konto" %}" href="{% url 'konto' %}"{% if t == 'konto' or t == 'zmiana_hasla' or t == 'karta' %} aria-current="page"{% endif %}>{% firstof user.get_full_name user.get_username %}</a>
+				<form method="post" action="{% url 'wyloguj' %}">{% csrf_token %}<button type="submit">{% translate "Wyloguj" %}</button></form>
 			{% else %}
-				<a href="{% url 'rejestracja' %}"{% if t == 'rejestracja' %} aria-current="page"{% endif %}>Załóż konto</a>
-				<a href="{% url 'logowanie' %}"{% if t == 'logowanie' %} aria-current="page"{% endif %}>Zaloguj się</a>
+				<a href="{% url 'rejestracja' %}"{% if t == 'rejestracja' %} aria-current="page"{% endif %}>{% translate "Załóż konto" %}</a>
+				<a href="{% url 'logowanie' %}"{% if t == 'logowanie' %} aria-current="page"{% endif %}>{% translate "Zaloguj się" %}</a>
 			{% endif %}
 		</nav>
 		{% endwith %}
+		{% include '_preferencje.html' %}
 	</header>
 	{% if user.is_authenticated %}<script src="{% static 'sklep/menu.js' %}" defer></script>{% endif %}
-	<main>
-		{% block atrapa %}{% endblock %}
-		{% for komunikat in messages %}<p class="komunikat {{ komunikat.tags }}">{{ komunikat }}</p>{% endfor %}
+	<main id="tresc" tabindex="-1">
+		{% for komunikat in messages %}<p role="status" class="komunikat {{ komunikat.tags }}">{{ komunikat }}</p>{% endfor %}
 		{% block content %}{% endblock %}
 	</main>
 </body>

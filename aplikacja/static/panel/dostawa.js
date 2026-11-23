@@ -1,7 +1,7 @@
 (() => {
 	const wiersze = document.querySelectorAll('#tabela-dostawy tbody tr');
 	const liczba = (tekst) => Number.parseFloat(String(tekst).replace(/\s/g, '').replace(',', '.'));
-	const format = (n) => n.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2, signDisplay: 'exceptZero' });
+	const format = (n) => n.toLocaleString(document.documentElement.lang, { minimumFractionDigits: 2, maximumFractionDigits: 2, signDisplay: 'exceptZero' });
 
 	wiersze.forEach((wiersz) => {
 		const pole = wiersz.querySelector('input');

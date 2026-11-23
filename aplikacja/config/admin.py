@@ -7,7 +7,7 @@ from magazyn import admin_views as magazyn
 from rezerwacje import admin_views as rezerwacje
 from rozliczenia import admin_views as rozliczenia
 
-from .panel import obsluz_brak_logiki, pulpit, tylko_wlasciciel
+from .panel import pulpit, tylko_wlasciciel
 
 
 class SklepAdminSite(admin.AdminSite):
@@ -25,13 +25,14 @@ class SklepAdminSite(admin.AdminSite):
 
     def get_urls(self):
         def strona(trasa, widok, nazwa):
-            return path(trasa, self.admin_view(obsluz_brak_logiki(widok)), name=nazwa)
+            return path(trasa, self.admin_view(widok), name=nazwa)
 
         return [
             strona('sprzedaz/', magazyn.sprzedaz, 'sprzedaz'),
             strona('sprzedaz/historia/', magazyn.historia, 'historia'),
             strona('dostawa/', magazyn.dostawa, 'dostawa'),
             strona('ubytek/', magazyn.ubytek, 'ubytek'),
+            strona('stan/<int:produkt_id>/korekta/', tylko_wlasciciel(magazyn.korekta), 'korekta'),
             strona('stan/', magazyn.stan, 'stan'),
             strona('zamowienie/', magazyn.zamowienie, 'zamowienie'),
             strona('zestawienia/', tylko_wlasciciel(magazyn.zestawienia), 'zestawienia'),
@@ -45,6 +46,7 @@ class SklepAdminSite(admin.AdminSite):
             strona('klienci/', rozliczenia.klienci, 'klienci'),
             strona('klienci/<int:klient_id>/', rozliczenia.karta, 'karta_klienta'),
             strona('zaleglosci/', tylko_wlasciciel(rozliczenia.zaleglosci), 'zaleglosci'),
+            strona('konta/<int:konto_id>/anonimizacja/', tylko_wlasciciel(konta.anonimizacja), 'anonimizacja'),
             strona('konta/', tylko_wlasciciel(konta.lista), 'konta'),
             strona('moje-konto/', konta.moje_konto, 'moje_konto'),
             *super().get_urls(),

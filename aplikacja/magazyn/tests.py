@@ -3,6 +3,8 @@ from decimal import Decimal
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from akceptacja.dane_paneli import DanePaneli
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import TestCase
@@ -19,7 +21,7 @@ def konto(login, *grupy, **pola):
     return user
 
 
-class PanelMagazynuTests(TestCase):
+class PanelMagazynuTests(DanePaneli, TestCase):
     def setUp(self):
         self.client.force_login(konto('sprzedawca', 'sprzedawca'))
 
@@ -58,9 +60,11 @@ class PanelMagazynuTests(TestCase):
             self.assertEqual(self.sprzedaj(*pozycje).status_code, 200)
         zapis.assert_not_called()
 
-    def test_zapis_bez_logiki_pokazuje_komunikat(self):
+    def test_sprzedaz_zapisana_w_bazie(self):
+        services.zarejestruj_dostawe(timezone.localdate(), [(1, Decimal(50))], get_user_model().objects.get(username='sprzedawca'))
         odpowiedz = self.sprzedaj(('1', '1'))
-        self.assertContains(odpowiedz, 'zarejestruj_sprzedaz nie ma jeszcze logiki')
+        self.assertContains(odpowiedz, 'Sprzedaż zapisana')
+        self.assertEqual(services.historia_sprzedazy(timezone.localdate(), timezone.localdate())[0].suma, Decimal('3.20'))
 
     @patch('magazyn.services.zarejestruj_dostawe')
     def test_dostawa_wymaga_wszystkich_ilosci_i_przyjmuje_zero(self, zapis):
@@ -87,7 +91,7 @@ class PanelMagazynuTests(TestCase):
             self.assertEqual(self.client.get(f'/admin/sprzedaz/historia/?dzien={dzien}').status_code, 200)
 
 
-class PanelProduktowTests(TestCase):
+class PanelProduktowTests(DanePaneli, TestCase):
     def setUp(self):
         self.client.force_login(konto('wlasciciel', 'wlasciciel'))
 
@@ -96,6 +100,7 @@ class PanelProduktowTests(TestCase):
             'nazwa': 'Marchew',
             'odmiana': '',
             'standardowa_ilosc_kg': '30',
+            'ilosc_na_lade_kg': '0',
             'w_ofercie': 'on',
             'cena_za_kg': '2,50',
             'obowiazuje_od': '2026-11-05',

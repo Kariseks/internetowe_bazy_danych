@@ -1,0 +1,13 @@
+{% load i18n %}{% get_current_language as language %}
+<div class="preferencje">
+    <form method="post" action="{% url 'set_language' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        {% if language == "en" %}
+            <button type="submit" name="language" value="pl" lang="pl" aria-label="Przełącz na polski">PL</button>
+        {% else %}
+            <button type="submit" name="language" value="en" lang="en" aria-label="Switch to English">EN</button>
+        {% endif %}
+    </form>
+    <button type="button" class="kontrast" hidden aria-pressed="false">{% translate "Wysoki kontrast" %}</button>
+</div>

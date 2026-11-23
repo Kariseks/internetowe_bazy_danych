@@ -1,0 +1,14 @@
+.preferencje { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
+.preferencje form { margin: 0; }
+.preferencje button { min-height: 2.75rem; padding: .45rem .8rem; border: 1px solid #97b79e; border-radius: .5rem; background: transparent; color: #fff; font: inherit; font-size: .88rem; text-decoration: none; cursor: pointer; }
+.preferencje button:hover, .preferencje button[aria-pressed="true"] { color: #132e22; background: #e6f4cf; }
+.preferencje button:focus-visible { outline: 3px solid #ffe07d; outline-offset: 2px; }
+html.wysoki-kontrast {
+    --jarmuz: #091c12; --jarmuz-jasny: #153423; --tusz: #080d09; --cichy: #182d21;
+    --lisc: #064527; --lisc-ciemny: #072c1b; --kapusta: #fff; --linia: #394a40;
+    --ramka: #26362b; --marchew: #713400; --burak: #6f123a;
+}
+.wysoki-kontrast :focus-visible { outline: 4px solid #8d3900; outline-offset: 2px; }
+.wysoki-kontrast header :focus-visible { outline-color: #ffe07d; }
+.wysoki-kontrast .katalog .zamkniety, .wysoki-kontrast .katalog .brak { color: #182d21; }
+.wysoki-kontrast input:not([type=hidden]), .wysoki-kontrast select { border-color: #26362b; }
