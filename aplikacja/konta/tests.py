@@ -513,3 +513,37 @@ class StronyBledowTests(TestCase):
             odpowiedz = self.client.get(strona)
             self.assertContains(odpowiedz, 'Brak dostępu', status_code=403)
             self.assertContains(odpowiedz, 'href="/admin/"', status_code=403)
+
+
+class JezykPaneluTests(TestCase):
+    def test_rejestracja_po_angielsku_i_zmiana_jezyka_poczty(self):
+        from .models import ProfilKlienta
+
+        self.client.post(reverse('set_language'), {'language': 'en', 'next': reverse('rejestracja')})
+        self.assertContains(self.client.get(reverse('rejestracja')), 'Reservation terms')
+        self.client.post(reverse('rejestracja'), {
+            'imie': 'Anna', 'nazwisko': 'Nowak', 'email': ADRES, 'telefon': '501 200 300',
+            'haslo': HASLO, 'haslo2': HASLO, 'regulamin': 'on',
+        })
+        profil = ProfilKlienta.objects.get(uzytkownik__email=ADRES)
+        self.assertEqual(profil.jezyk, 'en')
+        self.assertEqual(mail.outbox[0].subject, 'Warzywniak: account created')
+        self.assertIn('Use ' + ADRES + ' to sign in.', mail.outbox[0].body)
+
+        self.client.force_login(profil.uzytkownik)
+        nastepna = reverse('moje_rezerwacje') + '?strona=2'
+        zmiana = self.client.post(reverse('set_language'), {'language': 'pl', 'next': nastepna})
+        self.assertRedirects(zmiana, nastepna)
+        profil.refresh_from_db()
+        self.assertEqual(profil.jezyk, 'pl')
+        self.assertContains(self.client.get(nastepna), 'Moje rezerwacje')
+
+    def test_przypomnienie_stosuje_jezyk_odbiorcy(self):
+        from django.utils.translation import override
+
+        rezerwacja = atrapy.rezerwacja_klienta(None, 401)
+        rezerwacja.klient.jezyk = 'en'
+        with override('pl'):
+            powiadomienia.przypomnienie(rezerwacja, Decimal('5.99'))
+        self.assertEqual(mail.outbox[0].subject, 'Warzywniak: collect your reservation today')
+        self.assertIn('a fee of PLN 5.99', mail.outbox[0].body)

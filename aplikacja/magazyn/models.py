@@ -2,6 +2,20 @@ from django.conf import settings
 from django.db import models
 from django.db.models import F, Q
 from django.utils import timezone
+from django.utils.translation import gettext, gettext_noop
+
+
+SLOWNIK_PRODUKTOW = {
+    gettext_noop("Ziemniaki"), gettext_noop("Marchew"), gettext_noop("Cebula"),
+    gettext_noop("Pomidory"), gettext_noop("Ogórki"), gettext_noop("Buraki"),
+    gettext_noop("Jabłka"), gettext_noop("Gruszki"), gettext_noop("Kapusta"),
+    gettext_noop("żółta"), gettext_noop("malinowe"), gettext_noop("gruntowe"),
+    gettext_noop("Konferencja"),
+}
+
+
+def nazwa_w_katalogu(tekst):
+    return gettext(tekst) if tekst in SLOWNIK_PRODUKTOW else tekst
 
 
 class Produkt(models.Model):
@@ -19,8 +33,18 @@ class Produkt(models.Model):
                 Q(standardowa_ilosc_kg__gte=F("ilosc_na_lade_kg")), name="ck_produkt_plan_lada"),
         ]
 
+    @property
+    def nazwa_wyswietlana(self):
+        return nazwa_w_katalogu(self.nazwa)
+
+    @property
+    def odmiana_wyswietlana(self):
+        return nazwa_w_katalogu(self.odmiana)
+
     def __str__(self):
-        return f"{self.nazwa} ({self.odmiana})" if self.odmiana else self.nazwa
+        if self.odmiana:
+            return f"{self.nazwa_wyswietlana} ({self.odmiana_wyswietlana})"
+        return self.nazwa_wyswietlana
 
 
 class CenaProduktu(models.Model):

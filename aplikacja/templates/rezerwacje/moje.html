@@ -3,7 +3,7 @@
 {% block title %}{% translate "Moje rezerwacje – Warzywniak" %}{% endblock %}
 {% block content %}
 <h1>{% translate "Moje rezerwacje" %}</h1>
-<p class="wstep">{% translate "Rezerwację można zmienić albo anulować bez opłaty do 18:00 dnia poprzedzającego odbiór. Nową rezerwację składa się w" %} <a href="{% url 'katalog' %}">{% translate "katalogu" %}</a>.</p>
+<p class="wstep">{% translate "Rezerwację można zmienić albo anulować bez opłaty do 18:00 dnia poprzedzającego odbiór." %} <a href="{% url 'katalog' %}">{% translate "Zarezerwuj produkty" %}</a>.</p>
 <h2>{% translate "Bieżące" %}</h2>
 {% include "rezerwacje/_tabela.html" with rezerwacje=biezace polecenia=True pusto=_("Nie masz bieżących rezerwacji.") %}
 <h2>{% translate "Zakończone" %}</h2>

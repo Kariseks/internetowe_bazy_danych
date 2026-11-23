@@ -7,7 +7,7 @@ from django.utils.dateparse import parse_date
 from . import services
 from .forms import RezerwacjaForm
 
-KONCOWE = (_('odebrana'), _('anulowana'), _('nieodebrana'))
+KONCOWE = ('odebrana', 'anulowana', 'nieodebrana')
 
 
 def katalog(request):

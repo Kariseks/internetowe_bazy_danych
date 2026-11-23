@@ -58,7 +58,6 @@ main { max-width: 64rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
 h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 0.75rem; }
 h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
 .wstep { max-width: 46rem; margin: 0 0 1.25rem; color: var(--cichy); }
-.atrapa { display: inline-block; margin: 0 0 1rem; padding: 0.2rem 0.65rem; border-radius: 4px; background: var(--marchew-tlo); color: var(--marchew); font-size: 0.85rem; }
 .komunikat.warning, .komunikat.info { background: var(--marchew-tlo); color: var(--marchew); }
 .komunikat.error { background: var(--burak-tlo); color: var(--burak); }
 

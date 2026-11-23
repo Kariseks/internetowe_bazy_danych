@@ -4,6 +4,7 @@
 % Sprawozdanie z projektu IBD — lokalny warzywniak (Django + MySQL)
 % Jednolity plik: bez \input rozdziałów. Struktura wg IDB_wytyczne_v4 + formatka PWr.
 
+\pdfminorversion=7
 \documentclass[12pt,a4paper,oneside]{article}
 
 % --- kodowanie i język ---
@@ -364,7 +365,7 @@ W~typowym dniu sprzedaż przy ladzie wynosi około 500~kg (200 klientów po 2,5~
 \label{sec:cel}
 % Wytyczne v4 pkt 4d. Cel z odwołaniami do P1--P8. Wzór: Sklep hydrauliczny 2.1.
 
-Celem projektu jest budowa aplikacji webowej z~bazą danych, która ogranicza straty warzywniaka na psującym się towarze (\ref{prob:straty}) przez rezerwacje konkretnych ilości towaru z~odbiorem osobistym. Rezerwacje powiązane z~planem dostawy pozwalają właścicielowi znać część popytu przed złożeniem zamówienia u~dostawcy (\ref{prob:rezerwacja}, \ref{prob:zamawianie}), a~duże zakupy przenoszą poza godziny szczytu (\ref{prob:kolejki}).
+Celem jest ograniczenie strat warzywniaka na psującym się towarze (\ref{prob:straty}) przez wcześniejszą rezerwację konkretnych ilości towaru z~odbiorem osobistym. Rezerwacje powiązane z~planem dostawy pozwalają właścicielowi znać część popytu przed złożeniem zamówienia u~dostawcy (\ref{prob:rezerwacja}, \ref{prob:zamawianie}), a~duże zakupy przenoszą poza godziny szczytu (\ref{prob:kolejki}).
 
 System prowadzi też ewidencję dostaw, sprzedaży i~stanu towaru. Daje ona dane do planowania zamówień i~kontroli dostaw oraz do oceny, czy straty maleją (\ref{prob:ewidencja}, \ref{prob:dostawa}, \ref{prob:wiedza}). Publiczny katalog pokazuje klientom asortyment, ceny i~ilości dostępne do rezerwacji przed wizytą w~sklepie (\ref{prob:informacja}).
 
@@ -990,8 +991,8 @@ Diagramy przypadków użycia dla modułów przedstawiono na rys.~\ref{rys:pu-kon
 % przebieg podstawowy i alternatywny, warunki końcowe, rysunek ekranu. Jeśli diagramy PU zmieniono po etapie 2,
 % na początku rozdziału opisać poprawki, a poprzednie wersje dać na końcu (SH 4.1 i 4.6).
 
-Opisy obejmują przypadki użycia o~największym znaczeniu dla celu systemu: rezerwacje, ich przygotowanie i~wydanie, rozliczenie rezerwacji nieodebranych, plan dostawy, ewidencję dostaw i~sprzedaży oraz konta użytkowników. Każdy opis podaje aktora, realizowane wymagania funkcjonalne, zdarzenie inicjujące, warunki początkowe, przebieg podstawowy, przebiegi alternatywne i~warunki końcowe, tak jak w~przykładowym raporcie ,,Sklep hydrauliczny''. Przebieg alternatywny wskazuje krok przebiegu podstawowego, w~którym się zaczyna. Numery przypadków użycia odpowiadają tab.~\ref{tab:pu}.
-Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Zawartość każdego ekranu wymieniono przy rysunku, a~kroki, w~których się pojawia, wskazuje opis przypadku użycia.
+Opisy obejmują przypadki użycia o~największym znaczeniu dla celu systemu: rezerwacje, ich przygotowanie i~wydanie, rozliczenie rezerwacji nieodebranych, plan dostawy, ewidencję dostaw i~sprzedaży oraz konta użytkowników. Każdy opis podaje aktora, realizowane wymagania funkcjonalne, zdarzenie inicjujące, warunki początkowe, przebieg podstawowy, przebiegi alternatywne i~warunki końcowe. Przebieg alternatywny wskazuje krok przebiegu podstawowego, w~którym się zaczyna. Numery przypadków użycia odpowiadają tab.~\ref{tab:pu}.
+Pod opisem przypadku użycia umieszczono rysunki jego ekranów. Opisy przypadków wskazują moment wyświetlenia formularza i~skutek jego zatwierdzenia.
 % Ekrany: makiety albo zrzuty z aplikacji, pliki wg schematu z CLAUDE.md (rysunki/ekrany/puNN-<opis>.png).
 
 \subsection{Przypadki użycia dla klienta-obserwatora}
@@ -1378,14 +1379,16 @@ Diagramy czynności przedstawiono dla dwóch przypadków użycia o~największej 
 % Wzór: Sklep hydrauliczny rozdz. 5 (tabela postaci normalnych, kolejne wersje modelu z oceną NF, 5.7 graf stanów),
 % Model Bazy danych.pdf (pojęciowy -> konceptualny -> logiczny, 1NF--3NF).
 
-Model bazy danych przedstawia strukturę informacyjną systemu: dane, które system przechowuje, i~związki między nimi. Diagramy ERD i~diagram klas wykonuje się w~Visual Paradigm Community Edition (p.~\ref{sec:technologie}). ERD przedstawia się w~notacji Crow's Foot (,,kurza stopka''): każda tabela ma wypisane atrybuty z~oznaczeniem klucza głównego (PK) i~kluczy obcych (FK), a~liczność związku pokazuje zakończenie linii, np. jedna kreska oznacza dokładnie jeden, a~rozwidlenie z~kółkiem zero lub wiele.
+Model obejmuje 13~tabel czterech aplikacji sklepu. System korzysta również z~kont Django, grup i~tabeli przypisującej konto do grupy. Widok pojęciowy pokazuje ich związki, a~cztery przekroje schematu fizycznego pokazują kolumny i~klucze odczytane z~działającej bazy.
 
 \subsection{Podejście code-first}
 \label{sec:code-first}
 % Notatka uwaga 6: model bazy danych powstaje z klas ORM Django (reverse engineering), a nie jako klasyczny projekt bazy.
 % Q11 (nazwy PL bez znaków diakrytycznych, stan i zaległość liczone) — propozycja agenta 04.11.2026, do akceptacji.
 
-Zgodnie z~uwagą prowadzącego z~konsultacji 19.10.2026 bazy danych nie projektuje się osobno, lecz wyprowadza z~klas modeli Django: każda klasa modelu odpowiada jednej tabeli, a~tabele tworzą migracje Django. Dlatego rozdział nosi nazwę ,,Model bazy danych''. Na etapie projektu model zapisano jako skrypt SQL dla MySQL 8.4 (plik \texttt{baza/schema.sql} w~repozytorium), zgodny ze słownikiem danych z~p.~\ref{sec:slownik}. Na podstawie skryptu wykonuje się w~Visual Paradigm diagramy ERD. Po implementacji model porównuje się z~bazą utworzoną przez migracje, a~różnice względem tego rozdziału opisuje się w~rozdz.~\ref{ch:implementacja}.
+Punktem wyjścia były klasy modeli Django. Na ich podstawie utworzono migracje i~wykonano je w~MySQL Community Server 8.4.13. Następnie odczytano metadane utworzonej bazy, czyli przeprowadzono inżynierię odwrotną. Widoki \texttt{INFORMATION\_SCHEMA} dostarczyły nazw i~typów kolumn, kluczy obcych i~indeksów unikalnych. Polecenie \texttt{SHOW CREATE TABLE} dało definicje SQL wszystkich 23~tabel, łącznie z~technicznymi tabelami Django. Eksport bez danych znajduje się w~\texttt{baza/schema.sql}. Po zaimportowaniu go do osobnej, pustej bazy sprawdzono zgodność 23~tabel i~28~kluczy obcych oraz definicji kolumn i~indeksów z~bazą źródłową.
+
+Proces można powtórzyć z~katalogu \texttt{aplikacja/} po skonfigurowaniu połączenia MySQL. Najpierw należy wykonać \texttt{python manage.py migrate}, a~następnie \texttt{python manage.py eksportuj\_schemat}. Drugie polecenie sprawdza, czy wszystkie migracje zostały zastosowane, i~generuje DDL oraz diagramy za pomocą Graphviz. Relacja między pozycją a~dokumentem powstaje na podstawie deklaracji klucza obcego, więc każdą linię na diagramie można sprawdzić w~eksporcie SQL.
 
 Nazwy tabel i~atrybutów, np. \texttt{pozycja\_\allowbreak{}rezerwacji}, są polskie i~nie zawierają znaków diakrytycznych. Modele Django otrzymują te same nazwy tabel przez atrybut \texttt{Meta.\allowbreak{}db\_\allowbreak{}table}. Konta i~role przechowują tabele modułu \texttt{django.\allowbreak contrib.\allowbreak auth} (\texttt{auth\_\allowbreak{}user}, \texttt{auth\_\allowbreak{}group}, \texttt{auth\_\allowbreak{}user\_\allowbreak{}groups}), których się nie zmienia; dane klienta spoza konta przechowuje osobna tabela powiązana z~kontem (\ref{wn:django}). Tabel technicznych Django, np. sesji i~historii migracji, nie ujęto w~modelu.
 
@@ -1422,7 +1425,7 @@ Encje wyznaczono z~opisu świata rzeczywistego (p.~\ref{sec:system}) i~wymagań 
 	\end{tabularx}
 \end{table}
 
-Związki między encjami i~ich liczności zestawiono w~tab.~\ref{tab:zwiazki}. Liczność zapisano od strony pierwszej encji do drugiej, np. ,,1 : 0..*'' oznacza, że jeden produkt ma zero lub wiele pozycji rezerwacji, a~każda pozycja dotyczy dokładnie jednego produktu.
+Związki między tabelami i~liczności wynikające z~kluczy obcych zestawiono w~tab.~\ref{tab:zwiazki}. Liczność zapisano od strony pierwszej encji do drugiej, np. ,,1 : 0..*'' oznacza, że jeden produkt ma zero lub wiele pozycji rezerwacji, a~każda pozycja dotyczy dokładnie jednego produktu.
 
 \begin{table}[H]
 	\centering
@@ -1435,17 +1438,17 @@ Związki między encjami i~ich liczności zestawiono w~tab.~\ref{tab:zwiazki}. L
 		\midrule
 		Konto & Profil klienta & 1 : 0..1 & tylko konto klienta ma profil \\
 		Konto & Rola & 0..* : 0..* & przez \texttt{auth\_\allowbreak{}user\_\allowbreak{}groups}; aplikacja wymaga dokładnie jednej roli na konto (\ref{wf:role}) \\
-		Produkt & Cena produktu & 1 : 1..* & historia cen \\
+		Produkt & Cena produktu & 1 : 0..* & historia cen \\
 		Produkt & Plan dostawy & 1 : 0..* & plan na kolejne dni \\
-		Dostawa & Pozycja dostawy & 1 : 1..* & produkty w~dostawie \\
+		Dostawa & Pozycja dostawy & 1 : 0..* & produkty w~dostawie \\
 		Produkt & Pozycja dostawy & 1 : 0..* & \\
 		Produkt & Ubytek & 1 : 0..* & \\
 		Produkt & Korekta stanu & 1 : 0..* & \\
 		Profil klienta & Rezerwacja & 1 : 0..* & rezerwacje klienta \\
-		Rezerwacja & Pozycja rezerwacji & 1 : 1..* & produkty w~rezerwacji \\
+		Rezerwacja & Pozycja rezerwacji & 1 : 0..* & produkty w~rezerwacji \\
 		Produkt & Pozycja rezerwacji & 1 : 0..* & \\
 		Rezerwacja & Sprzedaż & 1 : 0..1 & wydanie rezerwacji zapisane jako sprzedaż \\
-		Sprzedaż & Pozycja sprzedaży & 1 : 0..* & sprzedane produkty; wydanie rezerwacji odważonej na 0~kg nie ma pozycji \\
+		Sprzedaż & Pozycja sprzedaży & 1 : 0..* & pozycje dokumentu sprzedaży; aplikacja wymaga co najmniej jednego sprzedanego produktu \\
 		Produkt & Pozycja sprzedaży & 1 : 0..* & \\
 		Profil klienta & Rozliczenie zaległości & 1 : 0..* & wpłaty i~obciążenia karty \\
 		Konto & Dostawa, Ubytek, Korekta stanu, Sprzedaż, Rozliczenie zaległości & 1 : 0..* & członek personelu, który zarejestrował operację \\
@@ -1453,47 +1456,68 @@ Związki między encjami i~ich liczności zestawiono w~tab.~\ref{tab:zwiazki}. L
 	\end{tabularx}
 \end{table}
 
+Klucz obcy wymaga, aby pozycja wskazywała istniejący nagłówek. Sam nagłówek może z~punktu widzenia SQL mieć zero pozycji. Aplikacja dodatkowo wymaga przynajmniej jednej pozycji przy składaniu rezerwacji i~zapisuje komplet w~jednej transakcji.
+
 Plan dostawy nie ma klucza obcego do rezerwacji. Ilość zarezerwowaną produktu na dzień system wylicza jako sumę pozycji rezerwacji z~tym produktem i~dniem odbioru, z~pominięciem rezerwacji anulowanych, a~ilość dostępną do rezerwacji jako plan pomniejszony o~ilość na ladę z~tabeli produktu i~o~tę sumę.
 
 \subsection{Model konceptualny (ERD)}
 \label{sec:erd-konceptualny}
 
-Model konceptualny przedstawia encje z~tab.~\ref{tab:encje} i~związki z~tab.~\ref{tab:zwiazki} bez typów danych (rys.~\ref{rys:erd-konceptualny}). Diagram wykonuje się w~notacji Crow's Foot, tak jak model logiczny.
+Na rys.~\ref{rys:erd-konceptualny} pokazano powiązania encji w~notacji Crow’s Foot. Konto może posiadać profil klienta, profil może mieć wiele rezerwacji, a~rezerwacja jest związana z~najwyżej jedną sprzedażą. Produkt łączy ewidencję dostaw z~rezerwacjami i~sprzedażą. Symbole na końcach linii oznaczają dopuszczalną liczność w~bazie. Pole wyliczane przez bazę nie tworzy dodatkowej relacji do klienta.
 
-\diagramvp{rys:erd-konceptualny}{Model konceptualny bazy danych (ERD, notacja Crow's Foot)}{erd-konceptualny}{encje z~tab.~\ref{tab:encje} z~kluczami głównymi, związki i~liczności z~tab.~\ref{tab:zwiazki}; bez typów danych}
+\begin{figure}[H]\centering
+\includegraphics[width=.97\linewidth,height=.78\textheight,keepaspectratio]{rysunki/diagramy/erd-konceptualny.pdf}
+\caption{Model pojęciowy sklepu. Relacje odczytane z~bazy po migracji}\label{rys:erd-konceptualny}
+\end{figure}
 
 \subsection{Model logiczny i~normalizacja}
 \label{sec:normalizacja}
 
-Model logiczny (rys.~\ref{rys:erd-logiczny}) zawiera tabele z~atrybutami, typami danych, kluczami głównymi i~obcymi oraz ograniczeniami opisanymi w~słowniku danych (p.~\ref{sec:slownik}). Odpowiada on skryptowi \texttt{baza/schema.sql}.
+Produkt, dokument i~pozycję dokumentu zapisano oddzielnie. Relację ,,rezerwacja zawiera produkt'' odwzorowuje pozycja z~unikalną parą identyfikatorów dokumentu i~produktu. W~tej tabeli przechowuje się ilość zamówioną oraz masę odważoną. Dane opisujące klienta należą do profilu i~konta. Sprzedaż ma własne pozycje z~cenami faktycznie zastosowanymi przy wydaniu.
 
-\diagramvp{rys:erd-logiczny}{Model logiczny bazy danych (ERD, notacja Crow's Foot)}{erd-logiczny}{diagram wykonany w~Visual Paradigm na podstawie \texttt{baza/schema.sql} (instrukcja w~\texttt{baza/README.md}); tabele z~atrybutami, typami, PK, FK i~liczności}
-
-Model jest w~trzeciej postaci normalnej. Postaci normalne sprawdzono względem wszystkich kluczy kandydujących, a~nie tylko sztucznych kluczy \texttt{id}, ponieważ sztuczny klucz jednokolumnowy sam w~sobie nie gwarantuje 2NF ani 3NF:
 \begin{itemize}
-	\sloppy
-	\item \textbf{1NF.} Każdy atrybut przechowuje jedną wartość. Pozycje dostaw, rezerwacji i~sprzedaży są osobnymi wierszami, a~nie listą w~jednym polu. Nazwę i~odmianę produktu przechowuje się w~osobnych atrybutach.
-	\item \textbf{2NF.} Tabele pozycji mają złożone klucze kandydujące, np. (\texttt{rezerwacja\_\allowbreak{}id}, \texttt{produkt\_\allowbreak{}id}) w~\texttt{pozycja\_\allowbreak{}rezerwacji}. Ilość i~masa odważona zależą od całej pary: ta sama rezerwacja ma różne ilości różnych produktów, a~ten sam produkt różne ilości w~różnych rezerwacjach. Atrybuty zależne od samego produktu, np. nazwa i~cena, oraz od samej rezerwacji, np. dzień odbioru i~stan, przechowują tabele \texttt{produkt}, \texttt{cena\_\allowbreak{}produktu} i~\texttt{rezerwacja}. Tak samo zbudowano klucz planu dostawy, czyli produkt i~dzień, oraz klucz ceny produktu, czyli produkt i~dzień, od którego cena obowiązuje.
-	\item \textbf{3NF.} Żaden atrybut spoza klucza nie zależy od innego atrybutu spoza klucza. Dane klienta przechowuje tylko konto i~profil klienta, a~nie rezerwacja, bo zależą od klienta, a~nie od rezerwacji. Cena produktu nie jest atrybutem produktu, lecz osobnej tabeli z~datą obowiązywania, bo zależy od pary produkt i~dzień. Ilości planowanej nie kopiuje się do pozycji dostawy, bo zależy od produktu i~dnia, które wyznacza plan dostawy.
+\item \textbf{Pierwsza postać normalna.} Jedna pozycja zawiera jeden produkt i~jedną ilość. Wybór trzech produktów tworzy trzy wiersze związane z~jednym nagłówkiem.
+\item \textbf{Druga postać normalna.} Masa w~pozycji zależy od całej pary (dokument, produkt). Nazwa i~odmiana zależą tylko od produktu. Umieszczenie ich w~tabeli produktu zapobiega powtarzaniu opisu w~każdej pozycji.
+\item \textbf{Trzecia postać normalna.} W~podstawowych danych ewidencyjnych wyodrębniono zależności przechodnie. Rezerwacja wskazuje klienta, a~telefon zależy od profilu tego klienta. Zmiana telefonu wymaga więc aktualizacji jednego profilu.
 \end{itemize}
 
-Kilka atrybutów pozornie powiela inne dane, ale wynika z~reguł sklepu. Cena w~pozycji sprzedaży jest ceną z~chwili sprzedaży i~nie zmienia się po zmianie ceny produktu (\ref{wf:sprzedaz}). Opłata za nieodebranie jest zapisywana, ponieważ liczy się ją raz, o~18:00 w~dniu odbioru, z~ówczesnych cen (\ref{wf:proc-nieodebrana}). Atrybut \texttt{aktywny\_\allowbreak{}klient\_\allowbreak{}id} rezerwacji jest wyliczany przez bazę ze stanu i~klienta; służy tylko do wymuszenia jednej niezakończonej rezerwacji klienta na dzień, ponieważ MySQL nie obsługuje indeksów unikalnych z~warunkiem.
+Cena za kilogram w~pozycji sprzedaży jest zapisem historycznym. Pozostaje właściwa także po zmianie cennika. Opłatę za nieodebranie oblicza się raz z~ilości zamówionych i~cen z~dnia odbioru. Saldo klienta powstaje z~sumy opłat pomniejszonej o~skuteczne rozliczenia. Stan towaru wynika z~dostaw i~korekt, po odjęciu sprzedaży oraz ubytków. Przechowywana kolumna generowana \texttt{aktywny\_klient\_id} jest technicznym wyjątkiem od przechowywania wyłącznie danych pierwotnych. W~aktywnej rezerwacji przyjmuje identyfikator klienta, w~zakończonej wartość \texttt{NULL}. Indeks unikalny z~dniem odbioru ogranicza w~ten sposób liczbę aktywnych rezerwacji klienta w~danym dniu.
 
-Stanu produktu i~zaległości klienta nie przechowuje się, aby nie mogły rozejść się z~ewidencją. Stan produktu to suma dostarczonych ilości pomniejszona o~sumę sprzedanych mas i~ubytków, powiększona o~sumę korekt stanu (dodatnich i~ujemnych), a~zaległość to suma opłat za nieodebranie pomniejszona o~sumę skutecznych rozliczeń. Przy sprzedaży, ubytku i~korekcie stanu aplikacja blokuje wiersz produktu (p.~\ref{sec:wspolbieznosc}), aby dwie jednoczesne operacje nie obniżyły stanu poniżej zera. Jeśli przy danych z~kilku lat liczenie tych sum okaże się zbyt wolne (\ref{wn:wspolbieznosc}), można dodać do produktu i~profilu klienta atrybuty z~bieżącą wartością, aktualizowane w~tych samych transakcjach.
+\subsubsection{Schemat fizyczny odtworzony z~MySQL}
+Skrót PK na rysunkach oznacza klucz główny, FK klucz obcy, a~UQ klucz unikalny. Symbol zapytania obok typu oznacza dopuszczalny \texttt{NULL}. Jasne nagłówki wyróżniają tabele przywołane z~innych obszarów. Gdy tabela występuje na dwóch rysunkach, oba odwołują się do tego samego obiektu bazy.
 
-Reguł, których nie da się zapisać jako ograniczenia jednej tabeli, pilnuje aplikacja w~transakcji: łączna masa rezerwacji do 20~kg, ilość dostępna do rezerwacji, plan nie mniejszy od sumy ilości na ladę i~ilości zarezerwowanej, sprzedaż nie większa od stanu pomniejszonego o~niewydane rezerwacje na dany dzień, termin 18:00 i~jedna rola na konto.
+Asortyment (rys.~\ref{rys:erd-asortyment}) jest wspólny dla obu paneli. Historia cen zawiera osobny wiersz na każdą datę obowiązywania ceny produktu, a~plan dostawy osobny wiersz dla produktu i~dnia. Sprzedaż przy ladzie i~rezerwacja korzystają z~tych samych identyfikatorów produktów.
+{\renewcommand{\rysunekwysokosc}{.70\textheight}\diagramvp{rys:erd-asortyment}{Schemat fizyczny asortymentu, cennika i~planów dostawy}{erd-asortyment}{}}
+
+Ewidencja magazynowa (rys.~\ref{rys:erd-magazyn}) rozróżnia pozycje przyjętej dostawy, ubytki i~korekty stanu. Przy dwóch ostatnich operacjach zapisywany jest produkt, a~przy przyjęciu dostawy produkt należy do pozycji dokumentu.
+{\renewcommand{\rysunekwysokosc}{.76\textheight}\diagramvp{rys:erd-magazyn}{Schemat fizyczny przyjęcia dostawy i~zmian stanu}{erd-magazyn}{}}
+
+Powiązanie rezerwacji ze sprzedażą pokazano na rys.~\ref{rys:erd-logiczny}. Zwykła sprzedaż przy ladzie ma puste pole rezerwacji. Przy wydaniu rezerwacji to samo pole wskazuje dokument klienta i~jest objęte ograniczeniem unikalności. Z~jedną rezerwacją można więc związać co najwyżej jedno wydanie.
+
+\begin{figure}[H]\centering
+\includegraphics[width=.97\linewidth,height=.78\textheight,keepaspectratio]{rysunki/diagramy/erd-rezerwacje.pdf}
+\caption{Schemat fizyczny rezerwacji, wydania i~pozycji dokumentów}\label{rys:erd-logiczny}
+\end{figure}
+
+Rozliczenie wskazuje zarówno klienta, którego dotyczy należność, jak i~konto pracownika, który przyjął wpłatę lub odnotował próbę obciążenia. Rys.~\ref{rys:erd-rozliczenia} pokazuje oba związki oraz powiązanie profilu klienta z~kontem Django.
+\begin{figure}[H]\centering
+\includegraphics[width=.97\linewidth,height=.78\textheight,keepaspectratio]{rysunki/diagramy/erd-rozliczenia.pdf}
+\caption{Schemat fizyczny kont użytkowników, członkostwa w~grupach i~rozliczeń}\label{rys:erd-rozliczenia}
+\end{figure}
 
 \subsection{Diagram klas modeli ORM}
 \label{sec:diagram-klas}
 
-Diagram klas (rys.~\ref{rys:diagram-klas}) przedstawia klasy modeli Django odpowiadające tabelom z~p.~\ref{sec:slownik}, z~atrybutami, typami pól Django i~asocjacjami odpowiadającymi kluczom obcym. Klasa \texttt{User} pochodzi z~modułu \texttt{django.\allowbreak contrib.\allowbreak auth}. Stany rezerwacji przedstawia się jako typ wyliczeniowy.
+Z~rejestru modeli Django odczytano klasy, pola i~asocjacje. W~obu przekrojach nagłówek podaje nazwę aplikacji oraz klasy. Pola relacji przedstawiono liniami, a~pozostałe atrybuty podano z~typem Django. Dla klasy \texttt{User} wyróżniono pola identyfikujące konto. W~przekroju rezerwacji (rys.~\ref{rys:diagram-klas}) widoczne jest przejście od konta do zamówionej ilości i~rozliczenia. Klasy magazynu pokazano na rys.~\ref{rys:klasy-magazyn}.
 
-\diagramvp{rys:diagram-klas}{Diagram klas modeli ORM}{klasy-modele-orm}{klasy modeli Django (\texttt{Produkt}, \texttt{CenaProduktu}, \texttt{PlanDostawy}, \texttt{Dostawa}, \texttt{PozycjaDostawy}, \texttt{Ubytek}, \texttt{KorektaStanu}, \texttt{ProfilKlienta}, \texttt{Rezerwacja}, \texttt{PozycjaRezerwacji}, \texttt{Sprzedaz}, \texttt{PozycjaSprzedazy}, \texttt{RozliczenieZaleglosci}) oraz \texttt{User} i~\texttt{Group} z~Django; po implementacji odtworzyć z~kodu}
+{\renewcommand{\rysunekwysokosc}{.77\textheight}\diagramvp{rys:diagram-klas}{Klasy Django używane w~rezerwacji i~rozliczeniu klienta}{klasy-modele-orm}{}}
+
+{\renewcommand{\rysunekwysokosc}{.82\textheight}\diagramvp{rys:klasy-magazyn}{Klasy Django ewidencji magazynowej i~sprzedaży}{klasy-magazyn}{}}
 
 \subsection{Słownik danych (definicje obiektów)}
 \label{sec:slownik}
 
-Słownik danych (tab.~\ref{tab:slownik}) definiuje wszystkie tabele i~atrybuty modelu. Typy danych są typami MySQL 8.4. Wszystkie tabele używają silnika InnoDB i~kodowania \texttt{utf8mb4} z~polskim porządkiem sortowania (\texttt{utf8mb4\_\allowbreak{}pl\_\allowbreak{}0900\_\allowbreak{}ai\_\allowbreak{}ci}). Klucze obce nie mają akcji kaskadowych, ponieważ danych ewidencji się nie usuwa: produkty wycofuje się z~oferty, a~konta dezaktywuje. Masy zapisuje się z~dokładnością do 0,01~kg, a~kwoty do 1~gr.
+Słownik (tab.~\ref{tab:slownik}) obejmuje 13~tabel sklepu i~trzy tabele kont oraz ról Django. W~kolumnie typu zastosowano nazwy MySQL i~równoważny zapis \texttt{BOOL} dla \texttt{TINYINT(1)}. Silnik InnoDB stosuje kodowanie \texttt{utf8mb4} i~sortowanie \texttt{utf8mb4\_pl\_0900\_ai\_ci}. Wartości domyślne nadawane przez ORM dotyczą nowych obiektów modelu. W~aplikacji ochronę historii zapewniają również polityki usuwania w~Django. Ceny zapisuje się z~dokładnością do grosza, zamawiane ilości w~dziesiątych częściach kilograma, a~masy odważone do 0,01~kg.
 
 {\footnotesize
 \begin{longtable}{@{}L{3.3cm}L{2.2cm}L{3.2cm}>{\raggedright\arraybackslash}p{5.9cm}@{}}
@@ -1538,6 +1562,7 @@ Słownik danych (tab.~\ref{tab:slownik}) definiuje wszystkie tabele i~atrybuty m
 	\texttt{uzytkownik\_\allowbreak{}id} & \texttt{INT} & PK, FK auth\_user & konto klienta (związek 1:1) \\
 	\texttt{telefon} & \texttt{VARCHAR(20)} & NOT NULL, indeks & numer telefonu \\
 	\texttt{identyfikator\_\allowbreak{}karty} & \texttt{VARCHAR(64)} & NULL, UNIQUE & identyfikator karty nadany przez operatora płatności; pusty, dopóki karty nie zarejestrowano, i~po anonimizacji \\
+	\texttt{jezyk} & \texttt{VARCHAR(2)} & CHECK: pl, en & język powiadomień klienta, domyślnie polski \\
 	\texttt{regulamin\_\allowbreak{}zaakceptowano} & \texttt{DATETIME(6)} & NOT NULL & chwila akceptacji regulaminu przy zakładaniu konta \\
 	\texttt{zanonimizowano} & \texttt{DATETIME(6)} & NULL & chwila anonimizacji konta; pusta, dopóki konto zawiera dane osobowe \\
 	\midrule
@@ -1591,7 +1616,7 @@ Słownik danych (tab.~\ref{tab:slownik}) definiuje wszystkie tabele i~atrybuty m
 	\texttt{id} & \texttt{BIGINT} & PK, autonumer & identyfikator korekty \\
 	\texttt{produkt\_\allowbreak{}id} & \texttt{BIGINT} & FK produkt & produkt \\
 	\texttt{roznica\_\allowbreak{}kg} & \texttt{DECIMAL(7,2)} & CHECK $\neq 0$ & masa zważona minus stan z~ewidencji; dodatnia zwiększa stan, ujemna go zmniejsza \\
-	\texttt{przyczyna} & \texttt{VARCHAR(200)} & NOT NULL & przyczyna rozbieżności, np. pomyłka przy rejestracji sprzedaży \\
+	\texttt{przyczyna} & \texttt{VARCHAR(200)} & NOT NULL, CHECK: niepusta & przyczyna rozbieżności, np. pomyłka przy rejestracji sprzedaży \\
 	\texttt{data\_\allowbreak{}czas} & \texttt{DATETIME(6)} & NOT NULL, indeks & chwila rejestracji \\
 	\texttt{zarejestrowal\_\allowbreak{}id} & \texttt{INT} & FK auth\_user & właściciel, który zarejestrował korektę \\
 	\midrule
@@ -1649,18 +1674,9 @@ Stan rezerwacji przechowuje atrybut \texttt{stan} tabeli \texttt{rezerwacja}. Gr
 
 \diagramvp{rys:graf-stanow}{Graf stanów rezerwacji}{stany-rezerwacja}{diagram maszyny stanów UML: stan początkowy $\rightarrow$ złożona; złożona $\rightarrow$ anulowana, przygotowana do odbioru, nieodebrana; przygotowana do odbioru $\rightarrow$ odebrana, nieodebrana; anulowana, odebrana i~nieodebrana $\rightarrow$ stan końcowy}
 
-\begin{enumerate}
-	\item \textbf{Złożona} (\texttt{zlozona}). Stan początkowy po złożeniu rezerwacji (\ref{pu:zlozenie}). Zmiana pozycji (\ref{pu:zmiana}) nie zmienia stanu. Z~tego stanu rezerwacja przechodzi:
-	\begin{itemize}
-		\item do stanu anulowana, gdy klient anuluje ją przed 18:00 w~dniu poprzedzającym dzień odbioru (\ref{pu:anulowanie});
-		\item do stanu przygotowana do odbioru, gdy sprzedawca w~dniu odbioru wpisze odważone masy (\ref{pu:przygotowanie});
-		\item do stanu nieodebrana, gdy nie wydano jej do 18:00 w~dniu odbioru (\ref{pu:nieodebrane}).
-	\end{itemize}
-	\item \textbf{Przygotowana do odbioru} (\texttt{przygotowana}). Towar jest skompletowany i~zważony. Także przy ważeniu przy kliencie sprzedawca najpierw zapisuje masy, a~dopiero potem potwierdza wydanie. Rezerwacja przechodzi do stanu odebrana po wydaniu (\ref{pu:wydanie}) albo do stanu nieodebrana o~18:00 w~dniu odbioru (\ref{pu:nieodebrane}).
-	\item \textbf{Odebrana} (\texttt{odebrana}). Stan końcowy. Wydanie zapisano jako sprzedaż powiązaną z~rezerwacją.
-	\item \textbf{Anulowana} (\texttt{anulowana}). Stan końcowy. Ilości rezerwacji nie liczą się do ilości zarezerwowanej, a~klient może złożyć nową rezerwację na ten dzień, jeśli przyjmowanie rezerwacji trwa.
-	\item \textbf{Nieodebrana} (\texttt{nieodebrana}). Stan końcowy. Rezerwacja ma naliczoną opłatę za nieodebranie, która powiększa zaległość klienta.
-\end{enumerate}
+W~stanie \texttt{zlozona} klient może zmieniać ilości lub anulować rezerwację do zamknięcia zapisów. Anulowanie zwalnia pulę. W~dniu odbioru sprzedawca wpisuje odważone masy, co prowadzi do stanu \texttt{przygotowana}. Tak samo przebiega ważenie przy kliencie. Potwierdzenie wydania zapisuje stan \texttt{odebrana}. Gdy wszystkie masy wynoszą zero, operacja kończy się bez dokumentu sprzedaży. Przy dodatniej masie sprzedaż wskazuje wydaną rezerwację.
+
+Polecenie oznaczania rezerwacji nieodebranych obejmuje złożone i~przygotowane rezerwacje po terminie. Zmiana na \texttt{nieodebrana} i~zapis opłaty należą do jednej transakcji. Stany \texttt{anulowana}, \texttt{odebrana} i~\texttt{nieodebrana} są końcowe.
 
 
 \clearpage
@@ -1720,7 +1736,7 @@ Moduł \texttt{konta} obsługuje klienta od rejestracji do zmiany danych. \textt
 
 Aplikacja ma dwa oddzielne interfejsy (\ref{wf:panel-admina}). Panel klienta to własne widoki i~szablony pod adresem głównym sklepu (p.~\ref{sec:widoki-klienta}). Panel administratora to wbudowana aplikacja \texttt{django.contrib.admin} pod adresem \texttt{/admin/}, rozszerzona o~strony do pracy przy ladzie i~z~towarem (p.~\ref{sec:konfiguracja-admina}). Panele mają osobne szablony bazowe, arkusze stylów i~nawigację, ale wywołują te same funkcje warstwy logiki z~modułów \texttt{services.py}. Reguły rezerwacji, puli i~opłat są więc zapisane w~jednym miejscu, niezależnie od tego, w~którym panelu powstaje zmiana.
 
-Rozdział paneli wymusza się na trzech poziomach. Pierwszy to logowanie: formularz panelu klienta odrzuca konta personelu (pole \texttt{is\_staff}) tym samym komunikatem co błędne hasło, a~formularz panelu administratora odrzuca konta klientów. Drugi to dekoratory widoków. Strony panelu klienta wymagające zalogowania (dane konta, zmianę hasła, rezerwacje i~zaległość) opakowuje dekorator \texttt{tylko\_klient} (\texttt{konta/dostep.py}): niezalogowanego użytkownika kieruje na logowanie z~powrotem na żądaną stronę, a~zalogowanemu pracownikowi zwraca odpowiedź 403. Strony panelu administratora przechodzą przez metodę \texttt{admin\_view}, która wpuszcza tylko aktywne konta personelu, a~strony właściciela dodatkowo przez dekorator \texttt{tylko\_wlasciciel}. Trzeci poziom to serwer Nginx, który udostępnia adresy \texttt{/admin/} tylko z~sieci lokalnej sklepu (\ref{wn:wdrozenie}).
+Rozdział paneli wymusza się na trzech poziomach. Pierwszy to logowanie: formularz panelu klienta odrzuca konta personelu (pole \texttt{is\_staff}) tym samym komunikatem co błędne hasło, a~formularz panelu administratora odrzuca konta klientów. Drugi to dekoratory widoków. Strony panelu klienta wymagające zalogowania (dane konta, zmianę hasła, rezerwacje i~zaległość) opakowuje dekorator \texttt{tylko\_klient} (\texttt{konta/dostep.py}): niezalogowanego użytkownika kieruje na logowanie z~powrotem na żądaną stronę, a~zalogowanemu pracownikowi zwraca odpowiedź 403. Strony panelu administratora przechodzą przez metodę \texttt{admin\_view}, która wpuszcza tylko aktywne konta personelu, a~strony właściciela dodatkowo przez dekorator \texttt{tylko\_wlasciciel}. W~konfiguracji docelowej trzeci poziom stanowi reguła Nginx, która udostępnia adresy \texttt{/admin/} tylko z~sieci lokalnej sklepu (\ref{wn:wdrozenie}).
 
 Dane w~panelu klienta są ograniczone do zalogowanego konta. Widoki pobierają rezerwacje, profil i~zaległość przez funkcje, które przyjmują zalogowanego użytkownika, a~rezerwację o~podanym numerze zwracają tylko wtedy, gdy należy do niego. Adres cudzej rezerwacji daje odpowiedź 404. Personel widzi dane wszystkich klientów, ale tylko w~panelu administratora. Opis ekranów obu paneli z~punktu widzenia użytkownika zawiera p.~\ref{sec:przewodnik}.
 
@@ -1824,20 +1840,21 @@ Do czynności personelu nie używa się standardowych list i~formularzy modeli, 
 	Przyjęcie dostawy & \texttt{dostawa/} & \ref{pu:dostawa} & personel \\
 	Ubytek towaru & \texttt{ubytek/} & \ref{pu:ubytek} & personel \\
 	Stan produktów & \texttt{stan/} & \ref{pu:stan} & personel \\
+	Korekta po przeliczeniu & \texttt{stan/<id>/korekta/} & \ref{pu:korekta} & właściciel \\
 	Plan dostawy & \texttt{plan/} & \ref{pu:stan}, \ref{pu:plan} & personel, zmiana: właściciel \\
 	Zamówienie u~dostawcy & \texttt{zamowienie/} & \ref{pu:zamowienie} & personel \\
 	Historia sprzedaży & \texttt{sprzedaz/historia/} & \ref{pu:stan} & personel \\
 	Produkty i~ceny & \texttt{produkty/}, \texttt{produkty/nowy/}, \texttt{produkty/<id>/} & \ref{pu:produkty}, \ref{pu:cena} & właściciel \\
 	Zaległości klientów & \texttt{zaleglosci/} & \ref{pu:obciazenie} & właściciel \\
-	Konta & \texttt{konta/} & \ref{pu:konta} & właściciel \\
+	Konta & \texttt{konta/}, \texttt{konta/<id>/\allowbreak{}anonimizacja/} & \ref{pu:konta} & właściciel \\
 	Zestawienia & \texttt{zestawienia/} & \ref{pu:zestawienia} & właściciel \\
 	(imię i~nazwisko) & \texttt{moje-konto/} & \ref{pu:haslo}, \ref{pu:dane} & personel \\
 	\bottomrule
 \end{longtable}
 
-Sześć stron właściciela ma dodatkowo dekorator \texttt{tylko\_wlasciciel}, który zwraca odpowiedź 403 kontu spoza grupy \texttt{wlasciciel}. Konto superużytkownika panel traktuje jak konto właściciela. Metoda \texttt{each\_context} witryny przekazuje do każdego szablonu informację, czy zalogowany jest właściciel, a~menu pokazuje grupę ,,Właściciel'' tylko właścicielowi. Plan dostawy widzi cały personel, ale zmianę planu widok przyjmuje tylko od właściciela.
+Strony przeznaczone dla właściciela mają dodatkowo dekorator \texttt{tylko\_wlasciciel}, który zwraca odpowiedź 403 kontu spoza grupy \texttt{wlasciciel}. Konto superużytkownika panel traktuje jak konto właściciela. Metoda \texttt{each\_context} witryny przekazuje do każdego szablonu informację, czy zalogowany jest właściciel, a~menu pokazuje grupę ,,Właściciel'' tylko właścicielowi. Plan dostawy widzi cały personel, ale zmianę planu widok przyjmuje tylko od właściciela.
 
-Szablony stron leżą w~katalogu \texttt{templates/admin/panel/}. Wszystkie dziedziczą po szablonie \texttt{admin/base\_site.html}, który projekt zastępuje własną wersją. Zamiast górnego nagłówka Django ma ona menu boczne z~grupami ,,Przy ladzie'', ,,Towar'' i~,,Właściciel'', zakończone imieniem i~nazwiskiem zalogowanej osoby oraz poleceniem ,,Wyloguj''. Menu wydzielono do szablonu \texttt{\_nawigacja.html} w~tym samym katalogu. Arkusz \texttt{static/panel/panel.css} uzupełnia style panelu Django o~układ tabel i~formularzy ilości na ekranie o~szerokości 1280~px (\ref{wn:przegladarki}); tryb ciemny jest wyłączony. W~katalogu \texttt{static/panel/} są też dwa skrypty: \texttt{sprzedaz.js} liczy na bieżąco kwotę sprzedaży, a~\texttt{dostawa.js} pokazuje różnicę między dostawą a~planem i~wyróżnia produkt, którego dostarczono mniej, niż zarezerwowano.
+Szablony stron leżą w~katalogu \texttt{templates/admin/panel/}. Wszystkie dziedziczą po szablonie \texttt{admin/base\_site.html}, który projekt zastępuje własną wersją. Zamiast górnego nagłówka Django ma ona menu boczne z~grupami ,,Przy ladzie'', ,,Towar'' i~,,Właściciel'', zakończone imieniem i~nazwiskiem zalogowanej osoby oraz poleceniem ,,Wyloguj''. Menu wydzielono do szablonu \texttt{\_nawigacja.html} w~tym samym katalogu. Arkusz \texttt{static/panel/panel.css} uzupełnia style panelu Django o~układ tabel i~formularzy ilości na ekranie o~szerokości 1280~px (\ref{wn:przegladarki}). W~obu panelach kontrolka wysokiego kontrastu przełącza wspólny arkusz i~zapamiętuje wybór na urządzeniu. W~katalogu \texttt{static/panel/} są też dwa skrypty: \texttt{sprzedaz.js} liczy na bieżąco kwotę sprzedaży, a~\texttt{dostawa.js} pokazuje różnicę między dostawą a~planem i~wyróżnia produkt, którego dostarczono mniej, niż zarezerwowano.
 
 
 \subsection{Pozostałe pliki}
@@ -1877,11 +1894,15 @@ Test akceptacyjny sprawdza, czy przypadek użycia działa zgodnie ze swoim opise
 
 Testy zapisano jako testy Django w~pakiecie \texttt{akceptacja}. Klient testowy Django (\texttt{django.test.Client}) wysyła żądania do widoków tak jak przeglądarka, więc każde żądanie przechodzi przez widok, funkcje logiki w~\texttt{services.py} i~modele ORM aż do bazy danych. Stan początkowy test tworzy funkcjami zapisu z~\texttt{services.py}, a~stan po wykonaniu przypadku użycia odczytuje funkcjami odczytu z~tego samego modułu. Testy TA14 i~TA16 korzystają z~dwóch połączeń z~bazą naraz. Godzinę, od której zależy zamknięcie przyjmowania rezerwacji o~18:00, test ustawia na stałe, a~wiadomości e-mail zbiera zamiast wysyłać je do serwera poczty. Przypadek \ref{pu:nieodebrane} test uruchamia tym samym poleceniem Django, które w~sklepie uruchamia \texttt{cron}. Test TA14 sprawdza też pierwszy czynnik sukcesu z~tab.~\ref{tab:csf}: dwie jednoczesne rezerwacje nie przekraczają planu dostawy.
 
+Pełny zestaw uruchomiono 23.11.2026 poleceniem \texttt{python manage.py test} w~środowisku z~MySQL 8.4.13. W~czasie 50,480~s wykonano 150~testów. Wszystkie zakończyły się powodzeniem, w~tym 40~przypadków TA1--TA40 z~tab.~\ref{tab:testy-akceptacyjne} i~dwie próby współbieżnych transakcji. Zestaw obejmował również przełączanie języka i~dobór języka wiadomości. Ten wynik dotyczy testów automatycznych na bazie testowej. Próbę z~użytkownikiem w~sklepie, w~tym odbiór fizycznej paczki oraz działanie poczty zewnętrznej, opisuje osobna lista w~p.~\ref{sec:checklista}.
+
+W~przeglądarce Firefox~158 sprawdzono pięć stron interfejsu w~obu wersjach kolorystycznych, przy szerokości 320~px i~obsłudze klawiaturą. Najniższy zmierzony kontrast tekstu wyniósł 5,06:1. Wynik odnosi się do sprawdzonych stron i~stanów interfejsu. Pozostałe formularze, ich stany błędów oraz próba z~użytkownikiem wymagają odrębnej oceny względem \ref{wn:dostepnosc}.
+
 Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapisuje (\ref{pu:anulowanie} A1, \ref{pu:sprzedaz} A2, \ref{pu:wydanie} A3), oraz \ref{pu:logowanie} A2, który przechodzi do \ref{pu:reset} z~osobnymi testami. W~tabeli D oznacza bieżący dzień, D+1 dzień następny, a~D$-$1 poprzedni. Ilości, ceny i~adresy są danymi testowymi.
 
 {\small
 \begin{longtable}{@{}L{0.9cm}L{1.5cm}L{3.8cm}L{3.6cm}L{4.5cm}@{}}
-	\caption{Plan testów akceptacyjnych przypadków użycia}
+	\caption{Przypadki akceptacyjne wykonane na MySQL i~ich oczekiwane wyniki}
 	\label{tab:testy-akceptacyjne}\\
 	\toprule
 	Test & Przebieg & Stan początkowy & Działanie & Oczekiwany wynik \\
@@ -1979,19 +2000,21 @@ python -m pip install -r requirements.txt
 cp .env.example .env
 chmod 600 .env
 \end{lstlisting}
-W~pliku \texttt{.env} administrator ustawia losowy \texttt{DJANGO\_SECRET\_KEY}, osobne hasła kont MySQL, dane połączenia i~dozwolone nazwy hostów. W~konfiguracji sklepu wyłącza tryb diagnostyczny i~ustawia domenę sklepu. Baza i~aplikacja muszą odczytać te same dane dostępowe. Pierwsze uruchomienie obejmuje:
+W~pliku \texttt{.env} administrator ustawia losowy \texttt{DJANGO\_SECRET\_KEY}, osobne hasła kont MySQL, dane połączenia i~dozwolone nazwy hostów. W~konfiguracji sklepu wyłącza tryb diagnostyczny i~ustawia domenę sklepu. Do wysyłania poczty wybiera backend SMTP w~zmiennej \texttt{EMAIL\_BACKEND} i~ustawia adres, port, dane logowania oraz TLS według konfiguracji skrzynki sklepu. Baza i~aplikacja muszą odczytać te same dane dostępowe. Pierwsze uruchomienie obejmuje:
 \begin{lstlisting}[language=bash]
 docker compose up -d --wait
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py check
 \end{lstlisting}
+Wskaźnik \texttt{DB\_ENGINE=sqlite} umożliwia również lokalną demonstrację na pliku SQLite. Dla tego wariantu pomija się start kontenera MySQL, a~migracje uruchamia po wybraniu silnika. Rezerwacje z~jednoczesnych połączeń i~eksport schematu przedstawiony w~rozdz.~\ref{ch:model-bd} sprawdzono na MySQL.
+
 W~środowisku programistycznym polecenie \texttt{python manage.py runserver} uruchamia serwer na komputerze lokalnym. Przed obsługą ruchu z~internetu administrator powinien uruchomić Gunicorn z~modułem \texttt{config.wsgi:application} jako usługę, wskazać ten serwer jako adres zaplecza Nginx, zebrać pliki statyczne i~udostępnić je pod adresem \texttt{/static/}. Po zamontowaniu certyfikatu TLS sprawdza konfigurację poleceniem \texttt{python manage.py check --deploy} i~wykonuje próby z~tab.~\ref{tab:checklista}~\cite{django-wdrozenie}.
 
 
 \subsubsection{Dane początkowe i~konta}
 
-Konto utworzone przez \texttt{createsuperuser} otwiera panel właściciela. Właściciel zakłada imienne konta sprzedawców w~panelu personelu. Następnie wprowadza asortyment, ceny obowiązujące od dnia otwarcia oraz ilości potrzebne do ustalenia planu. Osoba otwierająca sklep rejestruje pierwszą dostawę. Zanim to nastąpi, sama publikacja produktu w~katalogu nie zwiększa ilości dostępnej do sprzedaży przy ladzie.
+Konto utworzone przez \texttt{createsuperuser} otwiera panel właściciela. Właściciel zakłada imienne konta sprzedawców w~panelu personelu. Następnie wprowadza asortyment, ceny obowiązujące od dnia otwarcia oraz ilości potrzebne do ustalenia planu. W~pustej bazie demonstracyjnej polecenie \texttt{asortyment\_demo} programu \texttt{manage.py} zakłada osiem produktów wraz z~cenami i~pulą na ladę. Produktów właściciela nie nadpisuje. Osoba otwierająca sklep rejestruje pierwszą dostawę. Zanim to nastąpi, sama publikacja produktu w~katalogu nie zwiększa ilości dostępnej do sprzedaży przy ladzie.
 
 
 \subsubsection{Kopia zapasowa i~odtwarzanie}
@@ -2008,6 +2031,8 @@ Katalog znajduje się pod adresem głównym, a~panel personelu pod \texttt{/admi
 \label{sec:przewodnik}
 
 Aplikacja ma dwa panele, a~rola konta wyznacza, z~którego korzysta użytkownik. W~docelowej instalacji panel klienta z~katalogiem otwiera się pod adresem sklepu z~dowolnej sieci, a~panel administratora pod tym samym adresem z~końcówką \texttt{/admin/}, wyłącznie z~sieci lokalnej sklepu (\ref{wn:wdrozenie}). Klient loguje się w~panelu klienta adresem e-mail, a~sprzedawca i~właściciel w~panelu administratora loginem nadanym przez właściciela. Próba zalogowania się w~panelu innej roli jest odrzucana. Poniżej opisano dla każdej roli, gdzie w~aplikacji znajdują się jej funkcje i~o~czym trzeba pamiętać przy pracy. Przebieg krok po kroku podają opisy przypadków użycia w~rozdz.~\ref{ch:opis-pu}, a~ekrany pokazane tam na rysunkach są tu tylko przywoływane.
+
+W~nagłówku klient lub pracownik wybiera EN, aby przejść do wersji angielskiej, i~PL, aby wrócić do polskiej. Formularz przełączenia odsyła na stronę, z~której go wywołano. Przycisk ,,Wysoki kontrast'' (ang.~\emph{High contrast}) zmienia wygląd obu paneli na danym urządzeniu. Ilość produktu, data odbioru i~stan rezerwacji pozostają związane z~tym samym rekordem w~obu wersjach językowych.
 
 \subsubsection{Klient-obserwator}
 

@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group, User
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import get_language, gettext as _
 
 from . import powiadomienia
 from .models import ProfilKlienta
@@ -64,7 +64,8 @@ def zaloz_klienta(imie, nazwisko, email, telefon, haslo):
     email = email.strip().lower()
     with transaction.atomic():
         user = _utworz(email, imie, nazwisko, email, haslo, 'klient')
-        ProfilKlienta.objects.create(uzytkownik=user, telefon=telefon, regulamin_zaakceptowano=timezone.now())
+        ProfilKlienta.objects.create(uzytkownik=user, telefon=telefon, jezyk=get_language() or 'pl',
+                                    regulamin_zaakceptowano=timezone.now())
     powiadomienia.konto_zalozone(user)
     return user
 

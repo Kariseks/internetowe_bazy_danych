@@ -158,6 +158,12 @@ msgstr "No payments or charges."
 msgid "Brak zakończonych rezerwacji."
 msgstr "No past reservations."
 
+msgid "Buraki"
+msgstr "Beetroot"
+
+msgid "Cebula"
+msgstr "Onions"
+
 msgid "Cena [zł/kg]"
 msgstr "Price [PLN/kg]"
 
@@ -250,6 +256,9 @@ msgstr "Email (username)"
 msgid "Godzina"
 msgstr "Time"
 
+msgid "Gruszki"
+msgstr "Pears"
+
 msgid "Hasła nie są takie same."
 msgstr "The passwords do not match."
 
@@ -295,6 +304,9 @@ msgstr "Full name"
 msgid "Inny zapis trwa. Spróbuj ponownie."
 msgstr "Another update is in progress. Please try again."
 
+msgid "Jabłka"
+msgstr "Apples"
+
 #, python-format
 msgid "Jeśli rezerwacja nie zostanie odebrana do 18:00, sklep naliczy opłatę %(oplata)s zł."
 msgstr "If the reservation is not collected by 18:00, the shop will charge a fee of PLN %(oplata)s."
@@ -304,6 +316,9 @@ msgstr "If this email is registered with the shop, a password reset link has bee
 
 msgid "Jeśli to nie Ty, zignoruj tę wiadomość. Hasło pozostanie bez zmian."
 msgstr "If you did not request this, ignore this message. Your password will stay the same."
+
+msgid "Kapusta"
+msgstr "Cabbage"
 
 msgid "Karta"
 msgstr "Card"
@@ -349,6 +364,9 @@ msgstr "Customer"
 
 msgid "Klient nie ma rezerwacji."
 msgstr "This customer has no reservations."
+
+msgid "Konferencja"
+msgstr "Conference"
 
 msgid "Konta"
 msgstr "Accounts"
@@ -424,6 +442,9 @@ msgstr "Sign in – Warzywniak"
 msgid "Mam już konto"
 msgstr "I already have an account"
 
+msgid "Marchew"
+msgstr "Carrots"
+
 msgid "Masa [kg]"
 msgstr "Weight [kg]"
 
@@ -466,6 +487,9 @@ msgstr "For the counter: %(ilosc_na_lade_kg)s kg"
 
 msgid "Najpierw zakończ rezerwacje i rozlicz zaległość."
 msgstr "Complete the outstanding reservations and settle the balance first."
+
+msgid "Najpierw zarejestruj dzisiejszą dostawę."
+msgstr "Record today’s delivery first."
 
 msgid "Następny dzień"
 msgstr "Next day"
@@ -595,6 +619,9 @@ msgstr "Packed [kg]"
 msgid "Oferta"
 msgstr "Availability"
 
+msgid "Ogórki"
+msgstr "Cucumbers"
+
 msgid "Operator płatności nie odpowiada. Karty nie zarejestrowano, spróbuj ponownie za chwilę."
 msgstr "The payment provider is unavailable. Please try registering your card again later."
 
@@ -684,6 +711,9 @@ msgstr "Show"
 
 msgid "Polecenia"
 msgstr "Actions"
+
+msgid "Pomidory"
+msgstr "Tomatoes"
 
 msgid "Poprzedni dzień"
 msgstr "Previous day"
@@ -804,20 +834,28 @@ msgid "Rezerwacja może mieć najwyżej %(limit)s kg, a ma %(razem)s kg."
 msgstr "The reservation limit is %(limit)s kg. Your total is %(razem)s kg."
 
 #, python-format
+msgid "Rezerwacja na %(data)s"
+msgstr "Reservation for %(data)s"
+
+#, python-format
+msgid "Rezerwacja na %(dzien)s została anulowana bez opłaty."
+msgstr "Your reservation for %(dzien)s has been cancelled free of charge."
+
+#, python-format
+msgid "Rezerwacja na %(dzien)s została zmieniona."
+msgstr "Your reservation for %(dzien)s has been updated."
+
+#, python-format
+msgid "Rezerwacja na %(dzien)s została złożona."
+msgstr "Your reservation for %(dzien)s has been placed."
+
+#, python-format
 msgid "Rezerwacja na %(dzien)s, %(dzien2)s"
 msgstr "Reservation for %(dzien)s, %(dzien2)s"
 
 #, python-format
 msgid "Rezerwacja na %(dzien_odbioru)s nie została odebrana do 18:00."
 msgstr "Your reservation for %(dzien_odbioru)s was not collected by 18:00."
-
-#, python-format
-msgid "Rezerwacja na %(dzien_odbioru)s została"
-msgstr "Your reservation for %(dzien_odbioru)s has been"
-
-#, python-format
-msgid "Rezerwacja na %(dzien_odbioru)s została anulowana bez opłaty."
-msgstr "Your reservation for %(dzien_odbioru)s has been cancelled free of charge."
 
 msgid "Rezerwacja nie jest dostępna do obsługi."
 msgstr "This reservation cannot be processed at this time."
@@ -859,12 +897,8 @@ msgstr ""
 "You can change or cancel free of charge until %(termin)s. A missed collection incurs a fee of "
 "10%% of the reservation value."
 
-msgid ""
-"Rezerwację można zmienić albo anulować bez opłaty do 18:00 dnia poprzedzającego odbiór. Nową "
-"rezerwację składa się w"
-msgstr ""
-"You can change or cancel free of charge until 18:00 on the day before collection. Place a new "
-"reservation in the"
+msgid "Rezerwację można zmienić albo anulować bez opłaty do 18:00 dnia poprzedzającego odbiór."
+msgstr "You can change or cancel free of charge until 18:00 on the day before collection."
 
 msgid "Rodzaj"
 msgstr "Type"
@@ -1215,6 +1249,9 @@ msgstr "Reserved [kg]"
 msgid "Zarezerwuj"
 msgstr "Reserve"
 
+msgid "Zarezerwuj produkty"
+msgstr "Reserve produce"
+
 msgid "Zasady rezerwacji"
 msgstr "Reservation terms"
 
@@ -1236,6 +1273,9 @@ msgstr "Reports"
 msgid "Zestawienie"
 msgstr "Order summary"
 
+msgid "Ziemniaki"
+msgstr "Potatoes"
+
 msgid "Zmiana hasła"
 msgstr "Change password"
 
@@ -1244,6 +1284,10 @@ msgstr "Change password – Warzywniak"
 
 msgid "Zmiana rezerwacji"
 msgstr "Edit reservation"
+
+#, python-format
+msgid "Zmiana rezerwacji na %(data)s"
+msgstr "Edit reservation for %(data)s"
 
 msgid "Zmień"
 msgstr "Edit"
@@ -1288,12 +1332,11 @@ msgstr "until %(termin)s"
 msgid "dozwolone"
 msgstr "allowed"
 
-msgid "katalogu"
-msgstr "catalogue"
+msgid "gruntowe"
+msgstr "field-grown"
 
-#, python-format
-msgid "na %(dzien)s, %(dzien2)s"
-msgstr "for %(dzien)s, %(dzien2)s"
+msgid "malinowe"
+msgstr "raspberry"
 
 msgid "nie podano"
 msgstr "not provided"
@@ -1345,9 +1388,6 @@ msgstr "registered"
 msgid "zarezerwowano %(ilosc_kg)s kg"
 msgstr "%(ilosc_kg)s kg reserved"
 
-msgid "zmieniona"
-msgstr "updated"
-
 msgid "zł"
 msgstr "PLN"
 
@@ -1367,4 +1407,7 @@ msgstr "Stripe test mode: use card 4242&nbsp;4242&nbsp;4242&nbsp;4242, any futur
 
 msgid "Żaden klient nie ma zaległości."
 msgstr "No outstanding customer balances."
+
+msgid "żółta"
+msgstr "yellow"
 

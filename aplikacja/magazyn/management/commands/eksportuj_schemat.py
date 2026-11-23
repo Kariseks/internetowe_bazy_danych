@@ -90,7 +90,7 @@ def karta(tabela, kolumny, indeksy, fk, skrot):
         if wyliczany:
             etykiety.append("ƒ")
         pola.append(
-            f'<TR><TD ALIGN="LEFT"><FONT COLOR="#47645d">{"/".join(etykiety)}</FONT></TD>'
+            f'<TR><TD ALIGN="LEFT"><FONT COLOR="#47645d">{"/".join(etykiety) or "&#160;"}</FONT></TD>'
             f'<TD ALIGN="LEFT">{html.escape(pole)}</TD><TD ALIGN="LEFT">'
             f'<FONT COLOR="#41525d">{html.escape(typ)}{" ?" if pusty else ""}</FONT></TD></TR>'
         )
@@ -103,12 +103,11 @@ def karta(tabela, kolumny, indeksy, fk, skrot):
             f'<B>{html.escape(tabela)}</B></FONT></TD></TR>' + "".join(pola) + "</TABLE>>")
 
 
-def diagram(plik, obszar, kolumny, fk, klucze, koncept=False):
+def diagram(plik, obszar, kolumny, fk, klucze, orientacja, koncept=False):
     relacje = [(t, p, cel, klucz) for (t, p), (cel, klucz) in fk.items() if t in obszar]
     tabele = obszar | {cel for _, _, cel, _ in relacje}
-    orientacja = "TB" if koncept else "LR"
-    dot = [f'digraph G {{ graph [charset="UTF-8", rankdir={orientacja}, pad=0.15, '
-           'nodesep=0.24, ranksep=0.68, splines=polyline, bgcolor="white"];',
+    dot = [f'digraph G {{ graph [charset="UTF-8", rankdir={orientacja}, margin=0, pad=0.07, '
+           'nodesep=0.22, ranksep=0.5, splines=polyline, bgcolor="white"];',
            'node [shape=plain, fontname="DejaVu Sans", fontsize=10];',
            'edge [dir=both, arrowsize=0.75, penwidth=1.2, color="#527077"];']
     for tabela in sorted(tabele):
@@ -155,7 +154,8 @@ class Command(BaseCommand):
                 raise CommandError("Brakuje tabel: " + ", ".join(sorted(brak)))
             sql = ddl(kursor, kolumny, fk, wersja)
         for nazwa, obszar in OBSZARY.items():
-            diagram(katalog_rys / f"erd-{nazwa}.pdf", obszar, kolumny, fk, klucze)
-        diagram(katalog_rys / "erd-konceptualny.pdf", domena, kolumny, fk, klucze, koncept=True)
+            orientacja = "LR" if nazwa == "magazyn" else "TB"
+            diagram(katalog_rys / f"erd-{nazwa}.pdf", obszar, kolumny, fk, klucze, orientacja)
+        diagram(katalog_rys / "erd-konceptualny.pdf", domena, kolumny, fk, klucze, "LR", koncept=True)
         (katalog_bazy / "schema.sql").write_text(sql, encoding="utf-8")
         self.stdout.write(f"MySQL {wersja} • {len(kolumny)} tabel • {len(fk)} kluczy obcych")

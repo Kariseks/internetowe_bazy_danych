@@ -1,14 +1,18 @@
 import secrets
 
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import views as auth
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
+from django.views.decorators.http import require_POST
+from django.views.i18n import set_language
 
 from . import operator, services
+from .models import ProfilKlienta
 from .forms import LogowanieForm, RejestracjaForm, TelefonForm
 
 # Konto założone w PU2, które czeka na rejestrację karty (klient nie jest jeszcze zalogowany).
@@ -18,6 +22,20 @@ SESJA_OPERATORA = 'sesja_operatora'
 
 BEZ_KARTY = _('Nie zarejestrowano karty. Bez karty nie można składać rezerwacji.')
 OPERATOR_NIEDOSTEPNY = _('Operator płatności nie odpowiada. Karty nie zarejestrowano, spróbuj ponownie za chwilę.')
+
+
+@require_POST
+def ustaw_jezyk(request):
+    odpowiedz = set_language(request)
+    jezyk = request.POST.get('language')
+    if jezyk in dict(settings.LANGUAGES):
+        if request.user.is_authenticated:
+            konto_id = request.user.pk
+        else:
+            konto_id = request.session.get(NOWE_KONTO)
+        if konto_id is not None:
+            ProfilKlienta.objects.filter(pk=konto_id).update(jezyk=jezyk)
+    return odpowiedz
 
 
 class Logowanie(auth.LoginView):

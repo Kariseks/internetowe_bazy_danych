@@ -1,4 +1,4 @@
-{% load i18n %}{% autoescape off %}{% blocktranslate with dzien_odbioru=rezerwacja.dzien_odbioru|date:"l, j E Y"|lower %}Rezerwacja na {{ dzien_odbioru }} nie została odebrana do 18:00.{% endblocktranslate %}
+{% load i18n %}{% autoescape off %}{% blocktranslate with dzien_odbioru=rezerwacja.dzien_odbioru|date:"l, j E Y" %}Rezerwacja na {{ dzien_odbioru }} nie została odebrana do 18:00.{% endblocktranslate %}
 
 {% blocktranslate with oplata_za_nieodebranie=rezerwacja.oplata_za_nieodebranie|floatformat:2 %}Opłata za nieodebranie: {{ oplata_za_nieodebranie }} zł.{% endblocktranslate %}
 {% blocktranslate with zaleglosc=rezerwacja.klient.zaleglosc|floatformat:2 %}Twoja zaległość wynosi teraz {{ zaleglosc }} zł.{% endblocktranslate %}

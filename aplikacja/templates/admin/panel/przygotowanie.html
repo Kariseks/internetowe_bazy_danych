@@ -1,7 +1,7 @@
 {% extends "admin/panel/base.html" %}
 {% load i18n %}
 {% block content %}
-<p class="opis">{% blocktranslate with get_full_name=rezerwacja.klient.uzytkownik.get_full_name dzien_odbioru=rezerwacja.dzien_odbioru|date:"l, j E"|lower %}{{ get_full_name }}, odbiór {{ dzien_odbioru }}. Jeśli towaru nie wystarczyło, wpisz masę, którą udało się skompletować, także 0.{% endblocktranslate %}</p>
+<p class="opis">{% blocktranslate with get_full_name=rezerwacja.klient.uzytkownik.get_full_name dzien_odbioru=rezerwacja.dzien_odbioru|date:"l, j E" %}{{ get_full_name }}, odbiór {{ dzien_odbioru }}. Jeśli towaru nie wystarczyło, wpisz masę, którą udało się skompletować, także 0.{% endblocktranslate %}</p>
 <form method="post" class="arkusz arkusz-waski">
 	{% csrf_token %}
 	<table class="tabela">

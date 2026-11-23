@@ -1,33 +1,10 @@
-# Internetowe bazy danych — projekt
+# Lokalny warzywniak
 
-Dokumentacja i (później) aplikacja na przedmiot **Internetowe bazy danych**.
+Aplikacja Django do rezerwowania warzyw i owoców z odbiorem w sklepie. Publiczny katalog pokazuje ceny i dostępność na siedem dni. Klient zarządza rezerwacjami i saldem, a personel przyjmuje dostawy, rejestruje sprzedaż i wydaje towar.
 
-## Struktura
+- [Uruchomienie serwera, dane demonstracyjne i testy](aplikacja/README.md)
+- [Schemat MySQL i odtworzenie diagramów](baza/README.md)
+- [Sprawozdanie PDF](dokumentacja/sprawozdanie.pdf) i [źródło LaTeX](dokumentacja/sprawozdanie.tex)
+- [Plan integracji](PLAN.md)
 
-```
-├── dokumentacja/          ← LaTeX (główna praca na razie)
-│   ├── sprawozdanie.tex   ← cały raport w jednym pliku
-│   └── figury/
-├── materialy/             ← PDF-y prowadzącego (wytyczne)
-├── PLAN.md                ← postępy i następne kroki
-└── README.md
-```
-
-## Kompilacja dokumentacji
-
-```bash
-cd dokumentacja
-latexmk -pdf -interaction=nonstopmode sprawozdanie.tex
-# wynik: sprawozdanie.pdf
-latexmk -c   # sprzątanie plików pomocniczych
-```
-
-Rysunki wrzucaj do `dokumentacja/figury/` i wstawiaj przez `\includegraphics`.
-
-## Etapy (z wytycznych)
-
-1. Przygotowanie i uzasadnienie / analiza
-2. Faza projektowa
-3. Implementacja i walidacja
-4. Wdrożenie
-5. Prezentacja i zaliczenie
+Raport można odbudować poleceniem `latexmk -pdf -interaction=nonstopmode sprawozdanie.tex` w katalogu `dokumentacja`.

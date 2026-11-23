@@ -13,7 +13,7 @@ from django.utils.translation import gettext as _
 from konta import powiadomienia
 from konta.models import ProfilKlienta
 from magazyn import services as magazyn
-from magazyn.models import PlanDostawy
+from magazyn.models import Dostawa, PlanDostawy
 from rozliczenia.services import uzupelnij_saldo
 from .models import PozycjaRezerwacji, Rezerwacja
 
@@ -217,6 +217,8 @@ def _do_obslugi(rezerwacja_id, stany):
 @transaction.atomic
 def przygotuj_rezerwacje(rezerwacja_id, masy, kto):
     r = _do_obslugi(rezerwacja_id, AKTYWNE)
+    if not Dostawa.objects.filter(dzien=r.dzien_odbioru).exists():
+        raise RezerwacjaOdrzucona(_('Najpierw zarejestruj dzisiejszą dostawę.'))
     pozycje = list(PozycjaRezerwacji.objects.filter(rezerwacja=r))
     odwazone = dict(masy)
     if set(odwazone) != {p.produkt_id for p in pozycje} or any(m < 0 for m in odwazone.values()):

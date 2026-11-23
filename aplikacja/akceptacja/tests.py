@@ -92,6 +92,10 @@ class Dane:
             self.zarezerwuj(self.klient(), dni, (produkt, czesc))
             kg -= czesc
 
+    def pula_z_lada(self, dni):
+        magazyn.zmien_produkt(self.ziemniaki.pk, 'Ziemniaki', '', Decimal(100), True, Decimal(60))
+        self.zarezerwowano(self.ziemniaki, dni, 30)
+
     def dostawa(self, dni, *pozycje):
         with self.o_godzinie(dni, '05:40'):
             magazyn.zarejestruj_dostawe(self.dzien(dni), [(p.id, Decimal(kg)) for p, kg in pozycje], self.sprzedawca)
@@ -282,11 +286,11 @@ class ZresetujHasloTests(Akceptacja):
 
 
 class ZlozRezerwacjeTests(Akceptacja):
-    """PU8 Złóż rezerwację. Plan ziemniaków na D+2: 100 kg, zarezerwowano 90 kg."""
+    """PU8 Złóż rezerwację. Plan ziemniaków na D+2: 100 kg, na ladę 60 kg, zarezerwowano 30 kg."""
 
     def setUp(self):
         super().setUp()
-        self.zarezerwowano(self.ziemniaki, 2, 90)
+        self.pula_z_lada(2)
         self.anna = self.klient('anna@example.com')
         mail.outbox.clear()
 
@@ -352,7 +356,7 @@ class JednoczesneRezerwacjeTests(Dane, TransactionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.zarezerwowano(self.ziemniaki, 2, 90)
+        self.pula_z_lada(2)
 
     def w_watku(self, praca):
         def opakowana():
@@ -367,15 +371,19 @@ class JednoczesneRezerwacjeTests(Dane, TransactionTestCase):
     def test_ta14_dwie_jednoczesne_rezerwacje(self):
         klienci = [self.klient(), self.klient()]
         start = threading.Barrier(2)
+        odpowiedzi = []
 
         def rezerwuj(klient):
             przegladarka = Client()
             przegladarka.force_login(klient)
-            start.wait()
-            przegladarka.post(f'/rezerwacje/nowa/{self.dzien(2).isoformat()}/', {self.pole(self.ziemniaki): '10'})
+            start.wait(timeout=10)
+            odpowiedz = przegladarka.post(f'/rezerwacje/nowa/{self.dzien(2).isoformat()}/', {self.pole(self.ziemniaki): '10'})
+
+            odpowiedzi.append(odpowiedz.status_code)
 
         for watek in [self.w_watku(lambda k=k: rezerwuj(k)) for k in klienci]:
             watek.join()
+        self.assertCountEqual(odpowiedzi, [200, 302])
         przyjete = sum(len(rezerwacje.rezerwacje_klienta(k)) for k in klienci)
         self.assertEqual(przyjete, 1)
         self.assertEqual(self.dostepne(self.ziemniaki, 2), 0)
@@ -417,7 +425,7 @@ class AnulujRezerwacjeTests(Akceptacja):
         self.anna = self.klient('anna@example.com')
 
     def test_ta17_anulowanie_zwalnia_ilosc(self):
-        self.zarezerwowano(self.ziemniaki, 2, 90)
+        self.pula_z_lada(2)
         rezerwacja = self.zarezerwuj(self.anna, 2, (self.ziemniaki, 8))
         mail.outbox.clear()
         self.assertEqual(self.dostepne(self.ziemniaki, 2), 2)
@@ -491,8 +499,8 @@ class PrzyjecieDostawyTests(Akceptacja):
         self.assertEqual(self.stan(self.ziemniaki), Decimal(5))
 
     def test_ta23_mniej_niz_zarezerwowano(self):
-        self.zarezerwowano(self.ziemniaki, 0, 90)
-        odpowiedz = self.przyjmij(**{self.pole(self.ziemniaki): '85'})
+        self.zarezerwowano(self.ziemniaki, 0, 40)
+        odpowiedz = self.przyjmij(**{self.pole(self.ziemniaki): '35'})
         self.assertContains(odpowiedz, 'class="za-malo"')
         pozycja = next(p for p in magazyn.dostawa_na_dzien(D).pozycje if p.produkt.id == self.ziemniaki.id)
         self.assertTrue(pozycja.za_malo)
@@ -614,11 +622,11 @@ class WydajRezerwacjeTests(RezerwacjaNaDzisTests):
 
 
 class PlanDostawyTests(Akceptacja):
-    """PU26 Ustal plan dostawy. Plan ziemniaków na D+3: 100 kg, zarezerwowano 90 kg."""
+    """PU26 Ustal plan dostawy. Plan ziemniaków na D+3: 100 kg, na ladę 60 kg, zarezerwowano 30 kg."""
 
     def setUp(self):
         super().setUp()
-        self.zarezerwowano(self.ziemniaki, 3, 90)
+        self.pula_z_lada(3)
         self.zaloguj(self.wlasciciel)
 
     def pole_planu(self, dni):
@@ -643,7 +651,8 @@ class PlanDostawyTests(Akceptacja):
 
     def test_ta34_plan_ponizej_zarezerwowanego(self):
         odpowiedz = self.zapisz(3, '80')
-        self.assertIn('90', self.komunikaty(odpowiedz))
+        self.assertIn('30', self.komunikaty(odpowiedz))
+        self.assertIn('60', self.komunikaty(odpowiedz))
         self.assertEqual(self.komorka(rezerwacje.plan_tygodnia(), 3).plan_kg, Decimal(100))
 
     def test_ta35_dzien_zamkniety(self):

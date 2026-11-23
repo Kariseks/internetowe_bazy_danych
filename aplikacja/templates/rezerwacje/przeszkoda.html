@@ -3,7 +3,7 @@
 {% block title %}{% translate "Rezerwacja – Warzywniak" %}{% endblock %}
 {% block content %}
 <div class="karta">
-	<h1>{% blocktranslate with dzien=dzien|date:"l"|lower dzien2=dzien|date:"j E" %}Rezerwacja na {{ dzien }}, {{ dzien2 }}{% endblocktranslate %}</h1>
+	<h1>{% blocktranslate with dzien=dzien|date:"l" dzien2=dzien|date:"j E" %}Rezerwacja na {{ dzien }}, {{ dzien2 }}{% endblocktranslate %}</h1>
 	{% if przeszkoda.powod == 'karta' %}
 		<p>{% translate "Do składania rezerwacji potrzebna jest zarejestrowana karta płatnicza. Z karty pobieramy opłatę, gdy rezerwacja nie zostanie odebrana." %}</p>
 		<a class="przycisk" href="{% url 'konto' %}">{% translate "Zarejestruj kartę" %}</a>

@@ -1,7 +1,7 @@
-{% load i18n %}{% autoescape off %}{% if zdarzenie == 'anulowana' %}{% blocktranslate with dzien_odbioru=rezerwacja.dzien_odbioru|date:"l, j E Y"|lower %}Rezerwacja na {{ dzien_odbioru }} została anulowana bez opłaty.{% endblocktranslate %}{% else %}{% blocktranslate with dzien_odbioru=rezerwacja.dzien_odbioru|date:"l, j E Y"|lower %}Rezerwacja na {{ dzien_odbioru }} została{% endblocktranslate %} {% if zdarzenie == 'zmieniona' %}{% translate "zmieniona" %}{% else %}{% translate "złożona" %}{% endif %}.
-
+{% load i18n %}{% autoescape off %}{% with dzien=rezerwacja.dzien_odbioru|date:"l, j E Y" %}{% if zdarzenie == 'anulowana' %}{% blocktranslate %}Rezerwacja na {{ dzien }} została anulowana bez opłaty.{% endblocktranslate %}{% elif zdarzenie == 'zmieniona' %}{% blocktranslate %}Rezerwacja na {{ dzien }} została zmieniona.{% endblocktranslate %}{% else %}{% blocktranslate %}Rezerwacja na {{ dzien }} została złożona.{% endblocktranslate %}{% endif %}{% endwith %}
+{% if zdarzenie != 'anulowana' %}
 {% translate "Pozycje:" %}
 {% include "powiadomienia/_pozycje.txt" %}
 {% translate "Odbiór w sklepie do 18:00. Za towar płacisz przy odbiorze, według masy po zważeniu." %}
-{% blocktranslate with termin=rezerwacja.termin|date:"H:i, j E"|lower %}Rezerwację można zmienić albo anulować bez opłaty do {{ termin }}. Za nieodebraną rezerwację sklep pobiera opłatę 10% jej wartości.{% endblocktranslate %}{% endif %}
+{% blocktranslate with termin=rezerwacja.termin|date:"H:i, j E" %}Rezerwację można zmienić albo anulować bez opłaty do {{ termin }}. Za nieodebraną rezerwację sklep pobiera opłatę 10% jej wartości.{% endblocktranslate %}{% endif %}
 {% endautoescape %}

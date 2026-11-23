@@ -95,7 +95,6 @@ body:not(.login):not(.popup) #container { display: grid; grid-template-columns: 
 #content section > h2:first-child, #content .formularz > h2:first-child, #content .konta > div > h2:first-child { margin-top: 0; }
 .opis { max-width: 46rem; margin: -0.25rem 0 1.25rem; color: var(--cichy); font-size: 1rem; }
 .opis a:link, .opis a:visited { font-weight: 650; }
-.atrapa { display: inline-block; margin: 1rem 2.25rem -0.75rem; padding: 0.2rem 0.65rem; border-radius: 4px; background: var(--marchew-tlo); color: var(--marchew); font-size: 0.85rem; }
 .pusto { margin: 0; padding: 1rem; color: var(--cichy); }
 td.pusto { text-align: center; }
 
@@ -293,7 +292,7 @@ body.login { background: var(--jarmuz); }
 	.menu { flex-flow: row wrap; gap: 0.2rem; }
 	.menu h2 { display: none; }
 	#content { padding: 1.25rem 1rem 2rem; }
-	.atrapa, ul.messagelist { margin-left: 1rem; margin-right: 1rem; }
+	ul.messagelist { margin-left: 1rem; margin-right: 1rem; }
 	.pulpit, .kasa, .wydanie, .konta, .dwie-kolumny { grid-template-columns: minmax(0, 1fr); }
 	.paragon { position: static; }
 	.arkusz { overflow-x: auto; }
@@ -307,4 +306,5 @@ body.login { background: var(--jarmuz); }
 #header .preferencje { margin: .75rem 0; }
 #header .preferencje button { color: white; }
 #header .preferencje button:hover, #header .preferencje button[aria-pressed="true"] { color: #132e22; }
-@media (max-height: 50rem) and (min-width: 64rem) { #header.bok { overflow-y: auto; } }
+.login #header .preferencje button { color: var(--jarmuz); border-color: var(--lisc); }
+.login #header .preferencje button:focus-visible { outline-color: var(--marchew); }

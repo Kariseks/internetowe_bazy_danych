@@ -29,7 +29,7 @@ def lista(request):
         konto_id = request.POST.get('konto', '')
         if konto_id.isdigit():
             try:
-                services.ustaw_aktywnosc(int(konto_id), request.POST.get(_('aktywne')) == '1')
+                services.ustaw_aktywnosc(int(konto_id), request.POST.get('aktywne') == '1')
             except services.KontoOdrzucone as blad:
                 messages.error(request, str(blad))
             else:

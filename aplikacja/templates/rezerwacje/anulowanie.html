@@ -4,9 +4,9 @@
 {% block content %}
 <div class="karta">
 	<h1>{% translate "Anulować rezerwację?" %}</h1>
-	<p>{% translate "Odbiór:" %} <strong>{{ rezerwacja.dzien_odbioru|date:"l"|lower }}, {{ rezerwacja.dzien_odbioru|date:"j E Y" }}</strong></p>
+	<p>{% translate "Odbiór:" %} <strong>{{ rezerwacja.dzien_odbioru|date:"l" }}, {{ rezerwacja.dzien_odbioru|date:"j E Y" }}</strong></p>
 	{% include "admin/panel/_pozycje.html" with pozycje=rezerwacja.pozycje %}
-	<p>{% blocktranslate with termin=rezerwacja.termin|date:"H:i" termin2=rezerwacja.termin|date:"l"|lower termin3=rezerwacja.termin|date:"j E" %}Bez opłaty można anulować do {{ termin }}, {{ termin2 }}, {{ termin3 }}. Anulowanej rezerwacji nie da się przywrócić.{% endblocktranslate %}</p>
+	<p>{% blocktranslate with termin=rezerwacja.termin|date:"H:i" termin2=rezerwacja.termin|date:"l" termin3=rezerwacja.termin|date:"j E" %}Bez opłaty można anulować do {{ termin }}, {{ termin2 }}, {{ termin3 }}. Anulowanej rezerwacji nie da się przywrócić.{% endblocktranslate %}</p>
 	<form method="post">
 		{% csrf_token %}
 		<button class="przycisk ostrzegawczy" type="submit">{% translate "Anuluj rezerwację" %}</button>

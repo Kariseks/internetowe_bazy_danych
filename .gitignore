@@ -17,6 +17,7 @@
 *.run.xml
 *-blx.bib
 dokumentacja/*.pdf
+!dokumentacja/sprawozdanie.pdf
 
 # IDE / OS
 .idea/

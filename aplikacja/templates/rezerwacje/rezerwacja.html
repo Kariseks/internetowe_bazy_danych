@@ -4,7 +4,9 @@
 {% block title %}{% if rezerwacja %}{% translate "Zmiana rezerwacji" %}{% else %}{% translate "Rezerwacja" %}{% endif %} – Warzywniak{% endblock %}
 {% block skrypty %}<script src="{% static 'sklep/rezerwacja.js' %}" defer></script>{% endblock %}
 {% block content %}
-<h1>{% if rezerwacja %}{% translate "Zmiana rezerwacji" %}{% else %}{% translate "Rezerwacja" %}{% endif %} {% blocktranslate with dzien=dzien|date:"l"|lower dzien2=dzien|date:"j E" %}na {{ dzien }}, {{ dzien2 }}{% endblocktranslate %}</h1>
+{% with data=dzien|date:"l, j E" %}
+<h1>{% if rezerwacja %}{% blocktranslate %}Zmiana rezerwacji na {{ data }}{% endblocktranslate %}{% else %}{% blocktranslate %}Rezerwacja na {{ data }}{% endblocktranslate %}{% endif %}</h1>
+{% endwith %}
 <p class="wstep">{% translate "Wpisz ilości w kilogramach, z dokładnością do 0,1 kg. Rezerwacja może mieć najwyżej 20 kg. Za towar płacisz przy odbiorze, według masy po zważeniu i cen z dnia odbioru." %}</p>
 <form data-waluta="{% translate "zł" %}" method="post" id="form-rezerwacja" class="arkusz">
 	{% csrf_token %}
