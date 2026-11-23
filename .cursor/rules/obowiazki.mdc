@@ -1,10 +1,8 @@
 ---
-description: Praca nad sprawozdaniem IBD — instrukcje są w CLAUDE.md
+description: Praca nad projektem Internetowe bazy danych
 alwaysApply: true
 ---
 
-# Praca nad sprawozdaniem
-
-Instrukcje agenta przeniesiono do `CLAUDE.md` (główny plik) i `.claude/skills/` (styl tekstu, źródła i wymagane elementy). Plan i indeks źródeł: `docs/plan-sprawozdania.md`, `docs/indeks-zrodel.md`. Na starcie przeczytaj `CLAUDE.md` i stosuj go bez zmian.
-
-Kolejka `PLAN.md` z promptami `następny` / `1.2` jest nieaktualna (decyzje Q1 i Q2 w `CLAUDE.md`). Nie rób `git commit` ani `git push`.
+Ustalenia dziedzinowe zawiera CLAUDE.md. Kolejność prac integracyjnych zawiera PLAN.md.
+Przy redakcji stosuj zasady.md i skille w .claude/skills/. Powiązanie etapów z wytycznymi v4 zawiera .cursor/skills/sprawozdanie-ibd/SKILL.md.
+Autor sam zatwierdza i wysyła zmiany.
