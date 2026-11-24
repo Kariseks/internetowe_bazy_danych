@@ -1,12 +1,12 @@
 {% load i18n %}<div class="arkusz">
 	<table class="tabela rezerwacje">
-		<thead><tr><th scope="col">{% translate "Dzień odbioru" %}</th><th scope="col">{% translate "Pozycje" %}</th><th scope="col" class="liczba">{% translate "Razem [kg]" %}</th><th scope="col" class="liczba">{% translate "Wartość orient. [zł]" %}</th><th scope="col">{% translate "Stan" %}</th><th scope="col"><span class="ukryte">{% translate "Polecenia" %}</span></th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Dzień odbioru" %}</th><th scope="col">{% translate "Pozycje" %}</th><th scope="col" class="liczba">{% translate "Razem" %}</th><th scope="col" class="liczba">{% translate "Wartość orient. [zł]" %}</th><th scope="col">{% translate "Stan" %}</th><th scope="col"><span class="ukryte">{% translate "Polecenia" %}</span></th></tr></thead>
 		<tbody>
 			{% for r in rezerwacje %}
 			<tr>
 				<td>{{ r.dzien_odbioru|date:"D, d.m.Y" }}</td>
 				<td>{% include "admin/panel/_pozycje.html" with pozycje=r.pozycje %}</td>
-				<td class="liczba" data-etykieta="{% translate "Razem" %}" data-jednostka="kg">{{ r.laczna_masa|floatformat:"-1" }}</td>
+				<td class="liczba" data-etykieta="{% translate "Razem" %}">{{ r.laczna_masa|floatformat:"-1" }} kg{% if r.liczba_sztuk %} + {{ r.liczba_sztuk|floatformat:0 }} {% translate "szt." %}{% endif %}</td>
 				<td class="liczba" data-etykieta="{% translate "Wartość orient." %}" data-jednostka="{% translate "zł" %}">{{ r.wartosc|floatformat:2 }}</td>
 				<td>{% include "admin/panel/_stan.html" with stan=r.stan %}</td>
 				<td class="polecenia">

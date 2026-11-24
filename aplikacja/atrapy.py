@@ -8,6 +8,9 @@ from django.utils import timezone
 
 
 class Produkt(Atrapa):
+    jednostka = "kg"
+    symbol = "kg"
+
     def __str__(self):
         return f'{self.nazwa} ({self.odmiana})' if self.odmiana else self.nazwa
 

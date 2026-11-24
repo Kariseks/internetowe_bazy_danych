@@ -7,25 +7,25 @@
 {% with data=dzien|date:"l, j E" %}
 <h1>{% if rezerwacja %}{% blocktranslate %}Zmiana rezerwacji na {{ data }}{% endblocktranslate %}{% else %}{% blocktranslate %}Rezerwacja na {{ data }}{% endblocktranslate %}{% endif %}</h1>
 {% endwith %}
-<p class="wstep">{% translate "Wpisz ilości w kilogramach, z dokładnością do 0,1 kg. Rezerwacja może mieć najwyżej 20 kg. Za towar płacisz przy odbiorze, według masy po zważeniu i cen z dnia odbioru." %}</p>
+<p class="wstep">{% translate "Produkty na wagę rezerwujesz z dokładnością do 0,1 kg, łącznie do 20 kg. Produkty na sztuki rezerwujesz w pełnych sztukach. Zapłacisz przy odbiorze według cen z dnia odbioru." %}</p>
 <form data-waluta="{% translate "zł" %}" method="post" id="form-rezerwacja" class="arkusz">
 	{% csrf_token %}
 	{{ form.non_field_errors }}
 	<table class="tabela ilosci">
-		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Cena [zł/kg]" %}</th><th scope="col" class="liczba">{% translate "Dostępne [kg]" %}</th><th scope="col" class="liczba">{% translate "Ilość [kg]" %}</th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Cena jednostkowa" %}</th><th scope="col" class="liczba">{% translate "Dostępne" %}</th><th scope="col" class="liczba">{% translate "Ilość" %}</th></tr></thead>
 		<tbody>
 			{% for w in form.oferta %}
-			<tr data-cena="{{ w.cena_za_kg|stringformat:'s' }}">
-				<th scope="row"><label for="{{ w.pole.id_for_label }}">{{ w.produkt }}</label></th>
-				<td class="liczba" data-jednostka="{% translate "zł/kg" %}">{{ w.cena_za_kg|floatformat:2 }}</td>
-				<td class="liczba" data-etykieta="{% translate "Dostępne" %}" data-jednostka="kg">{{ w.dostepne_kg|floatformat:"-1" }}</td>
+			<tr data-jednostka-produktu="{{ w.produkt.jednostka }}" data-cena="{{ w.cena_za_kg|stringformat:'s' }}">
+				<th scope="row"><label for="{{ w.pole.id_for_label }}">{{ w.produkt }} [{{ w.produkt.symbol }}]</label></th>
+				<td class="liczba" data-jednostka="{% translate "zł" %}/{{ w.produkt.symbol }}">{{ w.cena_za_kg|floatformat:2 }}</td>
+				<td class="liczba" data-etykieta="{% translate "Dostępne" %}" data-jednostka="{{ w.produkt.symbol }}">{{ w.dostepne_kg|floatformat:"-1" }}</td>
 				<td class="liczba pole-ilosci">{{ w.pole }}{{ w.pole.errors }}</td>
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 	<div class="podsumowanie">
-		<p>{% translate "Łącznie:" %} <strong id="masa">–</strong> {% translate "z 20 kg" %}</p>
+		<p>{% translate "Produkty na wagę" %} <strong id="masa">–</strong> {% translate "z 20 kg" %}</p>
 		<p>{% translate "Wartość orientacyjna:" %} <strong id="wartosc">–</strong></p>
 		<button class="przycisk" type="submit">{% if rezerwacja %}{% translate "Zapisz zmiany" %}{% else %}{% translate "Zarezerwuj" %}{% endif %}</button>
 	</div>

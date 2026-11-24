@@ -32,7 +32,7 @@
 		if (!s) return;
 		wiersz.dataset.cena = s.dataset.cena;
 		wiersz.querySelector('.pozycja-nazwa').textContent = s.dataset.nazwa;
-		wiersz.querySelector('.pozycja-cena').textContent = `${zl(liczba(s.dataset.cena))} / kg`;
+		wiersz.querySelector('.pozycja-cena').textContent = `${zl(liczba(s.dataset.cena))} / ${s.dataset.jednostka}`;
 	}
 
 	function ponumeruj() {

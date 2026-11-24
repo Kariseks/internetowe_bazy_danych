@@ -41,8 +41,10 @@ CREATE TABLE `produkt` (
   `standardowa_ilosc_kg` decimal(7,2) NOT NULL,
   `ilosc_na_lade_kg` decimal(7,2) NOT NULL,
   `w_ofercie` tinyint(1) NOT NULL,
+  `jednostka` varchar(3) COLLATE utf8mb4_pl_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_produkt_nazwa_odmiana` (`nazwa`,`odmiana`),
+  CONSTRAINT `ck_produkt_jednostka` CHECK ((`jednostka` in (_utf8mb4'kg',_utf8mb4'szt'))),
   CONSTRAINT `ck_produkt_plan_lada` CHECK (((`ilosc_na_lade_kg` >= 0) and (`standardowa_ilosc_kg` >= `ilosc_na_lade_kg`)))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_pl_0900_ai_ci;
 
@@ -253,8 +255,8 @@ CREATE TABLE `rozliczenie_zaleglosci` (
 
 CREATE TABLE `pozycja_rezerwacji` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `ilosc_kg` decimal(4,1) NOT NULL,
-  `masa_odwazona_kg` decimal(6,2) DEFAULT NULL,
+  `ilosc_kg` decimal(6,1) NOT NULL,
+  `masa_odwazona_kg` decimal(7,2) DEFAULT NULL,
   `produkt_id` bigint NOT NULL,
   `rezerwacja_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
@@ -262,7 +264,7 @@ CREATE TABLE `pozycja_rezerwacji` (
   KEY `pozycja_rezerwacji_produkt_id_37bedd6a_fk_produkt_id` (`produkt_id`),
   CONSTRAINT `pozycja_rezerwacji_produkt_id_37bedd6a_fk_produkt_id` FOREIGN KEY (`produkt_id`) REFERENCES `produkt` (`id`),
   CONSTRAINT `pozycja_rezerwacji_rezerwacja_id_57cd95e0_fk_rezerwacja_id` FOREIGN KEY (`rezerwacja_id`) REFERENCES `rezerwacja` (`id`),
-  CONSTRAINT `ck_pr_ilosc` CHECK (((`ilosc_kg` > 0) and (`ilosc_kg` <= 20))),
+  CONSTRAINT `ck_pr_ilosc` CHECK ((`ilosc_kg` > 0)),
   CONSTRAINT `ck_pr_masa` CHECK (((`masa_odwazona_kg` >= 0) or (`masa_odwazona_kg` is null)))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_pl_0900_ai_ci;
 
@@ -281,7 +283,7 @@ CREATE TABLE `sprzedaz` (
 
 CREATE TABLE `pozycja_sprzedazy` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `masa_kg` decimal(6,2) NOT NULL,
+  `masa_kg` decimal(7,2) NOT NULL,
   `cena_za_kg` decimal(7,2) NOT NULL,
   `produkt_id` bigint NOT NULL,
   `sprzedaz_id` bigint NOT NULL,

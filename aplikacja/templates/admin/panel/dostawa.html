@@ -8,11 +8,11 @@
 <p class="opis">{% blocktranslate with zarejestrowano=przyjeta.zarejestrowano|date:"j E, H:i" %}Zapisano {{ zarejestrowano }}. Przy wyróżnionych produktach przyjechało mniej, niż zarezerwowali klienci, więc trzeba ich uprzedzić.{% endblocktranslate %}</p>
 <div class="arkusz">
 	<table class="tabela">
-		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Plan [kg]" %}</th><th scope="col" class="liczba">{% translate "Zarezerwowano [kg]" %}</th><th scope="col" class="liczba">{% translate "Dostarczono [kg]" %}</th><th scope="col" class="liczba">{% translate "Różnica [kg]" %}</th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Plan" %}</th><th scope="col" class="liczba">{% translate "Zarezerwowano" %}</th><th scope="col" class="liczba">{% translate "Dostarczono" %}</th><th scope="col" class="liczba">{% translate "Różnica" %}</th></tr></thead>
 		<tbody>
 			{% for p in przyjeta.pozycje %}
 			<tr{% if p.za_malo %} class="za-malo"{% endif %}>
-				<td>{{ p.produkt }}</td>
+				<td>{{ p.produkt }} [{{ p.produkt.symbol }}]</td>
 				<td class="liczba">{{ p.plan_kg|floatformat:2 }}</td>
 				<td class="liczba">{{ p.zarezerwowano_kg|floatformat:2 }}</td>
 				<td class="liczba">{{ p.dostarczono_kg|floatformat:2 }}</td>
@@ -26,11 +26,11 @@
 <form method="post" class="arkusz">
 	{% csrf_token %}
 	<table class="tabela" id="tabela-dostawy">
-		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Plan [kg]" %}</th><th scope="col" class="liczba">{% translate "Zarezerwowano [kg]" %}</th><th scope="col" class="liczba">{% translate "Dostarczono [kg]" %}</th><th scope="col" class="liczba">{% translate "Różnica [kg]" %}</th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Plan" %}</th><th scope="col" class="liczba">{% translate "Zarezerwowano" %}</th><th scope="col" class="liczba">{% translate "Dostarczono" %}</th><th scope="col" class="liczba">{% translate "Różnica" %}</th></tr></thead>
 		<tbody>
 			{% for w in wiersze %}
 			<tr data-plan="{{ w.plan_kg|stringformat:'s' }}" data-rezerwacje="{{ w.zarezerwowano_kg|stringformat:'s' }}">
-				<td><label for="{{ w.pole.id_for_label }}">{{ w.produkt }}</label></td>
+				<td><label for="{{ w.pole.id_for_label }}">{{ w.produkt }} [{{ w.produkt.symbol }}]</label></td>
 				<td class="liczba">{{ w.plan_kg|floatformat:2 }}</td>
 				<td class="liczba">{{ w.zarezerwowano_kg|floatformat:2 }}</td>
 				<td class="liczba">{{ w.pole }}{{ w.pole.errors }}</td>

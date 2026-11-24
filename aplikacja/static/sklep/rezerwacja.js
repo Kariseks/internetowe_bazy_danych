@@ -11,7 +11,7 @@
 		let zl = 0;
 		for (const wiersz of form.querySelectorAll('tbody tr')) {
 			const ilosc = Math.max(0, liczba(wiersz.querySelector('input').value));
-			kg += ilosc;
+			if (wiersz.dataset.jednostkaProduktu === 'kg') kg += ilosc;
 			zl += ilosc * liczba(wiersz.dataset.cena);
 		}
 		masa.textContent = `${format(kg, 1)} kg`;

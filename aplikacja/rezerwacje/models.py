@@ -36,14 +36,14 @@ class Rezerwacja(models.Model):
 class PozycjaRezerwacji(models.Model):
     rezerwacja = models.ForeignKey(Rezerwacja, on_delete=models.CASCADE)
     produkt = models.ForeignKey("magazyn.Produkt", on_delete=models.PROTECT)
-    ilosc_kg = models.DecimalField(max_digits=4, decimal_places=1)
-    masa_odwazona_kg = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    ilosc_kg = models.DecimalField(max_digits=6, decimal_places=1)
+    masa_odwazona_kg = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
 
     class Meta:
         db_table = "pozycja_rezerwacji"
         constraints = [
             models.UniqueConstraint(fields=["rezerwacja", "produkt"], name="uq_pozycja_rezerwacji"),
-            models.CheckConstraint(condition=Q(ilosc_kg__gt=0, ilosc_kg__lte=20), name="ck_pr_ilosc"),
+            models.CheckConstraint(condition=Q(ilosc_kg__gt=0), name="ck_pr_ilosc"),
             models.CheckConstraint(condition=Q(masa_odwazona_kg__gte=0) | Q(masa_odwazona_kg__isnull=True),
                                    name="ck_pr_masa"),
         ]

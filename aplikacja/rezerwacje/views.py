@@ -60,7 +60,7 @@ def zmien(request, rezerwacja_id):
     if rezerwacja is None:
         return redirect('moje_rezerwacje')
     oferta = services.oferta_na_dzien(rezerwacja.dzien_odbioru, rezerwacja_id)
-    poczatkowe = {f'p{p.produkt.id}': p.ilosc_kg for p in rezerwacja.pozycje}
+    poczatkowe = {f'p{p.produkt.id}': int(p.ilosc_kg) if p.produkt.jednostka == 'szt' else p.ilosc_kg for p in rezerwacja.pozycje}
     form = RezerwacjaForm(oferta, request.POST if request.method == 'POST' else None, initial=poczatkowe)
     if request.method == 'POST' and form.is_valid():
         try:

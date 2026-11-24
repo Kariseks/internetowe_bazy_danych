@@ -43,11 +43,14 @@ def produkt(produkt_id):
     return p
 
 
-def dodaj_produkt(nazwa, odmiana, standardowa_ilosc_kg, w_ofercie, cena_za_kg, obowiazuje_od, ilosc_na_lade_kg=0):
+def dodaj_produkt(nazwa, odmiana, standardowa_ilosc_kg, w_ofercie, cena_za_kg, obowiazuje_od, ilosc_na_lade_kg=0, jednostka="kg"):
     try:
         with transaction.atomic():
-            p = Produkt.objects.create(nazwa=nazwa, odmiana=odmiana, standardowa_ilosc_kg=standardowa_ilosc_kg,
+            p = Produkt(jednostka=jednostka, nazwa=nazwa, odmiana=odmiana, standardowa_ilosc_kg=standardowa_ilosc_kg,
                                        w_ofercie=w_ofercie, ilosc_na_lade_kg=ilosc_na_lade_kg)
+            p.sprawdz_ilosc(standardowa_ilosc_kg, ProduktOdrzucony)
+            p.sprawdz_ilosc(ilosc_na_lade_kg, ProduktOdrzucony)
+            p.save()
             zmien_cene(p.pk, cena_za_kg, obowiazuje_od)
             return p
     except IntegrityError as blad:
@@ -58,6 +61,8 @@ def dodaj_produkt(nazwa, odmiana, standardowa_ilosc_kg, w_ofercie, cena_za_kg, o
 def zmien_produkt(produkt_id, nazwa, odmiana, standardowa_ilosc_kg, w_ofercie, ilosc_na_lade_kg=None):
     p = Produkt.objects.select_for_update().get(pk=produkt_id)
     lada = p.ilosc_na_lade_kg if ilosc_na_lade_kg is None else ilosc_na_lade_kg
+    p.sprawdz_ilosc(lada, ProduktOdrzucony)
+    p.sprawdz_ilosc(standardowa_ilosc_kg, ProduktOdrzucony)
     for plan in PlanDostawy.objects.filter(produkt=p, dzien__gt=timezone.localdate()):
         zajete = rezerwowane(plan.dzien).get(p.pk, 0)
         if plan.ilosc_kg < lada + zajete:
@@ -147,6 +152,7 @@ def zarejestruj_dostawe(dzien, pozycje, kto):
             for pid, masa in pozycje:
                 if pid not in wybrane or masa < 0:
                     raise DostawaOdrzucona(_('Sprawdź produkt i masę dostawy.'))
+                wybrane[pid].sprawdz_ilosc(masa, DostawaOdrzucona)
                 PlanDostawy.objects.get_or_create(produkt_id=pid, dzien=dzien, defaults={'ilosc_kg': wybrane[pid].standardowa_ilosc_kg})
                 PozycjaDostawy.objects.create(dostawa=dostawa, produkt_id=pid, ilosc_kg=masa)
             return dostawa
@@ -171,8 +177,9 @@ def zarejestruj_sprzedaz(pozycje, kto, rezerwacja=None):
         if p is None or p.cena_za_kg is None or (not p.w_ofercie and not rezerwacja):
             raise BrakNaStanie(_('Produkt nie ma dostępnej ceny sprzedaży.'))
         dostepne = stan[pid] if rezerwacja else max(0, stan[pid] - chronione.get(pid, 0))
+        p.sprawdz_ilosc(masa, BrakNaStanie)
         if masa <= 0 or masa > dostepne:
-            raise BrakNaStanie(_('%(produkt)s: dostępne %(kg)s kg.') % {'produkt': p, 'kg': dostepne})
+            raise BrakNaStanie(_('%(produkt)s: dostępne %(kg)s %(unit)s.') % {'produkt': p, 'kg': dostepne, 'unit': p.symbol})
         PozycjaSprzedazy.objects.create(sprzedaz=sprzedaz, produkt=p, cena_za_kg=p.cena_za_kg, masa_kg=masa)
         sprzedaz.suma += grosze(masa * p.cena_za_kg)
     return sprzedaz
@@ -180,16 +187,18 @@ def zarejestruj_sprzedaz(pozycje, kto, rezerwacja=None):
 
 @transaction.atomic
 def zarejestruj_ubytek(produkt_id, masa_kg, kto):
-    blokuj_produkty([produkt_id])
+    produkt = blokuj_produkty([produkt_id])[produkt_id]
+    produkt.sprawdz_ilosc(masa_kg, BrakNaStanie)
     stan = stany([produkt_id])[produkt_id]
     if not 0 < masa_kg <= stan:
-        raise BrakNaStanie(_('Stan produktu: %(kg)s kg.') % {'kg': stan})
+        raise BrakNaStanie(_('Stan produktu: %(kg)s %(unit)s.') % {'kg': stan, 'unit': produkt.symbol})
     Ubytek.objects.create(produkt_id=produkt_id, masa_kg=masa_kg, data_czas=timezone.now(), zarejestrowal=kto)
 
 
 @transaction.atomic
 def skoryguj_stan(produkt_id, masa_kg, przyczyna, kto):
-    blokuj_produkty([produkt_id])
+    produkt = blokuj_produkty([produkt_id])[produkt_id]
+    produkt.sprawdz_ilosc(masa_kg, BrakNaStanie)
     if masa_kg < 0 or not przyczyna.strip():
         raise BrakNaStanie(_('Podaj zważoną masę i przyczynę korekty.'))
     roznica = masa_kg - stany([produkt_id])[produkt_id]

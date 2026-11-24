@@ -1,2 +1,2 @@
-{% load i18n %}{% for p in rezerwacja.pozycje %}{% blocktranslate with produkt=p.produkt ilosc_kg=p.ilosc_kg|floatformat:"-1" %}- {{ produkt }}: {{ ilosc_kg }} kg{% endblocktranslate %}
+{% load i18n %}{% for p in rezerwacja.pozycje %}{% blocktranslate with produkt=p.produkt ilosc_kg=p.ilosc_kg|floatformat:"-1" unit=p.produkt.symbol %}- {{ produkt }}: {{ ilosc_kg }} {{ unit }}{% endblocktranslate %}
 {% endfor %}

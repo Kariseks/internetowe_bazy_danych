@@ -40,7 +40,7 @@ class OgraniczeniaSchematTests(TestCase):
     def test_unikat_produktu_i_masa_pozycji(self):
         dokument = dict(rezerwacja=self.rezerwacja, produkt=self.produkt)
         with self.assertRaises(IntegrityError), transaction.atomic():
-            PozycjaRezerwacji.objects.create(**dokument, ilosc_kg=Decimal("20.1"))
+            PozycjaRezerwacji.objects.create(**dokument, ilosc_kg=0)
         PozycjaRezerwacji.objects.create(**dokument, ilosc_kg=1)
         with self.assertRaises(IntegrityError), transaction.atomic():
             PozycjaRezerwacji.objects.create(**dokument, ilosc_kg=2)

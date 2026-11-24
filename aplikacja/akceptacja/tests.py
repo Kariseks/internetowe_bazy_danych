@@ -735,3 +735,36 @@ class OznaczNieodebraneTests(Akceptacja):
         self.assertEqual(self.stan_rezerwacji(dzis), 'zlozona')
         self.assertEqual(rezerwacje.rezerwacja(wczoraj.id).oplata_za_nieodebranie, Decimal('4.00'))
         self.assertEqual(len(mail.outbox), 1)
+
+
+class JednostkiSprzedazyTests(Dane, TestCase):
+    def setUp(self):
+        super().setUp()
+        self.kalafior = magazyn.dodaj_produkt(
+            'Kalafior', '', 40, True, Decimal('5.50'), D - timedelta(days=3), jednostka='szt',
+        )
+
+    def test_mieszana_rezerwacja_i_wydanie(self):
+        r = self.zarezerwuj(self.klient(), 0, (self.ziemniaki, 20), (self.kalafior, 25))
+        self.assertEqual(r.laczna_masa, 20)
+        self.assertEqual(r.liczba_sztuk, 25)
+        self.dostawa(0, (self.ziemniaki, 30), (self.kalafior, 40))
+        rezerwacje.przygotuj_rezerwacje(r.id, [(self.ziemniaki.id, 20), (self.kalafior.id, 25)], self.sprzedawca)
+        rezerwacje.wydaj_rezerwacje(r.id, self.sprzedawca)
+        self.assertEqual(self.stan(self.kalafior), 15)
+        self.assertEqual(self.stan(self.ziemniaki), 10)
+        self.assertEqual(magazyn.historia_sprzedazy(D, D)[0].suma, Decimal('201.50'))
+
+    def test_sztuki_w_formularzu_i_przy_ladzie(self):
+        klient = self.klient()
+        self.client.force_login(klient)
+        adres = f'/rezerwacje/nowa/{self.dzien(2).isoformat()}/'
+        pole = f'p{self.kalafior.id}'
+        self.assertEqual(self.client.post(adres, {pole: '1,5'}).status_code, 200)
+        self.assertFalse(rezerwacje.rezerwacje_klienta(klient))
+        self.assertEqual(self.client.post(adres, {pole: '3'}).status_code, 302)
+        self.assertEqual(rezerwacje.rezerwacje_klienta(klient)[0].liczba_sztuk, 3)
+        self.dostawa(0, (self.kalafior, 10))
+        with self.assertRaises(magazyn.BrakNaStanie):
+            magazyn.zarejestruj_sprzedaz([(self.kalafior.id, Decimal('1.5'))], self.sprzedawca)
+        self.assertEqual(self.stan(self.kalafior), 10)

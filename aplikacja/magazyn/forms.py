@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+from .models import Produkt
+
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -12,7 +14,7 @@ def pole_masy(minimum='0.01', miejsca=2, **kwargs):
         max_digits=7,
         decimal_places=miejsca,
         localize=True,
-        widget=forms.TextInput(attrs={'inputmode': 'decimal', 'autocomplete': 'off'}),
+        widget=forms.TextInput(attrs={'inputmode': 'numeric' if miejsca == 0 else 'decimal', 'autocomplete': 'off'}),
         **kwargs,
     )
 
@@ -24,7 +26,11 @@ class IlosciForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.wiersze = [(wiersz, klucz(wiersz)) for wiersz in wiersze]
         for wiersz, nazwa in self.wiersze:
-            self.fields[nazwa] = pole_masy(minimum='0', initial=poczatkowa(wiersz))
+            sztuki = wiersz.produkt.jednostka == 'szt'
+            poczatek = poczatkowa(wiersz)
+            if sztuki and poczatek is not None:
+                poczatek = int(poczatek)
+            self.fields[nazwa] = pole_masy(minimum='0', miejsca=0 if sztuki else 2, initial=poczatek)
             wiersz.pole = self[nazwa]
 
     def wartosci(self):
@@ -37,7 +43,7 @@ class PozycjaSprzedazyForm(forms.Form):
 
     def __init__(self, *args, produkty=(), **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['produkt'].choices = [(p.id, str(p)) for p in produkty]
+        self.fields['produkt'].choices = [(p.id, f'{p} [{p.symbol}]') for p in produkty]
 
 
 class PozycjeSprzedazyFormSet(forms.BaseFormSet):
@@ -59,7 +65,7 @@ SprzedazFormSet = forms.formset_factory(
 
 
 def pole_ceny():
-    return pole_masy(label=_('Cena za kg [zł]'))
+    return pole_masy(label=_('Cena jednostkowa [zł]'))
 
 
 def pole_dnia_ceny():
@@ -75,14 +81,19 @@ class ProduktForm(forms.Form):
     odmiana = forms.CharField(label=_('Odmiana'), max_length=60, required=False)
     standardowa_ilosc_kg = pole_masy(
         minimum='0',
-        label=_('Standardowa dzienna ilość [kg]'),
+        label=_('Standardowa dzienna ilość'),
         help_text=_('Ilość zamawiana zwykle na jeden dzień.'),
     )
-    ilosc_na_lade_kg = pole_masy(minimum='0', label=_('Ilość na ladę [kg]'), initial=0)
+    ilosc_na_lade_kg = pole_masy(minimum='0', label=_('Ilość na ladę'), initial=0)
     w_ofercie = forms.BooleanField(label=_('W ofercie'), required=False, initial=True)
 
 
 class NowyProduktForm(ProduktForm):
+    jednostka = forms.ChoiceField(label=_('Jednostka sprzedaży'), choices=[(kod, _(symbol)) for kod, symbol in Produkt.JEDNOSTKI], initial='kg', required=False)
+
+    def clean_jednostka(self):
+        return self.cleaned_data['jednostka'] or 'kg'
+
     cena_za_kg = pole_ceny()
     obowiazuje_od = pole_dnia_ceny()
 
@@ -93,14 +104,14 @@ class CenaForm(forms.Form):
 
 
 class KorektaForm(forms.Form):
-    masa_kg = pole_masy(minimum='0', label=_('Masa po przeliczeniu [kg]'))
+    masa_kg = pole_masy(minimum='0', label=_('Ilość po przeliczeniu'))
     przyczyna = forms.CharField(label=_('Przyczyna korekty'), max_length=200)
 
 
 class UbytekForm(forms.Form):
     produkt = forms.TypedChoiceField(label=_('Produkt'), coerce=int)
-    masa_kg = pole_masy(label=_('Masa wyrzuconego towaru [kg]'))
+    masa_kg = pole_masy(label=_('Ilość wyrzuconego towaru'))
 
     def __init__(self, *args, produkty=(), **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['produkt'].choices = [('', _('Wybierz produkt'))] + [(p.id, str(p)) for p in produkty]
+        self.fields['produkt'].choices = [('', _('Wybierz produkt'))] + [(p.id, f'{p} [{p.symbol}]') for p in produkty]

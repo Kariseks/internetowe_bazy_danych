@@ -15,11 +15,11 @@
 		<h2>{% translate "Sprzedaż według produktów" %}</h2>
 		<div class="arkusz">
 			<table class="tabela">
-				<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Masa [kg]" %}</th><th scope="col" class="liczba">{% translate "Wartość" %}</th></tr></thead>
+				<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Ilość" %}</th><th scope="col" class="liczba">{% translate "Wartość" %}</th></tr></thead>
 				<tbody>
 					{% for w in dane.sprzedaz %}
 					<tr>
-						<td>{{ w.produkt }}</td>
+						<td>{{ w.produkt }} [{{ w.produkt.symbol }}]</td>
 						<td class="liczba">{{ w.masa_kg|floatformat:2 }}</td>
 						<td class="liczba">{% blocktranslate with wartosc=w.wartosc|floatformat:2 %}{{ wartosc }} zł{% endblocktranslate %}</td>
 					</tr>
@@ -34,11 +34,11 @@
 		<h2>{% translate "Ubytki według produktów" %}</h2>
 		<div class="arkusz">
 			<table class="tabela">
-				<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Masa [kg]" %}</th></tr></thead>
+				<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Ilość" %}</th></tr></thead>
 				<tbody>
 					{% for w in dane.ubytki %}
 					<tr>
-						<td>{{ w.produkt }}</td>
+						<td>{{ w.produkt }} [{{ w.produkt.symbol }}]</td>
 						<td class="liczba">{{ w.masa_kg|floatformat:2 }}</td>
 					</tr>
 					{% empty %}
@@ -50,11 +50,11 @@
 		<h2>{% translate "Różnice między planem a dostawą" %}</h2>
 		<div class="arkusz">
 			<table class="tabela">
-				<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Plan [kg]" %}</th><th scope="col" class="liczba">{% translate "Dostarczono [kg]" %}</th><th scope="col" class="liczba">{% translate "Różnica [kg]" %}</th></tr></thead>
+				<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Plan" %}</th><th scope="col" class="liczba">{% translate "Dostarczono" %}</th><th scope="col" class="liczba">{% translate "Różnica" %}</th></tr></thead>
 				<tbody>
 					{% for w in dane.roznice %}
 					<tr>
-						<td>{{ w.produkt }}</td>
+						<td>{{ w.produkt }} [{{ w.produkt.symbol }}]</td>
 						<td class="liczba">{{ w.plan_kg|floatformat:2 }}</td>
 						<td class="liczba">{{ w.dostarczono_kg|floatformat:2 }}</td>
 						<td class="liczba">{{ w.roznica_kg|floatformat:2 }}</td>

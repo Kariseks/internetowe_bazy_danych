@@ -111,7 +111,8 @@ def zamowienie(request):
         _('Zamówienie u dostawcy'),
         jutro=jutro,
         wiersze=wiersze,
-        razem=sum(w.plan_kg for w in wiersze),
+        razem=sum(w.plan_kg for w in wiersze if w.produkt.jednostka == "kg"),
+        sztuki=sum(w.plan_kg for w in wiersze if w.produkt.jednostka == "szt"),
     )
 
 

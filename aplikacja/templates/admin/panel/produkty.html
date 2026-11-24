@@ -4,11 +4,11 @@
 <div class="naglowek-listy"><a class="przycisk glowny" href="{% url 'admin:produkt_nowy' %}">{% translate "Dodaj produkt" %}</a></div>
 <div class="arkusz">
 	<table class="tabela">
-		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Cena za kg" %}</th><th scope="col" class="liczba">{% translate "Standardowa ilość [kg]" %}</th><th scope="col">{% translate "Oferta" %}</th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Cena jednostkowa" %}</th><th scope="col" class="liczba">{% translate "Standardowa ilość" %}</th><th scope="col">{% translate "Oferta" %}</th></tr></thead>
 		<tbody>
 			{% for p in produkty %}
 			<tr>
-				<td><a href="{% url 'admin:produkt_edycja' p.id %}">{{ p }}</a></td>
+				<td><a href="{% url 'admin:produkt_edycja' p.id %}">{{ p }} [{{ p.symbol }}]</a></td>
 				<td class="liczba">{% blocktranslate with cena_za_kg=p.cena_za_kg|floatformat:2 %}{{ cena_za_kg }} zł{% endblocktranslate %}</td>
 				<td class="liczba">{{ p.standardowa_ilosc_kg|floatformat:"-2" }}</td>
 				<td>{% if p.w_ofercie %}{% translate "w ofercie" %}{% else %}<span class="stan stan-anulowana">{% translate "wycofany" %}</span>{% endif %}</td>

@@ -9,11 +9,11 @@
 <div class="wydanie">
 	<div class="arkusz">
 		<table class="tabela">
-			<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Odważono [kg]" %}</th><th scope="col" class="liczba">{% translate "Cena za kg" %}</th><th scope="col" class="liczba">{% translate "Wartość" %}</th></tr></thead>
+			<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Przygotowano" %}</th><th scope="col" class="liczba">{% translate "Cena jednostkowa" %}</th><th scope="col" class="liczba">{% translate "Wartość" %}</th></tr></thead>
 			<tbody>
 				{% for p in wydanie.pozycje %}
 				<tr>
-					<td>{{ p.produkt }}<small>{% blocktranslate with ilosc_kg=p.ilosc_kg|floatformat:1 %}zarezerwowano {{ ilosc_kg }} kg{% endblocktranslate %}</small></td>
+					<td>{{ p.produkt }} [{{ p.produkt.symbol }}]<small>{% blocktranslate with ilosc_kg=p.ilosc_kg|floatformat:1 unit=p.produkt.symbol %}zarezerwowano {{ ilosc_kg }} {{ unit }}{% endblocktranslate %}</small></td>
 					<td class="liczba">{{ p.masa_kg|floatformat:2 }}</td>
 					<td class="liczba">{% blocktranslate with cena_za_kg=p.cena_za_kg|floatformat:2 %}{{ cena_za_kg }} zł{% endblocktranslate %}</td>
 					<td class="liczba">{% blocktranslate with wartosc=p.wartosc|floatformat:2 %}{{ wartosc }} zł{% endblocktranslate %}</td>

@@ -4,13 +4,13 @@
 <p class="opis">{% blocktranslate with jutro=jutro|date:"l, j E" %}Lista do przekazania dostawcy na {{ jutro }}. Po 18:00 obejmuje wszystkie rezerwacje na ten dzień.{% endblocktranslate %}</p>
 <div class="arkusz arkusz-waski">
 	<table class="tabela tabela-duza">
-		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Ilość [kg]" %}</th></tr></thead>
+		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Ilość" %}</th></tr></thead>
 		<tbody>
 			{% for w in wiersze %}
-			<tr><td>{{ w.produkt }}</td><td class="liczba">{{ w.plan_kg|floatformat:"-2" }}</td></tr>
+			<tr><td>{{ w.produkt }}</td><td class="liczba">{{ w.plan_kg|floatformat:"-2" }} {{ w.produkt.symbol }}</td></tr>
 			{% endfor %}
 		</tbody>
-		<tfoot><tr><th scope="col">{% translate "Razem" %}</th><td class="liczba">{{ razem|floatformat:"-2" }}</td></tr></tfoot>
+		<tfoot><tr><th scope="col">{% translate "Razem" %}</th><td class="liczba">{{ razem|floatformat:"-2" }} kg{% if sztuki %} + {{ sztuki|floatformat:0 }} {% translate "szt." %}{% endif %}</td></tr></tfoot>
 	</table>
 </div>
 {% endblock %}

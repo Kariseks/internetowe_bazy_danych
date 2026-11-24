@@ -11,6 +11,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
 
+from ..modele_ogolne import rysuj
+
 
 # Podział wydruku na obszary. Do każdego dodawane są końce relacji obcych.
 OBSZARY = {
@@ -18,14 +20,6 @@ OBSZARY = {
     "magazyn": {"dostawa", "pozycja_dostawy", "ubytek", "korekta_stanu"},
     "asortyment": {"produkt", "cena_produktu", "plan_dostawy"},
     "rozliczenia": {"auth_user", "auth_group", "auth_user_groups", "profil_klienta", "rozliczenie_zaleglosci"},
-}
-NAZWY = {
-    "auth_user": "Konto", "auth_group": "Rola", "auth_user_groups": "Przypisanie roli",
-    "profil_klienta": "Profil klienta", "rozliczenie_zaleglosci": "Rozliczenie zaległości",
-    "produkt": "Produkt", "cena_produktu": "Cena produktu", "plan_dostawy": "Plan dostawy",
-    "rezerwacja": "Rezerwacja", "pozycja_rezerwacji": "Pozycja rezerwacji",
-    "sprzedaz": "Sprzedaż", "pozycja_sprzedazy": "Pozycja sprzedaży", "dostawa": "Dostawa",
-    "pozycja_dostawy": "Pozycja dostawy", "ubytek": "Ubytek", "korekta_stanu": "Korekta stanu",
 }
 
 
@@ -103,7 +97,7 @@ def karta(tabela, kolumny, indeksy, fk, skrot):
             f'<B>{html.escape(tabela)}</B></FONT></TD></TR>' + "".join(pola) + "</TABLE>>")
 
 
-def diagram(plik, obszar, kolumny, fk, klucze, orientacja, koncept=False):
+def diagram(plik, obszar, kolumny, fk, klucze, orientacja):
     relacje = [(t, p, cel, klucz) for (t, p), (cel, klucz) in fk.items() if t in obszar]
     tabele = obszar | {cel for _, _, cel, _ in relacje}
     dot = [f'digraph G {{ graph [charset="UTF-8", rankdir={orientacja}, margin=0, pad=0.07, '
@@ -111,12 +105,8 @@ def diagram(plik, obszar, kolumny, fk, klucze, orientacja, koncept=False):
            'node [shape=plain, fontname="DejaVu Sans", fontsize=10];',
            'edge [dir=both, arrowsize=0.75, penwidth=1.2, color="#527077"];']
     for tabela in sorted(tabele):
-        if koncept:
-            dot.append(f'"{tabela}" [label="{NAZWY[tabela]}", shape=box, style="rounded,filled", '
-                       'fillcolor="#eef5f0", color="#779d92", margin="0.14,0.10"];')
-        else:
-            label = karta(tabela, kolumny[tabela], klucze[tabela], fk, tabela not in obszar)
-            dot.append(f'"{tabela}" [label={label}];')
+        label = karta(tabela, kolumny[tabela], klucze[tabela], fk, tabela not in obszar)
+        dot.append(f'"{tabela}" [label={label}];')
     for tabela, pole, cel, _ in relacje:
         unikalny = [pole] in klucze[tabela].values()
         pusty = next(c[2] for c in kolumny[tabela] if c[0] == pole)
@@ -156,6 +146,7 @@ class Command(BaseCommand):
         for nazwa, obszar in OBSZARY.items():
             orientacja = "LR" if nazwa == "magazyn" else "TB"
             diagram(katalog_rys / f"erd-{nazwa}.pdf", obszar, kolumny, fk, klucze, orientacja)
-        diagram(katalog_rys / "erd-konceptualny.pdf", domena, kolumny, fk, klucze, "LR", koncept=True)
+        rysuj(katalog_rys / "erd-konceptualny.pdf", kolumny, fk, klucze, koncept=True)
+        rysuj(katalog_rys / "erd-ogolny.pdf", kolumny, fk, klucze)
         (katalog_bazy / "schema.sql").write_text(sql, encoding="utf-8")
         self.stdout.write(f"MySQL {wersja} • {len(kolumny)} tabel • {len(fk)} kluczy obcych")

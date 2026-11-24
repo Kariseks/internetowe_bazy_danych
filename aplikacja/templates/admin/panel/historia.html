@@ -9,7 +9,7 @@
 			{% for s in sprzedaze %}
 			<tr>
 				<td>{{ s.data_czas|date:"H:i" }}</td>
-				<td><ul class="pozycje">{% for p in s.pozycje %}<li>{{ p.produkt }} <span>{% blocktranslate with masa_kg=p.masa_kg|floatformat:2 cena_za_kg=p.cena_za_kg|floatformat:2 %}{{ masa_kg }} kg po {{ cena_za_kg }} zł{% endblocktranslate %}</span></li>{% endfor %}</ul></td>
+				<td><ul class="pozycje">{% for p in s.pozycje %}<li>{{ p.produkt }} <span>{% blocktranslate with masa_kg=p.masa_kg|floatformat:2 cena_za_kg=p.cena_za_kg|floatformat:2 unit=p.produkt.symbol %}{{ masa_kg }} {{ unit }} po {{ cena_za_kg }} zł{% endblocktranslate %}</span></li>{% endfor %}</ul></td>
 				<td>{{ s.sprzedawca.get_full_name }}</td>
 				<td>{% if s.rezerwacja_id %}{% translate "Wydanie rezerwacji" %}{% else %}{% translate "Przy ladzie" %}{% endif %}</td>
 				<td class="liczba">{% blocktranslate with suma=s.suma|floatformat:2 %}{{ suma }} zł{% endblocktranslate %}</td>

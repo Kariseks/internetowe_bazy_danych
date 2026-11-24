@@ -48,3 +48,5 @@ do_poprawy_karol.md
 # Lokalna baza demonstracyjna
 aplikacja/db.sqlite3*
 aplikacja/staticfiles/
+
+/aplikacja/.demo/

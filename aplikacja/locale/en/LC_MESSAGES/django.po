@@ -1411,3 +1411,102 @@ msgstr "No outstanding customer balances."
 msgid "żółta"
 msgstr "yellow"
 
+
+msgid "kg"
+msgstr "kg"
+
+msgid "szt."
+msgstr "pcs"
+
+msgid "Kalafior"
+msgstr "Cauliflower"
+
+msgid "Podaj całkowitą liczbę sztuk."
+msgstr "Enter a whole number of pieces."
+
+msgid "Jednostka sprzedaży"
+msgstr "Sales unit"
+
+msgid "Cena jednostkowa [zł]"
+msgstr "Unit price [PLN]"
+
+msgid "Cena jednostkowa"
+msgstr "Unit price"
+
+msgid "Standardowa dzienna ilość"
+msgstr "Standard daily quantity"
+
+msgid "Ilość na ladę"
+msgstr "Quantity set aside for counter sales"
+
+msgid "Ilość po przeliczeniu"
+msgstr "Quantity after recount"
+
+msgid "Ilość wyrzuconego towaru"
+msgstr "Quantity discarded"
+
+msgid "Ilość"
+msgstr "Quantity"
+
+msgid "Przygotowano"
+msgstr "Prepared"
+
+msgid "Zarezerwowano"
+msgstr "Reserved"
+
+msgid "Dostarczono"
+msgstr "Delivered"
+
+msgid "Różnica"
+msgstr "Difference"
+
+msgid "Plan"
+msgstr "Plan"
+
+msgid "Standardowa ilość"
+msgstr "Standard quantity"
+
+msgid "Produkty na wagę"
+msgstr "Weighed products"
+
+msgid "Produkt jest niedostępny."
+msgstr "This product is unavailable."
+
+msgid "Produkty na wagę rezerwujesz z dokładnością do 0,1 kg, łącznie do 20 kg. Produkty na sztuki rezerwujesz w pełnych sztukach. Zapłacisz przy odbiorze według cen z dnia odbioru."
+msgstr "Reserve weighed products in increments of 0.1 kg, up to 20 kg in total. Reserve counted items in whole pieces. Pay on collection at the prices for that day."
+
+msgid "%(produkt)s: dostępne %(kg)s %(unit)s."
+msgstr "%(produkt)s: %(kg)s %(unit)s available."
+
+msgid "Stan produktu: %(kg)s %(unit)s."
+msgstr "Stock: %(kg)s %(unit)s."
+
+msgid "Dostępne: %(kg)s %(unit)s."
+msgstr "Available: %(kg)s %(unit)s."
+
+msgid "Zarezerwowano %(kg)s %(unit)s, na ladę przeznaczono %(lada)s %(unit)s."
+msgstr "Reserved: %(kg)s %(unit)s. Set aside for counter sales: %(lada)s %(unit)s."
+
+msgid "Na ladę: %(ilosc_na_lade_kg)s %(unit)s"
+msgstr "For counter sales: %(ilosc_na_lade_kg)s %(unit)s"
+
+msgid "zarezerwowano %(ilosc_kg)s %(unit)s"
+msgstr "reserved %(ilosc_kg)s %(unit)s"
+
+msgid "%(stan_kg)s %(unit)s na stanie"
+msgstr "%(stan_kg)s %(unit)s in stock"
+
+msgid "%(masa_kg)s %(unit)s po %(cena_za_kg)s zł"
+msgstr "%(masa_kg)s %(unit)s at PLN %(cena_za_kg)s"
+
+msgid "- %(produkt)s: %(ilosc_kg)s %(unit)s"
+msgstr "- %(produkt)s: %(ilosc_kg)s %(unit)s"
+
+msgid "Odbiór w sklepie do 18:00. Za towar płacisz przy odbiorze, według wydanej ilości."
+msgstr "Collect in store by 18:00. Pay for the quantity collected."
+
+msgid "%(get_full_name)s, odbiór %(dzien)s. Jeśli towaru nie wystarczyło, wpisz ilość, którą udało się skompletować, także 0."
+msgstr "%(get_full_name)s, collection on %(dzien)s. If stock is insufficient, enter the quantity prepared, including zero."
+
+msgid "Limit 20 kg dotyczy produktów na wagę. Rezerwację można zmienić lub odwołać do 18:00 w dniu poprzedzającym odbiór. Zapłacisz w sklepie za wydany towar. Za nieodebraną rezerwację naliczamy 10% jej wartości. Zaległość powyżej 100 zł wstrzymuje nowe rezerwacje."
+msgstr "The 20 kg limit applies to weighed products. You may change or cancel by 18:00 the day before collection. Pay in store for the quantity collected. Uncollected reservations incur a fee of 10% of their value. An outstanding balance above PLN 100 blocks new reservations."

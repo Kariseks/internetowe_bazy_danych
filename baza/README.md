@@ -4,7 +4,7 @@ Schemat powstaje z modeli w aplikacjach `konta`, `magazyn`, `rezerwacje` i `rozl
 
 ## Odtworzenie DDL i diagramów
 
-Uruchom MySQL zgodnie z [instrukcją aplikacji](../aplikacja/README.md), aktywuj środowisko Pythona i upewnij się, że polecenie `dot` (Graphviz) jest dostępne. Następnie z katalogu `aplikacja` wykonaj:
+Uruchom MySQL zgodnie z [instrukcją aplikacji](../aplikacja/README.md), aktywuj środowisko Pythona i upewnij się, że polecenia `dot` i `neato` (Graphviz) są dostępne. Następnie z katalogu `aplikacja` wykonaj:
 
 ```bash
 python manage.py migrate
@@ -17,13 +17,16 @@ Diagramy PDF w katalogu [dokumentacja/rysunki/diagramy](../dokumentacja/rysunki/
 
 | Rysunek | Zakres |
 | --- | --- |
-| `erd-konceptualny.pdf` | Powiązania encji i przypisanie ról |
+| `erd-konceptualny.pdf` | Pojęcia sklepu, wybrane atrybuty i znaczenie każdej relacji |
+| `erd-ogolny.pdf` | Wszystkie 16 tabel użytych w modelu sklepu oraz nazwy i liczności 21 kluczy obcych |
 | `erd-asortyment.pdf` | Produkty, historia cen i plany dostaw |
 | `erd-magazyn.pdf` | Przyjęcia, pozycje dostaw, ubytki i korekty |
 | `erd-rezerwacje.pdf` | Rezerwacje, sprzedaże i ich pozycje |
 | `erd-rozliczenia.pdf` | Konta, grupy, profile klientów i rozliczenia |
 
-Zielony nagłówek oznacza tabelę rozpisaną w danym obszarze. Szary nagłówek identyfikuje tabelę z innego obszaru, w którym znajduje się jej pełny opis. PK oznacza klucz główny, FK klucz obcy, UQ unikalność, ƒ kolumnę generowaną, a znak zapytania przy typie dopuszczalną wartość NULL. Kółko na końcu linii oznacza dolną granicę równą zero, kreska jedną instancję, a rozgałęzienie wiele instancji. Liczności wynikają z ograniczeń bazy. Serwis może wymagać co najmniej jednej pozycji, gdy zapisuje cały dokument w transakcji.
+W modelu konceptualnym konto ma jedną rolę, a rezerwacja i sprzedaż mają co najmniej jedną pozycję. W modelu logicznym te same powiązania mają liczności dopuszczane przez MySQL.
+
+Na czterech szczegółowych diagramach obszarów zielony nagłówek oznacza tabelę rozpisaną w danym obszarze. Szary nagłówek identyfikuje tabelę z innego obszaru, w którym znajduje się jej pełny opis. PK oznacza klucz główny, FK klucz obcy, UQ unikalność, ƒ kolumnę generowaną, a znak zapytania przy typie dopuszczalną wartość NULL. Kółko na końcu linii oznacza dolną granicę równą zero, kreska jedną instancję, a rozgałęzienie wiele instancji. Liczności wynikają z ograniczeń bazy. Serwis może wymagać co najmniej jednej pozycji, gdy zapisuje cały dokument w transakcji.
 
 ## Kontrola eksportu
 

@@ -54,7 +54,8 @@ def dane_rezerwacji(zapytanie):
         r.klient = profile[r.klient_id]
         r.termin = termin(r.dzien_odbioru)
         r.mozna_zmienic = r.stan == 'zlozona' and timezone.now() < r.termin
-        r.laczna_masa = sum(p.ilosc_kg for p in r.pozycje)
+        r.laczna_masa = sum(p.ilosc_kg for p in r.pozycje if p.produkt.jednostka == "kg")
+        r.liczba_sztuk = sum(p.ilosc_kg for p in r.pozycje if p.produkt.jednostka == "szt")
         r.wartosc = sum(magazyn.grosze(p.ilosc_kg * ceny[dzien][p.produkt_id]) for p in r.pozycje)
     return rekordy
 
@@ -133,16 +134,21 @@ def _zapisz_pozycje(uzytkownik, dzien, pozycje, rezerwacja_id=None):
             elif przeszkoda(uzytkownik, dzien):
                 raise RezerwacjaOdrzucona(_('Sprawdź termin, kartę, saldo i rezerwacje na ten dzień.'))
             ids = [pid for pid, masa in pozycje]
-            if not ids or len(set(ids)) != len(ids) or sum(m for pid, m in pozycje) > LIMIT_KG:
+            if not ids or len(set(ids)) != len(ids):
                 raise RezerwacjaOdrzucona(_('Wybierz produkty o łącznej masie do 20 kg.'))
-            magazyn.blokuj_produkty(ids)
+            produkty = magazyn.blokuj_produkty(ids)
+            if sum(m for pid, m in pozycje if pid in produkty and produkty[pid].jednostka == "kg") > LIMIT_KG:
+                raise RezerwacjaOdrzucona(_('Wybierz produkty o łącznej masie do 20 kg.'))
             if not otwarty(dzien):
                 raise RezerwacjaOdrzucona(_('Minął termin rezerwacji.'))
             oferta = {w.produkt.pk: w for w in oferta_na_dzien(dzien, rezerwacja_id)}
             for pid, masa in pozycje:
                 w = oferta.get(pid)
-                if not w or masa <= 0 or masa > w.dostepne_kg or masa != Decimal(masa).quantize(Decimal('0.1')):
-                    raise RezerwacjaOdrzucona(_('Dostępne: %(kg)s kg.') % {'kg': w.dostepne_kg if w else 0})
+                if not w:
+                    raise RezerwacjaOdrzucona(_('Produkt jest niedostępny.'))
+                w.produkt.sprawdz_ilosc(masa, RezerwacjaOdrzucona)
+                if masa <= 0 or masa > w.dostepne_kg or masa != Decimal(masa).quantize(Decimal('0.1')):
+                    raise RezerwacjaOdrzucona(_('Dostępne: %(kg)s %(unit)s.') % {'kg': w.dostepne_kg, 'unit': w.produkt.symbol})
                 PlanDostawy.objects.get_or_create(produkt_id=pid, dzien=dzien,
                                                   defaults={'ilosc_kg': w.plan_kg})
             if rezerwacja_id:
@@ -200,10 +206,11 @@ def ustaw_plan(produkt_id, dzien, ilosc_kg):
     produkt = magazyn.blokuj_produkty([produkt_id]).get(produkt_id)
     if not produkt or not otwarty(dzien):
         raise PlanOdrzucony(_('Dzień jest zamknięty.'))
+    produkt.sprawdz_ilosc(ilosc_kg, PlanOdrzucony)
     zajete = magazyn.rezerwowane(dzien).get(produkt_id, 0)
     if ilosc_kg < zajete + produkt.ilosc_na_lade_kg:
-        raise PlanOdrzucony(_('Zarezerwowano %(kg)s kg, na ladę przeznaczono %(lada)s kg.') %
-                            {'kg': zajete, 'lada': produkt.ilosc_na_lade_kg})
+        raise PlanOdrzucony(_('Zarezerwowano %(kg)s %(unit)s, na ladę przeznaczono %(lada)s %(unit)s.') %
+                            {'kg': zajete, 'lada': produkt.ilosc_na_lade_kg, 'unit': produkt.symbol})
     PlanDostawy.objects.update_or_create(produkt=produkt, dzien=dzien, defaults={'ilosc_kg': ilosc_kg})
 
 
@@ -223,8 +230,9 @@ def przygotuj_rezerwacje(rezerwacja_id, masy, kto):
     odwazone = dict(masy)
     if set(odwazone) != {p.produkt_id for p in pozycje} or any(m < 0 for m in odwazone.values()):
         raise RezerwacjaOdrzucona(_('Podaj masę każdego zamówionego produktu.'))
-    magazyn.blokuj_produkty(odwazone)
+    produkty = magazyn.blokuj_produkty(odwazone)
     for p in pozycje:
+        produkty[p.produkt_id].sprawdz_ilosc(odwazone[p.produkt_id], RezerwacjaOdrzucona)
         p.masa_odwazona_kg = odwazone[p.produkt_id]
     PozycjaRezerwacji.objects.bulk_update(pozycje, ['masa_odwazona_kg'])
     _ustaw_stan(r, 'przygotowana')

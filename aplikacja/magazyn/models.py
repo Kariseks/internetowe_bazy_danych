@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.conf import settings
 from django.db import models
 from django.db.models import F, Q
@@ -8,7 +10,7 @@ from django.utils.translation import gettext, gettext_noop
 SLOWNIK_PRODUKTOW = {
     gettext_noop("Ziemniaki"), gettext_noop("Marchew"), gettext_noop("Cebula"),
     gettext_noop("Pomidory"), gettext_noop("Ogórki"), gettext_noop("Buraki"),
-    gettext_noop("Jabłka"), gettext_noop("Gruszki"), gettext_noop("Kapusta"),
+    gettext_noop("Jabłka"), gettext_noop("Gruszki"), gettext_noop("Kapusta"), gettext_noop("Kalafior"),
     gettext_noop("żółta"), gettext_noop("malinowe"), gettext_noop("gruntowe"),
     gettext_noop("Konferencja"),
 }
@@ -19,6 +21,8 @@ def nazwa_w_katalogu(tekst):
 
 
 class Produkt(models.Model):
+    JEDNOSTKI = [("kg", gettext_noop("kg")), ("szt", gettext_noop("szt."))]
+    jednostka = models.CharField(max_length=3, choices=JEDNOSTKI, default="kg")
     nazwa = models.CharField(max_length=60)
     odmiana = models.CharField(max_length=60, blank=True, default="")
     standardowa_ilosc_kg = models.DecimalField(max_digits=7, decimal_places=2)
@@ -28,10 +32,19 @@ class Produkt(models.Model):
     class Meta:
         db_table = "produkt"
         constraints = [
+            models.CheckConstraint(condition=Q(jednostka__in=["kg", "szt"]), name="ck_produkt_jednostka"),
             models.UniqueConstraint(fields=["nazwa", "odmiana"], name="uq_produkt_nazwa_odmiana"),
             models.CheckConstraint(condition=Q(ilosc_na_lade_kg__gte=0) &
                 Q(standardowa_ilosc_kg__gte=F("ilosc_na_lade_kg")), name="ck_produkt_plan_lada"),
         ]
+
+    @property
+    def symbol(self):
+        return gettext("szt.") if self.jednostka == "szt" else "kg"
+
+    def sprawdz_ilosc(self, ilosc, blad):
+        if self.jednostka == "szt" and Decimal(ilosc) % 1:
+            raise blad(gettext("Podaj całkowitą liczbę sztuk."))
 
     @property
     def nazwa_wyswietlana(self):
@@ -133,7 +146,7 @@ class Sprzedaz(models.Model):
 class PozycjaSprzedazy(models.Model):
     sprzedaz = models.ForeignKey(Sprzedaz, on_delete=models.CASCADE)
     produkt = models.ForeignKey(Produkt, on_delete=models.PROTECT)
-    masa_kg = models.DecimalField(max_digits=6, decimal_places=2)
+    masa_kg = models.DecimalField(max_digits=7, decimal_places=2)
     cena_za_kg = models.DecimalField(max_digits=7, decimal_places=2)
 
     class Meta:

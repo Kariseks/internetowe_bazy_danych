@@ -2,6 +2,6 @@
 {% if zdarzenie != 'anulowana' %}
 {% translate "Pozycje:" %}
 {% include "powiadomienia/_pozycje.txt" %}
-{% translate "Odbiór w sklepie do 18:00. Za towar płacisz przy odbiorze, według masy po zważeniu." %}
+{% translate "Odbiór w sklepie do 18:00. Za towar płacisz przy odbiorze, według wydanej ilości." %}
 {% blocktranslate with termin=rezerwacja.termin|date:"H:i, j E" %}Rezerwację można zmienić albo anulować bez opłaty do {{ termin }}. Za nieodebraną rezerwację sklep pobiera opłatę 10% jej wartości.{% endblocktranslate %}{% endif %}
 {% endautoescape %}

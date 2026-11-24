@@ -12,12 +12,12 @@
 		<div class="skrzynki">
 			{% for w in wiersze %}
 			<button type="button" class="skrzynka"
-				data-id="{{ w.produkt.id }}" data-nazwa="{{ w.produkt }}" data-cena="{{ w.cena_za_kg|stringformat:'s' }}"
+				data-jednostka="{{ w.produkt.symbol }}" data-id="{{ w.produkt.id }}" data-nazwa="{{ w.produkt }}" data-cena="{{ w.cena_za_kg|stringformat:'s' }}"
 				{% if not w.stan_kg %}disabled{% endif %}>
 				<span class="skrzynka-nazwa">{{ w.produkt.nazwa_wyswietlana }}</span>
 				<span class="skrzynka-odmiana">{{ w.produkt.odmiana_wyswietlana }}</span>
-				<span class="skrzynka-cena">{% blocktranslate with cena_za_kg=w.cena_za_kg|floatformat:2 %}{{ cena_za_kg }} zł{% endblocktranslate %}</span>
-				<span class="skrzynka-stan">{% if w.stan_kg %}{% blocktranslate with stan_kg=w.stan_kg|floatformat:"-2" %}{{ stan_kg }} kg na stanie{% endblocktranslate %}{% else %}{% translate "brak na stanie" %}{% endif %}</span>
+				<span class="skrzynka-cena">{% blocktranslate with cena_za_kg=w.cena_za_kg|floatformat:2 %}{{ cena_za_kg }} zł{% endblocktranslate %}/{{ w.produkt.symbol }}</span>
+				<span class="skrzynka-stan">{% if w.stan_kg %}{% blocktranslate with stan_kg=w.stan_kg|floatformat:"-2" unit=w.produkt.symbol %}{{ stan_kg }} {{ unit }} na stanie{% endblocktranslate %}{% else %}{% translate "brak na stanie" %}{% endif %}</span>
 			</button>
 			{% endfor %}
 		</div>
@@ -25,7 +25,7 @@
 	<section class="paragon" aria-label="{% translate "Pozycje sprzedaży" %}">
 		{{ formset.non_form_errors }}
 		<table class="tabela">
-			<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Masa [kg]" %}</th><th scope="col" class="liczba">{% translate "Wartość" %}</th><th scope="col"><span class="ukryte">{% translate "Usuń" %}</span></th></tr></thead>
+			<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Ilość" %}</th><th scope="col" class="liczba">{% translate "Wartość" %}</th><th scope="col"><span class="ukryte">{% translate "Usuń" %}</span></th></tr></thead>
 			<tbody id="pozycje">
 				{% for f in formset %}{% include "admin/panel/_pozycja_sprzedazy.html" %}{% endfor %}
 			</tbody>
