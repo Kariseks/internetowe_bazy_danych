@@ -1,7 +1,7 @@
 {% extends "admin/panel/base.html" %}
-{% load i18n %}
+{% load i18n daty %}
 {% block content %}
-<p class="opis">{% blocktranslate with jutro=jutro|date:"l, j E" %}Lista do przekazania dostawcy na {{ jutro }}. Po 18:00 obejmuje wszystkie rezerwacje na ten dzień.{% endblocktranslate %}</p>
+<p class="opis">{% blocktranslate with jutro=jutro|na_dzien:"l, j E" %}Lista do przekazania dostawcy na {{ jutro }}. Po 18:00 obejmuje wszystkie rezerwacje na ten dzień.{% endblocktranslate %}</p>
 <div class="arkusz arkusz-waski">
 	<table class="tabela tabela-duza">
 		<thead><tr><th scope="col">{% translate "Produkt" %}</th><th scope="col" class="liczba">{% translate "Ilość" %}</th></tr></thead>

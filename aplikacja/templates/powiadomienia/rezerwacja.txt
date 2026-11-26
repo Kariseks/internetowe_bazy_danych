@@ -1,4 +1,4 @@
-{% load i18n %}{% autoescape off %}{% with dzien=rezerwacja.dzien_odbioru|date:"l, j E Y" %}{% if zdarzenie == 'anulowana' %}{% blocktranslate %}Rezerwacja na {{ dzien }} została anulowana bez opłaty.{% endblocktranslate %}{% elif zdarzenie == 'zmieniona' %}{% blocktranslate %}Rezerwacja na {{ dzien }} została zmieniona.{% endblocktranslate %}{% else %}{% blocktranslate %}Rezerwacja na {{ dzien }} została złożona.{% endblocktranslate %}{% endif %}{% endwith %}
+{% load i18n daty %}{% autoescape off %}{% with dzien=rezerwacja.dzien_odbioru|na_dzien:"l, j E Y" %}{% if zdarzenie == 'anulowana' %}{% blocktranslate %}Rezerwacja na {{ dzien }} została anulowana bez opłaty.{% endblocktranslate %}{% elif zdarzenie == 'zmieniona' %}{% blocktranslate %}Rezerwacja na {{ dzien }} została zmieniona.{% endblocktranslate %}{% else %}{% blocktranslate %}Rezerwacja na {{ dzien }} została złożona.{% endblocktranslate %}{% endif %}{% endwith %}
 {% if zdarzenie != 'anulowana' %}
 {% translate "Pozycje:" %}
 {% include "powiadomienia/_pozycje.txt" %}

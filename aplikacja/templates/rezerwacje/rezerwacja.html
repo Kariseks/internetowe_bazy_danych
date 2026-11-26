@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n daty %}
 {% load static %}
 {% block title %}{% if rezerwacja %}{% translate "Zmiana rezerwacji" %}{% else %}{% translate "Rezerwacja" %}{% endif %} – Warzywniak{% endblock %}
 {% block skrypty %}<script src="{% static 'sklep/rezerwacja.js' %}" defer></script>{% endblock %}
 {% block content %}
-{% with data=dzien|date:"l, j E" %}
+{% with data=dzien|na_dzien:"l, j E" %}
 <h1>{% if rezerwacja %}{% blocktranslate %}Zmiana rezerwacji na {{ data }}{% endblocktranslate %}{% else %}{% blocktranslate %}Rezerwacja na {{ data }}{% endblocktranslate %}{% endif %}</h1>
 {% endwith %}
 <p class="wstep">{% translate "Produkty na wagę rezerwujesz z dokładnością do 0,1 kg, łącznie do 20 kg. Produkty na sztuki rezerwujesz w pełnych sztukach. Zapłacisz przy odbiorze według cen z dnia odbioru." %}</p>

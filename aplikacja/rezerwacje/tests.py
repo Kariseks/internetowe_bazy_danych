@@ -248,3 +248,27 @@ class NaglowekTests(TestCase):
         odpowiedz = self.client.get('/')
         self.assertNotContains(odpowiedz, 'class="burger"')
         self.assertNotContains(odpowiedz, 'menu.js')
+
+
+class DzienTygodniaWZdaniuTests(TestCase):
+    """Dzień tygodnia po przyimku „na” i w środku zdania (filtry z ``templatetags/daty.py``)."""
+
+    def test_odmiana_po_polsku_i_bez_zmian_po_angielsku(self):
+        from datetime import date
+        from django.utils import translation
+        from .templatetags.daty import na_dzien, w_zdaniu
+        sobota, sroda = date(2026, 11, 28), date(2026, 11, 25)
+        with translation.override('pl'):
+            self.assertEqual(na_dzien(sobota), 'sobotę, 28 listopada')
+            self.assertEqual(na_dzien(sroda, 'l'), 'środę')
+            self.assertEqual(w_zdaniu(sobota), 'sobota, 28 listopada')
+        with translation.override('en'):
+            self.assertEqual(na_dzien(sobota), 'Saturday, 28 November')
+
+    def test_naglowek_formularza_rezerwacji(self):
+        klient = nowy_klient()
+        self.client.force_login(klient)
+        dzien = timezone.localdate() + timedelta(days=2)
+        from django.template.defaultfilters import date as formatuj
+        odpowiedz = self.client.get(reverse('nowa_rezerwacja', args=[dzien.isoformat()]), HTTP_ACCEPT_LANGUAGE='pl')
+        self.assertNotContains(odpowiedz, 'na ' + formatuj(dzien, 'l'))
