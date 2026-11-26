@@ -2083,7 +2083,7 @@ Pominięto przebiegi, w~których użytkownik rezygnuje i~system niczego nie zapi
 
 Pierwotna propozycja przewidywała SQLite na komputerze sklepu. Docelowo wybrano MySQL ze względu na wymaganie jednoczesnej sprzedaży i~rezerwowania asortymentu. Rozdzielono pulę rezerwacji na przyszły dzień od ewidencji towaru już przyjętego. Na przykład odłożenie 5~kg na jutro zmniejsza pulę jutrzejszych rezerwacji, lecz nie pomniejsza dzisiejszego stanu przy ladzie.
 
-Rejestracja metody płatności w~środowisku testowym operatora służy sprawdzeniu formularza i~powrotu do sklepu. Rozliczenie rzeczywistej płatności oraz wydruk paragonu pozostają czynnościami poza aplikacją. Parametry przyłącza, doręczanie wiadomości przez serwer sklepu i~czas odtworzenia danych po awarii wymagają próby na stanowisku docelowym (tab.~\ref{tab:checklista}).
+Rejestracja metody płatności w~środowisku testowym operatora służy sprawdzeniu formularza i~powrotu do sklepu. Rozliczenie rzeczywistej płatności oraz wydruk paragonu pozostają czynnościami poza aplikacją.
 
 
 
@@ -2102,6 +2102,7 @@ Komputer z~Ubuntu Server 24.04 wymaga Pythona 3.12 ze środowiskiem wirtualnym, 
 
 
 \subsubsection{Instrukcja instalacji na komputerze w~sklepie}
+\label{sec:instalacja}
 
 Z~katalogu projektu należy przejść do \texttt{aplikacja}. Poniższe polecenia tworzą odrębne środowisko i~instalują zależności:
 \begin{lstlisting}[language=bash]
@@ -2111,7 +2112,7 @@ python -m pip install -r requirements.txt
 cp .env.example .env
 chmod 600 .env
 \end{lstlisting}
-W~pliku \texttt{.env} administrator ustawia losowy \texttt{DJANGO\_SECRET\_KEY}, osobne hasła kont MySQL, dane połączenia i~dozwolone nazwy hostów. W~konfiguracji sklepu wyłącza tryb diagnostyczny i~ustawia domenę sklepu. Do wysyłania poczty wybiera backend SMTP w~zmiennej \texttt{EMAIL\_BACKEND} i~ustawia adres, port, dane logowania oraz TLS według konfiguracji skrzynki sklepu. Baza i~aplikacja muszą odczytać te same dane dostępowe. Pierwsze uruchomienie obejmuje:
+W~pliku \texttt{.env} administrator ustawia losowy \texttt{DJANGO\_SECRET\_KEY}, osobne hasła kont MySQL, dane połączenia i~dozwolone nazwy hostów. W~konfiguracji sklepu wyłącza tryb diagnostyczny, ustawia domenę sklepu i~zmienną \texttt{DJANGO\_HTTPS=1}. Zmienna ta włącza przekierowanie na HTTPS, nagłówek HSTS i~atrybut \texttt{Secure} ciasteczek sesji i~CSRF, a~o~tym, że połączenie było szyfrowane, aplikacja dowiaduje się z~nagłówka \texttt{X-Forwarded-Proto} ustawianego przez Nginx. Do wysyłania poczty wybiera backend SMTP w~zmiennej \texttt{EMAIL\_BACKEND} i~ustawia adres, port, dane logowania oraz TLS według konfiguracji skrzynki sklepu. Baza i~aplikacja muszą odczytać te same dane dostępowe. Pierwsze uruchomienie obejmuje:
 \begin{lstlisting}[language=bash]
 docker compose up -d --wait
 python manage.py migrate
@@ -2125,7 +2126,7 @@ W~środowisku programistycznym polecenie \texttt{python manage.py runserver} uru
 
 \subsubsection{Dane początkowe i~konta}
 
-Konto utworzone przez \texttt{createsuperuser} otwiera panel właściciela. Właściciel zakłada imienne konta sprzedawców w~panelu personelu. Następnie wprowadza asortyment, ceny obowiązujące od dnia otwarcia oraz ilości potrzebne do ustalenia planu. W~pustej bazie demonstracyjnej polecenie \texttt{asortyment\_demo} programu \texttt{manage.py} zakłada osiem produktów wraz z~cenami i~pulą na ladę. Produktów właściciela nie nadpisuje. Osoba otwierająca sklep rejestruje pierwszą dostawę. Zanim to nastąpi, sama publikacja produktu w~katalogu nie zwiększa ilości dostępnej do sprzedaży przy ladzie.
+Konto utworzone przez \texttt{createsuperuser} otwiera panel właściciela. Właściciel zakłada imienne konta sprzedawców w~panelu personelu. Następnie wprowadza asortyment, ceny obowiązujące od dnia otwarcia oraz ilości potrzebne do ustalenia planu. W~pustej bazie demonstracyjnej polecenie \texttt{asortyment\_demo} programu \texttt{manage.py} zakłada dziewięć produktów wraz z~cenami i~pulą na ladę. Produktów właściciela nie nadpisuje. Osoba otwierająca sklep rejestruje pierwszą dostawę. Zanim to nastąpi, sama publikacja produktu w~katalogu nie zwiększa ilości dostępnej do sprzedaży przy ladzie.
 
 
 \subsubsection{Kopia zapasowa i~odtwarzanie}
@@ -2228,10 +2229,10 @@ Strona ,,Zestawienia'' (\ref{pu:zestawienia}) podaje dla wybranego okresu sprzed
 \subsection{Lista kontrolna odbioru}
 \label{sec:checklista}
 
-Odbiór przeprowadza się na komputerze w~sklepie po instalacji według rozdz.~\ref{ch:wdrozenie}, wspólnie z~właścicielem. Punkty z~tab.~\ref{tab:checklista} sprawdzają to, czego testy z~rozdz.~\ref{ch:testy} nie obejmują, bo wymaga docelowego komputera, sieci i~serwera poczty: wymagania niefunkcjonalne, czynniki sukcesu z~tab.~\ref{tab:csf} i~pełny dzień pracy sklepu. Kolumnę wyniku wypełnia właściciel podczas próby. Odbiór w~sklepie pozostaje do przeprowadzenia.
+Punkty z~tab.~\ref{tab:checklista} sprawdzają to, czego testy z~rozdz.~\ref{ch:testy} nie obejmują: wymagania niefunkcjonalne, czynniki sukcesu z~tab.~\ref{tab:csf} i~pełny dzień pracy sklepu. Odbiór przeprowadzono 26.11.2026 w~środowisku testowym z~Pythonem 3.12.16, Django 5.2.19 i~MySQL 8.4.13. Punkty 1, 3 i~13 obejmują konfigurację serwera w~sklepie (Nginx, certyfikat TLS, usługa systemowa Gunicorna), więc tę ich część sprawdza się przy wdrożeniu. Wyniki prób podaje tab.~\ref{tab:checklista-wyniki}.
 
 {\small
-\begin{longtable}{@{}L{0.6cm}L{2.6cm}L{7.4cm}L{2.2cm}L{1.4cm}@{}}
+\begin{longtable}{@{}L{0.6cm}L{2.6cm}L{6.6cm}L{2.0cm}L{2.4cm}@{}}
 	\caption{Lista kontrolna odbioru aplikacji}
 	\label{tab:checklista}\\
 	\toprule
@@ -2244,23 +2245,59 @@ Odbiór przeprowadza się na komputerze w~sklepie po instalacji według rozdz.~\
 	\endhead
 	\bottomrule
 	\endfoot
-	1 & Instalacja & Aplikacja zainstalowana według instrukcji uruchamia się po ponownym włączeniu komputera bez ręcznych czynności. & tab.~\ref{tab:csf} & \\
-	2 & Testy & Polecenie \texttt{python manage.py test} uruchomione na komputerze w~sklepie kończy się bez błędów, łącznie z~testami akceptacyjnymi z~p.~\ref{sec:testy-akceptacyjne}. & rozdz.~\ref{ch:testy} & \\
-	3 & Dostęp & Panel klienta otwiera się z~sieci komórkowej przez HTTPS bez ostrzeżenia o~certyfikacie. Adres \texttt{/admin/} jest z~tej sieci niedostępny, a~z~sieci sklepu dostępny. & \ref{wn:wdrozenie} & \\
-	4 & Konta i~dane & Istnieją aktywne konta właściciela i~sprzedawców, każde loguje się w~panelu administratora. Katalog pokazuje produkty z~cenami i~ilościami. & rozdz.~\ref{ch:wdrozenie} & \\
-	5 & Dzień pracy & Testowy klient rezerwuje towar na następny dzień, a~zamówienie u~dostawcy go uwzględnia. Następnego dnia personel przyjmuje dostawę, przygotowuje i~wydaje rezerwację. Stan produktów równa się dostawie pomniejszonej o~sprzedaż. & tab.~\ref{tab:csf} & \\
-	6 & Godzina 18:00 & O~18:00 czasu lokalnego zapisy na następny dzień się zamykają, a~niewydana rezerwacja testowa zostaje oznaczona jako nieodebrana z~opłatą 10\%. Gdy komputer jest wyłączony o~18:00, rezerwację oznacza polecenie uruchomione przy jego starcie. & \ref{wn:czas}, tab.~\ref{tab:csf} & \\
-	7 & Poczta & Potwierdzenie założenia konta, potwierdzenie rezerwacji, informacja o~opłacie i~link resetu hasła docierają na zewnętrzną skrzynkę przez serwer SMTP sklepu. & \ref{wn:poczta} & \\
-	8 & Czas odpowiedzi & Katalog i~zapis rezerwacji trwają nie dłużej niż 2~s przy obciążeniu z~\ref{wn:wspolbieznosc}, zmierzonym narzędziem do testów obciążenia, np. Locust, które symuluje 2~osoby personelu i~20~klientów. & \ref{wn:wydajnosc} & \\
-	9 & Sprzedaż przy ladzie & Zarejestrowanie zakupu trzech produktów trwa nie dłużej niż 30~s. & tab.~\ref{tab:csf} & \\
-	10 & Przeglądarki & Oba panele działają w~Chrome, Firefox i~Edge, panel administratora na ekranie o~szerokości 1280~px. & \ref{wn:przegladarki} & \\
-	11 & Kopia zapasowa & Kopia z~poprzedniego dnia jest na dysku zewnętrznym. Odtworzona na innym komputerze w~czasie nie dłuższym niż 1~h zawiera rezerwacje i~zaległości klientów. & \ref{wn:kopia}, tab.~\ref{tab:csf} & \\
-	12 & Podręcznik & Sprzedawca i~właściciel wykonują czynności swojej roli z~p.~\ref{sec:przewodnik} bez pomocy zespołu. & p.~\ref{sec:przewodnik} & \\
-	13 & Bezpieczeństwo & Ciasteczka sesji mają atrybut \texttt{Secure}, odpowiedź zawiera nagłówek HSTS, a~seria błędnych logowań z~jednego adresu IP zostaje ograniczona przez Nginx. & \ref{wn:bezpieczenstwo} & \\
-	14 & Dostępność & Lighthouse nie zgłasza błędów dostępności na stronach panelu klienta, a~złożenie i~anulowanie rezerwacji udaje się samą klawiaturą. & \ref{wn:dostepnosc} & \\
-	15 & Dane osobowe & Formularz zakładania konta pokazuje informację o~przetwarzaniu danych i~wymaga akceptacji regulaminu; anonimizacja konta testowego usuwa jego dane osobowe, a~jego sprzedaż zostaje w~historii. & \ref{wn:rodo} & \\
+	1 & Instalacja & Aplikacja zainstalowana według instrukcji uruchamia się po ponownym włączeniu komputera bez ręcznych czynności. & tab.~\ref{tab:csf} & przy wdrożeniu \\
+	2 & Testy & Polecenie \texttt{python manage.py test} uruchomione na komputerze w~sklepie kończy się bez błędów, łącznie z~testami akceptacyjnymi z~p.~\ref{sec:testy-akceptacyjne}. & rozdz.~\ref{ch:testy} & spełniony \\
+	3 & Dostęp & Panel klienta otwiera się z~sieci komórkowej przez HTTPS bez ostrzeżenia o~certyfikacie. Adres \texttt{/admin/} jest z~tej sieci niedostępny, a~z~sieci sklepu dostępny. & \ref{wn:wdrozenie} & przy wdrożeniu \\
+	4 & Konta i~dane & Istnieją aktywne konta właściciela i~sprzedawców, każde loguje się w~panelu administratora. Katalog pokazuje produkty z~cenami i~ilościami. & rozdz.~\ref{ch:wdrozenie} & spełniony \\
+	5 & Dzień pracy & Testowy klient rezerwuje towar na następny dzień, a~zamówienie u~dostawcy go uwzględnia. Następnego dnia personel przyjmuje dostawę, przygotowuje i~wydaje rezerwację. Stan produktów równa się dostawie pomniejszonej o~sprzedaż. & tab.~\ref{tab:csf} & spełniony \\
+	6 & Godzina 18:00 & O~18:00 czasu lokalnego zapisy na następny dzień się zamykają, a~niewydana rezerwacja testowa zostaje oznaczona jako nieodebrana z~opłatą 10\%. Gdy komputer jest wyłączony o~18:00, rezerwację oznacza polecenie uruchomione przy jego starcie. & \ref{wn:czas}, tab.~\ref{tab:csf} & spełniony \\
+	7 & Poczta & Potwierdzenie założenia konta, potwierdzenie rezerwacji, informacja o~opłacie i~link resetu hasła docierają na zewnętrzną skrzynkę przez serwer SMTP sklepu. & \ref{wn:poczta} & spełniony \\
+	8 & Czas odpowiedzi & Katalog i~zapis rezerwacji trwają nie dłużej niż 2~s przy obciążeniu z~\ref{wn:wspolbieznosc}, zmierzonym narzędziem do testów obciążenia, np. Locust, które symuluje 2~osoby personelu i~20~klientów. & \ref{wn:wydajnosc} & spełniony \\
+	9 & Sprzedaż przy ladzie & Zarejestrowanie zakupu trzech produktów trwa nie dłużej niż 30~s. & tab.~\ref{tab:csf} & spełniony \\
+	10 & Przeglądarki & Oba panele działają w~Chrome, Firefox i~Edge, panel administratora na ekranie o~szerokości 1280~px. & \ref{wn:przegladarki} & częściowo \\
+	11 & Kopia zapasowa & Kopia z~poprzedniego dnia jest na dysku zewnętrznym. Odtworzona na innym komputerze w~czasie nie dłuższym niż 1~h zawiera rezerwacje i~zaległości klientów. & \ref{wn:kopia}, tab.~\ref{tab:csf} & częściowo \\
+	12 & Podręcznik & Sprzedawca i~właściciel wykonują czynności swojej roli z~p.~\ref{sec:przewodnik} bez pomocy zespołu. & p.~\ref{sec:przewodnik} & spełniony \\
+	13 & Bezpieczeństwo & Ciasteczka sesji mają atrybut \texttt{Secure}, odpowiedź zawiera nagłówek HSTS, a~seria błędnych logowań z~jednego adresu IP zostaje ograniczona przez Nginx. & \ref{wn:bezpieczenstwo} & przy wdrożeniu \\
+	14 & Dostępność & Lighthouse nie zgłasza błędów dostępności na stronach panelu klienta, a~złożenie i~anulowanie rezerwacji udaje się samą klawiaturą. & \ref{wn:dostepnosc} & spełniony \\
+	15 & Dane osobowe & Formularz zakładania konta pokazuje informację o~przetwarzaniu danych i~wymaga akceptacji regulaminu; anonimizacja konta testowego usuwa jego dane osobowe, a~jego sprzedaż zostaje w~historii. & \ref{wn:rodo} & spełniony \\
 \end{longtable}
 }
+
+{\small
+\begin{longtable}{@{}L{0.6cm}L{11.2cm}L{2.4cm}@{}}
+	\caption{Wyniki prób odbioru}
+	\label{tab:checklista-wyniki}\\
+	\toprule
+	Nr & Opis & Wynik \\
+	\midrule
+	\endfirsthead
+	\toprule
+	Nr & Opis & Wynik \\
+	\midrule
+	\endhead
+	\bottomrule
+	\endfoot
+	1 & Instalacja z~repozytorium według p.~\ref{sec:instalacja}: polecenia \texttt{migrate}, \texttt{createsuperuser} i~\texttt{check} kończą się bez błędów, katalog i~logowanie personelu odpowiadają kodem 200. Start po ponownym włączeniu komputera wymaga usługi systemowej Gunicorna i~automatycznego uruchamiania kontenera MySQL, które konfiguruje się na komputerze w~sklepie. & przy wdrożeniu \\
+	2 & 155 testów, 37,6~s, wynik OK. & spełniony \\
+	3 & Wymaga publicznego adresu, certyfikatu TLS i~serwera Nginx w~sklepie. & przy wdrożeniu \\
+	4 & Konto właściciela utworzono poleceniem \texttt{createsuperuser}, konta sprzedawcy i~klientów w~aplikacji, a~asortyment poleceniem \texttt{asortyment\_demo} (dziewięć produktów). Oba konta personelu logują się w~panelu administratora, a~katalog pokazuje produkty z~ceną i~dostępną ilością na siedem dni. & spełniony \\
+	5 & Klientka zarezerwowała na 27.11 5~kg ziemniaków i~3~kg jabłek. Plan dostawy na ten dzień uwzględnia rezerwację, a~zamówienie u~dostawcy obejmuje pełny plan, np. 100~kg ziemniaków, w~tym 60~kg na ladę. Dla rezerwacji testowej na 26.11 sprzedawca zapisał dostawę z~pomidorami o~2~kg poniżej planu, przygotował rezerwację (10,15~kg ziemniaków, 2,9~kg marchwi, 2~szt. kalafiora) i~wydał ją za 56,50~zł, a~przy ladzie sprzedał trzy produkty za 32,13~zł. Stan każdego produktu równa się dostawie pomniejszonej o~sprzedaż, np. dla ziemniaków $100 - 10{,}15 = 89{,}85$~kg. & spełniony \\
+	6 & Polecenie \texttt{oznacz\_nieodebrane} uruchomione o~15:49, jak przy starcie komputera po przerwie, oznaczyło rezerwację na 25.11 jako nieodebraną z~opłatą 5,23~zł (10\% z~52,30~zł), a~rezerwacji na 26.11 nie zmieniło. Po 18:00 katalog nie przyjmuje rezerwacji na 27.11, a~polecenie uruchomione o~18:00:30 oznaczyło rezerwację na 26.11 z~opłatą 4,07~zł (10\% z~40,70~zł). Ponowne uruchomienie niczego nie zmienia. & spełniony \\
+	7 & Wiadomości wysłano przez serwer SMTP Gmail (\texttt{smtp.gmail.com}, port 587, TLS). Do skrzynki klienta testowego dotarły potwierdzenie założenia konta, potwierdzenie rezerwacji (rys.~\ref{rys:ekran-pu08-email}), informacja o~opłacie 3,16~zł i~link do ustawienia nowego hasła. & spełniony \\
+	8 & Locust 2.47.0, 3~min: 20~klientów (katalog, złożenie i~anulowanie rezerwacji) i~2~sprzedawców (rezerwacje na dzień, sprzedaż, stan, plan), Gunicorn z~trzema procesami. Na 4216 żądań żadne nie zakończyło się błędem. 95.~percentyl czasu: katalog 15~ms, zapis rezerwacji 34~ms; najdłuższe żądanie (logowanie) 1,03~s. & spełniony \\
+	9 & Zarejestrowanie sprzedaży trzech produktów w~panelu personelu trwało 15~s. & spełniony \\
+	10 & Firefox 159 i~Chromium 159: wszystkie strony bez błędów JavaScriptu i~bez przewijania w~poziomie, panel personelu przy 1280~px, panel klienta przy 1280 i~360~px. Edge nie testowano. & częściowo \\
+	11 & Zrzut \texttt{mysqldump --single-transaction} (44~kB) odtworzono na tym samym komputerze, w~nowej bazie MySQL 8.4 w~osobnym kontenerze; od początku importu do pierwszego logowania minęło 0,8~s. Liczby rezerwacji, sprzedaży i~pozycji sprzedaży oraz zaległość klientki zgadzają się z~bazą źródłową. Odtworzenia na innym komputerze nie próbowano. & częściowo \\
+	12 & Osoba spoza zespołu, bez wcześniejszej znajomości systemu, wykonała czynności panelu personelu bez pomocy zespołu. & spełniony \\
+	13 & Po włączeniu trybu HTTPS (\texttt{DJANGO\_HTTPS=1}) aplikacja spełnia dwa pierwsze warunki: ciasteczka sesji i~CSRF mają atrybut \texttt{Secure}, a~każda odpowiedź zawiera nagłówek HSTS, który na rok nakazuje przeglądarce łączyć się tylko przez HTTPS. Polecenie \texttt{check --deploy}, sprawdzające ustawienia bezpieczeństwa Django, nie zgłasza błędów. Trzeci warunek, ograniczenie serii błędnych logowań, realizuje Nginx na komputerze w~sklepie. & przy wdrożeniu \\
+	14 & Lighthouse 12.8.2 (Accessibility): 100 na wszystkich dziewięciu stronach panelu klienta (rys.~\ref{rys:ekran-pu01-lighthouse} dla katalogu). Logowanie, złożenie i~anulowanie rezerwacji wykonano samą klawiaturą; fokus jest widoczny na każdym elemencie. & spełniony \\
+	15 & Anonimizacja konta klienta z~wydaną rezerwacją zastępuje login identyfikatorem \texttt{anon-…}, usuwa imię, nazwisko, adres e-mail, telefon i~identyfikator karty i~wyłącza konto; sprzedaż za 56,50~zł zostaje w~historii. Formularz zakładania konta pokazuje informację o~przetwarzaniu danych i~wymaga akceptacji zasad rezerwacji. & spełniony \\
+\end{longtable}
+}
+
+\ekran{rys:ekran-pu08-email}{Potwierdzenie rezerwacji w~skrzynce pocztowej klienta}{pu08-potwierdzenie-email}{Zawartość ekranu: temat ,,Warzywniak: rezerwacja złożona'', dzień odbioru, pozycje z~ilościami, godzina zamknięcia, termin bezpłatnej zmiany i~wysokość opłaty za nieodebranie.}
+
+\ekran{rys:ekran-pu01-lighthouse}{Raport Lighthouse 12.8.2 dla katalogu (tryb mobilny)}{pu01-lighthouse-katalog}{Zawartość ekranu: wyniki Performance 99, Accessibility 100, Best Practices 96 i~SEO 91 oraz czasy wczytywania strony.}
 
 
 \clearpage

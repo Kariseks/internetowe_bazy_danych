@@ -33,6 +33,15 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
 
 ALLOWED_HOSTS = [h for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h]
 
+# W sklepie aplikacja działa za Nginx z TLS. Pokaz w sieci lokalnej działa po HTTP, więc ustawia się to tylko na serwerze.
+if os.environ.get('DJANGO_HTTPS') == '1':
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
 
 # Application definition
 

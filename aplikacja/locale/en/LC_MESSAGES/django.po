@@ -1510,3 +1510,9 @@ msgstr "%(get_full_name)s, collection on %(dzien)s. If stock is insufficient, en
 
 msgid "Limit 20 kg dotyczy produktów na wagę. Rezerwację można zmienić lub odwołać do 18:00 w dniu poprzedzającym odbiór. Zapłacisz w sklepie za wydany towar. Za nieodebraną rezerwację naliczamy 10% jej wartości. Zaległość powyżej 100 zł wstrzymuje nowe rezerwacje."
 msgstr "The 20 kg limit applies to weighed products. You may change or cancel by 18:00 the day before collection. Pay in store for the quantity collected. Uncollected reservations incur a fee of 10% of their value. An outstanding balance above PLN 100 blocks new reservations."
+
+msgid "Ochrona danych osobowych"
+msgstr "Personal data protection"
+
+msgid "Administratorem danych podanych przy zakładaniu konta jest właściciel sklepu. Przetwarzamy je, aby obsługiwać rezerwacje i rozliczać opłaty za nieodebrane rezerwacje (art. 6 ust. 1 lit. b RODO). Przechowujemy je do anonimizacji konta, a dane sprzedaży i rozliczeń tak długo, jak wymagają tego przepisy podatkowe. Masz prawo dostępu do swoich danych, ich sprostowania, usunięcia przez anonimizację konta, o którą prosisz w sklepie, oraz prawo skargi do Prezesa Urzędu Ochrony Danych Osobowych."
+msgstr "The shop owner is the controller of the data you give when creating an account. We process it to handle reservations and settle no-show fees (Art. 6(1)(b) GDPR). We keep it until your account is anonymised; sales and fee records are kept for as long as tax law requires. You have the right to access and correct your data, to have it erased by anonymising your account (ask in the shop), and to lodge a complaint with the President of the Personal Data Protection Office."

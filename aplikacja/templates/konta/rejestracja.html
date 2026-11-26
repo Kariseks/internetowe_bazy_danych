@@ -8,6 +8,9 @@
     <details class="zasady"><summary>{% translate "Zasady rezerwacji" %}</summary>
         <p>{% translate "Limit 20 kg dotyczy produktów na wagę. Rezerwację można zmienić lub odwołać do 18:00 w dniu poprzedzającym odbiór. Zapłacisz w sklepie za wydany towar. Za nieodebraną rezerwację naliczamy 10% jej wartości. Zaległość powyżej 100 zł wstrzymuje nowe rezerwacje." %}</p>
     </details>
+    <details class="zasady"><summary>{% translate "Ochrona danych osobowych" %}</summary>
+        <p>{% translate "Administratorem danych podanych przy zakładaniu konta jest właściciel sklepu. Przetwarzamy je, aby obsługiwać rezerwacje i rozliczać opłaty za nieodebrane rezerwacje (art. 6 ust. 1 lit. b RODO). Przechowujemy je do anonimizacji konta, a dane sprzedaży i rozliczeń tak długo, jak wymagają tego przepisy podatkowe. Masz prawo dostępu do swoich danych, ich sprostowania, usunięcia przez anonimizację konta, o którą prosisz w sklepie, oraz prawo skargi do Prezesa Urzędu Ochrony Danych Osobowych." %}</p>
+    </details>
     <form method="post">
 		{% csrf_token %}
 		{% include "konta/_pola.html" %}

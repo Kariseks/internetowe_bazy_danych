@@ -62,7 +62,7 @@ h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
 .komunikat.error { background: var(--burak-tlo); color: var(--burak); }
 
 .arkusz { border: 1px solid var(--linia); border-radius: 8px; background: #fff; }
-.przewijany { overflow-x: auto; }
+.przewijany { position: relative; overflow-x: auto; }
 .tabela { width: 100%; border-collapse: collapse; }
 .tabela th, .tabela td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--linia); text-align: left; vertical-align: top; }
 .tabela thead th { color: var(--cichy); font-size: 0.85rem; font-weight: 600; }
