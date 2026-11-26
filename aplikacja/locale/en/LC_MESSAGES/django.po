@@ -1516,3 +1516,6 @@ msgstr "Personal data protection"
 
 msgid "Administratorem danych podanych przy zakładaniu konta jest właściciel sklepu. Przetwarzamy je, aby obsługiwać rezerwacje i rozliczać opłaty za nieodebrane rezerwacje (art. 6 ust. 1 lit. b RODO). Przechowujemy je do anonimizacji konta, a dane sprzedaży i rozliczeń tak długo, jak wymagają tego przepisy podatkowe. Masz prawo dostępu do swoich danych, ich sprostowania, usunięcia przez anonimizację konta, o którą prosisz w sklepie, oraz prawo skargi do Prezesa Urzędu Ochrony Danych Osobowych."
 msgstr "The shop owner is the controller of the data you give when creating an account. We process it to handle reservations and settle no-show fees (Art. 6(1)(b) GDPR). We keep it until your account is anonymised; sales and fee records are kept for as long as tax law requires. You have the right to access and correct your data, to have it erased by anonymising your account (ask in the shop), and to lodge a complaint with the President of the Personal Data Protection Office."
+
+msgid "Lokalny sklep warzywny. Ceny i dostępność warzyw i owoców na najbliższe siedem dni, rezerwacja z odbiorem w sklepie."
+msgstr "Local greengrocer. Prices and availability of fruit and vegetables for the next seven days, with reservations for collection in store."

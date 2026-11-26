@@ -4,6 +4,8 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{% block title %}Warzywniak{% endblock %}</title>
+	<meta name="description" content="{% translate "Lokalny sklep warzywny. Ceny i dostępność warzyw i owoców na najbliższe siedem dni, rezerwacja z odbiorem w sklepie." %}">
+	<link rel="icon" href="{% static 'sklep/favicon.svg' %}" type="image/svg+xml">
 	{% if user.is_authenticated %}<script>document.documentElement.classList.add('menu-js')</script>{% endif %}
 	<link rel="stylesheet" href="{% static 'sklep/sklep.css' %}">
 	<link rel="stylesheet" href="{% static 'sklep/preferencje.css' %}">
